@@ -1,0 +1,24 @@
+﻿CREDITS:
+
+* Icons
+
+Various icons in Gui and Documentation from Silk Icons
+http://www.famfamfam.com/lab/icons/silk/
+
+search.png (mirrored it) from
+http://www.iconfinder.com/icondetails/2984/16/find_magnifying_glass_search_zoom_icon
+
+* AutoHotkey functions/(inspired)scripts
+
+IniSettingsEditor_v6.ahk
+http://www.autohotkey.com/forum/viewtopic.php?p=69534#69534
+by Rajat, mod by toralf, further mod by me
+
+Delimiter Seperated Values by DerRaphael [in CSV.ahk]
+http://www.autohotkey.com/forum/post-203280.html#203280
+
+ClipSet() is a mod of virclip by Learning one 
+http://www.autohotkey.com/forum/topic56926.html
+
+320mph by Rajat
+http://www.autohotkey.com/forum/topic3010.html

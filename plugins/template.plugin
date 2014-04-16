@@ -1,0 +1,30 @@
+﻿/* 
+Plugin        : ..
+Purpose       : ..
+Version       : ..
+Updated       : ..
+Author        : ..
+*/
+
+; replace PLUGINNAME with the actual name of the plugin, this is used here as 
+; filename of the plugin AND in the [[PLUGINNAME=...]] so choose wisely
+GetSnippetPLUGINNAME: ; save as PLUGINNAME.ahk
+PLUGINNAME=
+Loop 
+	{
+	 If (InStr(Clip, "[[" PLUGINNAME ) = 0)
+	 	Break
+	 RegExMatch(Clip, "iU)\[\[" PLUGINNAME "=(.*)\]\]", ClipQ, 1) ; ClipQ1 will contains the parameter(s)
+	 ; do your magic here
+	 ; ClipQ2 -> Store the info you want to replace the Plugin with, see StringReplace below
+	 
+	 
+	 
+	 
+	 ; /do your magic here
+	 StringReplace, clip, clip, [[%PLUGINNAME%=%ClipQ1%]], %ClipQ2%, All
+	 ClipQ1=
+	 ClipQ2=
+	} 
+PLUGINNAME= ; clear variable
+Return

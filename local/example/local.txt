@@ -1,0 +1,8 @@
+BundleVersion: 1
+Name: Local bundle
+Description: Local and private variables for re-use in other Bundles
+Patterns:
+- LLVarName: MyAddress
+  LLContent: MyName
+MyStreet
+MyTown

@@ -1,0 +1,182 @@
+﻿/*
+Lintalist DOC stylesheet, media: screen
+The general idea:
+A "readme" like html page by making the most of the PRE tag.
+*/
+
+body, html {
+	margin: 0;
+	padding: 0;
+	}
+
+body {
+	background: #fff url(img/bg_silver.png) 0 0 repeat-x;
+	font-family: verdana, arial, sans-serif;
+	font-size: 12px;
+	line-height: 140%;
+	text-align:center;
+	 }
+	
+#container {
+	width:85%;
+	height: 800px;
+	margin: 0px auto;
+	padding: 0px;
+	text-align:left;
+	}
+
+#intro {
+	position: relative;
+	text-align: right;
+	margin: 0px auto;
+	}
+
+a.script { 
+	background: #fff url(img/scripticon.gif) 0 0 no-repeat;
+	padding-left: 20px;
+	}
+
+a.text { 
+	background: #fff url(img/texticon.gif) 0 0 no-repeat;
+	padding-left: 20px;
+	}
+	
+code {
+	padding: 2px;
+	margin: 2px;
+	background-color: #F2FEFF;
+	display: inline;
+	border-radius: 2px;
+	-moz-border-radius: 2px;
+	-webkit-border-radius: 2px;
+	border: 1px solid #00D2D2;
+	}		
+	
+pre {
+	 white-space: pre-wrap;       /* css-3 */
+	 white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
+	 white-space: -pre-wrap;      /* Opera 4-6 */
+	 white-space: -o-pre-wrap;    /* Opera 7 */
+	 word-wrap: break-word;       /* Internet Explorer 5.5+ */
+ 	}	
+
+div#question {
+	background: #f2f3f0 url(help.png) 2px 5px no-repeat;
+	padding:5px;
+	padding-left: 20px;
+	border: 1px solid #d8dbcd;
+	border-radius: 5px;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	}	
+	
+.tip {
+	background: #f2f3f0 url(img/tip.png) 4px 8px no-repeat;
+	display: block;
+	margin: 2px;
+	padding-left: 25px;
+	padding-top: 8px;
+	padding-bottom: 8px;
+	border-radius: 5px;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	text-shadow: white 1px 1px 0px;
+	}	
+	
+h2,h3,h4,h5,h6 {
+	margin:0;
+	padding:0;
+	display: inline;
+	}
+	
+span.Example {
+	margin:0;
+	padding:0;
+	padding-left: 40px;
+	padding-right: 40px;
+	display: block;
+	}
+
+b em, h2 em, h3 em {
+	font-style: normal;
+	color: #c00;
+	}
+
+.llbundle {	color: #008;
+			font-weight: bold;
+		  }
+
+.flex {	color: #c00;			
+	}
+
+.llcomment {
+	color: #00A0FF;
+	font-size: 11px;
+		}	
+	
+.smalltext {
+	color: #666;
+	font-size: 11px;
+}	
+
+.date {
+ color:#aaa;
+ font-size:9px;
+ font-family:arial;
+ margin-top:2px;
+}
+
+.column {
+	width: 31%;
+	float: left;
+	padding-right:4px;
+	}
+
+.column b {
+	}
+	
+.column p {
+	padding-top:0;
+	margin-top:0;
+	}
+
+.small {
+	font-size:11px;
+	color:#800;
+	}
+	
+.brk {
+	clear:both;
+	}	
+	
+table 	 { border-collapse: collapse; border: 1px solid #C0C0C0; width:100%;}
+th    	 { background-color: #eee; }
+th,td    { border: 1px solid #C0C0C0; padding: 5px;font-size: 0.95em;}
+tr    	 { vertical-align:top; }
+
+table#borderless th,table#borderless td {border-color:#fff;}
+
+ul {
+	margin:0;
+	padding:0;
+	padding-left:15px;
+	}
+
+li {
+	list-style:square;
+	color: #c0c0c0;
+	}
+	
+a:visited {color: #000; }	
+a:hover {color: #c00; }	
+
+kbd {
+	padding: 1px;
+	margin: 1px;
+	background-color: #ce0;
+	display: inline;
+	border-radius: 2px;
+	-moz-border-radius: 2px;
+	-webkit-border-radius: 2px;
+	border: 1px solid #c0c0c0;
+	}

@@ -1,0 +1,40 @@
+BundleFormat: 1
+Name: Default
+Description: Default bundle for Lintalist
+Author: Default
+TitleMatch: 
+Patterns:
+- LLPart1: This will show a MsgBox, as it runs the script "MsgBox Hello"
+  LLPart2: Really it will
+  LLKey: 
+  LLShorthand: 
+  LLScript: MsgBox Hello
+- LLPart1: By the way
+  LLPart2: Example of a shorthand replacement, type btw followed by a space or tab
+  LLKey: 
+  LLShorthand: btw
+  LLScript: 
+- LLPart1: Dear [[Input=What is the name of the person you are writing to?]]
+
+Today is [[DateTime=dd-MMM-yyyy]] 
+
+My Address is:
+[[Var=MyAddress]]
+
+You can find the MyAddress variables in local\local.txt, right click Edit Local bundle.
+
+Read the DOC for more info
+  LLPart2: A test using a local variables, date and input.
+  LLKey: 
+  LLShorthand: 
+  LLScript: 
+- LLPart1: An example with a List, I like the colour [[Choice=Red|Blue|Yellow]]
+  LLPart2: 
+  LLKey: 
+  LLShorthand: 
+  LLScript: 
+- LLPart1: Lets try to insert text from [[File=test\testfile.txt]] OK
+  LLPart2: 
+  LLKey: 
+  LLShorthand: 
+  LLScript: 
