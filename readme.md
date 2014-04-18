@@ -7,6 +7,8 @@ in bundles and **paste** a selected text in your active program. The text **can*
 be interactive, for example, you can automatically insert the current time and
 date, ask for (basic) user input or make a selection from a list etc. 
 
+AHKScript.org thread: http://ahkscript.org/boards/viewtopic.php?f=6&t=3378
+
 Other features:
 
 * Assign keyboard shortcuts to your favourite Snippets
