@@ -4,10 +4,10 @@ Name            : Lintalist
 Author          : Lintalist
 Purpose         : Searchable interactive lists to copy & paste text, run scripts, 
                   using easily exchangeable bundles
-Version         : 1.0
+Version         : 1.0.1
 Code            : https://github.com/lintalist/
 Website         : http://lintalist.github.io/
-AHKscript Forum : http://www.ahkscript.org/boards/
+AHKscript Forum : http://ahkscript.org/boards/viewtopic.php?f=6&t=3378
 License         : Copyright (c) 2009-2014 Lintalist
 
 This program is free software; you can redistribute it and/or modify it under the
@@ -37,7 +37,7 @@ FileEncoding, UTF-8
 
 ; Title + Version are included in Title and used in #IfWinActive hotkeys and WinActivate
 Title=Lintalist
-Version=1.0
+Version=1.0.1
 
 ; ClipCommands are used in ProcessText and allow user input and other variable input into text snippets
 ; ClipCommands=[[Input,[[DateTime,[[Choice,[[Selected,[[Var,[[File,[[Snippet=
@@ -1006,7 +1006,7 @@ If (A_ThisMenuItem = "&Help")
 	Run, docs\index.html
 Else If (A_ThisMenuItem = "&Edit Local Bundle")
 		{
-		 RunWait, include\localbundleeditor.ahk
+		 RunWait, %A_AhkPath% include\localbundleeditor.ahk
 		 MsgBox, 36, Restart?, In order for any changes to take effect you must reload.`nOK to restart? ; 4+32 = 36 
 		 IfMsgBox, Yes
 			{
@@ -1019,7 +1019,7 @@ Else If (A_ThisMenuItem = "&Manage counters")
 		 Gosub, SaveSettingsCounters
 		 StoreCounters:=Counters
 		 StoreLocalCounter_0:=LocalCounter_0
-		 RunWait, include\CounterEditor.ahk
+		 RunWait, %A_AhkPath% include\CounterEditor.ahk
 		 IniRead, Counters, settings.ini, settings, Counters, 0	
 		 If (Counters <> StoreCounters)
 		 	{
