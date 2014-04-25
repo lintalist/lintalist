@@ -4,7 +4,7 @@ Name            : Lintalist
 Author          : Lintalist
 Purpose         : Searchable interactive lists to copy & paste text, run scripts, 
                   using easily exchangeable bundles
-Version         : 1.0.1
+Version         : 1.0.2
 Code            : https://github.com/lintalist/
 Website         : http://lintalist.github.io/
 AHKscript Forum : http://ahkscript.org/boards/viewtopic.php?f=6&t=3378
@@ -28,7 +28,6 @@ See license.txt for further details.
 SetBatchLines, -1
 SetTitleMatchMode, 2
 ListLines, off
-; EnvGet, TmpDir, tmp
 TmpDir:= A_ScriptDir "\tmpscrpts"
 CoordMode, ToolTip, Screen
 SendMode, Input
@@ -37,7 +36,7 @@ FileEncoding, UTF-8
 
 ; Title + Version are included in Title and used in #IfWinActive hotkeys and WinActivate
 Title=Lintalist
-Version=1.0.1
+Version=1.0.2
 
 ; ClipCommands are used in ProcessText and allow user input and other variable input into text snippets
 ; ClipCommands=[[Input,[[DateTime,[[Choice,[[Selected,[[Var,[[File,[[Snippet=
@@ -54,6 +53,7 @@ OnExit, SaveSettings ; store settings (locked state, search mode, gui size etc i
 Menu, Tray, NoStandard
 Menu, Tray, Icon, icons\lintalist_suspended.ico ; while loading show suspended icon
 Menu, Tray, Add, &Help,          	 TrayMenuHandler
+Menu, Tray, Add, Quick Start Guide,  TrayMenuHandler
 Menu, Tray, Add, &Configuration,     TrayMenuHandler
 Menu, Tray, Add, 
 Menu, Tray, Add, &Edit Local Bundle, TrayMenuHandler
@@ -108,13 +108,14 @@ LoadAllBundles()
 LoadPersonalBundle() 
 Menu, Tray, Icon, icons\lintalist.ico ; loading is done so show active Icon
 Menu, tray, UnCheck, &Pause Lintalist
-Menu, tray, Tip, %AppWindow% - active
+Menu, tray, Tip, %AppWindow% - active`nPress %StartSearchHotkey% to start search...
 if (MinLen > 1)
 	MinLen--
 
 Gosub, BuildFileMenu
 Gosub, BuildEditMenu
 Gosub, BuildEditorMenu
+Gosub, QuickStartGuide
 
 ; setup hotkey
 
@@ -165,13 +166,11 @@ Else
 
 Gui, 1:Destroy ; just to be sure
 Gui, 1:+Border ; 
+Gui, 1:Menu, MenuBar
 Gui, 1:Add, Picture, x4 y4 w16 h16, icons\search.png
 Gui, 1:Add, Edit, 0x8000 x25 y2 w%SearchBoxWidth% h20 gGetText vCurrText, %CurrText%
 Gui, 1:Add, Button, x300 y2 w30 h20 0x8000 Default hidden gPaste, OK
 Gui, 1:Font, s8, Arial
-Gui, 1:Add, Text,  x%XFMenu% y%Yctrl% gFileMenu, %FMenuText%
-If (ShowEditMenu = 1)
-	Gui, 1:Add, Text,  x%XEMenu% y%Yctrl% w30 gEditMenu, %EMenuText%
 Gui, 1:Add, CheckBox, 0x8000 gCase vCase x%cax% y%Yctrl%, &Case
 Gui, 1:Add, CheckBox, 0x8000 gLock vLock x%lox% y%Yctrl%, &Lock
 Gui, 1:Add, Radio,    0x8000 gSetSearchMethod vSMNorm x%nox% y%Yctrl% w50, &Rglr ; Regular Search method
@@ -203,7 +202,7 @@ Gui, 1:Add, StatusBar,,
 SB1:=Round(.8*Width)
 SB_SetParts(SB1)
 Gosub, GetText
-XY:=StayOnMonXY(Width, Height, 0, 1, 0)
+XY:=StayOnMonXY(Width, Height, Mouse, MouseAlternative, Center) ; was XY:=StayOnMonXY(Width, Height, 0, 1, 0)
 StringSplit, Pos, XY, |
 Gui, Show, w%Width% h%Height% x%Pos1% y%Pos2%, %AppWindow%
 GuiJustShown:=1
@@ -374,6 +373,10 @@ Clicked:
 		 gosub, shiftctrlenter
 		}	
 	 else if (DoubleClickSends = 5)
+		{
+		 gosub,editf4
+		}	
+	 else if (DoubleClickSends = 6)
 		{
 		 gosub,editf7
 		}	
@@ -676,7 +679,6 @@ Gui, 1:+Disabled
 Gosub, BundleEditor
 Return
 
-
 F7:: ; create new snippet e.g. append
 EditF7:
 EditMode = AppendSnippet
@@ -735,15 +737,6 @@ Gui, 71:+Owner1
 Gui, 1:+Disabled
 Gosub, BundleEditor
 Return
-
-!b::
-Gosub, FileMenu
-return
-
-!e::
-If (ShowEditMenu = 1)
-	Gosub, EditMenu
-return
 
 ;Enter:: ; not present but default Gui action, paste text from part1
 
@@ -979,6 +972,8 @@ Return
 
 1GuiClose:
 1GuiEscape:
+WinGetPos, X, Y, , ,  %AppWindow% ; remember position set by user
+XY:=X "|" Y
 Gui, 1:Destroy
 CurrText=
 LastText=ladjflsajfasjflsdjlleiei
@@ -986,24 +981,12 @@ ViaText=0
 ViaShorthand=0	
 Return
 
-; filemenu for bundle selection via menu
-FileMenu:
-X:=XFMenu+5
-Y:=Yctrl+35
-MouseMove, % X + 5, % Y + 5 ; focus?
-Menu, File, Show, %X%, %Y%
-Return
-
-EditMenu:
-X:=XEMenu+5
-Y:=Yctrl+35
-Menu, Edit, Show, %X%, %Y%
-Return
-
 ; for traymenu
 TrayMenuHandler:
 If (A_ThisMenuItem = "&Help")
 	Run, docs\index.html
+Else If (A_ThisMenuItem = "Quick Start Guide")
+	Gosub, QuickStartGuideMenu
 Else If (A_ThisMenuItem = "&Edit Local Bundle")
 		{
 		 RunWait, %A_AhkPath% include\localbundleeditor.ahk
@@ -1237,7 +1220,7 @@ If PauseToggle
   }
 Else
   {
-   Menu, tray, Tip, %AppWindow% - active
+   Menu, tray, Tip, %AppWindow% - active`nPress %StartSearchHotkey% to start search...
    Menu, tray, icon, icons\lintalist.ico, , 1
   }
 Menu, tray, ToggleCheck, &Pause Lintalist
@@ -1359,17 +1342,41 @@ CheckTyped(TypedChar,EndKey)
 	}
 
 BuildEditMenu:
-Menu, Edit, Add, &Edit Snippet`tF4, EditMenuHandler
-Menu, Edit, Add, &Copy Snippet`tF5, EditMenuHandler
-Menu, Edit, Add, &Move Snippet`tF6, EditMenuHandler
-Menu, Edit, Add, &New Snippet`tF7, EditMenuHandler
-Menu, Edit, Add, &Remove Snippet`tF8, EditMenuHandler
-Menu, Edit, Add, &New Bundle`tF10, EditMenuHandler
+Try
+	{
+	 Menu, Edit, DeleteAll
+	}
+Catch
+	{
+	 ;
+	}
+
+Menu, Edit, Add, &Edit Snippet`tF4,  EditMenuHandler
+Menu, Edit, Add, &Copy Snippet`tF5,  EditMenuHandler
+Menu, Edit, Add, &Move Snippet`tF6,  EditMenuHandler
+Menu, Edit, Add, &New Snippet`tF7,   EditMenuHandler
+Menu, Edit, Add, &Remove Snippet`tF8,EditMenuHandler
+Menu, Edit, Add, &New Bundle`tF10,   EditMenuHandler
 Menu, Edit, Add, 
-Menu, Edit, Add, &Help, EditMenuHandler
+Menu, Edit, Add, &Configuration,     TrayMenuHandler
+Menu, Edit, Add, 
+Menu, Edit, Add, &Edit Local Bundle, TrayMenuHandler
+Menu, Edit, Add, &Manage counters,   TrayMenuHandler
+Menu, Edit, Add, 
+Menu, Edit, Add, &Help,              TrayMenuHandler
+Menu, MenuBar, Add, &Edit, :Edit
+
 Return
 
 BuildFileMenu: ; build File menu (used twice: at start and in bundle editor)
+Try
+	{
+	 Menu, File, DeleteAll
+	}
+Catch
+	{
+	 ;
+	}
 Menu, File, Add, &Load All Bundles, MenuHandler
 If (LoadAll = 1)
 	 Menu, file, Check, &Load All Bundles
@@ -1382,6 +1389,10 @@ Loop, parse, MenuName_HitList, |
 	 StringSplit, MenuText, A_LoopField, % Chr(5)
 	 Menu, File, Add, % "&"MenuText1, MenuHandler
 	}
+Menu, File, Add
+Menu, File, Add, &Reload Bundles,     TrayMenuHandler
+Menu, MenuBar, Add, &Bundle, :File
+
 Return
 	
 BuildEditorMenu:
@@ -1403,6 +1414,7 @@ SaveSettings:
 
 Gui, 1:Destroy
 Gui, 10:Destroy
+Gui, 55:Destroy
 Gui, 71:Destroy
 Gui, 99:Destroy
 
@@ -1426,6 +1438,7 @@ IniWrite, %Height%      , Settings.ini, Settings, Height
 IniWrite, %ShorthandPaused%, Settings.ini, Settings, ShorthandPaused
 IniWrite, %ShortcutPaused% , Settings.ini, Settings, ShortcutPaused
 IniWrite, %ScriptPaused%   , Settings.ini, Settings, ScriptPaused
+IniWrite, %ShowQuickStartGuide%, Settings.ini, Settings, ShowQuickStartGuide
 Gosub, SaveSettingsCounters
 ; /INI
 
@@ -1444,6 +1457,7 @@ Return
 #Include %A_ScriptDir%\plugins\plugins.ahk
 #Include %A_ScriptDir%\include\GuiSettings.ahk
 #Include %A_ScriptDir%\include\SetShortcuts.ahk
+#Include %A_ScriptDir%\include\QuickStart.ahk
 ; /Includes
 
 SaveSettingsCounters:

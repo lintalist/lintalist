@@ -1,6 +1,5 @@
 ﻿/* 
 Purpose       : Main #Include script for all Lintalist plugins.
-Version       : 0.96 [initial release]
 Version       : 1.0
 
 See "readme-howto.txt" for more information.

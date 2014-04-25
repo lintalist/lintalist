@@ -1,8 +1,8 @@
 ﻿; LintaList Include
 ; Purpose: Load and Parse LintaList Bundles at startup into memory
 ;          and later determine which one to load
-; Version: 1.0
-; Date:    20101010
+; Version: 1.0.2
+; Date:    20140421
 
 WhichBundle() ; determine which bundle to use based on active window (titlematch)
 	{
@@ -295,6 +295,21 @@ ParseBundle(Patterns, Counter)
 	{
 	 global
 	 local list,fix1,fix2
+	 ; checking for new empty bundle - we still need to create an object to ensure it will work correctly
+	 If !InStr(Patterns,"- LLPart1")
+	 	{
+	 	 ShortHandHitList_%Counter% := Chr(5)
+	 	 HotKeyHitList_%Counter% := Chr(5) 
+		 Snippet[Counter,1,1]:=""
+		 Snippet[Counter,1,2]:=""
+		 Snippet[Counter,1,3]:=""
+		 Snippet[Counter,1,4]:=""
+		 Snippet[Counter,1,5]:=""
+		 Snippet[Counter,1,"1v"]:=""
+		 Snippet[Counter,1,"2v"]:=""
+		 Return
+	 	}
+	 ; /checking for new empty bundle
 	 Patterns:=RegExReplace(Patterns,"im)\s*- LLPart1:\s*LLPart2:\s*LLKey:\s*LLShorthand:\s*LLScript:\s*", "") ; remove empty snippets from bundle
 	 Patterns:=RegExReplace(Patterns,"im)\s*- LLPart1:\s*", Chr(5)) ; prepare split per pattern/snippet
 	 StringTrimLeft, Patterns, Patterns, 1                          ; trim first Chr(5) to prevent empty array element

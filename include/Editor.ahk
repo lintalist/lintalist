@@ -1,7 +1,7 @@
 ﻿; LintaList Include
 ; Purpose: Bundle & Snippet Editor
-; Version: 1.0
-; Date:    20101010
+; Version: 1.0.2
+; Date:    20140421
 ;
 ; Hotkeys used in Search GUI to start Bundle & Snippet Editor
 ; F4  = Edit snippet 		
@@ -157,9 +157,9 @@ Filename:=Filename_%paste1%
 
 Gui, 71:+Owner	
 If (EditMode = "NewBundle")
-	Gui, 71:Add, Tab2, x5 y5 w730 h495, %A_Space%%A_Space%Snippet Text and Code%A_Space%%A_Space%%A_Space%%A_Space%%A_Space%%A_Space%|%A_Space%%A_Space%%A_Space%%A_Space%Bundle Properties%A_Space%%A_Space%%A_Space%%A_Space%%A_Space%%A_Space%%A_Space%%A_Space%||
+	Gui, 71:Add, Tab2, x5 y5 w730 h495 gTabClick, %A_Space%%A_Space%Snippet Text and Code%A_Space%%A_Space%%A_Space%%A_Space%%A_Space%%A_Space%|%A_Space%%A_Space%%A_Space%%A_Space%Bundle Properties%A_Space%%A_Space%%A_Space%%A_Space%%A_Space%%A_Space%%A_Space%%A_Space%||
 Else
-	Gui, 71:Add, Tab2, x5 y5 w730 h495, %A_Space%%A_Space%Snippet Text and Code%A_Space%%A_Space%%A_Space%%A_Space%%A_Space%%A_Space%|%A_Space%%A_Space%%A_Space%%A_Space%Bundle Properties%A_Space%%A_Space%%A_Space%%A_Space%%A_Space%%A_Space%%A_Space%%A_Space%|
+	Gui, 71:Add, Tab2, x5 y5 w730 h495 gTabClick, %A_Space%%A_Space%Snippet Text and Code%A_Space%%A_Space%%A_Space%%A_Space%%A_Space%%A_Space%|%A_Space%%A_Space%%A_Space%%A_Space%Bundle Properties%A_Space%%A_Space%%A_Space%%A_Space%%A_Space%%A_Space%%A_Space%%A_Space%|
 
 Gui, 71:Tab, 1 ; Snippet ------------------------------------------------------------------------
 
@@ -226,11 +226,20 @@ If (EditMode = "EditSnippet") or (EditMode = "AppendSnippet")
 	ControlFocus, Edit2, Lintalist bundle editor
 Else If (EditMode = "NewBundle")
 	{
-	 ;GuiControl, Choose, SysTabControl32, |2 ; TODO FIXIT
+	 GuiControl, Choose, SysTabControl321, |2
 	 ControlFocus, Edit5, Lintalist bundle editor
 	}
 Return
 
+TabClick:
+If (EditMode = "NewBundle")
+	{
+	 GuiControl, Choose, SysTabControl321, |2
+	 MsgBox, 48, Save first, Save the bundle first before adding new snippets
+	 ControlFocus, Edit5, Lintalist bundle editor
+	}
+Return
+	
 71Help:
 Run, docs\index.html
 Return
@@ -447,8 +456,14 @@ If (EditMode <> "MoveSnippet")
 		}
 	 StringTrimRight, MenuName_HitList, MenuName_HitList, 1 ; remove trailing |
 	 Sort, MenuName_HitList, D|
-	 Menu, File, DeleteAll
+ 	 ; 1) detach the menu bar via Gui Menu (that is, omit MenuName)
+ 	 ; 2) make the changes
+ 	 ; 3) reattach the menu bar via Gui, Menu, MyMenuBar.
+ 	 ;Menu, File, DeleteAll
+	 Gui, 1:Menu
 	 Gosub, BuildFileMenu
+	 Gosub, BuildEditMenu
+	 Gui, 1:Menu, MenuBar
 	}
 
 Gui, 1:-Disabled

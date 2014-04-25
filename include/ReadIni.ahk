@@ -1,7 +1,7 @@
 ﻿; LintaList Include
 ; Purpose: Read INI
-; Version: 1.0
-; Date:    20101010
+; Version: 1.0.2
+; Date:    20140423
 
 ReadIni()
 	{
@@ -64,8 +64,9 @@ ReadIni()
 	 IniRead, ShortcutPaused     ,%ini%, settings, ShortcutPaused  , 0
 	 IniRead, ScriptPaused       ,%ini%, settings, ScriptPaused    , 0
 	 IniRead, Center             ,%ini%, settings, Center          , 0
+	 IniRead, MouseAlternative   ,%ini%, settings, MouseAlternative, 1
+	 IniRead, Mouse              ,%ini%, settings, Mouse           , 0
 	 IniRead, PreviewSection	 ,%ini%, settings, PreviewSection  , 1
-	 IniRead, ShowEditMenu	     ,%ini%, settings, ShowEditMenu	   , 1
 	 IniRead, ShowGrid           ,%ini%, settings, ShowGrid        , 0
 	 If (ShowGrid = 0)
 	 	ShowGrid =
@@ -74,7 +75,9 @@ ReadIni()
 	 IniRead, Counters          ,%ini%, settings, Counters, 0	
 	 IniRead, SetStartup        ,%ini%, settings, SetStartup, 0	
 	 IniRead, SetDesktop        ,%ini%, settings, SetDesktop, 0	
+	 IniRead, ShowQuickStartGuide,%ini%, settings, ShowQuickStartGuide, 1
 	 ReadCountersIni()
+
   }                         
 
 ReadCountersIni()
@@ -154,14 +157,15 @@ SearchMethod=2
 `;SearchMethod 4=Magic
 `;SearchMethod See documentation for more information on the various types, can be set in Search GUI
 DoubleClickSends=1
-`;DoubleClickSends Type: Dropdown 1|2|3|4
+`;DoubleClickSends Type: Dropdown 1|2|3|4|5|6
 `;DoubleClickSends Default: 1
-`;DoubleClickSends You can change what happens if you doubcle click on an entry in the search results:
+`;DoubleClickSends You can change what happens if you double click on an entry in the search results:
 `;DoubleClickSends 1=Paste Part1 as enter e.g. run script if present
 `;DoubleClickSends 2=Paste Part2 as shift-enter e.g. run script if present 
 `;DoubleClickSends 3=Paste Part1 as ctrl-enter e.g. always paste part1 even if script present
 `;DoubleClickSends 4=Paste Part2 as ctrl-shift-enter e.g. always paste part2 even if script present
 `;DoubleClickSends 5=Edit snippet
+`;DoubleClickSends 6=New snippet
 Lock=0
 `;Lock Hidden:
 `;Lock Store locked state 0=no, 1 = yes. Change via GUI
@@ -170,7 +174,7 @@ Case=0
 `;Case Store Case sens search state 0=no, 1 = yes. Change via GUI
 StartSearchHotkey=CAPSLOCK
 `;StartSearchHotkey !=Alt, ^ = Ctrl, + Shift, # = WinKey
-`;StartSearchHotkey The HotKey used to launch the Lintalist search gui.
+`;StartSearchHotkey The HotKey used to launch the Lintalist search GUI.
 `;StartSearchHotkey See http://www.autohotkey.com/docs/Hotkeys.htm#Symbols and  http://www.autohotkey.com/docs/KeyList.htm for other keys 
 QuickSearchHotkey=#z
 `;QuickSearchHotkey !=Alt, ^ = Ctrl, + Shift, # = WinKey
@@ -222,7 +226,7 @@ WideWidth=760
 `;WideWidth Type: Integer
 `;WideWidth Default: 760
 `;WideWidth The width in Pixels of the wide version of the search Gui, Lintalist has two modes (narrow and wide) 
-`;WideWidth Recommended is not to make it any wider than your lowest resolution in case you use multiple monitors with different resulutions
+`;WideWidth Recommended is not to make it any wider than your lowest resolution in case you use multiple monitors with different resolutions
 WideHeight=400
 `;WideHeight Type: Integer
 `;WideHeight Default: 400
@@ -248,12 +252,6 @@ PreviewSection=1
 `;PreviewSection 1=Text of part one of snippet (recommended)
 `;PreviewSection 2=Text of part two of snippet (fall back on Part 1 if Part 2 is empty)
 `;PreviewSection 3=Script code of snippet (fall back to Part 1 if 3 is empty)
-ShowEditMenu=1
-`;ShowEditMenu Type: Dropdown 0|1
-`;ShowEditMenu Default: 1
-`;ShowEditMenu Show the Edit menu in the Search Gui
-`;ShowEditMenu 0=No 
-`;ShowEditMenu 1=Yes
 ShowGrid=0
 `;ShowGrid Type: Dropdown 0|1
 `;ShowGrid Default: 0
@@ -267,9 +265,25 @@ Icon2=ScriptIcon.ico
 `;Icon2 Hidden:
 `;Icon2 Used for snippets with a script
 Center=0
-`;Center Hidden:
-`;Center Center GUI on first monitor regardless of caret or cursor position
-`;Center 0 = no center, 1 = center on first monitor.
+`;Center Type: Dropdown 0|1|2
+`;Center Default: 0
+`;Center GUI on first monitor regardless of caret or cursor position
+`;Center 0 = Do not center but use Caret position
+`;Center 1 = Center on first monitor
+`;Center 2 = Do not center but remember position set by user
+`;Center check with Mouse and MouseAlternative settings to set your preferred combination
+MouseAlternative=1
+`;MouseAlternative Type: Dropdown 0|1
+`;MouseAlternative Default: 1
+`;MouseAlternative Use the mouse position as backup:
+`;MouseAlternative 1 = If caret fails use mouse cursor position as an alternative
+`;MouseAlternative 0 = Don't use mouse cursor position as an alternative if caret pos. fails
+Mouse=0
+`;Mouse Type: Dropdown 0|1
+`;Mouse Default: 0
+`;Mouse Use the mouse cursor instead of the caret position:
+`;Mouse = 1 use the mouse cursor instead of the caret position
+`;Mouse = 0 do not use the mouse cursor instead of the caret position
 Counters= 
 `;Counters Hidden:
 `;Counters Used for the counter bundle, edit these via the tray menu, "Manage Counters" option
@@ -288,6 +302,13 @@ SetDesktop=0
 IniVersion=1
 `;IniVersion Hidden:
 `;IniVersion Just in case we want to add some more features later we can use this - currently not implemented - do not update yourself
+ShowQuickStartGuide=1
+`;ShowQuickStartGuide Type: Dropdown 0|1
+`;ShowQuickStartGuide Default: 1
+`;ShowQuickStartGuide Show Lintalist Quickstart Guide at start up of program
+`;ShowQuickStartGuide 0=No
+`;ShowQuickStartGuide 1=Yes
+
 	 )
 	 FileAppend, %NewIni%, %A_ScriptDir%\settings.ini
 	}

@@ -1,0 +1,1 @@
+﻿This directory is used to save temporary scripts and delete them afterwards

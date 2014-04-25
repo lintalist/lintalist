@@ -19,7 +19,7 @@
 <br />
 <span style='font-size:.8em;'>You can <b>extend Lintalist</b> by writing your own <b><a href='#InteractiveBundleText'>plugins</a></b>. Lintalist is open source and developed in <a href='http://ahkscript.org/'>AutoHotkey</a>, an easy to learn scripting language for Windows.
 [WinXP/Vista/7]<br /></span>
-<span style='font-size:.8em;'>Currently Lintalist only works with plain text does not support rich text formats such as MS Word, RTF, HTML or images.</span>
+<span style='font-size:.8em;'>Currently Lintalist only works with plain text and does not support rich text formats such as MS Word, RTF, HTML or images.</span>
 <span class='date' style='float:right;display:inline;margin-top:0px;'>doc rev. 20100811</span></p>
 </div>
 
@@ -63,7 +63,7 @@
 </div>
 
 <div class='column'>
-<p><b>Download Lintalist <em>1.0.1</em></b>
+<p><b>Download Lintalist <em>1.0.2</em></b>
 <p>
 <a href='https://github.com/lintalist/lintalist/releases'><img src='img/lintalist65x65.gif' alt='Download Lintalist' width='65' align='left' border='0' style='margin-right: 5px;' /></a>
 Download (incl. source):<br />
@@ -122,7 +122,7 @@ This program is written in AutoHotkey, a free, open-source (scripting) utility f
 
 <h2 id='Installing'>Installing <em>Lintalist</em></h2>
 
-Installing Lintalist is easy, just download the ZIP file and unpack it in a folder of your preference. It is probably best to work with if you place it in your My Documents folder as this will make it easier for Lintalist to update your bundles while you are using them. Lintalist is fully portable and doesn't write any settings to the registry, so you can run it directly from a USB flash drive or DropBox folder for example.
+Installing Lintalist is easy, just download the ZIP file and unpack it in a folder of your preference. Make sure you have write permissions for the destination folder (i.e. don't unpack into a folder like "C:\Program Files"). It is probably easiest to work with if you place it in your "My Documents" folder as this will make it easier for Lintalist to update your bundles while you are using them. Lintalist is fully portable and doesn't write any settings to the registry, so you can run it directly from a USB flash drive or DropBox folder for example.
 
 If you are already an AutoHotkey user and have it installed, it is recommended to run <b>Lintalist.ahk</b>, this will ensure you will be running Lintalist with your preferred version of AutoHotkey. If you don't have AutoHotkey installed you can start <b>Lintalist.exe</b>.
 
@@ -299,7 +299,7 @@ You can pause Lintalist entirely or pause Shortcuts, Shorthand and Scripts seper
 
 <h2 id='Configuration'>Configuration</h2>
 
-You can either edit the settings.ini file directly with a text editor (like notepad) or use the more user friendly configuration window which is available via the tray-menu. In order for the changes to take effect you must reload the application after changing any settings. If you edit settings.ini manually be sure to exit Lintalist first otherwise any changes you make might be overwritten by reloading Lintalist.
+You can either edit the settings.ini file directly with a text editor (like notepad) or use the more user friendly configuration window which is available via the tray-menu. In order for the changes to take effect you must reload the application after changing any settings. If you <b>edit settings.ini manually be sure to exit Lintalist first</b> otherwise any changes you make might be overwritten by reloading Lintalist.
 
 A description of all settings can also be found in settings.ini. 
 
@@ -331,8 +331,9 @@ More options may be added in future versions such as special hotkeys.</td></tr>
   2 = Paste Part2, as shift-enter e.g. run script if present 
   3 = Paste Part1, as ctrl-enter e.g. always paste part1 even if script present
   4 = Paste Part2, as ctrl-shift-enter e.g. always paste part2 even if script present
-  5 = Edit snippet</td></tr>
-  
+  5 = Edit snippet
+  6 = New snippet
+  </td></tr>
 <tr id='DefaultBundle'><td><b>DefaultBundle</b></td><td>File name e.g. default.txt
   If no matching bundle can be found based on the window title load this bundle.</td></tr>
 <tr id='AlwaysLoadBundles'><td><b><b>AlwaysLoadBundles</b></td><td>File name(s) e.g. default.txt,bbcode.txt,css.txt
@@ -465,7 +466,7 @@ Basic example <code>[[Calendar=dd-MMM-yyyy]]</code> --> Select a date and it wil
 The options are delimited by a | character .
 Basic example <code>[[Choice=Red|Green|Blue]]</code> inserts the selected colour in the text.</td></tr>
 
-<tr><td><code>[[Counter=Name|Value]]</code></td><td>You can use multiple counters accross bundles.
+<tr><td><code>[[Counter=Name|Value]]</code></td><td>You can use multiple counters across bundles.
 Basic example <code>[[Counter=InvoiceNumber]]</code> --> increment by one and insert value of InvoiceNumber.
 By default it will increment the counter by one, you can change that by specifying the Value.
 <code>[[Counter=InvoiceNumber|5]]</code> Add 5 and insert.
