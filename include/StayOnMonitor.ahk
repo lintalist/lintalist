@@ -1,7 +1,7 @@
 ﻿; LintaList Include [could be used elsewhere]
 ; Purpose: Get X, Y, Coordinates while keeping Gui ON active monitor
-; Version: 1.0.2
-; Date:    20140423
+; Version: 1.0.3
+; Date:    20140426
 
 ; called as XY:=StayOnMonXY(Width, Height, 0, 1, 1) 
 

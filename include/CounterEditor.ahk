@@ -1,7 +1,7 @@
 ﻿; LintaList [standalone script]
 ; Purpose: Counters variable Editor [see Lintalist doc]
-; Version: 1.0
-; Date:    20101010
+; Version: 1.0.3
+; Date:    20140426
 
 #NoTrayIcon
 
@@ -60,6 +60,8 @@ Return
 Check: 
 Gui, 20:submit, nohide
 SelItem := LV_GetNext()
+If (SelItem =0)
+	Return
 LV_GetText(VarName, SelItem, 1)
 LV_GetText(VarValue, SelItem, 2)
 Gosub, GetNewCounter

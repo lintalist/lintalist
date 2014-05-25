@@ -4,7 +4,7 @@ Name            : Lintalist
 Author          : Lintalist
 Purpose         : Searchable interactive lists to copy & paste text, run scripts, 
                   using easily exchangeable bundles
-Version         : 1.0.2
+Version         : 1.0.3
 Code            : https://github.com/lintalist/
 Website         : http://lintalist.github.io/
 AHKscript Forum : http://ahkscript.org/boards/viewtopic.php?f=6&t=3378
@@ -36,7 +36,7 @@ FileEncoding, UTF-8
 
 ; Title + Version are included in Title and used in #IfWinActive hotkeys and WinActivate
 Title=Lintalist
-Version=1.0.2
+Version=1.0.3
 
 ; ClipCommands are used in ProcessText and allow user input and other variable input into text snippets
 ; ClipCommands=[[Input,[[DateTime,[[Choice,[[Selected,[[Var,[[File,[[Snippet=
@@ -197,13 +197,15 @@ Gui, 1:Font,,
 Gui, 1:Add, Listview, %ShowGrid% count1000 x2 y%YLView% xLV0x100 vSelItem AltSubmit gClicked h%LVHeight% w%LVWidth% , Paste (Enter)|Paste (Shift+Enter)|Key|Short|Index
 
 Gui, 1:Font, s8, Arial
-Gui, 1:Add, edit, x0 y%YPosPreview% -VScroll w%LVWidth% h%PreviewHeight% , preview
+Gui, 1:Add, edit, x0 y%YPosPreview% -VScroll w%LVWidth% h%PreviewHeight%, preview
 Gui, 1:Add, StatusBar,,
 SB1:=Round(.8*Width)
 SB_SetParts(SB1)
 Gosub, GetText
 XY:=StayOnMonXY(Width, Height, Mouse, MouseAlternative, Center) ; was XY:=StayOnMonXY(Width, Height, 0, 1, 0)
 StringSplit, Pos, XY, |
+If (x="") or (y="")
+	x:=100, y:=100
 Gui, Show, w%Width% h%Height% x%Pos1% y%Pos2%, %AppWindow%
 GuiJustShown:=1
 If (JumpSearch=1) ; Send clipboard text to search control
@@ -456,6 +458,13 @@ Else If (Script <> "") and (ScriptPaused = 0) ; we run script by saving it to tm
 	{
 	 FileDelete, %TmpDir%\tmpScript.ahk
 	 StringReplace, Script, Script, LLInit(), %LLInit%, All
+
+		Loop {
+		 If (InStr(Script, "[[Var=") = 0)
+			break
+		 RegExMatch(Script, "iU)\[\[Var=([^[]*)\]\]", ClipQ, 1)
+		 StringReplace, Script, Script, [[Var=%ClipQ1%]], % LocalVar_%ClipQ1%, All ; %
+		}
 	 FileAppend, % Script, %TmpDir%\tmpScript.ahk ; %
 	 GUI, 1:Destroy
      RunWait, %A_AhkPath% "%TmpDir%\tmpScript.ahk"
@@ -1002,6 +1011,7 @@ Else If (A_ThisMenuItem = "&Manage counters")
 		 Gosub, SaveSettingsCounters
 		 StoreCounters:=Counters
 		 StoreLocalCounter_0:=LocalCounter_0
+		 SaveUpdatedBundles()
 		 RunWait, %A_AhkPath% include\CounterEditor.ahk
 		 IniRead, Counters, settings.ini, settings, Counters, 0	
 		 If (Counters <> StoreCounters)

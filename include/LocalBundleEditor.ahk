@@ -1,7 +1,7 @@
 ﻿; LintaList [standalone script]
 ; Purpose: Local variable Editor [see Lintalist doc]
-; Version: 1.0
-; Date:    20101010
+; Version: 1.0.3
+; Date:    20140426
 
 #NoTrayIcon
 
@@ -18,7 +18,7 @@ Gui, 20: Add, Text, x240 y10 , Content
 
 Gui, 20: Add, ListBox, h300 w220 x10  y30 gCheck vVar, %LocalVariables%
 Gui, 20: Add, Edit,    h292 w450 x240 y30 vContent, %content%
-Gui, 20: Add, Button,  x10    w65 h25 g20Scan, Scan
+Gui, 20: Add, Button,  x10  w65  h25 g20Scan, Scan
 Gui, 20: Add, Button,  xp+78 w65 h25 g20New, New
 Gui, 20: Add, Button,  xp+78 w65 h25 g20Del, Del
 Gui, 20: Add, Button,  xp+74 w220 h25 g20Save, Save
@@ -45,6 +45,7 @@ ControlGetFocus, IsListBox, %EditorTitle%
 		Send {Up}
 Return
 #IfWinActive
+
 
 Check: 
 		 Gui, 20:submit, nohide
@@ -76,9 +77,9 @@ IfMsgbox, Yes
 		 tmpLocalVariables .= A_LoopField "|"
 		}
 	 LocalVariables:=tmpLocalVariables
+	 StringReplace, LocalVariables, LocalVariables, ||, |, All
 	 tmpLocalVariables=
-	 GuiControl,20:,Listbox1, |	 
-	 GuiControl,20:,Listbox1, %LocalVariables%|
+	 GuiControl,20:,Listbox1, |%LocalVariables%
 	 Controlfocus,Listbox1,%EditorTitle%
 	 Gosub, Check
 	} 
@@ -86,7 +87,10 @@ Return
 
 20New:
 InputBox, OutputVar, %EditorTitle%, New variable name:, , 400, 150
-If (InStr("|" . LocalVariables . "|" , OutputVar) > 0)
+If (ErrorLevel = 1)
+	Return
+MsgBox % outputvar	
+If (InStr("|" . LocalVariables . "|" , "|" OutputVar "|") > 0)
 	{
 	 MsgBox, 48, Duplicate variable, There is already a local variable with that name, enter a new name.
 	 Goto, 20New
