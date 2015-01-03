@@ -22,3 +22,16 @@ http://www.autohotkey.com/forum/topic56926.html
 
 320mph by Rajat
 http://www.autohotkey.com/forum/topic3010.html
+
+WinClip is a clipboard manipulation class which allow you to do a bit more than the common ahk
+clipboard can intended for AHK_L unicode x32/x64
+Author:        Deo - http://www.apathysoftworks.com/ & http://www.autohotkey.com/board/user/11644-deo/
+Download:      http://www.apathysoftworks.com/ahk/WinClip.zip
+Documentation: http://www.apathysoftworks.com/ahk/index.html
+Forum:         http://www.autohotkey.com/board/topic/74670-class-winclip-direct-clipboard-manipulations/
+(Adds support for HTML, RTF and Images to Lintalist)
+
+Markdown2HTML() + StrStartsWith() functions 
+from GenDocs v3.0-alpha004 - Author: fincs
+Source: https://github.com/fincs/GenDocs
++ modifactions for table and HTML block support (see Markdown2HTML.ahk)

@@ -1,14 +1,14 @@
-﻿/* 
+﻿/*
 
 Name            : Lintalist
 Author          : Lintalist
-Purpose         : Searchable interactive lists to copy & paste text, run scripts, 
+Purpose         : Searchable interactive lists to copy & paste text, run scripts,
                   using easily exchangeable bundles
-Version         : 1.0.3
+Version         : 1.1
 Code            : https://github.com/lintalist/
 Website         : http://lintalist.github.io/
 AHKscript Forum : http://ahkscript.org/boards/viewtopic.php?f=6&t=3378
-License         : Copyright (c) 2009-2014 Lintalist
+License         : Copyright (c) 2009-2015 Lintalist
 
 This program is free software; you can redistribute it and/or modify it under the
 terms of the GNU General Public License as published by the Free Software Foundation;
@@ -36,7 +36,7 @@ FileEncoding, UTF-8
 
 ; Title + Version are included in Title and used in #IfWinActive hotkeys and WinActivate
 Title=Lintalist
-Version=1.0.3
+Version=1.1
 
 ; ClipCommands are used in ProcessText and allow user input and other variable input into text snippets
 ; ClipCommands=[[Input,[[DateTime,[[Choice,[[Selected,[[Var,[[File,[[Snippet=
@@ -55,24 +55,24 @@ Menu, Tray, Icon, icons\lintalist_suspended.ico ; while loading show suspended i
 Menu, Tray, Add, &Help,          	 TrayMenuHandler
 Menu, Tray, Add, Quick Start Guide,  TrayMenuHandler
 Menu, Tray, Add, &Configuration,     TrayMenuHandler
-Menu, Tray, Add, 
+Menu, Tray, Add,
 Menu, Tray, Add, &Edit Local Bundle, TrayMenuHandler
 Menu, Tray, Add, &Manage counters,   TrayMenuHandler
-Menu, Tray, Add, 
+Menu, Tray, Add,
 Menu, Tray, Add, &Load All Bundles,  MenuHandler
 Menu, Tray, Add, &Reload Bundles,    TrayMenuHandler
-Menu, Tray, Add, 
+Menu, Tray, Add,
 Menu, Tray, Add, &Pause Lintalist,   TrayMenuHandler
 Menu, Tray, Add, Pause &Shortcut,    TrayMenuHandler
 Menu, Tray, Add, Pause &Shorthand,   TrayMenuHandler
 Menu, Tray, Add, Pause &Scripts,     TrayMenuHandler
-Menu, Tray, Add, 
+Menu, Tray, Add,
 Menu, Tray, Add, E&xit,              TrayMenuHandler
 Menu, Tray, Check, &Pause Lintalist ; indicate program is still loading
 Menu, Tray, Tip, %AppWindow% - inactive
 ; Tray Menu continue below
 
-; Includes 
+; Includes
 ; [Note: bundle editor + plugins + GuiSettings included at the end of the script]
 
 #Include %A_ScriptDir%\include\ObjectBundles.ahk
@@ -105,7 +105,7 @@ Gosub, GuiStartupSettings
 
 PastText1=1
 LoadAllBundles()
-LoadPersonalBundle() 
+LoadPersonalBundle()
 Menu, Tray, Icon, icons\lintalist.ico ; loading is done so show active Icon
 Menu, tray, UnCheck, &Pause Lintalist
 Menu, tray, Tip, %AppWindow% - active`nPress %StartSearchHotkey% to start search...
@@ -130,12 +130,12 @@ ViaShorthand=0
 SendKeysToFix=Enter,Space,Esc,Tab,Home,End,PgUp,PgDn,Up,Down,Left,Right,F1,F2,F2,F3,F4,F5,F6,F7,F8,F9,F10,F11,F12,AppsKey
 ;TerminatingCharacters={Alt}{LWin}{RWin}{Shift}{enter}{space}{esc}{tab}{Home}{End}{PgUp}{PgDn}{Up}{Down}{Left}{Right}{F1}{F2}{F2}{F3}{F4}{F5}{F6}{F7}{F8}{F9}{F10}{F11}{F12}.,¿?¡!'"()[]{}{}}{{}~$&*-+=\/><^|@#:`%;  ; "%
 TerminatingCharacters={Alt}{LWin}{RWin}{enter}{space}{esc}{tab}{Home}{End}{PgUp}{PgDn}{Up}{Down}{Left}{Right}{F1}{F2}{F2}{F3}{F4}{F5}{F6}{F7}{F8}{F9}{F10}{F11}{F12}  ; "%
-Loop 
-{ 
-   ;Get one key at a time 
-   Input, TypedChar, L1 V I, {BS}%TerminatingCharacters%
-   CheckTyped(TypedChar,ErrorLevel)
-}
+Loop
+	{
+	 ;Get one key at a time
+	 Input, TypedChar, L1 V I, {BS}%TerminatingCharacters%
+	 CheckTyped(TypedChar,ErrorLevel)
+	}
 
 ; fix 201102 for switching windows with mouse, clear typed stack
 ~*Lbutton::
@@ -155,17 +155,17 @@ Return
 
 GuiStart: ; build GUI
 If WinActive("Select bundle") or WinActive("Append snippet to bundle") ; TODO replace by HOTKEY On,Off command
-	 	Return
+		Return
 If (ActiveWindowTitle = "Lintalist bundle editor")                     ; TODO replace by HOTKEY On,Off command
-	 	Return
+		Return
 LastText = fadsfSDFDFasdFdfsadfsadFDSFDf
 If !WinActive(AppWindow)
-	 GetActiveWindowStats()
+	GetActiveWindowStats()
 Else
-	 Gosub, ToggleView
+	Gosub, ToggleView
 
 Gui, 1:Destroy ; just to be sure
-Gui, 1:+Border ; 
+Gui, 1:+Border ;
 Gui, 1:Menu, MenuBar
 Gui, 1:Add, Picture, x4 y4 w16 h16, icons\search.png
 Gui, 1:Add, Edit, 0x8000 x25 y2 w%SearchBoxWidth% h20 gGetText vCurrText, %CurrText%
@@ -191,7 +191,7 @@ If (Lock = 1) or (LoadAll=1) ; lock state also stored in ini
 	GuiControl, , Lock, 1
 If (Case = 1)                ; case state also stored in ini
 	GuiControl, , Case, 1
-	
+
 Gui, 1:Font,,
 
 Gui, 1:Add, Listview, %ShowGrid% count1000 x2 y%YLView% xLV0x100 vSelItem AltSubmit gClicked h%LVHeight% w%LVWidth% , Paste (Enter)|Paste (Shift+Enter)|Key|Short|Index
@@ -209,13 +209,13 @@ If (x="") or (y="")
 Gui, Show, w%Width% h%Height% x%Pos1% y%Pos2%, %AppWindow%
 GuiJustShown:=1
 If (JumpSearch=1) ; Send clipboard text to search control
-   {
-    JumpSearch=0
-    GuiControl, 1:, Edit1, %clipboard%
-    ControlSend, Edit1, {End}, %AppWindow%
-    Sleep 100     ; added as a fix to avoid duplicate search results, not sure if it helps
-    Gosub, GetText
-   }
+	{
+	 JumpSearch=0
+	 GuiControl, 1:, Edit1, %clipboard%
+	 ControlSend, Edit1, {End}, %AppWindow%
+	 Sleep 100     ; added as a fix to avoid duplicate search results, not sure if it helps
+	 Gosub, GetText
+	}
 ShowPreview(PreviewSection)
 ControlSend, Edit1, {End}, %AppWindow%  ; 20110623
 Gosub, GetText                          ; 20110623
@@ -239,48 +239,38 @@ If (CurrLen = 0) or (CurrLen =< MinLen)
 	 Gosub, SetStatusBar
 	 Return
 	}
-Gui, 1:Default   
+Gui, 1:Default
 LV_Delete()
 GuiControl,1: , Edit2, %A_Space% ; fix preview if no more snippets e.g. ghosting of last snippet
 
-
-If (ShowIcons = 1)
-	{
-	 IL_Destroy(ImageListID1)
-	 ; Create an ImageList so that the ListView can display some icons:
-	 ImageListID1 := IL_Create(5, 10)
-	 ; Attach the ImageLists to the ListView so that it can later display the icons:
-	 LV_SetImageList(ImageListID1)
-	}
-
-IL_Add(ImageListID1, A_ScriptDir . "\Icons\" . Icon1) ; assign texticon
-IL_Add(ImageListID1, A_ScriptDir . "\Icons\" . Icon2) ; assign scripticon
+; setup imagelist and define icons
+#Include %A_ScriptDir%\include\ImageList.ahk
 
 LastText := CurrText
 GuiControlGet, Case, , Button2
 ShowPreviewToggle=1
 GuiControl, 1:-Redraw, MyListView
 Loop, parse, Load, CSV
-	{ 
+	{
 	 If (A_TickCount - StartTime > 250)
 		ControlGetText, CurrText, Edit1, %AppWindow%
 	 If (CurrText <> LastText)
 		 Goto GetText
 	 Bundle:=A_LoopField
- 	 
+
 	 Max:=Snippet[Bundle].MaxIndex()
 	 Loop,% Max ; %
 		{
-		  match=0
-		  SearchThis1:=Snippet[Bundle,A_Index,1] ; part '1' (enter)
-		  SearchThis2:=Snippet[Bundle,A_Index,2] ; part '2' (shift-enter)
-		  SearchThis3:=Snippet[Bundle,A_Index,4] ; shorthand
-		  If (SearchMethod = 1) ; normal
+		 match=0
+		 SearchThis1:=Snippet[Bundle,A_Index,1] ; part '1' (enter)
+		 SearchThis2:=Snippet[Bundle,A_Index,2] ; part '2' (shift-enter)
+		 SearchThis3:=Snippet[Bundle,A_Index,4] ; shorthand
+		 If (SearchMethod = 1) ; normal
 			{
 			 If (InStr(SearchThis1,CurrText,Case) > 0) or (InStr(SearchThis2,CurrText,Case) > 0) or (InStr(SearchThis3,CurrText,Case) > 0)
-				{	
+				{
 				 Match++
-				} 
+				}
 			}
 
 		 If (SearchMethod = 2) ; fuzzy
@@ -298,7 +288,7 @@ Loop, parse, Load, CSV
 				 Match++
 				}
 			}
-			
+
 		 If (SearchMethod = 3) ; regex
 			{
 			 If (Case = 0)     ; case insensitive, add auto i) option
@@ -308,7 +298,7 @@ Loop, parse, Load, CSV
 			 If (RegExMatch(SearchThis1, SearchRe) > 0) or (RegExMatch(SearchThis2, SearchRe) > 0) or (RegExMatch(SearchThis3, SearchRe) > 0)
 				{
 				 Match++
-				}	
+				}
 			}
 
 		 If (SearchMethod = 4) ; magic (=regex)
@@ -319,20 +309,17 @@ Loop, parse, Load, CSV
 			 If (RegExMatch(SearchThis1, SearchRe) > 0) or (RegExMatch(SearchThis2, SearchRe) > 0) or (RegExMatch(SearchThis3, SearchRe) > 0)
 				{
 				 Match++
-				}	
+				}
 			}
 
-	     If (match > 0) ; we have a match
-	   		{
+		If (match > 0) ; we have a match
+			{
 			 IconVal:=""
 			 If (ShowIcons = 1)
- 				{
-				 If (Snippet[Bundle,A_Index,5] = "")
-					IconVal:="Icon1"
-				 Else	
-					IconVal:="Icon2"
- 				}			
-			 LV_Add(IconVal,Snippet[Bundle,A_Index,"1v"],Snippet[Bundle,A_Index,"2v"],Snippet[Bundle,A_Index,3],Snippet[Bundle,A_Index,4],Bundle . "_" . A_Index) ; populate listview			
+				{
+				 IconVal:=SetIcon(Snippet[Bundle,A_Index],Snippet[Bundle,A_Index,5])
+				}
+			 LV_Add(IconVal,Snippet[Bundle,A_Index,"1v"],Snippet[Bundle,A_Index,"2v"],Snippet[Bundle,A_Index,3],Snippet[Bundle,A_Index,4],Bundle . "_" . A_Index) ; populate listview
 
 			 If (ShowPreviewToggle = 1) ; do only once to improve speed
 				{
@@ -343,55 +330,55 @@ Loop, parse, Load, CSV
 			 SB_SetText(CurrHits "/" . ListTotal ,2) ; update status bar with hits / total
 			 If (CurrHits > MaxRes - 1)              ; stop search after Max results (takes to long anyway)
 			 	 Break
-		    } 
+		    }
 		}
-	 If (match = 0)	
+	 If (match = 0)
 		SB_SetText(LV_GetCount() "/" . ListTotal ,2) ; otherwise it won't show zero results
-	GuiControl, 1:+Redraw, MyListView	 
-	} 
+	GuiControl, 1:+Redraw, MyListView
+	}
 Return
 
 ; (Double)click in listview, action defined in INI
-Clicked: 
+Clicked:
    IfNotEqual A_GuiControlEvent, DoubleClick
 	{
 	 ShowPreview(PreviewSection)
 	 Return
 	}
    Else
-    {
+	{
 	 If (DoubleClickSends = 1)
 		 Gosub, paste
 	 else if (DoubleClickSends = 2)
 		{
 		 gosub, shiftenter
-		}	
+		}
 	 else if (DoubleClickSends = 3)
 		{
 		 gosub, ctrlenter
-		}	
+		}
 	 else if (DoubleClickSends = 4)
 		{
 		 gosub, shiftctrlenter
-		}	
+		}
 	 else if (DoubleClickSends = 5)
 		{
 		 gosub,editf4
-		}	
+		}
 	 else if (DoubleClickSends = 6)
 		{
 		 gosub,editf7
-		}	
-	}	
+		}
+	}
 Return
 
-; We made a selection and now want to paste and process the selected text or run script 
-Paste: 
+; We made a selection and now want to paste and process the selected text or run script
+Paste:
 Gui, 1:Submit, NoHide
 ControlFocus, SysListView321, %AppWindow%
 SelItem := LV_GetNext()
 If (SelItem = 0)
-   SelItem = 1
+	SelItem = 1
 LV_GetText(Paste, SelItem, 5) ; get bundle_index from 5th column which is always hidden
 Gui, 1:Destroy
 CurrText= ; 20110623
@@ -414,7 +401,7 @@ If (Text1 = "") and (Text2 = "") and (Script = "")
 	Return ; nothing to paste or run
 If (Script = "") or (ScriptPaused = 1) ; script is empty so we need to paste Text1 or Text2
 	{
- 	 If (InStr(Text1, "[[Clipboard]]") > 0) or (InStr(Text2, "[[Clipboard]]") > 0) ; if we do it here it saves us some time getting back the original clipsaved variable 
+	 If (InStr(Text1, "[[Clipboard]]") > 0) or (InStr(Text2, "[[Clipboard]]") > 0) ; if we do it here it saves us some time getting back the original clipsaved variable
 		{ ; insert clipboard
 		 StringReplace, Text1, Text1, [[Clipboard]], %Clipboard%, All
 		 StringReplace, Text2, Text2, [[Clipboard]], %Clipboard%, All
@@ -424,26 +411,70 @@ If (Script = "") or (ScriptPaused = 1) ; script is empty so we need to paste Tex
 	 Else If (PastText1 = 0) ; if shift-enter use Text2 BUT if it is empty revert to Text1
 		{
 		 Clip:=Text2
-		 PastText1 = 1       ; restore default paste 
-		} 
+		 PastText1 = 1       ; restore default paste
+		}
 	 If (Text1 = "") and (Text2 <> "")   ; if Text1 is empty check if Text2 has content so we can paste that
-	 Clip:=Text2	
- 	 ClipSet("s",1,SendMethod,Clipboard) ; store in clip1
+		Clip:=Text2
+	 ClipSet("s",1,SendMethod,Clipboard) ; store in clip1
 	 ClearClipboard()
 	 Gosub, ProcessText
- 	 Clipboard:=ClipSet("s",2,SendMethod,Clip) ; set clip2
-	 CheckCursorPos()
+	 ; process formatted text: HTML, Markdown, RTF and Image
+	 If RegExMatch(Clip,"iU)\[\[(html|md|rtf=.*|image=.*)\]\]")
+		{
+		 WinClip.Clear()
+		 formatted:=1
+		 if InStr(Clip,"[[md]]")
+			{
+			 StringReplace,Clip,Clip,[[md]],,All
+			 Clip:=Markdown2HTML(Clip)
+			 Clip:=FixURI(Clip,"html",A_ScriptDir)
+			 WinClip.SetHTML(clip)
+			 Clip:=RegExReplace(clip,"iU)</*[^>]*>") ; strip HTML tags so we can paste normal text if need be
+			 WinClip.SetText(Clip)
+			}
+		 else if InStr(Clip,"[[html]]")
+			{
+			 StringReplace,Clip,Clip,[[html]],,all
+			 Clip:=FixURI(Clip,"html",A_ScriptDir)
+			 Gosub, ProcessText
+			 CheckCursorPos()
+			 WinClip.SetHTML(Clip)
+			 Clip:=RegExReplace(clip,"iU)</*[^>]*>") ; strip HTML tags so we can paste normal text if need be
+			 WinClip.SetText(Clip)
+			}
+		 else if InStr(Clip,"[[rtf=")
+			{
+			 RegExMatch(Clip, "iU)\[\[rtf=([^[]*)\]\]", ClipQ, 1)
+			 ClipQ1:=FixURI(ClipQ1,"rtf",A_ScriptDir)
+			 FileRead,Clip,%ClipQ1%
+			 Gosub, ProcessText
+			 WinClip.SetRTF(Clip)
+			}
+		 else if InStr(Clip,"[[image=")
+			{
+			 RegExMatch(Clip, "iU)\[\[Image=([^[]*)\]\]", ClipQ, 1)
+			 ClipQ1:=FixURI(ClipQ1,"image",A_ScriptDir)
+			 WinClip.SetBitmap(ClipQ1)
+			}
+		 Clip:="", ClipQ1:=""
+		}
+	 Else
+		Clipboard:=ClipSet("s",2,SendMethod,Clip) ; set clip2
+	 If (formatted = 0)
+	 	CheckCursorPos()
+	 formatted:=0	
 	 GUI, 1:Destroy
 	 SendKey(SendMethod, "^v")
-	 If ((BackLeft > 0) or (BackUp > 0))       ; place cursor at postion defined in snippet text via ^|
-	 	{
+	 WinClip.Clear()
+	 If ((BackLeft > 0) or (BackUp > 0))       ; place caret at postion defined in snippet text via ^|
+		{
 		 If (BackUp > 0)
-		  	{
+			{
 			 SendInput, {Up %BackUp%}{End}
 			}
 		 SendInput, {Left %BackLeft%}
-	 	} 
-	 Backleft=0	
+		}
+	 Backleft=0
 	 If (ViaText = 1) ; we came from shorttext
 		{
 		 ViaText=0
@@ -452,7 +483,7 @@ If (Script = "") or (ScriptPaused = 1) ; script is empty so we need to paste Tex
 	 Text1=
 	 Text2=
 	 Clip=
- 	 Clipboard:=ClipSet("g",1,SendMethod)
+	 Clipboard:=ClipSet("g",1,SendMethod)
 	}
 Else If (Script <> "") and (ScriptPaused = 0) ; we run script by saving it to tmp file and running it
 	{
@@ -467,7 +498,7 @@ Else If (Script <> "") and (ScriptPaused = 0) ; we run script by saving it to tm
 		}
 	 FileAppend, % Script, %TmpDir%\tmpScript.ahk ; %
 	 GUI, 1:Destroy
-     RunWait, %A_AhkPath% "%TmpDir%\tmpScript.ahk"
+	 RunWait, %A_AhkPath% "%TmpDir%\tmpScript.ahk"
 	 FileDelete, %TmpDir%\tmpScript.ahk
 	 Script=
 	}
@@ -477,24 +508,24 @@ CheckHitList(CheckHitList, CheckFor, Bundle, RE = 0) ; RE no longer needed?
 	{
 	 Global load,snippet
 	 HitKeyHistory=
-     CheckHitList:=CheckHitList "HitList"
+	 CheckHitList:=CheckHitList "HitList"
 	 Loop, parse, Bundle, CSV
-       	{
+		{
 		 CheckBundle:=A_LoopField
 		 If RegExMatch(%CheckHitList%_%CheckBundle%, "imU)" Chr(5) . "\Q" . CheckFor . "\E" . Chr(5)) ; we have a hit so we to find the snippet ID
 			{
-		     Loop, % Snippet[CheckBundle].MaxIndex() ; %
+			 Loop, % Snippet[CheckBundle].MaxIndex() ; %
 				{
 				 If (CheckHitList = "HotKeyHitList")
-				    {
+					{
 					 If (Snippet[CheckBundle,A_Index,3] ~= "\Q" . CheckFor . "\E") ; use literal search
 						HitKeyHistory .= CheckBundle . "_" . A_Index ","
-					}	
-					 Else If (CheckHitList = "ShortHandHitList") 
+					}
+					 Else If (CheckHitList = "ShortHandHitList")
 					{
 					 If (Snippet[CheckBundle,A_Index,4] = CheckFor)
 						HitKeyHistory .= CheckBundle . "_" . A_Index ","
-					}		
+					}
 				}
 			}
 		 Index1=
@@ -511,7 +542,7 @@ UpdateLVColWidth()
 
 	 c1w:=Round((Width - 40 - 100) / 2)
 	 c2w:=c1w
-	 
+
 	 If (Col3 = 0)     ; shortcut column
 		{
 		 LV_ModifyCol(3,0)
@@ -522,29 +553,29 @@ UpdateLVColWidth()
 		LV_ModifyCol(3,50)
 
 	 If (Col4 = 0)     ; abbreviation/shorthand column
-	    { 
+		{
 		 LV_ModifyCol(4,0)
 	 	 c1w += 20
 		 c2w += 20
-		} 
+		}
 	 Else
 		LV_ModifyCol(4,60)
 
 	 If (Col2 = 0)           ; paste2 column is empty so no need to show
-	    {
-	 	 c1w += c2w
+		{
+		 c1w += c2w
 		 LV_ModifyCol(1,c1w) ; col1 is paste1 column
 		 LV_ModifyCol(2,0)   ; no second part so don't show
-		} 
+		}
 	 Else
 		{
 		 LV_ModifyCol(1,c1w) ; col1 is paste1 column
 		 LV_ModifyCol(2,c2w) ; paste2 column has content so show it
 		}
-}
+	}
 
 ; Shows the lines in the preview window (edit2)
-ShowPreview(Section="1") 
+ShowPreview(Section="1")
 	{
 	 ; 1 = Text of part one of snippet
 	 ; 2 = Text of part two of snippet (fall back on Part 1 of Part 2 is empty)
@@ -553,17 +584,17 @@ ShowPreview(Section="1")
 	 Gui, 1:Submit, NoHide
 	 SelItem := LV_GetNext()
 	 If (SelItem = 0)
-	    SelItem = 1
+		SelItem = 1
 	 LV_GetText(Paste, SelItem, 5)          ; get "hidden" bundle _ index value
 	 StringSplit, Paste, Paste, _
-     If (Section = 3)
+	 If (Section = 3)
 		{
 		 If (Snippet[Paste1,Paste2,5] = "") ;  if script is empty default to 2
 			Section = 2
 		 Else
 			Section = 5                     ; 5 = actual script (array element)
 		}
-     If (Section = 2)
+	 If (Section = 2)
 		{
 		 If (Snippet[Paste1,Paste2,2] = "")
 			Section = 1
@@ -584,12 +615,12 @@ Return
 Lock:
 Lock:=!Lock
 ControlFocus, Edit1, %AppWindow%
-If !Lock 
+If !Lock
 	{
 	 LoadBundle()
 	 UpdateLVColWidth()
 	}
-Gosub, SetStatusBar	
+Gosub, SetStatusBar
 lasttext = fadsfSDFDFasdFdfsadfsadFDSFDf
 Gosub, GetText
 ShowPreview(PreviewSection)
@@ -605,13 +636,13 @@ If (SMFuzz = 1)
 If (SMRegx = 1)
 	SearchMethod=3
 If (SMMagc = 1)
-	SearchMethod=4	
+	SearchMethod=4
 ControlFocus, Edit1, %AppWindow%
 lasttext = fadsfSDFDFasdFdfsadfsadFDSFDf
 Gosub, GetText
 Return
 
-; Not the best of methods, but it works best for some reason 
+; Not the best of methods, but it works best for some reason
 ; Hotkeys active in Gui, 10:
 #IfWinActive, Select bundle
 Esc::
@@ -653,7 +684,7 @@ Gui, 1:Submit, NoHide
 ControlFocus, SysListView321, %AppWindow%
 SelItem := LV_GetNext()
 If (SelItem = 0)
-   SelItem = 1
+	SelItem = 1
 LV_GetText(Paste, SelItem, 5) ; get bundle_index from 5th column
 Gui, 71:+Owner1
 Gui, 1:+Disabled
@@ -667,7 +698,7 @@ Gui, 1:Submit, NoHide
 ControlFocus, SysListView321, %AppWindow%
 SelItem := LV_GetNext()
 If (SelItem = 0)
-   SelItem = 1
+	SelItem = 1
 LV_GetText(Paste, SelItem, 5) ; get bundle_index from 5th column
 Gui, 71:+Owner1
 Gui, 1:+Disabled
@@ -681,7 +712,7 @@ Gui, 1:Submit, NoHide
 ControlFocus, SysListView321, %AppWindow%
 SelItem := LV_GetNext()
 If (SelItem = 0)
-   SelItem = 1
+	SelItem = 1
 LV_GetText(Paste, SelItem, 5) ; get bundle_index from 5th column
 Gui, 71:+Owner1
 Gui, 1:+Disabled
@@ -703,14 +734,14 @@ Gui, 1:Submit, NoHide
 ControlFocus, SysListView321, %AppWindow%
 SelItem := LV_GetNext()
 If (SelItem = 0)
-   SelItem = 1
+	SelItem = 1
 LV_GetText(Paste, SelItem, 5) ; get bundle_index from 5th column
 StringSplit, paste, paste, _
 f1:=Filename_%paste1%
 Gui, 99:+Owner1
 Gui, 1:+Disabled
 Gui, 99:+OwnDialogs
-Gui, 99:+Owner	
+Gui, 99:+Owner
 Gui, 99: Add, Text, x10 y10 w630 h250, % "Bundle:`t`t" f1 "`nPart 1:`t`t" Snippet[paste1,paste2,"1v"] "`nPart 2:`t`t" Snippet[paste1,paste2,"2v"] "`nHotkey:`t`t" Snippet[paste1,paste2,3] "`nShorthand:`t" Snippet[paste1,paste2,4] "`nScript:`t`t" Snippet[paste1,paste2,5] ; %
 X:=(A_ScreenWidth - 630)/2
 Gui, 99: Show, w650 h300 x%x% y10, Delete this entry?
@@ -728,8 +759,8 @@ IfMsgBox, Yes
 	 Gosub, GetText
 	 ShowPreview(PreviewSection)
 	 Snippet[Paste1,"Save"]:="1"
-	} 
-Gui, 99: Destroy	
+	}
+Gui, 99: Destroy
 Gui, 1:-Disabled
 Gui, 1:Default
 Sleep 10
@@ -752,14 +783,14 @@ Return
 ^Enter:: ; paste text from part1 EVEN if snippet has script e.g. don't run script
 ctrlenter:
 If (ScriptPaused = 0)
-   {
-	StoreScriptPaused = 0
-	ScriptPaused = 1
-   }
+	{
+	 StoreScriptPaused = 0
+	 ScriptPaused = 1
+	}
 Gosub, Paste
 If (ScriptPaused = 1) and (StoreScriptPaused = 0)
 	ScriptPaused = 0
-StoreScriptPaused=	
+StoreScriptPaused=
 Return
 
 +Enter:: ; paste text from part2, but if there is a script, run the script
@@ -771,11 +802,11 @@ Return
 ^+Enter:: ; paste text from part2 EVEN if snippet has script e.g. don't run script
 shiftctrlenter:
 If (ScriptPaused = 0)
-   {
-	StoreScriptPaused = 0
-	ScriptPaused = 1
-   }
-PastText1=0   
+	{
+	 StoreScriptPaused = 0
+	 ScriptPaused = 1
+	}
+PastText1=0
 Gosub, Paste
 If (ScriptPaused = 1) and (StoreScriptPaused = 0)
 	ScriptPaused = 0
@@ -784,17 +815,17 @@ Return
 Up::
 PreviousPos:=LV_GetNext()
 If (PreviousPos = 0) ; exeption, focus is not on listview this will allow you to jump to last item via UP key
-   {
-    ControlSend, SysListview321, {End}, %AppWindow%
-    Return
-   }
+	{
+	 ControlSend, SysListview321, {End}, %AppWindow%
+	 Return
+	}
 ControlSend, SysListview321, {Up}, %AppWindow%
 ItemsInList:=LV_GetCount()
 ChoicePos:=PreviousPos-1
 If (ChoicePos <= 1)
-   ChoicePos = 1
-If (ChoicePos = PreviousPos) 
-    ControlSend, SysListview321, {End}, %AppWindow%
+	ChoicePos = 1
+If (ChoicePos = PreviousPos)
+	ControlSend, SysListview321, {End}, %AppWindow%
 ShowPreview(PreviewSection)
 ControlFocus, Edit1, %AppWindow%
 Return
@@ -861,7 +892,7 @@ ClearClipboard()
 Clipboard=
 SendKey(SendMethod, "^c") ; this is where it goes wrong for some editors - see DOC, not a program of lintalist or ahk but certain editors behave differently. (when nothing is selected they will copy an entire line)
 If (Clipboard = "")
-	SendKey(SendMethod, "^+{Left}^x") 
+	SendKey(SendMethod, "^+{Left}^x")
 ViaText=1
 Typed:=Clipboard ; ??
 ; You pressed hotkey defined in the active bundle
@@ -879,30 +910,30 @@ Else If ((ViaText = 1) or (ViaShorthand = 1)) ; search in defined abbreviations
 	 Back:=StrLen(Typed) + 1
 	 If (HitKeyHistory = "")
 		HitKeyHistory:=CheckHitList("ShortHand", Typed, Load)
-	}	
+	}
 
-StringTrimRight, HitKeyHistory, HitKeyHistory, 1 
+StringTrimRight, HitKeyHistory, HitKeyHistory, 1
 StringRight, CheckHitKey, HitKeyHistory, 1
 
 If ((CheckHitKey = "_") or (CheckHitKey = "")) ; No hit, so simply send hotkey otherwise original hotkey in program stops working e.g. ^b bold in Office
 	{
-	 If (ViaText <> 1) 
+	 If (ViaText <> 1)
 		{
 		 StringLower, ThisHotkey, ThisHotkey
 		 Loop, parse, SendKeysToFix, CSV
 		 	StringReplace, ThisHotkey, ThisHotkey, %A_LoopField%, {%A_LoopField%}
-		 Send %ThisHotkey% 
+		 Send %ThisHotkey%
 		 Return
-		} 
- 	}
+		}
+	}
 
 If ((HitKeyHistory = "") and (ViaText = 1)) ; No hit so start searching
 	{
- 	 JumpSearch=1
+	 JumpSearch=1
 	 Gosub, GUIStart
 	 Return
 	}
-	
+
 If InStr(HitKeyHistory, ",") ; CSV indicates multiple hits so create gui for selecting which one
 	{
 	 ClipQ1=
@@ -911,31 +942,31 @@ If InStr(HitKeyHistory, ",") ; CSV indicates multiple hits so create gui for sel
 		 HkHm%A_Index%:=A_LoopField
 		 StringSplit, MenuText, A_LoopField, _
 		 ClipQ1 .= MenuName_%MenuText1% "|"
-		} 
+		}
 	 MultipleHotkey=1
 	 Gui, 10:Destroy
 	 Gui, 10:+Owner +AlwaysOnTop
-	 Gui, 10:Add, ListBox, w400 h100 x5 y5 vItem gChoiceMouseOK AltSubmit, 
+	 Gui, 10:Add, ListBox, w400 h100 x5 y5 vItem gChoiceMouseOK AltSubmit,
 	 Gui, 10:Add, button, default gChoiceOK hidden, OK
 	 GuiControl, 10: , ListBox1, |
 	 GuiControl, 10: , ListBox1, %ClipQ1%
 	 Gui, 10:Show, w410 h110, Select bundle
 	 ControlSend, ListBox1, {Down}, Select bundle
-	 Return	
+	 Return
 	}
 Else ; only one hit e.g. unique shortcut
 	{
 	 Paste:=HitKeyHistory
 	 PastText1=1
-  	 If (ViaShorthand = 1) and (Paste <> "")
-  	  { 
-	   Send, {Blind}{BS %back%}
-      }		 
+	 If (ViaShorthand = 1) and (Paste <> "")
+		{
+		 Send, {Blind}{BS %back%}
+		}
 	 Gosub, ViaShortCut
 	 Return
 	}
-ViaText=0	
-ViaShorthand=0	
+ViaText=0
+ViaShorthand=0
 Return
 
 ChoiceMouseOK: ; if selection by mouse
@@ -951,10 +982,10 @@ If (MultipleHotkey=1) ; via hotkey
 	 Paste:=HkHm%Item%
 	 PastText1=1
 	 If (ViaText=1) AND (ViaShorthand=1)
-	 	{
-	  	 Back:=StrLen(Clipboard) + 1
-	  	 Send {BS %back%}
-	  	} 
+		{
+		 Back:=StrLen(Clipboard) + 1
+		 Send {BS %back%}
+		}
 	 ViaText = 0 ;???
 	 Gosub, ViaShortCut
 	}
@@ -972,7 +1003,7 @@ Return
 10GuiEscape:
 MadeChoice = 1
 InEditMode = 0
-EditMode = 
+EditMode =
 Gui, 10:Destroy
 Gui, 1:-Disabled
 Gui, 71:Destroy
@@ -986,8 +1017,8 @@ XY:=X "|" Y
 Gui, 1:Destroy
 CurrText=
 LastText=ladjflsajfasjflsdjlleiei
-ViaText=0	
-ViaShorthand=0	
+ViaText=0
+ViaShorthand=0
 Return
 
 ; for traymenu
@@ -999,13 +1030,13 @@ Else If (A_ThisMenuItem = "Quick Start Guide")
 Else If (A_ThisMenuItem = "&Edit Local Bundle")
 		{
 		 RunWait, %A_AhkPath% include\localbundleeditor.ahk
-		 MsgBox, 36, Restart?, In order for any changes to take effect you must reload.`nOK to restart? ; 4+32 = 36 
+		 MsgBox, 36, Restart?, In order for any changes to take effect you must reload.`nOK to restart? ; 4+32 = 36
 		 IfMsgBox, Yes
 			{
 			 Gui, 1:Destroy
 			 Reload
-			}	
-		 } 
+			}
+		}
 Else If (A_ThisMenuItem = "&Manage counters")
 		{
 		 Gosub, SaveSettingsCounters
@@ -1013,18 +1044,18 @@ Else If (A_ThisMenuItem = "&Manage counters")
 		 StoreLocalCounter_0:=LocalCounter_0
 		 SaveUpdatedBundles()
 		 RunWait, %A_AhkPath% include\CounterEditor.ahk
-		 IniRead, Counters, settings.ini, settings, Counters, 0	
+		 IniRead, Counters, settings.ini, settings, Counters, 0
 		 If (Counters <> StoreCounters)
-		 	{
-			 MsgBox, 36, Restart?, In order for any changes to take effect you must reload.`nOK to restart? ; 4+32 = 36 
+			{
+			 MsgBox, 36, Restart?, In order for any changes to take effect you must reload.`nOK to restart? ; 4+32 = 36
 			 IfMsgBox, Yes
 			  {
 				Gui, 1:Destroy
 				ReadCountersIni()
 				Reload
-			  }	
-			} 
-		 } 
+			  }
+			}
+		}
 Else If (A_ThisMenuItem = "E&xit")
 	ExitApp
 Else If (A_ThisMenuItem = "&Reload Bundles")
@@ -1032,15 +1063,15 @@ Else If (A_ThisMenuItem = "&Reload Bundles")
 Else If (A_ThisMenuItem = "&Pause Lintalist")
 	Gosub, PauseProgram
 Else If (A_ThisMenuItem = "&Configuration")
-    {
-     IniSettingsEditor("LintaList","settings.ini")
-	 MsgBox, 36, Restart?, In order for any changes to take effect you must reload.`nOK to restart? ; 4+32 = 36 
+	{
+	 IniSettingsEditor("LintaList","settings.ini")
+	 MsgBox, 36, Restart?, In order for any changes to take effect you must reload.`nOK to restart? ; 4+32 = 36
 	 IfMsgBox, Yes
-	  {
-		Gui, 1:Destroy
-		Reload
-	   }	
-	}	
+		{
+		 Gui, 1:Destroy
+		 Reload
+		}
+	}
 Else If (A_ThisMenuItem = "Pause &Shorthand")
 	Gosub, PauseShorthand
 Else If (A_ThisMenuItem = "Pause &Shortcut")
@@ -1049,12 +1080,12 @@ Else If (A_ThisMenuItem = "Pause &Shortcut")
 	Menu, tray, ToggleCheck, Pause &Shortcut
 	Gosub, PauseShortcut
 	}
-Else If (A_ThisMenuItem = "Pause &Scripts")	
+Else If (A_ThisMenuItem = "Pause &Scripts")
 	{
 	 ScriptPaused:=!ScriptPaused
 	 Menu, tray, ToggleCheck, Pause &Scripts
 	}
-	
+
 Return
 ; /for traymenu
 
@@ -1082,58 +1113,58 @@ MenuHandler:
 If (A_ThisMenuItem = "&Load All Bundles")
 	{
 	 If (LoadAll = 1)
-	 	{
-	 	 LoadAll=0
-	 	 Menu, tray, UnCheck, &Load All Bundles
+		{
+		 LoadAll=0
+		 Menu, tray, UnCheck, &Load All Bundles
 		 Try
 			{
-	  	 	 Menu, file, UnCheck, &Load All Bundles
+			 Menu, file, UnCheck, &Load All Bundles
 			}
 		 Catch
 			{
 			 ;
 			}
- 	 	}
+		}
 	 Else If (LoadAll = 0)
-	 	{
-	 	 LoadAll=1
-	 	 Menu, tray, Check, &Load All Bundles
+		{
+		 LoadAll=1
+		 Menu, tray, Check, &Load All Bundles
 		 Try
 			{
-	  	 	 Menu, file, Check, &Load All Bundles
+		 	 Menu, file, Check, &Load All Bundles
 			}
 		 Catch
 			{
 			 ;
 			}
-	 	}
- 	 Lock = 0
- 	 GuiControl, 1: ,Lock, 0
-       	 LoadBundle()
- 	 UpdateLVColWidth()
+		}
+	 Lock = 0
+	 GuiControl, 1: ,Lock, 0
+		LoadBundle()
+	 UpdateLVColWidth()
 	 Gosub, SetStatusBar
 	 ShowPreview(PreviewSection)
 	 Loop, parse, MenuName_HitList, |
 		{
- 		 StringSplit, MenuText, A_LoopField, % Chr(5) ; %
- 		 Menu, file, UnCheck, &%MenuText1%
- 		}
+		 StringSplit, MenuText, A_LoopField, % Chr(5) ; %
+		 Menu, file, UnCheck, &%MenuText1%
+		}
 	 Return
 	}
-Else 
+Else
 	{
 	 LoadTmp=
 	 Loop, parse, MenuName_HitList, |
 		{
 		 StringSplit, MenuText, A_LoopField, % Chr(5) ; %
 		 If ("&" . MenuText1 = A_ThisMenuItem)
-			{ 
+			{
 			 Load:=MenuText2
 			 Lock = 1
 			 GuiControl, 1:, Lock, 1
 			 LoadBundle()
 			 UpdateLVColWidth()
-	         	 Gosub, SetStatusBar
+				Gosub, SetStatusBar
 			 ShowPreview(PreviewSection)
 			 LoadAll=0
 			 Menu, tray, UnCheck, &Load All Bundles
@@ -1145,13 +1176,13 @@ Else
 				{
 				 ;
 				}
-	 		 Loop, parse, MenuName_HitList, |
+			 Loop, parse, MenuName_HitList, |
 				{
-		 		 StringSplit, MenuText, A_LoopField, % Chr(5) ; %
-		 		 Menu, file, UnCheck, &%MenuText1%
-		 		}
-		 	 Menu, file, Check, %A_ThisMenuItem%
-		 	 Break
+				 StringSplit, MenuText, A_LoopField, % Chr(5) ; %
+				 Menu, file, UnCheck, &%MenuText1%
+				}
+			 Menu, file, Check, %A_ThisMenuItem%
+			 Break
 			}
 		}
 	}
@@ -1194,23 +1225,23 @@ Loop, parse, Group, CSV
 	 Loop, parse, HotKeyHitList_%Bundle%, % Chr(5) ; %
 		{
 		 StringSplit, _h, A_LoopField, % Chr(7) ; %
-		 If (_h1 <> "") 
+		 If (_h1 <> "")
 			{
 			 If (ShortcutPaused = 0) ; for some reason Toggle doesn't work so hence the On/Off method
 				{
 				 Hotkey, IfWinNotActive , Lintalist bundle editor
 				 Hotkey, $%_h1%, On
-				 Hotkey, IfWinNotActive 
-				}	
+				 Hotkey, IfWinNotActive
+				}
 			 else If (ShortcutPaused = 1)
 				{
 				 Hotkey, IfWinNotActive , Lintalist bundle editor
 				 Hotkey, $%_h1%, Off
-				 Hotkey, IfWinNotActive 
-				} 
-		   }	
+				 Hotkey, IfWinNotActive
+				}
+			}
 		 _h1= ; clear vars
-		 _h2=	
+		 _h2=
 		}
 	}
 
@@ -1239,7 +1270,7 @@ Return
 
 
 SetStatusBar:
-MenuNames=	 
+MenuNames=
 ListTotal=0
 Loop, parse, load, CSV
 	{
@@ -1263,20 +1294,22 @@ ProcessText:
 		}
 
 	 Loop, parse, ClipCommand, |
-	 	{
-	 	 If (A_LoopField = "")
-	 	 	Continue
-	 	 If InStr(Clip, A_LoopField)
-	 	 	{
-	 	 	 Filter:=SubStr(A_LoopField, 3)
-	 	 	 Gosub, GetSnippet%Filter%
+		{
+		 If (A_LoopField = "")
+			Continue
+		 If InStr(Clip, A_LoopField)
+			{
+			 Filter:=SubStr(A_LoopField, 3)
+			 Gosub, GetSnippet%Filter%
 			}
+		 If (Filter = "Image")
+			Break
 		}
 
 
 If (RegExMatch(Clip, "i)(" ClipCommandRE ")") > 0) ; make sure all "plugins" are processed before proceeding
-	Gosub, ProcessText 
-	  
+	Gosub, ProcessText
+
 Return
 
 CheckCursorPos()
@@ -1295,60 +1328,60 @@ CheckCursorPos()
 			{
 		  	 BackLeft:=StrLen(SubStr(UpLines,1,InStr(UpLines,"`n")))-1
 		 	}
-		 Else If (BackUp = 0) 
+		 Else If (BackUp = 0)
 			BackLeft:=StrLen(UpLines)
 		 StringReplace, Clipboard, Clipboard, ^|, ,All
 		 UpLines=
 		 Clip=
-	 	}	
+		}
 	}
 
 CheckTyped(TypedChar,EndKey)
 	{
-   	 Global
-   	 If (ShorthandPaused = 1) or (InEditMode = 1) ; Expansion of abbreviations is suspended OR we are in editor mode
-   		Return
-   	 IfWinActive, %AppWindow% ; if Lintalist GUI is active return e.g. Expansion of abbreviations is suspended
-     	{
+	 Global
+	 If (ShorthandPaused = 1) or (InEditMode = 1) ; Expansion of abbreviations is suspended OR we are in editor mode
+		Return
+	 IfWinActive, %AppWindow% ; if Lintalist GUI is active return e.g. Expansion of abbreviations is suspended
+	{
 		 Return
-     	}	
-   	 If (EndKey = "EndKey:Backspace")
-   	 	{
-   	 	 StringTrimRight, Typed, Typed, 1
-   	 	 Return
-   	 	}
-   	 HitKeyHistory=
-   	 GetActiveWindowStats()
-   	 WhichBundle()
-   	 If (EndKey <> "Max")
-   		{
-   	 	 If EndKey not in %TriggerKeys%
-   	  		{ 
-   	   		 Typed=
-   	 	 	 Return
-   	 		} 
-   	 	 If EndKey in %TriggerKeys%
+	}
+	 If (EndKey = "EndKey:Backspace")
+		{
+		 StringTrimRight, Typed, Typed, 1
+		 Return
+		}
+	 HitKeyHistory=
+	 GetActiveWindowStats()
+	 WhichBundle()
+	 If (EndKey <> "Max")
+		{
+		 If EndKey not in %TriggerKeys%
 			{
-		 	 If (Typed = "")
-		 		Return
-		 	 HitKeyHistory:=CheckHitList("Shorthand", Typed, Load)	
+			 Typed=
+			 Return
+			}
+		 If EndKey in %TriggerKeys%
+			{
+			 If (Typed = "")
+				Return
+			 HitKeyHistory:=CheckHitList("Shorthand", Typed, Load)
 
-		 	 If (HitKeyHistory <> "")
-		 		{	
-			 	 ViaText=1 
-			 	 ViaShorthand=1
-			 	 Gosub, ShortCut
-			 	 Typed=
-			 	 Back=
-		 	 	 ViaText=0
-		 	 	 ViaShorthand=0
-		 	 	 HitKeyHistory=
-		 		} 
-   	 		}	
- 	 	 typed=
-   		}
-   	 Else	
-   		typed .= TypedChar
+			 If (HitKeyHistory <> "")
+				{
+				 ViaText=1
+				 ViaShorthand=1
+				 Gosub, ShortCut
+				 Typed=
+				 Back=
+		 		 ViaText=0
+				 ViaShorthand=0
+				 HitKeyHistory=
+				}
+			}
+		 typed=
+		}
+	 Else
+		typed .= TypedChar
 	}
 
 BuildEditMenu:
@@ -1367,12 +1400,12 @@ Menu, Edit, Add, &Move Snippet`tF6,  EditMenuHandler
 Menu, Edit, Add, &New Snippet`tF7,   EditMenuHandler
 Menu, Edit, Add, &Remove Snippet`tF8,EditMenuHandler
 Menu, Edit, Add, &New Bundle`tF10,   EditMenuHandler
-Menu, Edit, Add, 
+Menu, Edit, Add,
 Menu, Edit, Add, &Configuration,     TrayMenuHandler
-Menu, Edit, Add, 
+Menu, Edit, Add,
 Menu, Edit, Add, &Edit Local Bundle, TrayMenuHandler
 Menu, Edit, Add, &Manage counters,   TrayMenuHandler
-Menu, Edit, Add, 
+Menu, Edit, Add,
 Menu, Edit, Add, &Help,              TrayMenuHandler
 Menu, MenuBar, Add, &Edit, :Edit
 
@@ -1404,20 +1437,20 @@ Menu, File, Add, &Reload Bundles,     TrayMenuHandler
 Menu, MenuBar, Add, &Bundle, :File
 
 Return
-	
+
 BuildEditorMenu:
 Menu, Editor, Add, Insert [[Clipboard]], EditorMenuHandler
 Menu, Editor, Add, Insert [[Selected]] , EditorMenuHandler
 Menu, Editor, Add, Insert [[Input=]]   , EditorMenuHandler
-Menu, Editor, Add, Insert [[Snippet=]] , EditorMenuHandler 
+Menu, Editor, Add, Insert [[Snippet=]] , EditorMenuHandler
 Menu, Editor, Add, Insert [[DateTime=]], EditorMenuHandler
 Menu, Editor, Add, Insert [[Counter=]] , EditorMenuHandler
 Menu, Editor, Add, Insert [[Calendar=]], EditorMenuHandler
 Menu, Editor, Add, Insert [[Choice=]]  , EditorMenuHandler
 Menu, Editor, Add, Insert [[Var=]]     , EditorMenuHandler
 Menu, Editor, Add, Insert [[File=]]    , EditorMenuHandler
-Menu, Editor, Add, Insert [[C=]]       , EditorMenuHandler 
-Return	
+Menu, Editor, Add, Insert [[C=]]       , EditorMenuHandler
+Return
 
 ; OnExit
 SaveSettings:
@@ -1429,9 +1462,9 @@ Gui, 71:Destroy
 Gui, 99:Destroy
 
 ; INI
-; IniWrite, Value, Filename, Section, Key 
+; IniWrite, Value, Filename, Section, Key
 LastBundle=
-Loop, parse, Load, CSV ; store loaded bundles 
+Loop, parse, Load, CSV ; store loaded bundles
 	LastBundle .= FileName_%A_LoopField% ","
 StringTrimRight, LastBundle, LastBundle, 1
 IniWrite, %LastBundle%  , Settings.ini, Settings, LastBundle
@@ -1468,6 +1501,11 @@ Return
 #Include %A_ScriptDir%\include\GuiSettings.ahk
 #Include %A_ScriptDir%\include\SetShortcuts.ahk
 #Include %A_ScriptDir%\include\QuickStart.ahk
+#Include %A_ScriptDir%\include\FixURI.ahk
+#Include %A_ScriptDir%\include\SetIcon.ahk
+#Include %A_ScriptDir%\include\WinClip.ahk    ; by Deo
+#Include %A_ScriptDir%\include\WinClipAPI.ahk ; by Deo
+#Include %A_ScriptDir%\include\Markdown2HTML.ahk ; by fincs + additions
 ; /Includes
 
 SaveSettingsCounters:
@@ -1475,7 +1513,7 @@ Counters=
 Loop, parse, LocalCounter_0, CSV
 	{
 	 If (A_LoopField = "")
-	 	Continue
+		Continue
 	 Counters .= A_LoopField "," LocalCounter_%A_LoopField% "|"
 	}
 IniWrite, %Counters%   , Settings.ini, Settings, Counters

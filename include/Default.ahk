@@ -81,7 +81,7 @@ SendKey(Method = 1, Keys = "")
 	 
 ;	 If (Restore = 1)
 ;		 Clipboard:=ClipSet("g",2) ; restore
-
+	
 	 Return
 	}
 

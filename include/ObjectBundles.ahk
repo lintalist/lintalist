@@ -1,13 +1,13 @@
 ﻿; LintaList Include
 ; Purpose: Load and Parse LintaList Bundles at startup into memory
 ;          and later determine which one to load
-; Version: 1.0.2
-; Date:    20140421
+; Version: 1.1
+; Date:    20150101
 
 WhichBundle() ; determine which bundle to use based on active window (titlematch)
 	{
 	 global 
-	 ;ToolTip, % load, 0,0
+	 ;ToolTip, % load, 0,0 ; debug
 	 If (Lock = 1) ; Load was already set by FileMenu or was locked by user
 		 Return
 	 If (LoadAll = 1)
@@ -20,7 +20,7 @@ WhichBundle() ; determine which bundle to use based on active window (titlematch
 		{
 		 MatchList:=TitleMatchList_%A_LoopField%
 		 MatchList=%MatchList% ; autotrim
-		 ;MsgBox % MatchList
+		 ;MsgBox % MatchList ; debug
 		 If ActiveWindowTitle contains %MatchList%
 			{
 			 Load .= A_LoopField ","
@@ -39,7 +39,7 @@ WhichBundle() ; determine which bundle to use based on active window (titlematch
 LoadBundle(Reload="")
 	{
 	 Global
-	 ;MsgBox % "x" Snippet[1,1,1]
+	 ;MsgBox % "x" Snippet[1,1,1] ; debug
 	 Gui, 1:Default
 	 LV_Delete()
 	 If (ReLoad = "")
@@ -54,17 +54,9 @@ LoadBundle(Reload="")
  		 StringSplit, MenuText, A_LoopField, % Chr(5)
  		 Menu, file, UnCheck, &%MenuText1%
  		}
-	IfEqual, ShowIcons, 1
-		{
-			IL_Destroy(ImageListID1)
-			; Create an ImageList so that the ListView can display some icons:
-			ImageListID1 := IL_Create(5, 10)
-			; Attach the ImageLists to the ListView so that it can later display the icons:
-			LV_SetImageList(ImageListID1)
-		}	
 
-	IL_Add(ImageListID1, A_ScriptDir . "\Icons\" . Icon1) ; assign texticon
-	IL_Add(ImageListID1, A_ScriptDir . "\Icons\" . Icon2) ; assign script
+	 ; setup imagelist and define icons
+	 #Include %A_ScriptDir%\include\ImageList.ahk
 
 	 Loop, Parse, Load, CSV
 	 {
@@ -73,31 +65,26 @@ LoadBundle(Reload="")
 	  If (MenuItem <> "") ; just to be sure
 		Menu, file, Check, &%MenuItem%
  
-	  ;Max:=List_%Bundle%_0
 	  Max:=Snippet[Bundle].MaxIndex()
 	  Max:=MaxRes
 	  Loop, % max
 		{
-		 ;Hit=List_%Bundle%_%A_Index%_
 		 If (Snippet[Bundle,A_Index,"1v"] = "" AND Snippet[Bundle,A_Index,"2v"] = "" AND Snippet[Bundle,A_Index,3] = "" AND Snippet[Bundle,A_Index,4] = "" AND Snippet[Bundle,A_Index,5] = "")
 			Continue
 
 		 IconVal:=""
 		 IfEqual, ShowIcons, 1
  			{
-			 If (Snippet[Bundle,A_Index,5] = "")
-			    IconVal:="Icon1"
-			 Else
-				IconVal:="Icon2"
- 			}			
+			 IconVal:=SetIcon(Snippet[Bundle,A_Index],Snippet[Bundle,A_Index,5])
+ 			}
 		 LV_Add(IconVal,Snippet[Bundle,A_Index,"1v"],Snippet[Bundle,A_Index,"2v"],Snippet[Bundle,A_Index,3],Snippet[Bundle,A_Index,4],Bundle . "_" . A_Index) ; populate listview			
 	
 		 If (Snippet[Bundle,A_Index,"2v"] <> "") ; part2 e.g. shift+enter
-			Col2 = 1	
+			Col2 = 1
 		 If (Snippet[Bundle,A_Index,3] <> "")  ; key
-			Col3 = 1 
+			Col3 = 1
 		 If (Snippet[Bundle,A_Index,4] <> "")  ; shorthand
-			Col4 = 1	
+			Col4 = 1
 		}
 	 }	
 	 Return	
@@ -321,10 +308,10 @@ ParseBundle(Patterns, Counter)
 	  
 	 Loop, % list0                    ; split pattern elements
 		{                             ; result: list_listnumber_indexitemnumber_1..5
-		 ;MsgBox % list%A_Index%
+		 ;MsgBox % list%A_Index% ; debug
 		 Snippet[Counter,A_Index]:=_Split(list%A_Index%,Chr(7))
 		 List%A_Index%:=""
-		 ;MsgBox % Snippet[counter,A_Index,1]
+		 ;MsgBox % Snippet[counter,A_Index,1] ; debug
 		 fix1 := Snippet[Counter,A_Index,1]
 		 fix2 := Snippet[Counter,A_Index,2]
 		 ;fix preview 
@@ -359,7 +346,7 @@ ParseBundle(Patterns, Counter)
 			 
 		 %ArrayName%%A_Index%= ; free mem	
 		}
-	 ;MsgBox % Snippet[Counter,1,1]
+	 ;MsgBox % Snippet[Counter,1,1] ; debug
 	 Return	
 	}
 

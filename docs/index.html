@@ -18,9 +18,9 @@
 <b>Lintalist</b> allows you to store and (incrementally) <b>search</b> and <b>edit texts</b> in bundles and <b>paste</b> a selected text in your active program. The text <b>can</b> be interactive, for example you can automatically insert the current time and date, ask for (basic) user input or make a selection from a list etc and finally it can also <b>run a script</b>. You can use <b>keyboard shortcuts</b> or <b>abbreviations</b> to paste the text (or run the script) without opening the search window.<br />
 <br />
 <span style='font-size:.8em;'>You can <b>extend Lintalist</b> by writing your own <b><a href='#InteractiveBundleText'>plugins</a></b>. Lintalist is open source and developed in <a href='http://ahkscript.org/'>AutoHotkey</a>, an easy to learn scripting language for Windows.
-[WinXP/Vista/7]<br /></span>
-<span style='font-size:.8em;'>Currently Lintalist only works with plain text and does not support rich text formats such as MS Word, RTF, HTML or images.</span>
-<span class='date' style='float:right;display:inline;margin-top:0px;'>doc rev. 20100811</span></p>
+[WinXP(sp3)/Vista/7/8]<br /></span>
+<span style='font-size:.8em;'>As of LintaList v1.1 several types of formatted text are supported in Snippets.</span>
+<span class='date' style='float:right;display:inline;margin-top:0px;'>doc rev. 20150101</span></p>
 </div>
 
 <div class='column'>
@@ -47,6 +47,7 @@
 <li><a href='#SnippetsBundles'>Snippets &amp; Bundles</a><ul>
 <li><a href='#InteractiveBundleText'>plugins</a> (how to)</li>
 </li></ul>
+<li><a href='#FormattedText'>Formatted Text Snippets</a></li>
 <li><a href='#Editing'>Editing Bundles and Snippets</a></li>
 <li><a href='#ManagingBundles'>Managing Bundles</a></li>
 <li><a href='#LoadAllBundles'>Load All Bundles</a> (via tray)</li>
@@ -63,7 +64,7 @@
 </div>
 
 <div class='column'>
-<p><b>Download Lintalist <em>1.0.3</em></b>
+<p><b>Download Lintalist <em>1.1</em></b>
 <p>
 <a href='https://github.com/lintalist/lintalist/releases'><img src='img/lintalist65x65.gif' alt='Download Lintalist' width='65' align='left' border='0' style='margin-right: 5px;' /></a>
 Download (incl. source):<br />
@@ -127,7 +128,7 @@ Installing Lintalist is easy, just download the ZIP file and unpack it in a fold
 If you are already an AutoHotkey user and have it installed, it is recommended to run <b>Lintalist.ahk</b>, this will ensure you will be running Lintalist with your preferred version of AutoHotkey. If you don't have AutoHotkey installed you can start <b>Lintalist.exe</b>.
 
 <b>Notes:</b>
-- Lintalist.exe: A renamed AutoHotkey.exe (v1.1.15 32-bit Unicode, See http://ahkscript.org/ and/or http://ahkscript.org/download/)
+- Lintalist.exe: A renamed AutoHotkey.exe (v1.1.18 32-bit Unicode, See http://ahkscript.org/ and/or http://ahkscript.org/download/)
 - Lintalist.ahk: The actual (main) source code of the program (see https://github.com/lintalist/lintalist)
 
 <h2 id='Searching'>Normal use: Starting Lintalist and searching for a Snippet</h2>
@@ -272,7 +273,6 @@ Shortcuts while search window is not active
    - The action for a Doubleclick with the left mouse button can be defined in the Configuration menu
      (DoubleClickSends)
 
-
 <h2 id='TrayMenu'>Tray <em>Menu</em></h2>
 
 - <a href='#LoadAllBundles'>Load All Bundles</a>
@@ -287,7 +287,7 @@ Shortcuts while search window is not active
 
 <h3 id='LoadAllBundles'>Load All <em>Bundles</em></h3>
 
-You can tell Lintalist to simply load all bundles via the Tray menu or Bundle menu (<kbd>Alt</kbd>+<kbd>b</kbd>), these will automatically be locked until you either choose a specific bundle from the Bundle menu OR unlock it ((<kbd>Alt</kbd>+<kbd>l</kbd>) in search window).
+You can tell Lintalist to simply load all bundles via the Tray menu or Bundle menu (<kbd>Alt</kbd>+<kbd>b</kbd>), these will automatically be locked until you either choose a specific bundle from the Bundle menu OR unlock it (<kbd>Alt</kbd>+<kbd>l</kbd>) in search window).
 
 <h3 id='ReloadBundles'>Reload <em>Bundles</em></h3>
 
@@ -436,12 +436,12 @@ You can develop your own if you learn to write AutoHotkey scripts, see <b><a hre
 	<th>Description</th>
 </tr>
 </thead>
-<tr><td><code>^|</code></td><td>Caret position after pasting.
+<tr id='caret-plugin'><td><code>^|</code></td><td>Caret position after pasting.
 Basic example: "Hello, this is a sample <code>^|</code>text"
 The ^| code will be removed from the text and the caret will 
 be placed before the word text.</td></tr>
 
-<tr><td><code>[[Input=Text|Default]]</code></td>
+<tr id='input-plugin'><td><code>[[Input=Text|Default]]</code></td>
 <td>Ask for user input (simple inputbox)
 Basic example <code>[[Input=Customer's name?]]</code>
 Note: If you want to use the same user input more than once you can do so by simply repeating the [[Input=Question]] code.
@@ -449,7 +449,7 @@ You can provide a default response after the question by using the pipe char (|)
 example <code>[[Input=My favourite color|Green]]</code>
 </td></tr>
 
-<tr><td><code>[[DateTime=Format|Value|TimeUnits]]</code></td><td>Insert current Date and/or Time using the FormatTime options,
+<tr id='datetime-plugin'><td><code>[[DateTime=Format|Value|TimeUnits]]</code></td><td>Insert current Date and/or Time using the FormatTime options,
 <a href='http://ahkscript.org/docs/commands/FormatTime.htm'>http://ahkscript.org/docs/commands/FormatTime.htm</a>
 (Date & Time formats, may be dependent on your user locale).
 Basic example <code>[[DateTime=dd-MMM-yyyy]]</code> --> 25-Jan-2011 (Todays date)
@@ -459,14 +459,14 @@ You can also perform some calculations, example:
 TimeUnits can be either Seconds, Minutes, Hours, or Days.
 </td></tr>
 
-<tr><td><code>[[Calendar=Format]]</code></td><td>Displays a calendar window to allow you to select a date in a specific format (see DateTime above).
+<tr id='calendar-plugin'><td><code>[[Calendar=Format]]</code></td><td>Displays a calendar window to allow you to select a date in a specific format (see DateTime above).
 Basic example <code>[[Calendar=dd-MMM-yyyy]]</code> --> Select a date and it will be inserted like so: 25-Jan-2011
 </td></tr>
-<tr><td><code>[[Choice=item1|item2|..]]</code></td><td>Selected an item from a list. 
+<tr id='choice-plugin'><td><code>[[Choice=item1|item2|..]]</code></td><td>Selected an item from a list. 
 The options are delimited by a | character .
 Basic example <code>[[Choice=Red|Green|Blue]]</code> inserts the selected colour in the text.</td></tr>
 
-<tr><td><code>[[Counter=Name|Value]]</code></td><td>You can use multiple counters across bundles.
+<tr id='counter-plugin'><td><code>[[Counter=Name|Value]]</code></td><td>You can use multiple counters across bundles.
 Basic example <code>[[Counter=InvoiceNumber]]</code> --> increment by one and insert value of InvoiceNumber.
 By default it will increment the counter by one, you can change that by specifying the Value.
 <code>[[Counter=InvoiceNumber|5]]</code> Add 5 and insert.
@@ -474,20 +474,20 @@ These counters are saved between sessions and stored in settings.ini
 You can manage these counters (add, edit, delete) via the tray menu option: Manage counters.
 </td></tr>
 
-<tr><td><code>[[Selected]]</code></td><td>Replace by selected text if any. This will allow you to insert any 
+<tr id='selected-plugin'><td><code>[[Selected]]</code></td><td>Replace by selected text if any. This will allow you to insert any 
 selected text, for example to wrap selected text in a HTML tag.</td></tr>
 
-<tr><td><code>[[Clipboard]]</code></td><td>Insert current Clipboard content.</td></tr>
+<tr id='clipboard-plugin'><td><code>[[Clipboard]]</code></td><td>Insert current Clipboard content.</td></tr>
 
-<tr><td><code>[[File=Filename]]</code></td><td>Will insert text from specified file into the text, 
+<tr id='file-plugin'><td><code>[[File=Filename]]</code></td><td>Will insert text from specified file into the text, 
 either full path or relative to Lintalist directory.
 Basic example <code>[[File=c:\file.txt]]</code> inserts content from that file into the text.</td></tr>
 
-<tr><td><code>[[Snippet=Shorthand]]</code></td><td>Will insert text from another snippet at the specified location.
+<tr id='snippet-plugin'><td><code>[[Snippet=Shorthand]]</code></td><td>Will insert text from another snippet at the specified location.
 Use the Shorthand code of another snippet <b>from the same bundle</b>. This way you can chain snippets together.
 Basic example <code>[[Snippet=shorthandcode]]</code></td></tr> 
 
-<tr><td><code>[[C=Char|Repeat]]</code></td><td>By default pasted texts are trimmed which means spaces and tabs will be trimmed from the snippet. You can use this plugin to insert one or more spaces and/or tabs at the beginning or end of a snippet. Or you can use it as a shorthand-code to insert a repeating text or character.
+<tr id='c-plugin'><td><code>[[C=Char|Repeat]]</code></td><td>By default pasted texts are trimmed which means spaces and tabs will be trimmed from the snippet. You can use this plugin to insert one or more spaces and/or tabs at the beginning or end of a snippet. Or you can use it as a shorthand-code to insert a repeating text or character.
 Basic example <code>[[C=-|30]] insert 30 -'s</code>
 Use [[C=space]] or [[C=\s]] for a space, [[C=tab]] or [[C=\t]] for a tab, and [[C=enter]] or [[C=\n]] for a new line.
 
@@ -496,7 +496,7 @@ Neat trick: using a local variable or User input
 <code>[[C=[[Input=Repeat which character|-]]|[[Input=How many times?|10]]]]</code> Repeat the entered character(s) 10 times.
 </td></tr> 
 
-<tr><td><code>[[Var=Name]]</code></td><td>Insert local variables. These variables are available accross bundless. See Local bundle variables below.</td></tr>
+<tr id='localvar-plugin'><td><code>[[Var=Name]]</code></td><td>Insert local variables. These variables are available accross bundless. See Local bundle variables below. As of v1.0.3 local variables are now also available in scripts (making it the only plugin available in scripts for the time being)</td></tr>
 </tbody>
 </table>
 
@@ -504,10 +504,13 @@ Neat trick: using a local variable or User input
 
 By using the <code>[[Var=]]</code> code in your texts you can insert variables which are defined in a special bundle and are stored in <b>local\local.txt</b>. This file has a similar setup to a regular bundle but only has two parts: a name and the content. You can use this to store (personal) information which you can reuse so you do not have to update it multiple times or share it with someone else. This could be your name or address for example:
 
-<span class='Example'>		- LLVarName: MyAddress
-		  LLContent: Agent Cooper
-		  The Black Lodge
-		  Twin Peaks</span>
+<blockquote class='boxed'>
+- LLVarName: MyAddress
+  LLContent: Agent Cooper
+  The Black Lodge
+  Twin Peaks
+
+</blockquote>
 
 You can now insert your address in your snippets/bundles by using <code>[[Var=MyAddress]]</code> anywhere in the text.
 
@@ -523,7 +526,7 @@ You can edit your local bundle via the editor you can access via Tray menu.
 
 <h3 id='TextExample'>Example Text Snippet (Part1 or Part2):</h3>
 
-<span class='Example'>
+<blockquote class='boxed'>
 Dear <code>[[Input=Enter Name of Customer]]</code>,
 
 thank you for your order of your pair of <code>[[Choice=Red|Blue|Black|Pink|Brown]]</code> shoes 
@@ -532,11 +535,12 @@ at <code>[[DateTime=dd-MMM-yyyy]]</code>.
 Your sincerely,
 <code>[[Var=Name]]</code>
 <code>[[Var=Address]]</code>
-</span>
+
+</blockquote>
 
 <h3 id='Script'>Script</h3>
 
-You can include any valid AutoHotkey script into a snippet. The code is saved to a temporary file and run with AutoHotkey. The temporary script is written to your Temporary Windows directory (c:\temp, c:\windows\tmp etc) after the script has finished it is deleted.
+You can include any valid AutoHotkey script into a snippet. The code is saved to a temporary file and run with AutoHotkey. The temporary script is written to <b>tmpscrpts\</b> in your Lintalist directory. After the script has finished it is deleted.
 
 <span class='tip'>You can enable / disable the use of Scripts via the Tray menu</span>
 
@@ -573,9 +577,165 @@ Functions:
 - ClipSet(Task,ClipNum=1,SendMethod=1,Value="") 
   Used by Lintalist to set/restore clipboard.
   SendMethod as above with SendKey, set by configuration.
-  See include\default.ahk for full details as ClipSet has a number of
+  See <b>include\default.ahk</b> for full details as ClipSet has a number of
   other functions which may be of interest for more advanced use(r)s.
-  
+
+<h2 id='FormattedText'>Formatted Text <em>Snippets</em></h2>
+
+As of LintaList v1.1 several types of formatted text are supported in Snippets.
+
+Formatted text, styled text, or rich text, as opposed to plain text, has styling information beyond the minimum of semantic elements: colours, styles (boldface, italic), sizes, and special features (such as hyperlinks). <span class='small'>Source: <a href='https://en.wikipedia.org/wiki/Formatted_text'>wikipedia</a></span>
+
+<b>General Notes:</b>
+1. The application where you paste the snippet INTO does have to accept the formatted text, otherwise nothing will be pasted. Pasting an image into Notepad for example will have no result. Some applications will not accept RTF but will accept HTML or vice versa.
+2. Plugins are supported in HTML, Markdown and RTF, not Image. Note that support in RTF may depend on how the RTF file is written (line breaks, formatting etc.) so you may have experiment and also try to avoid applying styles to the plugin text.
+3. The Caret position after pasting - <code>^|</code> - does not work with any of these Formatted Text Snippets.
+
+<h3 id='html-FormattedText'><em>HTML</em></h3>
+
+To paste HTML code as formatted text you have to include [[html]] in your snippet, usually at the start of the snippet but it can be anywhere.
+You are allowed to ommit the html, head and body tags.
+
+<blockquote class='boxed'>
+<code>[[html]]</code>
+&lt;h3&gt;Hello: [[Input=What is your name]]&lt;/h3&gt;
+
+&lt;p&gt;This &lt;b&gt;is&lt;/b&gt; a &lt;em&gt;sentence&lt;/em&gt; with formatting.&lt;/p&gt;
+
+&lt;p&gt;Today is &lt;em&gt;[[DateTime=dd MMMM yyyy]]&lt;/em&gt;.&lt;/p&gt;
+
+&lt;ul&gt;
+	&lt;li&gt;list item&lt;/li&gt;
+	&lt;li&gt;list item&lt;/li&gt;
+	&lt;li&gt;list item&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Images also work - either use an http URI: (http://lintalist.github.io/img/lintalist.png)&lt;br /&gt;
+&lt;img src='http://lintalist.github.io/img/lintalist.png'&gt;&lt;/p&gt;
+
+&lt;p&gt;or a file URI: ()&lt;br /&gt; 
+&lt;img src='docs/lintalist.png'&gt;&lt;/p&gt;
+
+</blockquote>
+
+<b>Notes:</b>
+1. Some applications will need a HTTP URI for images to work (webmail for example) - background info on file URI: <a href='https://en.wikipedia.org/wiki/File_URI_scheme'>wikipedia</a>.
+If you want to use an image file on your computer you can omit adding the entire file path "file://c:/..../path/to/file.jpg"
+Lintalist will automatically insert the full path relative to the folder where lintalist is installed. Examples:
+
+An image in a Images sub-folder:
+
+	&lt;img src='Images/lintalist.jpg'&gt; 
+
+An image two folders "up" from the Lintalist folder:
+
+	&lt;img src='../../anotherimage.png'&gt;
+
+<h3 id='markdown-FormattedText'><em>Markdown</em></h3>
+
+To paste Markdown code as formatted text you have to include [[md]] in your snippet.
+Note that only basic Markdown code is properly converted, nested lists are not supported (yet) for example and table formatting is rudimentary - see remarks below.
+
+<blockquote class='boxed'>
+<code>[[md]]</code>
+# Heading 1
+
+* unordered list entry
+* unordered list entry
+	
+this is a **normal line** of *text* with some markup
+
+1. numbered list entry
+2. numbered list entry
+
+Inserting a link [ahkscript](http://ahkscript.org) also works
+
+As does an image:
+
+![Lintalist](https://raw.github.com/lintalist/lintalist/master/docs/img/lintalist.png)
+
+Or a table (slightly deferring from the original markdown)
+
+|cells in the first row are treated | as header cells (th)
+cell 1   |cell 2
+cell 3   |cell 4
+
+Credits: This markdown conversion to HTML function comes from [GenDocs](http://ahkscript.org/boards/viewtopic.php?f=6&t=1797)
+
+Example of HTML block:
+
+~~~
+&lt;ul&gt;
+	&lt;li&gt;list item&lt;/li&gt;
+	&lt;li&gt;list item&lt;/li&gt;
+	&lt;li&gt;list item&lt;/li&gt;
+&lt;/ul&gt;
+~~~
+
+The above should be displayed as a unordered list.
+
+</blockquote>
+
+This markdown conversion to HTML function comes from GenDocs, which uses a simplified version of the Markdown syntax.
+It supports:
+
+- Paragraphs: blocks of text delimited by blank lines. Equivalent to HTML &lt;p&gt;...&lt;/p&gt;.
+- In-paragraph line breaks: end a line with two spaces. Equivalent to HTML &lt;br /&gt;.
+- Headings: start a line with up to three hash (#) characters, followed by space. Equivalent to HTML &lt;hN&gt;...&lt;/hN&gt;
+- Emphasis marks: *...*. Equivalent to HTML &lt;em&gt;...&lt;/em&gt;
+- Strong emphasis marks: **...**. Equivalent to HTML &lt;strong&gt;...&lt;/strong&gt;.
+- Inline code marks: `...`. Equivalent to HTML &lt;code&gt;...&lt;/code&gt;.
+- Code sections: unlike standard Markdown, they use the blockquote syntax: blocks of text whose lines start with &gt; followed by a space.
+- Unordered lists: lines that start with *. Equivalent to HTML &lt;ul&gt;...&lt;li&gt;...&lt;/li&gt;...&lt;/ul&gt;.
+- Ordered lists: lines that start with a number, dot and space (e.g. 1. ); or letter, dot and space (e.g. a. ). Equivalent to HTML &lt;ol&gt;...&lt;/ol&gt; and &lt;ol style="list-style-type: lower-alpha"&gt;...&lt;/ol&gt; respectively.
+- Escape sequences: the sequences \*, \`, \[, \], \! and \\ are recognized, and yield literal characters.
+- Links: [Link text](Link URL). Equivalent to HTML &lt;a href="..."&gt;...&lt;/a&gt;.
+- Images: ![Image ALT text](Image file name). Equivalent to HTML &lt;img src="..." alt="..."/&gt;.
+
+Insert HTML:
+- You can include HTML code by placing it between two sections of ~~~ like so
+~~~
+&lt;p&gt;HTML code here&lt;/p&gt;
+~~~
+
+Tables are defined as follows:
+- If a line starts with pipe character (|) it indicates the start of a table (&lt;table&gt;).
+- The end of a table is marked by an empty line (&lt;/table&gt;).
+- Cells in the first row are treated as header cells (&lt;th&gt;). 
+- You should not define the start and end of a row, each line is treated as a row (&lt;tr&gt;&lt;td&gt;...&lt;/td&gt;&lt;/tr&gt;)
+- Use a single | to mark a cell division (&lt;/td&gt;&lt;td&gt;)
+- Not supported: Text-alignment in cells (always left aligned), Cell- and Rowspans.
+
+Example, a 3x3 table:
+
+|Table     | Description | headers
+Cell       | Cell        | Cell
+Cell       | Cell        | Cell
+
+<h3 id='rtf-FormattedText'><em>RTF</em></h3>
+
+Using RTF is similar to the <a href="#file-plugin">File</a> plugin, it will insert the formatted text including images from the specified file. Either use the full path to the RTF file or a path relative to Lintalist directory.
+All other text in the snippet will be discarded.
+
+<blockquote class='boxed'>
+<code>[[rtf=Extras\examples\example.rtf]]</code>
+
+</blockquote>
+
+You can find an example RTF file including a plugin in the Extras\formatted\ folder.
+
+<h3 id='image-FormattedText'><em>Image</em></h3>
+
+Using Image is similar to the <a href="#file-plugin">File</a> plugin, it will insert the image from the specified file. Either use the full path to the image or a path relative to Lintalist directory.
+All other text in the snippet will be discarded.
+
+<blockquote class='boxed'>
+<code>[[image=Extras\examples\image.png]]</code>
+
+</blockquote>
+
+You can find an example image file in the Extras\formatted\ folder.
+
 <h2 id='Editing'>Editing Bundles <em>and Snippets</em></h2>
 
 <h3 id='F4'><span class='key'>F4</span> (Edit Snippet)</h3>
@@ -619,13 +779,13 @@ Start searching your bundle and select the snippet you want to edit (highlight w
 
 To add a new bundle (a collection of snippets) open the Lintalist search window and use F10. The Lintalist Bundle Editor will open on the second tab where you can enter the name, title match and other data. You can also directly add your first snippet by switching tabs and enter the data there. If you click save you will be asked for a file name of your bundle. New bundles are stored in the bundle directory. The application is restarted after you add a new bundle. Once you have created a bundle you can add new snippets via F7 (make sure it is loaded first).
 
-<span class='tip'>Backup: Whenever a snippet is edited (F4) or a deleted (F8) a backup of the bundle will be made in a backup folder when Lintalist is re-started or the program is closed. It can be find it the bundles directory: bundles\backup\. If you are not happy with the changes you have made you can copy back the prior version of the bundle. You may have to re-add any new snippets you have added after the last backup was made.</span>
+<span class='tip'>Backup: Whenever a snippet is edited (F4) or a deleted (F8) a backup of the bundle will be made in a backup folder when Lintalist is re-started or the program is closed. It can be find it the bundles directory: <b>bundles\backup\</b>. If you are not happy with the changes you have made you can copy back the prior version of the bundle. You may have to re-add any new snippets you have added after the last backup was made.</span>
 
 <h2 id='ManagingBundles'>Managing <em>Bundles</em></h2>
 
 - If you have a new bundle you can add it to Lintalist by simply copying the file into the Bundles directory and (re)starting Lintalist
 
-- If you no longer wish to use a particular Bundle, Exit Lintalist first and then simple remove the file from the Bundles folder and start Lintalist
+- If you no longer wish to use a particular Bundle, Exit Lintalist first and then simply remove the file from the Bundles folder and start Lintalist
 
 - If you want to create a new bundle, start Lintalist, open the search window and <a href='#F10'>press F10</a>. The new bundle will be saved in your Bundles directory.
 
@@ -692,6 +852,8 @@ Also, if you know of taglists, bundles, etc of other editors and programs you wo
 
 <b>History</b>
 
+* Version 1.1 - Formatted text support.
+* Version 1.0.x - Minor improvements and bug fixes.
 * Version 1.0 - First public release.
 &lt; Version 1.0 - private versions only (small set of users)
 * See also credits.txt
@@ -701,7 +863,7 @@ Also, if you know of taglists, bundles, etc of other editors and programs you wo
 <img src='img/lintalist-title-footer.gif' alt='lintalist' align='left' style='margin-top:6px;padding-right:5px;' /><b>Disclaimer:</b> Use at your own risk. If you find a new bundle take a look at the script sections of each snippet. As Lintalist can run any AutoHotkey script it can also run faulty or insecure code. Be sensible, if you simply want to try a bundle selecting 'Pause scripts' via the tray menu might be a useful idea.
 </span> 
 
-<span style='float:right;'>&copy; Copyright 2009-2014 Lintalist. See license.txt</span>
+<span style='float:right;'>&copy; Copyright 2009-2015 Lintalist. See license.txt</span>
 </pre>
 
 <a href="https://github.com/lintalist"><img style="position: absolute; top: 0; right: 0; border: 0;" src="img/forkme_right_red_aa0000.png" alt="Fork me on GitHub"></a>

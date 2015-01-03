@@ -43,6 +43,8 @@ ReadIni()
 	 IniRead, ShowIcons    ,%ini%, settings, ShowIcons     , 1
 	 IniRead, Icon1        ,%ini%, settings, Icon1         , TextIcon.ico
 	 IniRead, Icon2        ,%ini%, settings, Icon2         , ScriptIcon.ico
+	 SplitPath, Icon1, , , , Icon1 ; trim ext
+	 SplitPath, Icon2, , , , Icon2 ; trim ext
 	 IniRead, SendMethod   ,%ini%, settings, SendMethod    , 3
 	 IniRead, PasteDelay   ,%ini%, settings, PasteDelay    , 10
 	 IniRead, TriggerKeys  ,%ini%, settings, TriggerKeys   , Tab,Space
@@ -175,17 +177,17 @@ Case=0
 StartSearchHotkey=CAPSLOCK
 `;StartSearchHotkey !=Alt, ^ = Ctrl, + Shift, # = WinKey
 `;StartSearchHotkey The HotKey used to launch the Lintalist search GUI.
-`;StartSearchHotkey See http://www.autohotkey.com/docs/Hotkeys.htm#Symbols and  http://www.autohotkey.com/docs/KeyList.htm for other keys 
+`;StartSearchHotkey See http://ahkscript.org/docs/Hotkeys.htm#Symbols and http://ahkscript.org/docs/KeyList.htm for other keys 
 QuickSearchHotkey=#z
 `;QuickSearchHotkey !=Alt, ^ = Ctrl, + Shift, # = WinKey
 `;QuickSearchHotkey HotKey used to start searching (e.g. cut word to the left, launch Gui and search, if only one match is found act accordingly)
 `;QuickSearchHotkey Note that some editors cut or copy and entire line if no selection is made so (UltraEdit, Sublime Text Editor, Editpad ...)
-`;QuickSearchHotkey See http://www.autohotkey.com/docs/Hotkeys.htm#Symbols and  http://www.autohotkey.com/docs/KeyList.htm for other keys 
+`;QuickSearchHotkey See http://ahkscript.org/docs/Hotkeys.htm#Symbols and http://ahkscript.org/docs/KeyList.htm for other keys 
 ExitProgramHotKey=^#q
 `;ExitProgramHotKey Default: ^#q
 `;ExitProgramHotKey !=Alt, ^ = Ctrl, + Shift, # = WinKey
 `;ExitProgramHotKey HotKey used to quit Lintalist
-`;ExitProgramHotKey See http://www.autohotkey.com/docs/Hotkeys.htm#Symbols and http://www.autohotkey.com/docs/KeyList.htm for other keys
+`;ExitProgramHotKey See http://ahkscript.org/docs/Hotkeys.htm#Symbols and http://ahkscript.org/docs/KeyList.htm for other keys
 SendMethod=1
 `;SendMethod Type: Dropdown 1|2|3|4
 `;SendMethod Default: 1
