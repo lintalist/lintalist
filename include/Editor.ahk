@@ -468,6 +468,8 @@ If (EditMode <> "MoveSnippet")
 
 Gui, 1:-Disabled
 Gui, 71:Destroy
+if (AlwaysUpdateBundles = 1)
+	SaveUpdatedBundles(AppendToBundle)
 WinActivate, %AppWindow%
 WinWaitActive, %AppWindow%
 LoadBundle(Load)

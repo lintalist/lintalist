@@ -225,9 +225,15 @@ LoadPersonalBundle()
 	 Return	
 	}
 	
-SaveUpdatedBundles() ; Save any updated Bundles on Exit of Application
+SaveUpdatedBundles(tosave="") ; Save any updated Bundles on Exit of Application OR specific bundle (AlwaysUpdateBundles setting)
 	{
 	 Global
+	 if (tosave <> "")
+		{
+		 OldGroup:=Group
+		 Group:=tosave
+		}
+	 
 	 Loop, parse, Group, CSV
 		{
 		 Bundle:=A_LoopField
@@ -276,6 +282,9 @@ Patterns:
 ), %file%
 			}
 		}
+
+	 if (tosave <> "")
+		 Group:=OldGroup
 	}
 	
 ParseBundle(Patterns, Counter)

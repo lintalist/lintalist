@@ -34,11 +34,17 @@ __Lintalist search window__
 1. New users: Download the [lastest release](https://github.com/lintalist/lintalist/releases) - unpack to a new directory and run lintalist.exe (or lintalist.ahk if you are already an AutoHotkey user)
 2. AutoHotkey users (or installing updates): Download the [master.zip](https://github.com/lintalist/lintalist/archive/master.zip) - unpack to a new (or your current Lintalist) directory and run lintalist.ahk or lintalist.exe
 
-
 # More information
 
 More about Lintalist in "docs\index.html" after you downloaded it, right click on the tray icon (Help) or
 visit <http://lintalist.github.io/>
+
+# Videos
+
+* Introduction: <http://youtu.be/c3d-yu5C6oU>
+* HTML/Markdown: <http://youtu.be/ttLoSKvE678>
+* Formatted text: <http://youtu.be/J1StUarGHmI>
+* Plugins: <http://youtu.be/TXTdit1aUOk>
 
 # AutoHotkey
 
@@ -51,4 +57,4 @@ This script requires a working copy of autohotkey.exe to be present in order to 
 user scripts defined in bundles. If you have AHK installed you can safely delete
 lintalist.exe and just start lintalist.ahk directly.
 
-Copyright 2009-2014 Lintalist. See license.txt
+Copyright 2009-2015 Lintalist. See license.txt

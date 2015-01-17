@@ -4,7 +4,7 @@ Name            : Lintalist
 Author          : Lintalist
 Purpose         : Searchable interactive lists to copy & paste text, run scripts,
                   using easily exchangeable bundles
-Version         : 1.1
+Version         : 1.2
 Code            : https://github.com/lintalist/
 Website         : http://lintalist.github.io/
 AHKscript Forum : http://ahkscript.org/boards/viewtopic.php?f=6&t=3378
@@ -36,7 +36,7 @@ FileEncoding, UTF-8
 
 ; Title + Version are included in Title and used in #IfWinActive hotkeys and WinActivate
 Title=Lintalist
-Version=1.1
+Version=1.2
 
 ; ClipCommands are used in ProcessText and allow user input and other variable input into text snippets
 ; ClipCommands=[[Input,[[DateTime,[[Choice,[[Selected,[[Var,[[File,[[Snippet=
@@ -48,6 +48,7 @@ GroupAdd, AppTitle, %AppWindow% ; we can now use #IfWinActive with the INI value
 OnExit, SaveSettings ; store settings (locked state, search mode, gui size etc in INI + Make sure changes to Bundles are saved)
 
 ; /Default settings
+
 
 ; Tray Menu
 Menu, Tray, NoStandard
@@ -81,6 +82,21 @@ Menu, Tray, Tip, %AppWindow% - inactive
 #Include %A_ScriptDir%\include\Default.ahk
 #Include %A_ScriptDir%\include\Func_IniSettingsEditor_v6.ahk
 ; /Includes
+
+; command line parameters
+
+if 0 > 0  ; check cl parameters
+	{
+	 Loop, %0%  ; For each parameter:
+		{
+		 param := %A_Index%  ; Fetch the contents of the variable whose name is contained in A_Index.
+		 if (param = "-Active")
+		 	cl_Active:=1
+		 param:=""
+		}
+	}
+
+; /command line parameters
 
 ; INI ---------------------------------------
 ReadIni()
@@ -120,8 +136,10 @@ Gosub, QuickStartGuide
 ; setup hotkey
 
 Hotkey, %StartSearchHotkey%, GUIStart
-Hotkey, %QuickSearchHotkey%, ShortText
-Hotkey, %ExitProgramHotKey%, SaveSettings
+If (QuickSearchHotkey <> "")
+	Hotkey, %QuickSearchHotkey%, ShortText
+If (ExitProgramHotKey <> "")
+	Hotkey, %ExitProgramHotKey%, SaveSettings
 
 ViaShorthand=0
 
@@ -133,6 +151,11 @@ TerminatingCharacters={Alt}{LWin}{RWin}{enter}{space}{esc}{tab}{Home}{End}{PgUp}
 Loop
 	{
 	 ;Get one key at a time
+	 if (cl_Active = 1) or (ActivateWindow = 1)
+	 	{
+		 Gosub, GuiStart
+		 cl_Active:=0, ActivateWindow:=0
+	 	}
 	 Input, TypedChar, L1 V I, {BS}%TerminatingCharacters%
 	 CheckTyped(TypedChar,ErrorLevel)
 	}
@@ -374,6 +397,7 @@ Return
 
 ; We made a selection and now want to paste and process the selected text or run script
 Paste:
+formatted:=0
 Gui, 1:Submit, NoHide
 ControlFocus, SysListView321, %AppWindow%
 SelItem := LV_GetNext()
@@ -464,9 +488,17 @@ If (Script = "") or (ScriptPaused = 1) ; script is empty so we need to paste Tex
 	 	CheckCursorPos()
 	 formatted:=0	
 	 GUI, 1:Destroy
-	 SendKey(SendMethod, "^v")
-	 WinClip.Clear()
-	 If ((BackLeft > 0) or (BackUp > 0))       ; place caret at postion defined in snippet text via ^|
+	 If (PasteMethod = 0) ; paste it and clear formatted clipboard
+		{
+		 SendKey(SendMethod, "^v")
+		 WinClip.Clear()
+		}
+	 else If (PasteMethod = 1) ; paste it, keep formatted clipboard
+		{
+		 SendKey(SendMethod, "^v")
+		}
+	 
+	 If (((BackLeft > 0) or (BackUp > 0)) and (PasteMethod <> 2)) ; place caret at postion defined in snippet text via ^|
 		{
 		 If (BackUp > 0)
 			{
@@ -483,7 +515,19 @@ If (Script = "") or (ScriptPaused = 1) ; script is empty so we need to paste Tex
 	 Text1=
 	 Text2=
 	 Clip=
-	 Clipboard:=ClipSet("g",1,SendMethod)
+	 If (PasteMethod = 0) ; it was pasted, restore original clipboard
+		{
+		 Clipboard:=ClipSet("g",1,SendMethod)
+		}
+	 else If (PasteMethod = 1) ; it was pasted, clear the original stored clipboard (free memory)
+		{
+		 ClipSet("ea",1,SendMethod)
+		}
+	 else If (PasteMethod = 2) ; it wasn't pasted, clear the original stored clipboard (free memory)
+		{
+		 ClipSet("ea",1,SendMethod)
+		}
+ 
 	}
 Else If (Script <> "") and (ScriptPaused = 0) ; we run script by saving it to tmp file and running it
 	{
@@ -502,6 +546,8 @@ Else If (Script <> "") and (ScriptPaused = 0) ; we run script by saving it to tm
 	 FileDelete, %TmpDir%\tmpScript.ahk
 	 Script=
 	}
+If (OnPaste = 1)
+	Gosub, SaveSettings
 Return
 
 CheckHitList(CheckHitList, CheckFor, Bundle, RE = 0) ; RE no longer needed?
@@ -885,6 +931,8 @@ Return
 ; Assorted labels -----------------------
 ; If you type some text and hit the SHORTCUT key it will see if it matches an abbreviation or fire up search if it doesn't
 ShortText:
+If (QuickSearchHotkey = "") ; additional safety check to avoid triggering by accident
+	Return                  ; see "setup hotkey" at the start of the script and INI
 GetActiveWindowStats()
 WhichBundle()
 ClipSet("s",1) ; safe current content and clear clipboard
@@ -1213,6 +1261,14 @@ Else If (A_ThisMenuItem = "Insert [[Calendar=]]")
 	ControlSend, %Control%, [[Calendar=]]{left 2}, Lintalist bundle editor
 Else If (A_ThisMenuItem = "Insert [[C=]]")
 	ControlSend, %Control%, [[C=]]{left 2}, Lintalist bundle editor
+Else If (A_ThisMenuItem = "Insert [[html]]")
+	ControlSend, %Control%, [[html]]{enter}, Lintalist bundle editor
+Else If (A_ThisMenuItem = "Insert [[md]]")
+	ControlSend, %Control%, [[md]]{enter}, Lintalist bundle editor
+Else If (A_ThisMenuItem = "Insert [[rtf=]]")
+	ControlSend, %Control%, [[rtf=]]{left 2}, Lintalist bundle editor
+Else If (A_ThisMenuItem = "Insert [[image=]]")
+	ControlSend, %Control%, [[image=]]{left 2}, Lintalist bundle editor
 Return
 ;/EditorMenu
 
@@ -1342,9 +1398,9 @@ CheckTyped(TypedChar,EndKey)
 	 If (ShorthandPaused = 1) or (InEditMode = 1) ; Expansion of abbreviations is suspended OR we are in editor mode
 		Return
 	 IfWinActive, %AppWindow% ; if Lintalist GUI is active return e.g. Expansion of abbreviations is suspended
-	{
+		{
 		 Return
-	}
+		}
 	 If (EndKey = "EndKey:Backspace")
 		{
 		 StringTrimRight, Typed, Typed, 1
@@ -1450,6 +1506,10 @@ Menu, Editor, Add, Insert [[Choice=]]  , EditorMenuHandler
 Menu, Editor, Add, Insert [[Var=]]     , EditorMenuHandler
 Menu, Editor, Add, Insert [[File=]]    , EditorMenuHandler
 Menu, Editor, Add, Insert [[C=]]       , EditorMenuHandler
+Menu, Editor, Add, Insert [[html]]     , EditorMenuHandler
+Menu, Editor, Add, Insert [[md]]       , EditorMenuHandler
+Menu, Editor, Add, Insert [[rtf=]]     , EditorMenuHandler
+Menu, Editor, Add, Insert [[image=]]   , EditorMenuHandler
 Return
 
 ; OnExit
@@ -1491,6 +1551,8 @@ Gosub, SaveSettingsCounters
 	SaveUpdatedBundles()
 
 Gosub, CheckShortcuts ; desktop & startup LNK check (either set or delete after changing ini)
+
+Sleep, 500
 
 ExitApp
 Return

@@ -34,6 +34,7 @@
 <li><a href='#KeyboardShortcuts'>Lintalist Keyboard Shortcuts</a></li>
 <li><a href='#TrayMenu'>Tray Menu</a></li>
 <li><a href='#Configuration'>Configuration</a></li>
+<li><a href='#cmdline'>Command line parameters</a></li>
 <li><a href='#FAQ'>FAQ &amp; Known Issues</a></li>
 <!-- <li><a href='#History'>History</a></li> -->
 </ul>
@@ -64,20 +65,24 @@
 </div>
 
 <div class='column'>
-<p><b>Download Lintalist <em>1.1</em></b>
+<p><b>Download Lintalist <em>1.2</em></b>
 <p>
 <a href='https://github.com/lintalist/lintalist/releases'><img src='img/lintalist65x65.gif' alt='Download Lintalist' width='65' align='left' border='0' style='margin-right: 5px;' /></a>
 Download (incl. source):<br />
 <a href='https://github.com/lintalist/lintalist/releases'><b>Latest release</b></a> (600 kb)<br />Simply unpack and run lintalist.ahk or lintalist.exe<br />
 </p>
 
-<p>
-<b>Lintalist</b> Source code: <br />
+<p><b>Lintalist</b> Source code:<br />
 <a href='https://github.com/lintalist/lintalist/'>github.com/lintalist/lintalist</a></p>
 
-<p>
-Lintalist <b>Bundles</b>: <br />
+<p>Lintalist <b>Bundles</b>:<br />
 <a href='https://github.com/lintalist/lintalist-bundles/'>github.com/lintalist/lintalist-bundles/</a></p>
+
+<p><b>Videos:</b><br />
+<a href="http://youtu.be/c3d-yu5C6oU">General</a>; 
+<a href="http://youtu.be/ttLoSKvE678">HTML/MD</a>; 
+<a href="http://youtu.be/J1StUarGHmI">Formatted</a>; and
+<a href="http://youtu.be/TXTdit1aUOk">Plugins</a></p>
 
 </div>
 
@@ -128,7 +133,7 @@ Installing Lintalist is easy, just download the ZIP file and unpack it in a fold
 If you are already an AutoHotkey user and have it installed, it is recommended to run <b>Lintalist.ahk</b>, this will ensure you will be running Lintalist with your preferred version of AutoHotkey. If you don't have AutoHotkey installed you can start <b>Lintalist.exe</b>.
 
 <b>Notes:</b>
-- Lintalist.exe: A renamed AutoHotkey.exe (v1.1.18 32-bit Unicode, See http://ahkscript.org/ and/or http://ahkscript.org/download/)
+- Lintalist.exe: A renamed AutoHotkey.exe (v1.1.19.01 32-bit Unicode, See http://ahkscript.org/ and/or http://ahkscript.org/download/)
 - Lintalist.ahk: The actual (main) source code of the program (see https://github.com/lintalist/lintalist)
 
 <h2 id='Searching'>Normal use: Starting Lintalist and searching for a Snippet</h2>
@@ -313,10 +318,10 @@ Some important options:
 </thead>
 <tr id='SendMethod'><td><b>SendMethod</b></td><td>If you experience any problems with the way text is sent to the various applications you use,
   you should try various methods to see if it resolves the issue:
-  1=SendInput
-  2=SendEvent
-  3=SendPlay
-  4=ControlSend</td></tr>
+  1 = SendInput
+  2 = SendEvent
+  3 = SendPlay
+  4 = ControlSend</td></tr>
 <tr id='PasteDelay'><td><b>PasteDelay</b></td><td>If the text of the snippet is not pasted in to your application after a search, shortcut
   or shorthand you could try to increase the number of Milliseconds before the text is 
   pasted.</td></tr>
@@ -353,11 +358,20 @@ More options may be added in future versions such as special hotkeys.</td></tr>
   Note that some editors cut or copy an entire line if no selection is made (UltraEdit, 
   Sublime Text, Editpad ...) so it may lead to some unexpected results.
   If you work with such an editor make sure you have always selected some text before 
-  you start this. Some editors will allow you to change this behaviour (UE).</td></tr>
+  you start this. Some editors will allow you to change this behaviour (UE).
+  If you want to disable QuickSearchHotkey simply delete the hotkey in the configuration (make it empty)
+  </td></tr>
 <tr id='PreviewSection'><td><b>PreviewSection</b></td><td>What to show in the preview area:
-  1=Text of part one of snippet (recommended)
-  2=Text of part two of snippet (fall back on Part 1 if Part 2 is empty)
-  3=Script code of snippet (fall back to Part 1 if 3 is empty)</td></tr>
+  1 = Text of part one of snippet (recommended)
+  2 = Text of part two of snippet (fall back on Part 1 if Part 2 is empty)
+  3 = Script code of snippet (fall back to Part 1 if 3 is empty)</td></tr>
+<tr id='PasteMethod'><td><b>PasteMethod</b></td><td>Retain current clipboard or set it as current clipboard content
+  0 = Paste snippet and retain current clipboard content (=default behaviour)
+  1 = Paste snippet and keep it as the current clipboard content (so you can manually paste it again)
+  2 = Don't paste snippet content but copy it to the clipboard so you can manually paste it.</td></tr>
+<tr id='OnPaste'><td><b>OnPaste</b></td><td>Exit Lintalist after pasting snippet?
+  0 = No
+  1 = Yes</td></tr>
 </tbody>
 </table>
 Edit settings.ini or choose configuration in the tray menu for more options.
@@ -588,7 +602,7 @@ Formatted text, styled text, or rich text, as opposed to plain text, has styling
 
 <b>General Notes:</b>
 1. The application where you paste the snippet INTO does have to accept the formatted text, otherwise nothing will be pasted. Pasting an image into Notepad for example will have no result. Some applications will not accept RTF but will accept HTML or vice versa.
-2. Plugins are supported in HTML, Markdown and RTF, not Image. Note that support in RTF may depend on how the RTF file is written (line breaks, formatting etc.) so you may have experiment and also try to avoid applying styles to the plugin text.
+2. Plugins are supported in HTML, Markdown and RTF, not Image. Note that support in RTF may depend on how the RTF file is written (line breaks, formatting etc.) so you may have to experiment and also try to avoid applying styles to the plugin text.
 3. The Caret position after pasting - <code>^|</code> - does not work with any of these Formatted Text Snippets.
 
 <h3 id='html-FormattedText'><em>HTML</em></h3>
@@ -805,6 +819,17 @@ The following converters are available via <b>Extras\BundleConverters\</b> (requ
 If you have made a converter let me know so I can add a link to it or possible include it with Lintalist.
 
 Also, if you know of taglists, bundles, etc of other editors and programs you would like to see converted drop a line at the AHKScript forum or <a href='https://github.com/lintalist/lintalist/issues'>GH</a> and include a link to some examples if possible.
+
+<h2 id='cmdline'>Command line <em>parameters</em>  <span class='small'>[v1.2+]</span></h2>
+
+<b>-Active</b>: starting Lintalist and open the search window
+
+	Usage Running lintalist.exe installed: <em>lintalist.exe lintalist.ahk -Active</em>
+	Usage AutoHotkey installed:            <em>lintalist.ahk -Active</em>
+
+There is also a configuration setting that can do this: ActivateWindow
+
+
 
 <h2 id='FAQ'>F.A.<em>Q</em> &amp; Known <em>Issues</em></h2>
 
