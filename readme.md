@@ -41,10 +41,10 @@ visit <http://lintalist.github.io/>
 
 # Videos
 
-* Introduction: <http://youtu.be/c3d-yu5C6oU>
-* HTML/Markdown: <http://youtu.be/ttLoSKvE678>
+* Introduction: <http://youtu.be/XfjZPAhHB8c>
+* HTML/Markdown: <http://youtu.be/Q6SFkttjUQk>
 * Formatted text: <http://youtu.be/J1StUarGHmI>
-* Plugins: <http://youtu.be/TXTdit1aUOk>
+* Plugins: <http://youtu.be/Rtd_ChyRVkM>
 
 # AutoHotkey
 

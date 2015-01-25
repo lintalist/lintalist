@@ -15,9 +15,10 @@ If (Width > CompactWidth)        ; if not change
 	 ExtraLV=20
 	}
 	
-VisibleRows:=Ceil(LVHeight/20)  ; TODO: Calculate correct value for 20 for pagedown/pageup as is just a rough guess
 
 Gosub, GuiRadioAndCheckPos
+
+VisibleRows:=Ceil(LVHeight/20)  ; TODO: Calculate correct value for 20 for pagedown/pageup as is just a rough guess
 
 Return
 

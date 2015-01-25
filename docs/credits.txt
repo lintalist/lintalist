@@ -35,3 +35,10 @@ Markdown2HTML() + StrStartsWith() functions
 from GenDocs v3.0-alpha004 - Author: fincs
 Source: https://github.com/fincs/GenDocs
 + modifactions for table and HTML block support (see Markdown2HTML.ahk)
+
+AutoHotkey wrapper for Windows native Zip feature by Coco
+http://ahkscript.org/boards/viewtopic.php?f=6&t=3892
+https://github.com/cocobelgica/AutoHotkey-ZipFile
+
+VersionCompare by boiler 
+http://ahkscript.org/boards/viewtopic.php?f=6&t=5959

@@ -102,6 +102,11 @@ ReadIni()
 	 	Append2Ini("AlwaysUpdateBundles",ini)
 	 IniRead, AlwaysUpdateBundles,%ini%, settings, AlwaysUpdateBundles, 0
 
+	 IniRead, AutoExecuteOne,%ini%, settings, AutoExecuteOne
+	 If (AutoExecuteOne = "ERROR")
+	 	Append2Ini("AutoExecuteOne",ini)
+	 IniRead, AutoExecuteOne,%ini%, settings, AutoExecuteOne, 0
+
 	 ReadCountersIni()
 
   }                         
@@ -141,7 +146,7 @@ CreateDefaultIni()
 	 ,CompactHeight,WideWidth,WideHeight,Width,Height,PreviewHeight,ShowIcons
 	 ,PreviewSection,ShowGrid,Icon1,Center,MouseAlternative,Mouse,Counters
 	 ,SetStartup,SetDesktop,IniVersion,ShowQuickStartGuide
-	 ,ActivateWindow,OnPaste,PasteMethod,AlwaysUpdateBundles"
+	 ,ActivateWindow,OnPaste,PasteMethod,AlwaysUpdateBundles,AutoExecuteOne"
 	 NewIni=
 	 (
 `; Lintalist uses a modified version of Func_IniSettingsEditor, http://www.autohotkey.com/forum/viewtopic.php?p=69534#69534

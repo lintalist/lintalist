@@ -4,7 +4,7 @@ Name            : Lintalist
 Author          : Lintalist
 Purpose         : Searchable interactive lists to copy & paste text, run scripts,
                   using easily exchangeable bundles
-Version         : 1.2
+Version         : 1.3
 Code            : https://github.com/lintalist/
 Website         : http://lintalist.github.io/
 AHKscript Forum : http://ahkscript.org/boards/viewtopic.php?f=6&t=3378
@@ -36,7 +36,7 @@ FileEncoding, UTF-8
 
 ; Title + Version are included in Title and used in #IfWinActive hotkeys and WinActivate
 Title=Lintalist
-Version=1.2
+Version=1.3
 
 ; ClipCommands are used in ProcessText and allow user input and other variable input into text snippets
 ; ClipCommands=[[Input,[[DateTime,[[Choice,[[Selected,[[Var,[[File,[[Snippet=
@@ -56,6 +56,8 @@ Menu, Tray, Icon, icons\lintalist_suspended.ico ; while loading show suspended i
 Menu, Tray, Add, &Help,          	 TrayMenuHandler
 Menu, Tray, Add, Quick Start Guide,  TrayMenuHandler
 Menu, Tray, Add, &Configuration,     TrayMenuHandler
+Menu, Tray, Add,
+Menu, Tray, Add, Check for updates,  TrayMenuHandler
 Menu, Tray, Add,
 Menu, Tray, Add, &Edit Local Bundle, TrayMenuHandler
 Menu, Tray, Add, &Manage counters,   TrayMenuHandler
@@ -357,7 +359,15 @@ Loop, parse, Load, CSV
 		}
 	 If (match = 0)
 		SB_SetText(LV_GetCount() "/" . ListTotal ,2) ; otherwise it won't show zero results
-	GuiControl, 1:+Redraw, MyListView
+	 GuiControl, 1:+Redraw, MyListView
+	}
+
+If (CurrHits = 1)
+	{
+	 if (AutoExecuteOne = 1)
+		Gosub, paste
+	 else if (AutoExecuteOne = 2)
+		Gosub, shiftenter
 	}
 Return
 
@@ -397,7 +407,6 @@ Return
 
 ; We made a selection and now want to paste and process the selected text or run script
 Paste:
-formatted:=0
 Gui, 1:Submit, NoHide
 ControlFocus, SysListView321, %AppWindow%
 SelItem := LV_GetNext()
@@ -454,6 +463,7 @@ If (Script = "") or (ScriptPaused = 1) ; script is empty so we need to paste Tex
 			 Clip:=FixURI(Clip,"html",A_ScriptDir)
 			 WinClip.SetHTML(clip)
 			 Clip:=RegExReplace(clip,"iU)</*[^>]*>") ; strip HTML tags so we can paste normal text if need be
+			 CheckCursorPos()
 			 WinClip.SetText(Clip)
 			}
 		 else if InStr(Clip,"[[html]]")
@@ -461,9 +471,9 @@ If (Script = "") or (ScriptPaused = 1) ; script is empty so we need to paste Tex
 			 StringReplace,Clip,Clip,[[html]],,all
 			 Clip:=FixURI(Clip,"html",A_ScriptDir)
 			 Gosub, ProcessText
-			 CheckCursorPos()
 			 WinClip.SetHTML(Clip)
 			 Clip:=RegExReplace(clip,"iU)</*[^>]*>") ; strip HTML tags so we can paste normal text if need be
+			 CheckCursorPos()
 			 WinClip.SetText(Clip)
 			}
 		 else if InStr(Clip,"[[rtf=")
@@ -484,7 +494,7 @@ If (Script = "") or (ScriptPaused = 1) ; script is empty so we need to paste Tex
 		}
 	 Else
 		Clipboard:=ClipSet("s",2,SendMethod,Clip) ; set clip2
-	 If (formatted = 0)
+	 If !(formatted > 0)  ; only check for ^| post if it is a plain text snippet
 	 	CheckCursorPos()
 	 formatted:=0	
 	 GUI, 1:Destroy
@@ -882,9 +892,9 @@ ControlSend, SysListview321, {Down}, %AppWindow%
 ItemsInList:=LV_GetCount()
 ChoicePos:=PreviousPos+1
 If (ChoicePos > ItemsInList)
-   ChoicePos := ItemsInList
+	ChoicePos := ItemsInList
 If (ChoicePos = PreviousPos)
-    ControlSend, SysListview321, {Home}, %AppWindow%
+	ControlSend, SysListview321, {Home}, %AppWindow%
 ShowPreview(PreviewSection)
 ControlFocus, Edit1, %AppWindow%
 Return
@@ -1075,6 +1085,8 @@ If (A_ThisMenuItem = "&Help")
 	Run, docs\index.html
 Else If (A_ThisMenuItem = "Quick Start Guide")
 	Gosub, QuickStartGuideMenu
+Else If (A_ThisMenuItem = "Check for updates")
+	Run, %A_AhkPath% %A_ScriptDir%\include\update.ahk
 Else If (A_ThisMenuItem = "&Edit Local Bundle")
 		{
 		 RunWait, %A_AhkPath% include\localbundleeditor.ahk
