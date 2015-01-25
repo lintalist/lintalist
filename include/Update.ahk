@@ -27,8 +27,8 @@ UnpackFolder:=LintalistFolder "\tmpscrpts"
 
 FileDelete, %UnpackFolder%\checkupdate.ini
 
-URLDownloadToFile, https://raw.githubusercontent.com/lintalist/master/version.ini, %UnpackFolder%\checkupdate.ini
-
+URLDownloadToFile, https://raw.githubusercontent.com/lintalist/lintalist/master/version.ini, %UnpackFolder%\checkupdate.ini
+                   
 IniRead, currentversion, %LintalistFolder%\version.ini, settings, version
 If (currentversion = "ERROR")
 	{
