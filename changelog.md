@@ -1,3 +1,4 @@
+* New: Extended Clipboard & Selected plugins (upper, lower, sentence, title, wrap)
 
 ### Changelog v1.3
 

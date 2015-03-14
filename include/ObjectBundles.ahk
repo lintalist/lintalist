@@ -217,11 +217,13 @@ LoadPersonalBundle()
 	   	{
      	 StringSplit, __pers, __loc%A_Index%, % Chr(7) ; %
 	   	 LocalVar_%__pers1% := __pers2
+	   	 LocalVarMenu .= __pers1 ","
 	   	 __pers1= ; free mem
      	 __pers2=
 	   	 __loc%A_Index%=
      	}
      Patterns= ; free mem
+     LocalVarMenu:=Rtrim(LocalVarMenu,",")
 	 Return	
 	}
 	

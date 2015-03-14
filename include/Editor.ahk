@@ -11,6 +11,7 @@
 ; F8  = Delete snippet		
 ; F10 = New bundle			
 
+
 BundleEditor:
 InEditMode = 1
 
@@ -156,6 +157,7 @@ If (EditMode = "EditSnippet") or (EditMode = "CopySnippet") ; get snippet vars f
 Filename:=Filename_%paste1%
 
 Gui, 71:+Owner	
+Gui, 71:Menu, MenuBar2
 If (EditMode = "NewBundle")
 	Gui, 71:Add, Tab2, x5 y5 w730 h495 gTabClick, %A_Space%%A_Space%Snippet Text and Code%A_Space%%A_Space%%A_Space%%A_Space%%A_Space%%A_Space%|%A_Space%%A_Space%%A_Space%%A_Space%Bundle Properties%A_Space%%A_Space%%A_Space%%A_Space%%A_Space%%A_Space%%A_Space%%A_Space%||
 Else

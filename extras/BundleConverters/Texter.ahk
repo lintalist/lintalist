@@ -22,7 +22,7 @@ lines starting with ::SCR:: are scripts -> script
 SetBatchLines, -1
 Text=Select a Texter bundle (Exported from Texter)
 Mask=*.texter
-#include _GetSourceFile.ahk
+#include %A_ScriptDir%\_GetSourceFile.ahk
 
 ; ------------------------------------------------------------
 
@@ -72,4 +72,4 @@ append=
    }
 ; ------------------------------------------------------------
 
-#include _SaveBundleFile.ahk
+#include %A_ScriptDir%\_SaveBundleFile.ahk

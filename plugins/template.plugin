@@ -14,7 +14,7 @@ Loop
 	{
 	 If (InStr(Clip, "[[" PLUGINNAME ) = 0)
 	 	Break
-	 RegExMatch(Clip, "iU)\[\[" PLUGINNAME "=(.*)\]\]", ClipQ, 1) ; ClipQ1 will contains the parameter(s)
+	 RegExMatch(Clip, "iU)\[\[" PLUGINNAME "=(.*)\]\]", ClipQ, 1) ; ClipQ1 will contain the parameter(s)
 	 ; do your magic here
 	 ; ClipQ2 -> Store the info you want to replace the Plugin with, see StringReplace below
 	 

@@ -10,7 +10,7 @@ Version=1.0
 SetBatchLines, -1
 Text=Select an UltraEdit Taglist
 Mask=*.txt
-#include _GetSourceFile.ahk
+#include %A_ScriptDir%\_GetSourceFile.ahk
 
 ; ------------------------------------------------------------
 
@@ -116,11 +116,11 @@ StringReplace, NewText, NewText, ..., [[clipboard]], all
 Output:=NewText
 
 ; ------------------------------------------------------------
-#include _SaveBundleFile.ahk
+#include %A_ScriptDir%\_SaveBundleFile.ahk
 
 Gosub, GuiClose
 Return
 
 Esc::
 GuiClose:
-ExitApp		
+ExitApp

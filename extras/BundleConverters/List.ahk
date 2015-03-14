@@ -8,7 +8,7 @@ Version=1.0
 SetBatchLines, -1
 Text=Select a plain text file list (one line per snippet)
 Mask=*.txt
-#include _GetSourceFile.ahk
+#include %A_ScriptDir%\_GetSourceFile.ahk
 
 ; ------------------------------------------------------------
 loop, parse, list, `n, `r 
@@ -27,4 +27,4 @@ If (A_LoopField = "") ; skip empty lines
    }
 ; ------------------------------------------------------------
 
-#include _SaveBundleFile.ahk
+#include %A_ScriptDir%\_SaveBundleFile.ahk

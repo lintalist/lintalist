@@ -15,9 +15,10 @@ Loop, %A_ScriptDir%\plugins\*.ahk
 	 	Continue
 	 ClipCommand .= "[[" SubStr(A_LoopFileName,1,StrLen(A_LoopFileName)-4) "|"
 	}
-StringReplace, ClipCommand, ClipCommand, [[c|, , All ; C has to be at end
+StringReplace, ClipCommand, ClipCommand, [[calc|, , All ; Calc and C have to be at the end
+StringReplace, ClipCommand, ClipCommand, [[c|, , All    ; 
 StringTrimRight, ClipCommand, ClipCommand, 1
-ClipCommand .= "|[[c"
+ClipCommand .= "|[[calc|[[c"
 StringReplace, ClipCommandRE, ClipCommand, [, \[, All ; for RE later
 ;MsgBox % Clipcommand ; debug only
 Return
@@ -33,7 +34,10 @@ Return
 #Include %A_ScriptDir%\plugins\file.ahk        ; Include file
 #Include %A_ScriptDir%\plugins\calendar.ahk    ; Calendar 
 #Include %A_ScriptDir%\plugins\counter.ahk     ; Counters
+#Include %A_ScriptDir%\plugins\calc.ahk        ; Math
 #Include %A_ScriptDir%\plugins\c.ahk           ; Character plugin
+;#Include %A_ScriptDir%\plugins\enc.ahk         ; Enc(rypt) plugin (decode)
+#Include %A_ScriptDir%\plugins\ClipSelExFunc.ahk
 
 ;----------------------------------------------------------------
 ; See readme-howto.txt for further info on how to write a plugin.

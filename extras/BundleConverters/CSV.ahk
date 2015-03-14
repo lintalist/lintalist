@@ -15,7 +15,7 @@ section (Part1 and Part2), seperate by a comma.
 SetBatchLines, -1
 Text=Select a CSV file
 Mask=*.csv
-#include _GetSourceFile.ahk
+#include %A_ScriptDir%\_GetSourceFile.ahk
 
 Spacer:=A_Space
 TrimR:=StrLen(Spacer)
@@ -84,7 +84,7 @@ Loop, parse, list, `n, `r
 
 ; ------------------------------------------------------------
 
-#include _SaveBundleFile.ahk
+#include %A_ScriptDir%\_SaveBundleFile.ahk
 
 GuiEscape:
 ExitApp

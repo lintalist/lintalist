@@ -57,4 +57,10 @@ This script requires a working copy of autohotkey.exe to be present in order to 
 user scripts defined in bundles. If you have AHK installed you can safely delete
 lintalist.exe and just start lintalist.ahk directly.
 
+### Elsewhere
+
+* [AutoHotkey.com](http://www.autohotkey.com/board/topic/107687-lintalist-searchable-interactive-lists-to-copy-paste-text/)
+* [Portablefreeware.com](http://www.portablefreeware.com/index.php?id=2686)
+* [Alternativeto.net](http://alternativeto.net/software/lintalist/)
+
 Copyright 2009-2015 Lintalist. See license.txt

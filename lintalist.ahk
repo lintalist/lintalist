@@ -4,7 +4,7 @@ Name            : Lintalist
 Author          : Lintalist
 Purpose         : Searchable interactive lists to copy & paste text, run scripts,
                   using easily exchangeable bundles
-Version         : 1.3
+Version         : 1.4
 Code            : https://github.com/lintalist/
 Website         : http://lintalist.github.io/
 AHKscript Forum : http://ahkscript.org/boards/viewtopic.php?f=6&t=3378
@@ -31,12 +31,13 @@ ListLines, off
 TmpDir:= A_ScriptDir "\tmpscrpts"
 CoordMode, ToolTip, Screen
 SendMode, Input
+SetKeyDelay, -1
 SetWorkingDir, %A_ScriptDir%
 FileEncoding, UTF-8
 
 ; Title + Version are included in Title and used in #IfWinActive hotkeys and WinActivate
 Title=Lintalist
-Version=1.3
+Version=1.4
 
 ; ClipCommands are used in ProcessText and allow user input and other variable input into text snippets
 ; ClipCommands=[[Input,[[DateTime,[[Choice,[[Selected,[[Var,[[File,[[Snippet=
@@ -93,7 +94,13 @@ if 0 > 0  ; check cl parameters
 		{
 		 param := %A_Index%  ; Fetch the contents of the variable whose name is contained in A_Index.
 		 if (param = "-Active")
-		 	cl_Active:=1
+			cl_Active:=1
+		 if InStr(param,"-Bundle")	
+			{
+			 cl_Bundle:=StrSplit(param,"=").2
+			 If !FileExist(A_ScriptDir "\bundles\" cl_Bundle)
+				cl_Bundle:=""
+		 	} 
 		 param:=""
 		}
 	}
@@ -102,6 +109,13 @@ if 0 > 0  ; check cl parameters
 
 ; INI ---------------------------------------
 ReadIni()
+
+if cl_Bundle
+ 	{
+	 LastBundle:=cl_Bundle
+	 Lock:=1
+ 	}	
+
 Gosub, CheckShortcuts
 
 ; Tray Menu settings
@@ -154,10 +168,10 @@ Loop
 	{
 	 ;Get one key at a time
 	 if (cl_Active = 1) or (ActivateWindow = 1)
-	 	{
+		{
 		 Gosub, GuiStart
 		 cl_Active:=0, ActivateWindow:=0
-	 	}
+		}
 	 Input, TypedChar, L1 V I, {BS}%TerminatingCharacters%
 	 CheckTyped(TypedChar,ErrorLevel)
 	}
@@ -229,8 +243,8 @@ SB_SetParts(SB1)
 Gosub, GetText
 XY:=StayOnMonXY(Width, Height, Mouse, MouseAlternative, Center) ; was XY:=StayOnMonXY(Width, Height, 0, 1, 0)
 StringSplit, Pos, XY, |
-If (x="") or (y="")
-	x:=100, y:=100
+If (Pos1="") or (Pos2="")
+    Pos1:=100, Pos2:=100
 Gui, Show, w%Width% h%Height% x%Pos1% y%Pos2%, %AppWindow%
 GuiJustShown:=1
 If (JumpSearch=1) ; Send clipboard text to search control
@@ -373,36 +387,39 @@ Return
 
 ; (Double)click in listview, action defined in INI
 Clicked:
-   IfNotEqual A_GuiControlEvent, DoubleClick
-	{
-	 ShowPreview(PreviewSection)
-	 Return
-	}
-   Else
-	{
-	 If (DoubleClickSends = 1)
-		 Gosub, paste
-	 else if (DoubleClickSends = 2)
+	; ignore all other events apart from doubleclick and normal left-click
+	If A_GuiControlEvent not in DoubleClick,Normal
+		Return
+	IfEqual A_GuiControlEvent, Normal
+		{
+		 ShowPreview(PreviewSection)
+		 If (SingleClickSends = 0) ; if set to 1 in configuration a normal click will act
+			Return                 ; the same as a doubleclick (also configurable)
+		}
+
+	If (DoubleClickSends = 1)
+		Gosub, paste
+	else if (DoubleClickSends = 2)
 		{
 		 gosub, shiftenter
 		}
-	 else if (DoubleClickSends = 3)
+	else if (DoubleClickSends = 3)
 		{
 		 gosub, ctrlenter
 		}
-	 else if (DoubleClickSends = 4)
+	else if (DoubleClickSends = 4)
 		{
 		 gosub, shiftctrlenter
 		}
-	 else if (DoubleClickSends = 5)
+	else if (DoubleClickSends = 5)
 		{
 		 gosub,editf4
 		}
-	 else if (DoubleClickSends = 6)
+	else if (DoubleClickSends = 6)
 		{
 		 gosub,editf7
 		}
-	}
+	
 Return
 
 ; We made a selection and now want to paste and process the selected text or run script
@@ -415,6 +432,8 @@ If (SelItem = 0)
 LV_GetText(Paste, SelItem, 5) ; get bundle_index from 5th column which is always hidden
 Gui, 1:Destroy
 CurrText= ; 20110623
+if (paste = "") ; there were no search results, this will prevent pasting result from empty Gui, instead it would paste the previous one
+	Return
 ; We got here via Shortcut or abbreviation defined in active bundle(s)
 ViaShortCut:
 StringSplit, paste, paste, _      ; split to bundle / index number
@@ -438,6 +457,11 @@ If (Script = "") or (ScriptPaused = 1) ; script is empty so we need to paste Tex
 		{ ; insert clipboard
 		 StringReplace, Text1, Text1, [[Clipboard]], %Clipboard%, All
 		 StringReplace, Text2, Text2, [[Clipboard]], %Clipboard%, All
+		}
+	 If (InStr(Text1, "[[Clipboard=") > 0) or (InStr(Text2, "[[Clipboard=") > 0)
+		{ ; preprocess clipboard before inserting into snippet
+		 Text1:=ProcessClipboard(Text1)
+		 Text2:=ProcessClipboard(Text2)
 		}
 	 If (PastText1 = 1) OR (Text2 = "")
 		Clip:=Text1
@@ -730,7 +754,9 @@ Return
 
 #IfWinActive, ahk_group AppTitle   ; Hotkeys only work in the just created GUI
 Esc::
-Gosub, 1GuiClose ; for some reason this is needed, 1GuiEspace doesn't seem to work
+Gosub, 1GuiClose ; for some reason this is needed, 1GuiEscape doesn't seem to work
+IfWinExist, Lintalist bundle editor
+	Gosub, 71GuiClose
 Return
 
 F4:: ; edit snippet
@@ -868,7 +894,8 @@ If (ScriptPaused = 1) and (StoreScriptPaused = 0)
 	ScriptPaused = 0
 Return
 
-Up::
+~Up::
+ControlSend, Edit1, ^{end}, %AppWindow% ; v1.4 to keep caret at end of typed text in searchbox
 PreviousPos:=LV_GetNext()
 If (PreviousPos = 0) ; exeption, focus is not on listview this will allow you to jump to last item via UP key
 	{
@@ -886,7 +913,8 @@ ShowPreview(PreviewSection)
 ControlFocus, Edit1, %AppWindow%
 Return
 
-Down::
+~Down::
+ControlSend, Edit1, ^{end}, %AppWindow% ; v1.4 to keep caret at end of typed text in searchbox
 PreviousPos:=LV_GetNext()
 ControlSend, SysListview321, {Down}, %AppWindow%
 ItemsInList:=LV_GetCount()
@@ -929,7 +957,7 @@ ControlGetFocus, Control, Lintalist bundle editor
 If Control not in Edit2,Edit3
 	Send {Rbutton}
 Else
-	Menu, Editor, Show
+	Menu, Plugins, Show
 Return
 #IfWinActive
 
@@ -948,7 +976,7 @@ WhichBundle()
 ClipSet("s",1) ; safe current content and clear clipboard
 ClearClipboard()
 Clipboard=
-SendKey(SendMethod, "^c") ; this is where it goes wrong for some editors - see DOC, not a program of lintalist or ahk but certain editors behave differently. (when nothing is selected they will copy an entire line)
+SendKey(SendMethod, "^c") ; this is where it goes wrong for some editors - see DOC, not a problem of lintalist or ahk but certain editors behave differently. (when nothing is selected they will copy an entire line)
 If (Clipboard = "")
 	SendKey(SendMethod, "^+{Left}^x")
 ViaText=1
@@ -1224,7 +1252,7 @@ Else
 			 GuiControl, 1:, Lock, 1
 			 LoadBundle()
 			 UpdateLVColWidth()
-				Gosub, SetStatusBar
+			 Gosub, SetStatusBar
 			 ShowPreview(PreviewSection)
 			 LoadAll=0
 			 Menu, tray, UnCheck, &Load All Bundles
@@ -1251,36 +1279,33 @@ Return
 
 ;EditorMenu
 EditorMenuHandler:
-If (A_ThisMenuItem = "Insert [[Clipboard]]")
-	ControlSend, %Control%, [[Clipboard]], Lintalist bundle editor
-Else If (A_ThisMenuItem = "Insert [[Selected]]")
-	ControlSend, %Control%, [[Selected]], Lintalist bundle editor
-Else If (A_ThisMenuItem = "Insert [[Input=]]")
-	ControlSend, %Control%, [[Input=]]{left 2}, Lintalist bundle editor
-Else If (A_ThisMenuItem = "Insert [[DateTime=]]")
-	ControlSend, %Control%, [[DateTime=]]{left 2}, Lintalist bundle editor
-Else If (A_ThisMenuItem = "Insert [[Choice=]]")
-	ControlSend, %Control%, [[Choice=]]{left 2}, Lintalist bundle editor
-Else If (A_ThisMenuItem = "Insert [[Var=]]")
-	ControlSend, %Control%, [[Var=]]{left 2}, Lintalist bundle editor
-Else If (A_ThisMenuItem = "Insert [[File=]]")
-	ControlSend, %Control%, [[File=]]{left 2}, Lintalist bundle editor
-Else If (A_ThisMenuItem = "Insert [[Snippet=]]")
-	ControlSend, %Control%, [[Snippet=]]{left 2}, Lintalist bundle editor
-Else If (A_ThisMenuItem = "Insert [[Counter=]]")
-	ControlSend, %Control%, [[Counter=]]{left 2}, Lintalist bundle editor
-Else If (A_ThisMenuItem = "Insert [[Calendar=]]")
-	ControlSend, %Control%, [[Calendar=]]{left 2}, Lintalist bundle editor
-Else If (A_ThisMenuItem = "Insert [[C=]]")
-	ControlSend, %Control%, [[C=]]{left 2}, Lintalist bundle editor
-Else If (A_ThisMenuItem = "Insert [[html]]")
-	ControlSend, %Control%, [[html]]{enter}, Lintalist bundle editor
-Else If (A_ThisMenuItem = "Insert [[md]]")
-	ControlSend, %Control%, [[md]]{enter}, Lintalist bundle editor
-Else If (A_ThisMenuItem = "Insert [[rtf=]]")
-	ControlSend, %Control%, [[rtf=]]{left 2}, Lintalist bundle editor
-Else If (A_ThisMenuItem = "Insert [[image=]]")
-	ControlSend, %Control%, [[image=]]{left 2}, Lintalist bundle editor
+ControlGetFocus, Control, Lintalist bundle editor
+; Tools menu
+If (A_ThisMenuItem = "Encrypt text")
+	 Run, %A_AhkPath% include\EncodeText.ahk
+else If (A_ThisMenuItem = "Convert CSV file")
+	Run, %A_AhkPath% Extras\BundleConverters\CSV.ahk
+else If (A_ThisMenuItem = "Convert List")
+	Run, %A_AhkPath% Extras\BundleConverters\List.ahk
+else If (A_ThisMenuItem = "Convert Texter bundle")
+	Run, %A_AhkPath% Extras\BundleConverters\Texter.ahk
+else If (A_ThisMenuItem = "Convert UltraEdit taglist")
+	Run, %A_AhkPath% Extras\BundleConverters\UltraEdit.ahk
+
+; Plugins menu
+If Control not in Edit2,Edit3
+	Return
+
+If RegExMatch(A_ThisMenuItem,"i)(clipboard|selected)")
+	ControlSend, %Control%, % "[[" Trim(A_ThisMenuItem,"=") "]]", Lintalist bundle editor
+Else If RegExMatch(A_ThisMenuItem, "i)(Counter=|Var=)")
+	ControlSend, %Control%, % "[[" A_ThisMenuItem "]]", Lintalist bundle editor
+Else 
+	ControlSend, %Control%, % SubStr(A_ThisMenuItem,8), Lintalist bundle editor
+
+If InStr(A_ThisMenuItem,"=")
+	Send {left 2}
+	
 Return
 ;/EditorMenu
 
@@ -1507,21 +1532,63 @@ Menu, MenuBar, Add, &Bundle, :File
 Return
 
 BuildEditorMenu:
-Menu, Editor, Add, Insert [[Clipboard]], EditorMenuHandler
-Menu, Editor, Add, Insert [[Selected]] , EditorMenuHandler
-Menu, Editor, Add, Insert [[Input=]]   , EditorMenuHandler
-Menu, Editor, Add, Insert [[Snippet=]] , EditorMenuHandler
-Menu, Editor, Add, Insert [[DateTime=]], EditorMenuHandler
-Menu, Editor, Add, Insert [[Counter=]] , EditorMenuHandler
-Menu, Editor, Add, Insert [[Calendar=]], EditorMenuHandler
-Menu, Editor, Add, Insert [[Choice=]]  , EditorMenuHandler
-Menu, Editor, Add, Insert [[Var=]]     , EditorMenuHandler
-Menu, Editor, Add, Insert [[File=]]    , EditorMenuHandler
-Menu, Editor, Add, Insert [[C=]]       , EditorMenuHandler
-Menu, Editor, Add, Insert [[html]]     , EditorMenuHandler
-Menu, Editor, Add, Insert [[md]]       , EditorMenuHandler
-Menu, Editor, Add, Insert [[rtf=]]     , EditorMenuHandler
-Menu, Editor, Add, Insert [[image=]]   , EditorMenuHandler
+ClipSelMenu:="Upper,Lower,Title,Sentence,Wrap|>|<"
+Menu, ClipboardMenu, Add, Clipboard, EditorMenuHandler
+Menu, SelectedMenu , Add, Selected , EditorMenuHandler
+Loop, parse, ClipSelMenu, CSV
+	{
+	 Menu, ClipboardMenu, Add, Clipboard=%A_LoopField%, EditorMenuHandler
+	 Menu, SelectedMenu , Add, Selected=%A_LoopField% , EditorMenuHandler
+	}
+Menu, Plugins, Add, Insert [[Clipboard]], :ClipboardMenu
+Menu, Plugins, Add, Insert [[Selected]] , :SelectedMenu
+
+Menu, Plugins, Add
+
+Menu, LocalCounter, Add, Counter=, EditorMenuHandler
+	 Loop, parse, LocalCounter_0, CSV
+		{
+		 If (A_LoopField <> "")
+			Menu, LocalCounter, Add, Counter=%A_LoopField%, EditorMenuHandler
+		}
+Menu, Plugins, Add, Insert [[Counter=]] , :LocalCounter
+Menu, LocalVar, Add, var=, EditorMenuHandler
+Loop, parse, LocalVarMenu, CSV
+	{
+	 If (A_LoopField <> "")
+		Menu, LocalVar, Add, var=%A_LoopField%, EditorMenuHandler
+	}
+Menu, Plugins, Add, Insert [[Var=]]     , :LocalVar
+
+Menu, Plugins, Add
+
+Menu, Plugins, Add, Insert [[C=]]       , EditorMenuHandler
+Menu, Plugins, Add, Insert [[Calc=]]    , EditorMenuHandler
+Menu, Plugins, Add, Insert [[Calendar=]], EditorMenuHandler
+Menu, Plugins, Add, Insert [[Choice=]]  , EditorMenuHandler
+Menu, Plugins, Add, Insert [[DateTime=]], EditorMenuHandler
+;Menu, Plugins, Add, Insert [[Enc=]]     , EditorMenuHandler
+Menu, Plugins, Add, Insert [[File=]]    , EditorMenuHandler
+Menu, Plugins, Add, Insert [[Input=]]   , EditorMenuHandler
+Menu, Plugins, Add, Insert [[Snippet=]] , EditorMenuHandler
+
+Menu, Plugins, Add
+
+Menu, Plugins, Add, Insert [[Image=]]   , EditorMenuHandler
+Menu, Plugins, Add, Insert [[html]]     , EditorMenuHandler
+Menu, Plugins, Add, Insert [[md]]       , EditorMenuHandler
+Menu, Plugins, Add, Insert [[rtf=]]     , EditorMenuHandler
+
+;Menu, Tools, Add, Encrypt text          , EditorMenuHandler
+;Menu, Tools, Add, 
+Menu, Tools, Add, Convert CSV file         , EditorMenuHandler
+Menu, Tools, Add, Convert List             , EditorMenuHandler
+Menu, Tools, Add, Convert Texter bundle    , EditorMenuHandler
+Menu, Tools, Add, Convert UltraEdit taglist, EditorMenuHandler
+
+Menu, MenuBar2, Add, &Plugins, :Plugins
+Menu, MenuBar2, Add, &Tools, :Tools ; make it available in Edit gui
+Menu, MenuBar , Add, &Tools, :Tools ; make it available in Search gui
 Return
 
 ; OnExit
