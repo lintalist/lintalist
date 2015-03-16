@@ -1,4 +1,30 @@
+### Changelog v1.4.1
+
+* Fix: ShowPreview no longer worked reliabley due to "SetKeyDelay, -1" - removed it
+* Fix: Somehow Changelog was only partially included.
+
+### Changelog v1.4
+
 * New: Extended Clipboard & Selected plugins (upper, lower, sentence, title, wrap)
+  https://github.com/lintalist/lintalist/issues/12
+* New: Calc plugin - Evaluate arithmetic expressions (using Laszlo's Eval/Monster)
+  https://github.com/lintalist/lintalist/issues/15
+* New: Plugins & Tools menu in Bundle Editor including dynamic submenus for clipboard,
+  selected, counter & local variables plugins
+* New: Settting for Single click in listview to act as double click
+  ht: **dsewq1LYJ** https://github.com/lintalist/lintalist/issues/16
+* New: Command line parameters -Bundle: load specific bundle and lock
+  https://github.com/lintalist/lintalist/issues/8
+* Fix: Minor bug which would allow last snippet to be pasted again if enter was given
+  on an empty results list
+* Fix: Up & Down arrow navigation should now work in the Bundle menu (Search GUI)
+  this includes sending additional hidden keystrokes to the search control, do
+  report errors if you experience any.
+* Fix: Error on Gui, Show in lintalist.ahk for AHK v1.1.20+
+
+### Changelog v1.3.1
+
+* Fix: url fix update version check
 
 ### Changelog v1.3
 
