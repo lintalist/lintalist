@@ -11,10 +11,10 @@ WhichBundle() ; determine which bundle to use based on active window (titlematch
 	 If (Lock = 1) ; Load was already set by FileMenu or was locked by user
 		 Return
 	 If (LoadAll = 1)
-	 	{
-	 	 Load:=Group
-	 	 Return
-	 	}	 
+		{
+		 Load:=Group
+		 Return
+		}	 
 	 Load= ; clear
 	 Loop, parse, group, CSV ; detect which list to use
 		{
@@ -51,9 +51,9 @@ LoadBundle(Reload="")
 	 Col4=0
 	 Loop, parse, MenuName_HitList, |
 		{
- 		 StringSplit, MenuText, A_LoopField, % Chr(5)
- 		 Menu, file, UnCheck, &%MenuText1%
- 		}
+		 StringSplit, MenuText, A_LoopField, % Chr(5)
+		 Menu, file, UnCheck, &%MenuText1%
+		}
 
 	 ; setup imagelist and define icons
 	 #Include %A_ScriptDir%\include\ImageList.ahk
@@ -61,10 +61,10 @@ LoadBundle(Reload="")
 	 Loop, Parse, Load, CSV
 	 {
 	  Bundle:=A_LoopField
-   	  MenuItem:=MenuName_%Bundle%
+	  MenuItem:=MenuName_%Bundle%
 	  If (MenuItem <> "") ; just to be sure
 		Menu, file, Check, &%MenuItem%
- 
+
 	  Max:=Snippet[Bundle].MaxIndex()
 	  Max:=MaxRes
 	  Loop, % max
@@ -74,10 +74,10 @@ LoadBundle(Reload="")
 
 		 IconVal:=""
 		 IfEqual, ShowIcons, 1
- 			{
+			{
 			 IconVal:=SetIcon(Snippet[Bundle,A_Index],Snippet[Bundle,A_Index,5])
- 			}
-		 LV_Add(IconVal,Snippet[Bundle,A_Index,"1v"],Snippet[Bundle,A_Index,"2v"],Snippet[Bundle,A_Index,3],Snippet[Bundle,A_Index,4],Bundle . "_" . A_Index) ; populate listview			
+			}
+		 LV_Add(IconVal,Snippet[Bundle,A_Index,"1v"],Snippet[Bundle,A_Index,"2v"],Snippet[Bundle,A_Index,3],Snippet[Bundle,A_Index,4],Bundle . "_" . A_Index, MenuName_%Bundle%) ; populate listview
 	
 		 If (Snippet[Bundle,A_Index,"2v"] <> "") ; part2 e.g. shift+enter
 			Col2 = 1
@@ -87,6 +87,8 @@ LoadBundle(Reload="")
 			Col4 = 1
 		}
 	 }	
+	 If (DisplayBundle > 1)
+	 	Gosub, ColorList
 	 Return	
 	}
 
@@ -119,7 +121,7 @@ LoadAllBundles()
 		 If (SubStr(AlwaysLoadBundles, 1, 1) = ",") ; if it has changed write to ini so it will be faster at next startup. The Bundle isn't there so no need to try and load it again next time around.
 			StringTrimLeft, AlwaysLoadBundles, AlwaysLoadBundles, 1
 		 IniWrite, %AlwaysLoadBundles%, Settings.ini, Settings, AlwaysLoadBundles
-        }
+		}
      Changed:=LastBundle
 	 Loop, parse, LastBundle, CSV
 		{
@@ -135,7 +137,7 @@ LoadAllBundles()
 		 If (SubStr(LastBundle, 1, 1) = ",") ; if it has changed write to ini so it will be faster at next startup. The Bundle isn't there so no need to try and load it again next time around.
 			StringTrimLeft, LastBundle, LastBundle, 1
 		 IniWrite, %LastBundle%, Settings.ini, Settings, LastBundle
-    }		 	 
+	}		 	 
 	 If (LastBundle	= "") and (Lock = 1)
 		Lock=0 ; unlock as it won't be able to load the bundle that was last locked anyway
 	 Changed:=DefaultBundle
@@ -153,14 +155,14 @@ LoadAllBundles()
 		 If (SubStr(DefaultBundle, 1, 1) = ",") ; if it has changed write to ini so it will be faster at next startup. The Bundle isn't there so no need to try and load it again next time around.
 			StringTrimLeft, DefaultBundle, DefaultBundle, 1
 		 IniWrite, %DefaultBundle%, Settings.ini, Settings, DefaultBundle
-    }		
+	}		
 	 Loop, parse, AvailableBundles, CSV
 		{
 		 If (A_LoopField = DefaultBundle)
 			 DefaultBundleIndex:=A_Index ; default bundle defined in INI setting
-	   If A_LoopField in %LastBundle%
+		 If A_LoopField in %LastBundle%
 			 Load .= A_Index ","
-	   If A_LoopField in %AlwaysLoadBundles%
+		 If A_LoopField in %AlwaysLoadBundles%
 			 StringReplace, AlwaysLoadBundles, AlwaysLoadBundles, %A_LoopField%, %A_Index%, All
 		 ReadBundle(A_LoopField, A_Index)
 		}	
@@ -169,39 +171,39 @@ LoadAllBundles()
 	 StringTrimRight, MenuName_HitList, MenuName_HitList, 1 ; remove trailing |
 	 Sort, MenuName_HitList, D|
 	 Return		
-    }
+	}
 
 ReadBundle(File, Counter)
 	{
-   Global
-   IfInString,file,\
-   	FileRead, CBundle, %File%
-   Else	
-	 	FileRead, CBundle, %A_ScriptDir%\Bundles\%File%
+	 Global
+	 IfInString,file,\
+		FileRead, CBundle, %File%
+	 Else
+		FileRead, CBundle, %A_ScriptDir%\Bundles\%File%
 	 ParseBundle(SubStr(CBundle, InStr(CBundle, "- LLPart1:")), Counter)                       ; Create arrays out of ...
 	 Group .= Counter ","
 	 FileName_%Counter%:=File
 	 Loop, Parse, CBundle, `n, `r ; get the various properties of the bundle
 		{
 		 IfInString, A_LoopField, Name:
-		 	{
-	 		 MenuName_%Counter%:=RegExReplace(A_LoopField, "i)^Name:\s*(.*)\s*$", "$1")
+			{
+			 MenuName_%Counter%:=RegExReplace(A_LoopField, "i)^Name:\s*(.*)\s*$", "$1")
 			 If (MenuName_%Counter% = "")
 				MenuName_%Counter%:=File ; safety check, fall back to filename if no name was found
-		 	 MenuName_HitList .= MenuName_%Counter% Chr(5) Counter "|"
-		 	 MenuName_0++
-		 	} 
+			 MenuName_HitList .= MenuName_%Counter% Chr(5) Counter "|"
+			 MenuName_0++
+			} 
 		 IfInString, A_LoopField, Description:
-	 		 Description_%Counter%:=RegExReplace(A_LoopField, "i)^Description:\s*(.*)\s*$", "$1")
+			 Description_%Counter%:=RegExReplace(A_LoopField, "i)^Description:\s*(.*)\s*$", "$1")
 		 IfInString, A_LoopField, Author:
-	 		 Author_%Counter%:=RegExReplace(A_LoopField, "i)^Author:\s*(.*)\s*$", "$1")
+			 Author_%Counter%:=RegExReplace(A_LoopField, "i)^Author:\s*(.*)\s*$", "$1")
 		 IfInString, A_LoopField, TitleMatch:
-	 		 TitleMatchList_%Counter%:=RegExReplace(A_LoopField, "i)^TitleMatch:\s*(.*)\s*$", "$1")
+			 TitleMatchList_%Counter%:=RegExReplace(A_LoopField, "i)^TitleMatch:\s*(.*)\s*$", "$1")
 		 IfInString, A_LoopField, Patterns:
-	 		 Break
+			 Break
 		}
 	 CBundle=
-	 }
+	}
 
 LoadPersonalBundle()
 	{
@@ -212,18 +214,18 @@ LoadPersonalBundle()
 	 Patterns:=RegExReplace(SubStr(CBundle, InStr(CBundle, "Patterns:") + 10),"im)\s*- LLVarName:\s*", Chr(5)) ; prepare split per pattern lintalist bundles
 	 Patterns:=Ltrim(patterns,"`r`n")
 	 Patterns:=RegExReplace(Patterns,"im)\s*LLContent:\s*", Chr(7)) ; prepare split per pattern local bundles
-     StringSplit, __loc, Patterns, % Chr(5) 
-     Loop, % __loc0 ; %
-	   	{
-     	 StringSplit, __pers, __loc%A_Index%, % Chr(7) ; %
-	   	 LocalVar_%__pers1% := __pers2
-	   	 LocalVarMenu .= __pers1 ","
-	   	 __pers1= ; free mem
-     	 __pers2=
-	   	 __loc%A_Index%=
-     	}
-     Patterns= ; free mem
-     LocalVarMenu:=Rtrim(LocalVarMenu,",")
+	 StringSplit, __loc, Patterns, % Chr(5) 
+	 Loop, % __loc0 ; %
+		{
+		 StringSplit, __pers, __loc%A_Index%, % Chr(7) ; %
+		 LocalVar_%__pers1% := __pers2
+		 LocalVarMenu .= __pers1 ","
+		 __pers1= ; free mem
+		 __pers2=
+		 __loc%A_Index%=
+		}
+	 Patterns= ; free mem
+	 LocalVarMenu:=Rtrim(LocalVarMenu,",")
 	 Return	
 	}
 	
@@ -235,7 +237,7 @@ SaveUpdatedBundles(tosave="") ; Save any updated Bundles on Exit of Application 
 		 OldGroup:=Group
 		 Group:=tosave
 		}
-	 
+
 	 Loop, parse, Group, CSV
 		{
 		 Bundle:=A_LoopField
@@ -247,7 +249,7 @@ SaveUpdatedBundles(tosave="") ; Save any updated Bundles on Exit of Application 
 			 BakFile=
 			 Loop, % Snippet[Bundle].MaxIndex() ; %
 				{
-		 		 If (Snippet[Bundle,A_Index,1] = "" AND Snippet[Bundle,A_Index,2] = "" AND Snippet[Bundle,A_Index,3] = "" AND Snippet[Bundle,A_Index,4] = "" AND Snippet[Bundle,A_Index,5] = "") ; skip empty snippets
+				 If (Snippet[Bundle,A_Index,1] = "" AND Snippet[Bundle,A_Index,2] = "" AND Snippet[Bundle,A_Index,3] = "" AND Snippet[Bundle,A_Index,4] = "" AND Snippet[Bundle,A_Index,5] = "") ; skip empty snippets
 					Continue
 				 Append .= "- LLPart1: " Snippet[Bundle,A_Index,1] "`n  LLPart2: " Snippet[Bundle,A_Index,2] "`n  LLKey: " Snippet[Bundle,A_Index,3] "`n  LLShorthand: " Snippet[Bundle,A_Index,4] "`n  LLScript: " Snippet[Bundle,A_Index,5] "`n" 
 				} 
@@ -295,9 +297,9 @@ ParseBundle(Patterns, Counter)
 	 local list,fix1,fix2
 	 ; checking for new empty bundle - we still need to create an object to ensure it will work correctly
 	 If !InStr(Patterns,"- LLPart1")
-	 	{
-	 	 ShortHandHitList_%Counter% := Chr(5)
-	 	 HotKeyHitList_%Counter% := Chr(5) 
+		{
+		 ShortHandHitList_%Counter% := Chr(5)
+		 HotKeyHitList_%Counter% := Chr(5) 
 		 Snippet[Counter,1,1]:=""
 		 Snippet[Counter,1,2]:=""
 		 Snippet[Counter,1,3]:=""
@@ -306,7 +308,7 @@ ParseBundle(Patterns, Counter)
 		 Snippet[Counter,1,"1v"]:=""
 		 Snippet[Counter,1,"2v"]:=""
 		 Return
-	 	}
+		}
 	 ; /checking for new empty bundle
 	 Patterns:=RegExReplace(Patterns,"im)\s*- LLPart1:\s*LLPart2:\s*LLKey:\s*LLShorthand:\s*LLScript:\s*", "") ; remove empty snippets from bundle
 	 Patterns:=RegExReplace(Patterns,"im)\s*- LLPart1:\s*", Chr(5)) ; prepare split per pattern/snippet
@@ -316,11 +318,11 @@ ParseBundle(Patterns, Counter)
 	 ;MsgBox % Snippet[Counter,1]
 	 ShortHandHitList_%Counter% := Chr(5)
 	 HotKeyHitList_%Counter% := Chr(5) 
-	  
+
 	 Loop, % list0                    ; split pattern elements
 		{                             ; result: list_listnumber_indexitemnumber_1..5
 		 ;MsgBox % list%A_Index% ; debug
-		 Snippet[Counter,A_Index]:=_Split(list%A_Index%,Chr(7))
+		 Snippet[Counter,A_Index]:=StrSplit(list%A_Index%,Chr(7))
 		 List%A_Index%:=""
 		 ;MsgBox % Snippet[counter,A_Index,1] ; debug
 		 fix1 := Snippet[Counter,A_Index,1]
@@ -338,15 +340,11 @@ ParseBundle(Patterns, Counter)
 		 
 		 If (Snippet[Counter,A_Index,3] <> "") ; if no hotkey defined: skip
 			{
-			 Hotkey, IfWinNotActive , Lintalist bundle editor
 			 Hotkey, % "$" . Snippet[Counter,A_Index,3], ShortCut ; setup hotkeys
-			 Hotkey, IfWinNotActive , Lintalist bundle editor
 			 If (ShortcutPaused = 1)
 				{
-				 Hotkey, IfWinNotActive , Lintalist bundle editor
 				 Hotkey, % "$" . Snippet[Counter,A_Index,3], Off ; turn hotkeys off ...
-				 Hotkey, IfWinNotActive 
-				}	
+				}
 			 HotKeyHitList_%Counter% .= Snippet[Counter,A_Index,3] Chr(5)
 			}
 			
@@ -382,13 +380,4 @@ IniWrite, default.txt, %A_ScriptDir%\Settings.ini, Settings, AlwaysLoadBundles
 IniWrite, default.txt, %A_ScriptDir%\Settings.ini, Settings, DefaultBundle
 IniWrite, default.txt, %A_ScriptDir%\Settings.ini, Settings, LastBundle
 Return "default.txt"
-	}
-
-; helper function	
-_Split(String,At)
-	{
-	 Array:={}
-	 Loop, Parse, String, % At
-	 	Array[A_Index]:=A_LoopField
-	 Return Array
 	}

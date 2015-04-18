@@ -42,3 +42,7 @@ https://github.com/cocobelgica/AutoHotkey-ZipFile
 
 VersionCompare by boiler 
 http://ahkscript.org/boards/viewtopic.php?f=6&t=5959
+
+AHK class providing individual colors for ListView items/subitems by Just me
+https://github.com/AHK-just-me/Class_LV_Colors
+

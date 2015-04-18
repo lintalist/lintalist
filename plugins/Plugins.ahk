@@ -15,10 +15,11 @@ Loop, %A_ScriptDir%\plugins\*.ahk
 	 	Continue
 	 ClipCommand .= "[[" SubStr(A_LoopFileName,1,StrLen(A_LoopFileName)-4) "|"
 	}
+StringReplace, ClipCommand, ClipCommand, [[counter|, , All ; counter has to be first
 StringReplace, ClipCommand, ClipCommand, [[calc|, , All ; Calc and C have to be at the end
 StringReplace, ClipCommand, ClipCommand, [[c|, , All    ; 
 StringTrimRight, ClipCommand, ClipCommand, 1
-ClipCommand .= "|[[calc|[[c"
+ClipCommand := "[[counter|" ClipCommand "|[[calc|[[c"
 StringReplace, ClipCommandRE, ClipCommand, [, \[, All ; for RE later
 ;MsgBox % Clipcommand ; debug only
 Return

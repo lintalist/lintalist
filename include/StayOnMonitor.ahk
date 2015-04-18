@@ -25,7 +25,7 @@ StayOnMonXY(GW, GH, Mouse = 0, MouseAlternative = 1, Center = 0)
 		{
 		 X := (A_ScreenWidth - GW) / 2
 		 Y := (A_ScreenHeight - GH) / 2
-		 Return X . "|" . Y
+		 Return ReturnXY(X,Y)
 		}
 
 	 If (Center = 2) ; simply return position set by user
@@ -37,7 +37,7 @@ StayOnMonXY(GW, GH, Mouse = 0, MouseAlternative = 1, Center = 0)
 		{
 		 X := (A_ScreenWidth - GW) / 2
 		 Y := (A_ScreenHeight - GH) / 2
-		 Return X . "|" . Y
+		 Return ReturnXY(X,Y)
 		}
 
 	 If ((Mouse = 0) OR (Mouse = "")) 
@@ -85,13 +85,27 @@ StayOnMonXY(GW, GH, Mouse = 0, MouseAlternative = 1, Center = 0)
 		X = 20
 	 If If_Between(Y, -15, 15)	
 		Y = 20
+	 Return ReturnXY(X,Y)
+	}
+
+; v1.5 ensure valid coordinates are returned (mostly to prevent empty variables for Gui, Show)
+ReturnXY(X,Y)
+	{
+	 If (X = "") or (X = 0)
+		X:=100
+	 If (Y = "") or (Y = 0)
+		Y:=100
+	 If If_Between(X, -15, 15)	
+		X:=20
+	 If If_Between(Y, -15, 15)	
+		Y:=20
 	 Return X . "|" . Y
 	}
 
 ; infogulch @ http://www.autohotkey.com/board/topic/29750-if-betweenincontainsis-functions/
 ; reference: http://www.autohotkey.com/docs/commands/IfBetween.htm
 ; Reverse 1/0,
-;     1:reverses high and low if necessary 
+;     1: reverses high and low if necessary 
 ;     0: works like normal "If Var Between"
 If_Between(Var, Low, High, Reverse = 0)
 	{

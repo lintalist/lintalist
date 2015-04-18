@@ -9,8 +9,6 @@
 ; F6  = Move snippet (from one bundle to another)
 ; F7  = Add new snippet		
 ; F8  = Delete snippet		
-; F10 = New bundle			
-
 
 BundleEditor:
 InEditMode = 1
@@ -110,7 +108,7 @@ If (EditMode = "MoveSnippet")
 	 List_%Paste1%_Deleted++     ; Keep track of No deleted snippets so we can update the statusbar correctly
 	 
 	 List_ToSave_%Paste1%=1
-	 Snippet[Paste1,"Save"] := 1 ; (List_ToSave_%Bundle% = 1)
+	 Snippet[Paste1,"Save"]:=1 ; (List_ToSave_%Bundle% = 1)
 	 Loop, parse, MenuName_HitList, |
 		{
 		 StringSplit, MenuText, A_LoopField, % Chr(5) ; %
@@ -156,92 +154,52 @@ If (EditMode = "EditSnippet") or (EditMode = "CopySnippet") ; get snippet vars f
 
 Filename:=Filename_%paste1%
 
-Gui, 71:+Owner	
+ActionText:=RegExReplace(EditMode,"([A-Z])"," $1")
+
+Gui, 71:+Owner
 Gui, 71:Menu, MenuBar2
-If (EditMode = "NewBundle")
-	Gui, 71:Add, Tab2, x5 y5 w730 h495 gTabClick, %A_Space%%A_Space%Snippet Text and Code%A_Space%%A_Space%%A_Space%%A_Space%%A_Space%%A_Space%|%A_Space%%A_Space%%A_Space%%A_Space%Bundle Properties%A_Space%%A_Space%%A_Space%%A_Space%%A_Space%%A_Space%%A_Space%%A_Space%||
-Else
-	Gui, 71:Add, Tab2, x5 y5 w730 h495 gTabClick, %A_Space%%A_Space%Snippet Text and Code%A_Space%%A_Space%%A_Space%%A_Space%%A_Space%%A_Space%|%A_Space%%A_Space%%A_Space%%A_Space%Bundle Properties%A_Space%%A_Space%%A_Space%%A_Space%%A_Space%%A_Space%%A_Space%%A_Space%|
+Gui, 71:font,s12 bold
+Gui, 71:Add, Text,     x600   y10, %ActionText%
+Gui, 71:font,s10 normal
+Gui, 71:Add, Picture , x20    y10 w16 h16, %A_ScriptDir%\icons\lintalist_bundle.png
+Gui, 71:Add, Text    , x40    y13               , Bundle:`t%A_Space%%A_Space%%A_Space%%Name%
+Gui, 71:Add, Text    , x340   y13               , File:%A_Space%%A_Space%%A_Space%%Filename%
+Gui, 71:Add, Text,     x20    y45 w700 h1 0x10
+Gui, 71:Add, Picture , x20    y65 w16 h16, %A_ScriptDir%\icons\keyboard.png
+Gui, 71:Add, Text    , x40    y65                  , Hotkey: 
+Gui, 71:Add, Hotkey  , xp+50  y63  w140 h20 vHKey  , %HKey%
+Gui, 71:Add, Checkbox, xp+150 y65  w70  h20 vWinKey %checked%, Win
 
-Gui, 71:Tab, 1 ; Snippet ------------------------------------------------------------------------
-
-Gui, 71:Add, Picture , x20    y40 w16 h16, %A_ScriptDir%\icons\lintalist_bundle.png
-Gui, 71:Add, Text    , x40    y40               , Bundle:`t%A_Space%%A_Space%%A_Space%%Name%
-Gui, 71:Add, Text    , x423   y40               , File:`t%Filename%
-
-Gui, 71:Add, Picture , x20    y70 w16 h16, %A_ScriptDir%\icons\keyboard.png
-Gui, 71:Add, Text    , x40    y70                  , Hotkey: 
-Gui, 71:Add, Hotkey  , xp+50  y70  w140 h20 vHKey  , %HKey%
-Gui, 71:Add, Checkbox, xp+150 y70  w70  h20 vWinKey %checked%, Win
-
-Gui, 71:Add, Text    , xp+150 y70  w150 h20           , Shorthand: 
-Gui, 71:Add, Edit    , xp+70  y70  w150 h20 vShorthand, %Shorthand%
+Gui, 71:Add, Text    , xp+100 y65  w150 h20           , Shorthand: 
+Gui, 71:Add, Edit    , xp+70  y63  w150 h20 vShorthand, %Shorthand%
 
 Gui, 71:Add, Picture , x20    y100 w16 h16, %A_ScriptDir%\icons\text_dropcaps.png
 Gui, 71:Add, Text    , x40    y100                    , Part 1 (Enter)
-Gui, 71:Add, Edit    , x20    y120  h100 w700 vText1  , %Text1%
+Gui, 71:Add, Edit    , x20    y120  h120 w700 vText1  , %Text1%
 
-Gui, 71:Add, Picture , x20    yp+110 w16 h16, %A_ScriptDir%\icons\text_dropcaps.png
+Gui, 71:Add, Picture , x20    yp+125 w16 h16, %A_ScriptDir%\icons\text_dropcaps.png
 Gui, 71:Add, Text    , x40    yp                  , Part 2 (Shift-Enter)
-Gui, 71:Add, Edit    , x20    yp+20 h100 w700 vText2  , %Text2%
+Gui, 71:Add, Edit    , x20    yp+20 h90 w700 vText2  , %Text2%
 
-Gui, 71:Add, Picture , x20    yp+110 w16 h16, %A_ScriptDir%\icons\script_code.png
+Gui, 71:Add, Picture , x20    yp+95 w16 h16, %A_ScriptDir%\icons\script_code.png
 Gui, 71:Add, Text    , x40    yp                  , Script
-Gui, 71:Add, Edit    , x20    yp+20 h100 w700 vScript , %Script%
+Gui, 71:Add, Edit    , x20    yp+20 h90 w700 vScript , %Script%
 
-Gui, 71:font, s7, arial
-Gui, 71:Add, Button, x610  y98 h20 w110 0x8000 g71EditPart1 , 1 - Edit in Editor ; part1
-Gui, 71:Add, Button, x610 y228 h20 w110 0x8000 g71EditPart2 , 2 - Edit in Editor ; part2
-Gui, 71:Add, Button, x610 y358 h20 w110 0x8000 g71EditScript, 3 - Edit in Editor ; script
-Gui, 71:font, 
+Gui, 71:font, s8, arial
+Gui, 71:Add, Button, x610 y100 h20 w110 0x8000 g71EditPart1 , 1 - Edit in Editor ; part1
+Gui, 71:Add, Button, x610 y245 h20 w110 0x8000 g71EditPart2 , 2 - Edit in Editor ; part2
+Gui, 71:Add, Button, x610 y360 h20 w110 0x8000 g71EditScript, 3 - Edit in Editor ; script
+Gui, 71:font, s10
 
-Gui, 71:Tab, 2 ; Bundle ------------------------------------------------------------------------
+Gui, 71:Add, Button, x20    y480 h30 w210 g71Save, &Save
+Gui, 71:Add, Button, xp+245 yp   h30 w210 g71GuiClose, &Cancel
+Gui, 71:Add, Button, xp+245 yp   h30 w210 g71Help, Help
 
-Gui, 71:Add, Text, x20   y40         , Name:
-Gui, 71:Add, Edit, xp+80 y40 w400 h20 vName, %Name%
-Gui, 71:Add, Text, xp    y65 , Name used in Lintalist for Menu and Statusbar
-
-Gui, 71:Add, Text, x20   y100     , Description:
-Gui, 71:Add, Edit, xp+80 y100 w400 h20 vDescription, %Description%
-Gui, 71:Add, Text, xp    y125 , Can be used extra information
-
-Gui, 71:Add, Text, x20   y160     , Author:
-Gui, 71:Add, Edit, xp+80 y160 w400 h20 vAuthor, %Author%
-Gui, 71:Add, Text, xp    y185 , Author of Bundle
-
-Gui, 71:Add, Text, x20   y240     , TitleMatch:
-Gui, 71:Add, Edit, xp+80 y240 w400 h20 vTitleMatch, %TitleMatch%
-Gui, 71:Add, Text, xp    y265 , Comma separated list of partial window title matches. Do not use Wildcards.
-Gui, 71:Add, Text, xp    y285 , Example: .txt,.doc is OK, *.txt,*.doc is not. 
-Gui, 71:Add, Text, xp    y305 , See documentation for more information.
-
-Gui, 71:Tab, 
-
-Gui, 71:Add, Button, x20    y510 h25 w210 g71Save, &Save
-Gui, 71:Add, Button, xp+245 y510 h25 w210 g71GuiClose, &Cancel
-Gui, 71:Add, Button, xp+245 y510 h25 w210 g71Help, Help
-
-
-Gui, 71:Show, w740 h545, Lintalist bundle editor
-WinActivate, Lintalist bundle editor
-If (EditMode = "EditSnippet") or (EditMode = "AppendSnippet")
-	ControlFocus, Edit2, Lintalist bundle editor
-Else If (EditMode = "NewBundle")
-	{
-	 GuiControl, Choose, SysTabControl321, |2
-	 ControlFocus, Edit5, Lintalist bundle editor
-	}
+Gui, 71:Show, w740 h520, Lintalist snippet editor
+WinActivate, Lintalist snippet editor
+ControlFocus, Edit2, Lintalist snippet editor
 Return
 
-TabClick:
-If (EditMode = "NewBundle")
-	{
-	 GuiControl, Choose, SysTabControl321, |2
-	 MsgBox, 48, Save first, Save the bundle first before adding new snippets
-	 ControlFocus, Edit5, Lintalist bundle editor
-	}
-Return
-	
 71Help:
 Run, docs\index.html
 Return
@@ -318,14 +276,14 @@ If (EditMode = "EditSnippet")
 	 Snippet[Paste1,Paste2,"2v"]:=fix2
 	 
 	 List_ToSave_%Paste1%=1
-	 Snippet[Paste1,"Save"] := 1
+	 Snippet[Paste1,"Save"]:=1
      Counter:=Paste1
 	}	 
 Else If (EditMode = "AppendSnippet") or (EditMode = "CopySnippet") or (EditMode = "MoveSnippet") 
 	{
 	 If (Text1 = "") and (Text2 = "") and (HKey = "") and (Shorthand = "") and (Script = "")
 		Return ; nothing to do
-	 Snippet[AppendToBundle,"Save"]:="1"	
+	 Snippet[AppendToBundle,"Save"]:=1
 	 listcounter:= Snippet[AppendToBundle].MaxIndex() + 1
 	 Snippet[AppendToBundle,listcounter,1]:=Text1
 	 Snippet[AppendToBundle,listcounter,2]:=Text2
@@ -423,14 +381,18 @@ HotKeyHitList_%Counter%:=Chr(5)    ; clear
 ShortHandHitList_%Counter%:=Chr(5) ; clear
 ; MsgBox % Counter
 If (OldKey <> "") ; and (OldKey <> HKey)
-	Hotkey, % "$" . OldKey, Off ; set old hotkey off ...
+	{
+	 Hotkey, % "$" . OldKey, Off ; set old hotkey off ...
+	}
 Loop, % Snippet[Counter].MaxIndex() ; LoopIt
 	{ 
 	 If (Snippet[Counter,A_Index,3] <> "") ; if no hotkey defined: skip
 		{
 		 Hotkey, % "$" . Snippet[Counter,A_Index,3], ShortCut ; set hotkeys
 		 If (ShortcutPaused = 1)
-			Hotkey, % "$" . Snippet[Counter,A_Index,3], Off ; set hotkeys off ...
+			{
+			 Hotkey, % "$" . Snippet[Counter,A_Index,3], Off ; set hotkeys off ...
+			}
 		 HotKeyHitList_%Counter% .= Snippet[Counter,A_Index,3] Chr(5)
 		}
 			
@@ -440,38 +402,19 @@ Loop, % Snippet[Counter].MaxIndex() ; LoopIt
 		} 
 	}
 
-; MsgBox % ShortHandHitList_%Counter%	
-	
-; store any updated properties	
-If (EditMode <> "MoveSnippet")
-	{
-	 MenuName_%Counter%:=Name
-	 If (OldName <> "") and (OldName <> Name)
-		Menu, File, Rename, &%OldName%, &%Name%
-	 Description_%Counter%:=Description
-	 Author_%Counter%:=Author
-	 TitleMatchList_%Counter%:=TitleMatch
-	 MenuName_HitList=
-	 Loop, Parse, Group, CSV
-		{
-		 MenuName_HitList .= MenuName_%A_LoopField% Chr(5) A_Index "|"
-		}
-	 StringTrimRight, MenuName_HitList, MenuName_HitList, 1 ; remove trailing |
-	 Sort, MenuName_HitList, D|
- 	 ; 1) detach the menu bar via Gui Menu (that is, omit MenuName)
- 	 ; 2) make the changes
- 	 ; 3) reattach the menu bar via Gui, Menu, MyMenuBar.
- 	 ;Menu, File, DeleteAll
-	 Gui, 1:Menu
-	 Gosub, BuildFileMenu
-	 Gosub, BuildEditMenu
-	 Gui, 1:Menu, MenuBar
-	}
 
 Gui, 1:-Disabled
 Gui, 71:Destroy
 if (AlwaysUpdateBundles = 1)
 	SaveUpdatedBundles(AppendToBundle)
+
+If (OldKey <> HKey)
+	{
+	 MsgBox,52, Restart, It seems you changed the hotkey, it is advised to restart Lintalist.`nOK to Restart?
+	 IfMsgBox, Yes
+	 	Reload
+	}
+	
 WinActivate, %AppWindow%
 WinWaitActive, %AppWindow%
 LoadBundle(Load)
@@ -531,3 +474,4 @@ Gui, 71:Destroy
 WinActivate, %AppWindow%
 InEditMode = 0
 Return
+

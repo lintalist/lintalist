@@ -12,7 +12,8 @@ Gui, 10:Destroy
 Gui, 10:+Owner +AlwaysOnTop
 Gui, 10:Add, MonthCal, vMyCalendar 4
 Gui, 10:Add, Button, default gCalendarOK, Select Date
-Gui, 10:Show
+Gui, 10:Add, Button, xp+100 yp gCalendarCancel, Cancel
+Gui, 10:Show, , Calendar
 		 Loop ; ugly hack: can't use return here because, well it returns and would thus skip the gui and proceed to paste
 			{
 			 If (MadeChoice = 1) or (InStr(Clip, "[[Calendar") = 0)
@@ -36,3 +37,11 @@ ClipQ1=
 ClipQ2=
 Return
 
+CalendarCancel:
+MadeChoice = 0
+Sleep 50
+Gui, 10:Destroy
+clip:=""
+ClipQ1=
+ClipQ2=
+Return

@@ -21,7 +21,7 @@ GetSnippetSelected:
 		 ClearClipboard()
 		 SendKey(SendMethod, "^x")
 		 SelectedText:=Clipboard
-		 StringReplace, ClipQ1, ClipQ1, =,, All ; trim any = chars
+		 ClipQ1:=LTrim(ClipQ1,"=")
 		 OrgClipQ1:=ClipQ1
 		 StringLower, ClipQ1, ClipQ1
 		 If (ClipQ1 <> "") 

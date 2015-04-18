@@ -21,7 +21,7 @@
 <span style='font-size:.8em;'>You can <b>extend Lintalist</b> by writing your own <b><a href='#InteractiveBundleText'>plugins</a></b>. Lintalist is open source and developed in <a href='http://ahkscript.org/'>AutoHotkey</a>, an easy to learn scripting language for Windows.
 [WinXP(sp3)/Vista/7/8]<br /></span>
 <span style='font-size:.8em;'>As of LintaList v1.1 several types of formatted text are supported in Snippets.</span>
-<span class='date' style='float:right;display:inline;margin-top:0px;'>doc rev. 20150314</span></p>
+<span class='date' style='float:right;display:inline;margin-top:0px;'>doc rev. 20150418</span></p>
 </div>
 
 <div class='column'>
@@ -68,7 +68,7 @@
 </div>
 
 <div class='column'>
-<p><b>Download Lintalist <em>1.4</em></b>
+<p><b>Download Lintalist <em>1.5</em></b>
 <p>
 <a href='https://github.com/lintalist/lintalist/releases'><img src='img/lintalist65x65.gif' alt='Download Lintalist' width='65' align='left' border='0' style='margin-right: 5px;' /></a>
 Download (incl. source):<br />
@@ -97,17 +97,22 @@ As noted above Lintalist allows you to store and (incrementally) <b>search</b> a
 
 The texts, shortcuts, abbreviations and scripts are called <b>snippets</b> and they are stored in a so called <b>bundle</b>. A bundle is a simple text file, making it easy to understand, maintain and exchange bundles between users.
 
-The bundles are <b>context sensitive</b>: based on the <b>(partial) window title</b> of the currently active program it will try to load one or more matching bundles, this will allow you to use the same shortcuts and shorthands in different applications and files making it even more flexible. You don't have to use or remember any shortcuts or shorthands because you can <b>search your bundles</b> at any time by opening the search window.
+The bundles are <b>context sensitive</b>: based on the <b>(partial) window title</b> of the currently active program it will try to load one or more matching bundles, this will allow you to use the same shortcuts and shorthands in different applications and files making it even more flexible. You don't have to use or remember any shortcuts or shorthands because you can <b>search your bundles</b> at any time by opening the search window. Think of it as text-expander which will save you countless keystrokes and has a number of additional features: hotkeys, full text search, plugins and scripts.
 
-<span class='tip'>Bundles and Snippets can be edited using the <a href='#Editing'>Lintalist Bundle Editor</a> OR in your preferred text editor.</span>
+<span class='tip'>Bundles and Snippets can be edited using the <a href='#Editing'>Lintalist Bundle &amp; Snippet Editors</a> OR in your preferred text editor.</span>
 For example: If you are editing a HTML file, Lintalist could use both a HTML and CSS bundle, but if you are editing a CSS file only the CSS Bundle is loaded. So, in your HTML file the shortcut <strong>ctrl+b</strong> can insert <strong>&lt;strong&gt;&lt;/strong&gt;</strong> at the caret position (or wrap the tag around the selected text) and while editing your CSS file the shortcut <strong>ctrl+b</strong> can insert <strong>font-style: bold;</strong> at the caret position. If a shortcut is found in multiple active bundles a pop-up-menu will appear so you can choose which snippet & bundle you prefer.
 
 <b>Note:</b> although Lintalist can expand abbreviations it is not intended to replicate or replace the native AutoHotkey Hotstrings features, see <a href='http://ahkscript.org/docs/Hotstrings.htm'>http://ahkscript.org/docs/Hotstrings.htm</a> for an introduction and description of all the options.
 
 <span class='tip'>If you find this inconvenient, edit one of the snippets and change the shortcut or shorthand.</span>
 This program is written in AutoHotkey, a free, open-source (scripting) utility for Windows. Learn more at <a href='http://ahkscript.org/'>ahkscript.org</a>.
-
-<b>Full Feature List:</b>
+<!--
+<div class='column' style='float:right;'>
+<h3 id='Usage'><em>Useful for...</em></h2>
+- (Canned) email responses in a support environment
+</div>
+-->
+<h3 id='FeatureList'>Full Feature List:</h3>
 
 - Full text snippet search using four different search modes
 - Context sensitive bundles
@@ -127,6 +132,7 @@ This program is written in AutoHotkey, a free, open-source (scripting) utility f
   - counters
   - chain snippets (insert the text of one snippet into another)
   - insert text from file
+  - formatted text and images using HTML, Markdown, RTF and Image
 
 <h2 id='Installing'>Installing <em>Lintalist</em></h2>
 
@@ -135,7 +141,7 @@ Installing Lintalist is easy, just download the ZIP file and unpack it in a fold
 If you are already an AutoHotkey user and have it installed, it is recommended to run <b>Lintalist.ahk</b>, this will ensure you will be running Lintalist with your preferred version of AutoHotkey. If you don't have AutoHotkey installed you can start <b>Lintalist.exe</b>.
 
 <b>Notes:</b>
-- Lintalist.exe: A renamed AutoHotkey.exe (v1.1.20.02 32-bit Unicode, See http://ahkscript.org/ and/or http://ahkscript.org/download/)
+- Lintalist.exe: A renamed AutoHotkey.exe (v1.1.21.03 32-bit Unicode, See http://ahkscript.org/ and/or http://ahkscript.org/download/)
 - Lintalist.ahk: The actual (main) source code of the program (see https://github.com/lintalist/lintalist)
 
 <h2 id='Searching'>Normal use: Starting Lintalist and searching for a Snippet</h2>
@@ -220,6 +226,33 @@ A new line is replaced by <b>\n</b> and a tab by <b>\t</b> and it will search <b
 <span style='color:#c00;'>&lt;techtalk&gt;</span> If the <b>Case check-box</b> is not checked your searches will be case-insensitive. When using the RegEx search method the "i)" option for the regular expression will automatically be inserted before each snippet is searched. This may lead to unexpected results if you pass on other options for your RegEx search. 
 
 Example: The case-insensitive RegEx 'se\w*g' it is actually using the following regular expression 'i)se\w*g' while searching. This is done for convenience (otherwise you would have to type i) every time you wanted to do a case-insensitive search (RegEx is by default case sensitive). If you want to pass on extra options it is best to turn Case sensitive ON and add the options you need as described here <a href='http://ahkscript.org/docs/commands/RegExMatch.htm#Options'>http://ahkscript.org/docs/commands/RegExMatch.htm#Options</a>. This behaviour may change in future version of Lintalist. <span style='color:#c00;'>&lt;/techtalk&gt;</span>
+
+<h3 id='Omni'><em>Omni</em>search (search all bundles)</h3>
+
+By default you are only searching in the loaded bundles, you can however search in all bundles using the following methods.
+
+<b>1. Load All Bundles</b>
+
+You can Load all bundles using the following methods:
+
+- use the tray many, select Load all bundles and bring up the search gui; or
+- bring up the search gui, bundle menu, first option: Load all bundles
+
+This has the disadvantage that it also sets the Locked state so next time you bring up the search gui you are searching in all bundles again and you have to unlock it.
+
+<b>2. Omnisearch query</b>
+
+If you start you query with a pre-defined character (@ by default) Lintalist will search in all bundles independent of the ones that are currently loaded or locked in the search Gui. You can define this character in the settings (OmniChar). If you don't want to use Omnisearch while typing a query simply disable it by erasing the Omnichar in the settings menu.
+
+Query: state -> will find "state" in the currently loaded bundle(s)
+Query: @state -> will find "state" in all bundles
+
+<b>3. Omnisearch shortcuts</b>
+
+- While search gui is active: press <kbd>F2</kbd> to toggle the Omnisearch.
+- If you press <kbd>Ctrl</kbd>+<kbd>Capslock</kbd> the search gui is opened in Omnisearch mode (tip: use <kbd>F2</kbd> to toggle). You can define the hotkey in the settings (StartOmniSearchHotkey)
+
+Note: while using option 2 &amp; 3 the text "(All)" will be added to the statusbar (bottom right) to indicate you are using Omnisearch when the results are updated.
   
 <h2 id='Shortcuts'>Using <em>Shortcuts</em> (Hotkeys)</h2>
 
@@ -247,6 +280,7 @@ Shortcuts while search window is not active
 </thead>
 <tbody>
 <tr><td><b><kbd>Capslock</kbd>        </b></td><td>Start Searching (Open Lintalist searching window, change via config). If already active you can toggle between Wide and Narrow view.</td></tr>
+<tr><td><b><kbd>Ctrl</kbd>+<kbd>Capslock</kbd></b></td><td>Start Searching in <a href="#Omni">Omnisearch</a> mode (Open Lintalist searching window, change via config).</td></tr>
 <tr><td><b><kbd>Winkey</kbd>+<kbd>z</kbd></b></td><td>Start <a href="#QuickSearchHotkey">Quick search</a></td></tr>
 <tr><td><b><kbd>Ctrl</kbd>+<kbd>Winkey</kbd>+<kbd>q</kbd></b></td><td>Quit Lintalist</td></tr>
 </tbody>
@@ -267,12 +301,13 @@ Shortcuts while search window is not active
 <tr><td><b><kbd>Shift</kbd>+<kbd>Enter</kbd></b></td><td>Paste Found Text (Part 2) or Run Script *1      </td></tr>
 <tr><td><b><kbd>Ctrl</kbd>+<kbd>Enter</kbd></b></td><td>Paste Found Text (Part 1) and DO NOT run script </td></tr>
 <tr><td><b><kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>Enter</kbd></b></td><td>Paste Found Text (Part 2) and DO NOT run script </td></tr>
+<tr><td><b><kbd> F2 </kbd></b></td><td>Omnisearch (toggle) <a href="#Omni">search in all bundles</a></td></tr>
 <tr><td><b><kbd> F4 </kbd></b></td><td>Edit Snippet                                    </td></tr>
 <tr><td><b><kbd> F5 </kbd></b></td><td>Copy Snippet and Edit (current bundle)          </td></tr>
 <tr><td><b><kbd> F6 </kbd></b></td><td>Move Snippet to another bundle                  </td></tr>
 <tr><td><b><kbd> F7 </kbd></b></td><td>Add new Snippet                                 </td></tr>
 <tr><td><b><kbd> F8 </kbd></b></td><td>Delete Snippet                                  </td></tr>
-<tr><td><b><kbd> F10 </kbd></b></td><td>New Bundle                                      </td></tr>
+<tr><td><b><kbd> F10 </kbd></b></td><td>Bundle properties                              </td></tr>
 </tbody>
 </table>
 
@@ -308,7 +343,7 @@ You can pause Lintalist entirely or pause Shortcuts, Shorthand and Scripts separ
 
 You can either edit the settings.ini file directly with a text editor (like notepad) or use the more user friendly configuration window which is available via the tray-menu. In order for the changes to take effect you must reload the application after changing any settings. If you <b>edit settings.ini manually be sure to exit Lintalist first</b> otherwise any changes you make might be overwritten by reloading Lintalist.
 
-A description of all settings can also be found in settings.ini. 
+A description of all settings can also be found in settings.ini or in <a href="https://github.com/lintalist/lintalist/wiki/Settings">the Wiki</a>.
 
 Some important options:
 <table>
@@ -441,7 +476,97 @@ Example of a Bundle with one Snippet: <span class='llcomment'>(Light blue texts 
 <tr valign='top'><td width='15%'><span class='llbundle'>&nbsp;&nbsp;LLScript:</span></td>   <td width='40%'><span class='flex'></span></td><td><span class='llcomment'>; If present, this AHK code will be run if the snippet is selected via Enter, shortcut or shorthand</span></td></tr>
 </table>
 
-<h3 id='InteractiveBundleText'>Interactive bundle text (or Plugins)</h3>
+<h3 id='Part1-2'>Part<em>1</em> &amp; Part<em>2</em></h3>
+
+As described above, a snippet consists of two parts which are both shown in the search results (if both are present).
+
+While you can perfectly use Lintalist without ever having to use the Part2 of the snippet, it can be of value in a number of cases.
+
+<b>Usage 1 - having two options to paste</b>
+
+By having a snippet consisting of two parts, you can search for one type of information, but paste something else.
+This is illustrated by the <a href="https://github.com/lintalist/lintalist-bundles/blob/master/countries.txt">Countries bundle here</a>. 
+
+In Part1 of the snippet you will find the official ISO name, and in Part2 the two letter alpha code, e.g GB for United Kingdom, CA for Canada. This lets you look up a country and either paste the official name by pressing <kbd>Enter</kbd>, or if you need it, the two letter alpha code by pressing <kbd>Shift</kbd>+<kbd>Enter</kbd>.
+
+<table>
+<tr>
+<th>Paste Part1 (enter)</th>
+<th>Paste Part2 (shift-enter)</th>
+</tr>
+<tr>
+<td>United Kingdom</td>
+<td>GB</td>
+</tr>
+<tr>
+<td>Canada</td>
+<td>CA</td>
+</tr>
+</table>
+<b>Usage 2 - description / title</b>
+
+You can also use Part2 as a short title to describe the purpose of Part1. In the Markdown bundle below Part2 is used as a description, that way you can for example search for 'bold' to find the bold snippet, this would not be possible without a useful description in Part2 as the markup code in Part1 does not have any useful information to search for.
+
+<table>
+<tr>
+<th>Paste Part1 (enter)</th>
+<th>Paste Part2 (shift-enter)</th>
+</tr>
+<tr>
+<td>### ^|</td>
+<td>Heading 3</td>
+<tr>
+<td>**[[selected]]**</td>
+<td>Bold</td>
+<tr>
+<td>__[[selected]]__</td>
+<td>Italic</td>
+</tr>
+</table>
+
+If you have several very similar snippets in a bundle, you can add some info in Part2 of the snippet so the second column in the search results will help you find the correct one:
+
+<table>
+<tr>
+<th>Paste Part1 (enter)</th>
+<th>Paste Part2 (shift-enter)</th>
+</tr>
+<tr>
+<td>very long snippet that looks similar to many other snippets in the bundle....</td>
+<td>FAQ</td>
+</tr>
+<tr>
+<td>very long snippet that looks similar to many other snippets in the bundle....</td>
+<td>Email</td>
+</tr>
+<tr>
+<td>very long snippet that looks similar to many other snippets in the bundle....</td>
+<td>Excel</td>
+</tr>
+</table>
+
+Another example would be for example timesheet management. Often certain types of jobs or clients have special codes assigned to them. Instead of having to remember these codes you can simply create a bundle which would allow you to search for a clients name and paste the code in your timesheet.
+
+<table>
+<tr>
+<th>Paste Part1 (enter)</th>
+<th>Paste Part2 (shift-enter)</th>
+</tr>
+<tr>
+<td>1578A</td>
+<td>John Smith</td>
+</tr>
+<tr>
+<td>6335D</td>
+<td>Ms. Jones</td>
+</tr>
+<tr>
+<td>X-7685</td>
+<td>Replaced plumbing</td>
+</tr>
+</table>
+
+<h2 id='InteractiveBundleText'>Interactive bundle text (<em>or Plugins</em>)</h2>
 
 Part1 and/or Part2 of a snippet can have special codes to insert specific data.
 The following <code>Snippet Codes</code> (or plugins) are available. 
@@ -487,6 +612,11 @@ Basic example <code>[[Choice=Red|Green|Blue]]</code> inserts the selected colour
 Basic example <code>[[Counter=InvoiceNumber]]</code> --> increment by one and insert value of InvoiceNumber.
 By default it will increment the counter by one, you can change that by specifying the Value.
 <code>[[Counter=InvoiceNumber|5]]</code> Add 5 and insert.
+
+<b>Tip</b>: if you want to use the same counter multiple times in a snippet without incrementation simply "Add zero" (<b>|0</b>) for the second and subsequent instances. 
+
+<code>text &hellip; [[counter=cName]] &hellip; text &hellip; 2nd instance [[counter=cName<b>|0</b>]] with same value</code>
+
 These counters are saved between sessions and stored in settings.ini
 You can manage these counters (add, edit, delete) via the tray menu option: Manage counters.
 </td></tr>
@@ -526,7 +656,7 @@ Basic example <code>[[Snippet=shorthandcode]]</code></td></tr>
 </tbody>
 </table>
 
-<h3 id='ClipEx'><em>Extending Clipboard &amp; Selected text</em></h3>
+<h3 id='ClipEx'>* <em>Extending Clipboard &amp; Selected text</em></h3>
 
 Additional parameters are available for the <code>[[Clipboard]]</code> and <code>[[Selected]]</code> plugins.
 
@@ -622,9 +752,9 @@ You can now insert your address in your snippets/bundles by using <code>[[Var=My
 
 So if your address changes you only have to update the Address variable and all your bundles will be up to date. This makes it also easier to share a bundle with other users as they don't have to update your bundle by editing all your address entries, they can simply add the Address variable to their local bundle. 
 
-<b>Local bundle editor</b>
+<b>Manage local variables (Local bundle editor)</b>
 
-You can edit your local bundle via the editor you can access via Tray menu. 
+You can edit your local variables using the Local bundle editor. You can access the editor via the Tray menu or via the Edit menu in the Search gui (Manage local variables)
 
 <span class='small'>Local bundle editor</span>
 <img src='img/lintalist-local-bundle-editor.png' alt='Local bundle editor' border='0'  style='max-width:100%;' />
@@ -843,7 +973,7 @@ All other text in the snippet will be discarded.
 
 You can find an example image file in the Extras\formatted\ folder.
 
-<h2 id='Editing'>Editing Bundles <em>and Snippets</em></h2>
+<h2 id='Editing'>Editing Snippets <em>and Bundles</em></h2>
 
 <h3 id='F4'><span class='key'>F4</span> (Edit Snippet)</h3>
 
@@ -851,10 +981,10 @@ Start searching your bundle and select the snippet you want to edit (highlight w
 
 To store the modified snippet click the save button, the changes are immediately available.
 
-You can also modify the bundle properties such as the name, titlematch etc on the second tab of the Lintalist Bundle Editor.
+<span class='small'>Snippet editor</span>
+<img src='img/lintalist-snippet-editor.png' alt='Snippet editor' border='0'  style='max-width:100%;' />
 
-<span class='small'>Bundle editor</span>
-<img src='img/lintalist-bundle-editor.png' alt='Bundle editor' border='0'  style='max-width:100%;' />
+To modify the bundle properties such as the name, titlematch etc use <a href="#F10">Lintalist Bundle Editor</a>.
 
 <h3 id='F5'><span class='key'>F5</span> (Copy Snippet and Edit)</h3>
 
@@ -882,21 +1012,41 @@ To add the new snippet to the selected bundle click the save button, the changes
 
 Start searching your bundle and select the snippet you want to edit (highlight with cursor or mouse) and use F8 to delete it. After confirmation the snippet is removed from the bundle.
 
-<h3 id='F10'><span class='key leftpad'>F10</span> (New Bundle)</h3>			
-
-To add a new bundle (a collection of snippets) open the Lintalist search window and use F10. The Lintalist Bundle Editor will open on the second tab where you can enter the name, title match and other data. You can also directly add your first snippet by switching tabs and enter the data there. If you click save you will be asked for a file name of your bundle. New bundles are stored in the bundle directory. The application is restarted after you add a new bundle. Once you have created a bundle you can add new snippets via F7 (make sure it is loaded first).
-
 <span class='tip'>Backup: Whenever a snippet is edited (F4) or a deleted (F8) a backup of the bundle will be made in a backup folder when Lintalist is re-started or the program is closed. These can be found in the bundles directory: <b>bundles\backup\</b>. If you are not happy with the changes you have made you can copy back the prior version of the bundle. You may have to re-add any new snippets you have added after the last backup was made.</span>
 
 <h2 id='ManagingBundles'>Managing <em>Bundles</em></h2>
 
 - If you have a new bundle you can add it to Lintalist by simply copying the file into the Bundles directory and (re)starting Lintalist
 
-- If you no longer wish to use a particular Bundle, Exit Lintalist first and then simply remove the file from the Bundles folder and start Lintalist
-
 - If you want to create a new bundle, start Lintalist, open the search window and <a href='#F10'>press F10</a>. The new bundle will be saved in your Bundles directory.
 
+- If you no longer wish to use a particular Bundle, Exit Lintalist first and then simply remove the file from the Bundles folder and start Lintalist or use the Bundle Editor and delete it there.
+
 - You can also use a <a href='#BundleConvertors'>bundle converter</a> to convert files from a variety of formats to the Lintalist format.
+
+<h3 id='F10'><span class='key leftpad'>F10</span> (Bundle properties)</h3>			
+
+If you want to change the properties of an existing bundle such as the name (appears in the Menu) or the TitleMatch you can use the bundle properties editor. Press F10 or use the menu to open it while the Search window is active. Select the bundle in the list and change the properties and click SAVE.
+
+<b>New bundle</b>
+
+There are two methods of adding a new Bundle to Lintalist.
+
+1. Create a new bundle in your text editor and copy that file to the \bundle\ folder and reload.
+2. Use Lintalist to create a bundle and start adding snippets.
+
+To add a new bundle (a collection of snippets) open the Lintalist search window and use the Edit, Bundle properties menu (or press F10). The Lintalist bundle editor will be opened where you can enter the name and other information. When you click save you will be asked for a file name of your bundle. 
+
+The most important fields are Name and TitleMatch. The name is used in the Bundle menu and can be displayed in the search results (see configuration) and the TitleMatch field will allow you to make a Bundle context sensitive which means the search, abbreviations and shortcuts will only be available in Windows which match the title you enter in the TitleMatch field.
+
+New bundles are stored in the bundle directory. Lintalist is restarted after you add a new bundle. A first snippet is automatically added when a new bundle is created.
+
+Once you have created a bundle you can add new snippets via the Edit, New snippet menu or press F7 - make sure the bundle is loaded first by seleting it via the Bundle menu in the Search window. You can add as many snippets as you like. Once ready do not forget to unlock the bundle by ticking the Lock check box in the Lintalist search window.
+
+An illustrated guide is available in the <a href="https://github.com/lintalist/lintalist/wiki/Adding-a-new-Bundle-using-Lintalist">Wiki</a>.
+
+<span class='small'>Bundle editor</span>
+<img src='img/lintalist-bundle-editor.png' alt='Bundle editor' border='0'  style='max-width:100%;' />
 
 <h3 id='BundleConvertors'>Bundle Converters</h3>
 

@@ -153,7 +153,7 @@ Loop, parse, BundleFiles, CSV
 	 Loop, parse, file, `n, `r
 		{
 		 IfInString, A_LoopField, [[Counter=
-			ScannedVarList .= A_LoopField "`n"
+			ScannedVarList .= StrSplit(A_LoopField,"|").1 "`n"
 		}
 	}
 StringReplace, ScannedVarList, ScannedVarList, [[Counter=,,all
