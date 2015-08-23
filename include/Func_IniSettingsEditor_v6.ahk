@@ -316,6 +316,7 @@ IniSettingsEditor(ProgName,IniFile,OwnedBy = 0,DisableGui = 0) {
     TV_Modify(TV_GetChild(TV_GetNext()), "Select")
   
     ;show Gui and get UniqueID
+    TV_Modify(CurrSecID, "Sort") ; modification lintalist
     Gui, Show, w650 h490, %ProgName% Settings 
     Gui, +LastFound
     GuiID := WinExist() 

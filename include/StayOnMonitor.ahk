@@ -92,7 +92,7 @@ StayOnMonXY(GW, GH, Mouse = 0, MouseAlternative = 1, Center = 0)
 ReturnXY(X,Y)
 	{
 	 If (X = "") or (X = 0)
-		X:=100
+		X:=30
 	 If (Y = "") or (Y = 0)
 		Y:=100
 	 If If_Between(X, -15, 15)	

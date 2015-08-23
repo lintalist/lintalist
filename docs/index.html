@@ -21,7 +21,7 @@
 <span style='font-size:.8em;'>You can <b>extend Lintalist</b> by writing your own <b><a href='#InteractiveBundleText'>plugins</a></b>. Lintalist is open source and developed in <a href='http://ahkscript.org/'>AutoHotkey</a>, an easy to learn scripting language for Windows.
 [WinXP(sp3)/Vista/7/8]<br /></span>
 <span style='font-size:.8em;'>As of LintaList v1.1 several types of formatted text are supported in Snippets.</span>
-<span class='date' style='float:right;display:inline;margin-top:0px;'>doc rev. 20150418</span></p>
+<span class='date' style='float:right;display:inline;margin-top:0px;'>doc rev. 20150823</span></p>
 </div>
 
 <div class='column'>
@@ -63,12 +63,13 @@
 <li><a href='http://ahkscript.org/boards/viewtopic.php?f=6&t=3378'>ahkscript.org forum</a> (Guest posting allowed)</li>
 <li><a href='http://www.portablefreeware.com/index.php?id=2686'>Portablefreeware.com</a></li>
 <li><a href='http://alternativeto.net/software/lintalist/'>AlternativeTo</a></li>
+<li><a href='https://gitter.im/lintalist/lintalist'>Gitter</a></li>
 </ul>
 
 </div>
 
 <div class='column'>
-<p><b>Download Lintalist <em>1.5</em></b>
+<p><b>Download Lintalist <em>1.6</em></b>
 <p>
 <a href='https://github.com/lintalist/lintalist/releases'><img src='img/lintalist65x65.gif' alt='Download Lintalist' width='65' align='left' border='0' style='margin-right: 5px;' /></a>
 Download (incl. source):<br />
@@ -129,7 +130,7 @@ This program is written in AutoHotkey, a free, open-source (scripting) utility f
   - select item from a list
   - use clipboard
   - use selected text
-  - counters
+  - counters (can be created on the fly)
   - chain snippets (insert the text of one snippet into another)
   - insert text from file
   - formatted text and images using HTML, Markdown, RTF and Image
@@ -141,7 +142,7 @@ Installing Lintalist is easy, just download the ZIP file and unpack it in a fold
 If you are already an AutoHotkey user and have it installed, it is recommended to run <b>Lintalist.ahk</b>, this will ensure you will be running Lintalist with your preferred version of AutoHotkey. If you don't have AutoHotkey installed you can start <b>Lintalist.exe</b>.
 
 <b>Notes:</b>
-- Lintalist.exe: A renamed AutoHotkey.exe (v1.1.21.03 32-bit Unicode, See http://ahkscript.org/ and/or http://ahkscript.org/download/)
+- Lintalist.exe: A renamed AutoHotkey.exe (v1.1.22.04 32-bit Unicode, See http://ahkscript.org/ and/or http://ahkscript.org/download/)
 - Lintalist.ahk: The actual (main) source code of the program (see https://github.com/lintalist/lintalist)
 
 <h2 id='Searching'>Normal use: Starting Lintalist and searching for a Snippet</h2>
@@ -159,7 +160,7 @@ Based on the active program title, one or more bundles will be loaded into the s
 
 <span class='tip'>If you press the same hotkey again while the Lintalist Search window is active it will toggle between the Wide &amp; Narrow view. You can set the width and height of both views via the configuration menu.</span>
 
-While you type, the number of results will decrease (called incremental search or quick filter). A small icon indicates if it is purely a text snippet <img src='img/texticon.gif' alt='Lintalist text snippet' style='display:inline;margin-bottom:-3px;' /> or if it actually will run a script <img src='img/scripticon.gif' alt='Lintalist script snippet' style='display:inline;margin-bottom:-2px;' />.  You can turn the icons on and off via the configuration menu. (ShowIcons setting)
+While you type, the number of results will decrease (called incremental search or quick filter). A small icon indicates if it is purely a text snippet <img src='img/texticon.gif' alt='Lintalist text snippet' style='display:inline;margin-bottom:-3px;' /> or if it actually will run a script <img src='img/scripticon.gif' alt='Lintalist script snippet' style='display:inline;margin-bottom:-2px;' />.  You can turn the icons on and off via the configuration menu (ShowIcons setting), you can also influence the order of the results by setting various sorting options (see SortByUsage and ColumnSort settings).
 
 After pressing <kbd>ENTER</kbd> on a selected entry from the results list, by default the text (Part1) is pasted in the active program (note the explanation above). <kbd>SHIFT</kbd>+<kbd>ENTER</kbd> and <kbd>ENTER</kbd> will use the first item in the results list unless you have selected another item with the arrow keys. Depending on the snippet either a text is pasted OR a script is run (note explanation above). 
 
@@ -229,28 +230,28 @@ Example: The case-insensitive RegEx 'se\w*g' it is actually using the following 
 
 <h3 id='Omni'><em>Omni</em>search (search all bundles)</h3>
 
-By default you are only searching in the loaded bundles, you can however search in all bundles using the following methods.
+By default you are only searching in the loaded bundles, you can however search in all bundles using the following methods:
 
 <b>1. Load All Bundles</b>
 
-You can Load all bundles using the following methods:
+You can Load all bundles:
 
-- use the tray many, select Load all bundles and bring up the search gui; or
-- bring up the search gui, bundle menu, first option: Load all bundles
+- use the tray many, select Load all bundles and bring up the search GUI; or
+- bring up the search GUI, bundle menu, first option: Load all bundles
 
-This has the disadvantage that it also sets the Locked state so next time you bring up the search gui you are searching in all bundles again and you have to unlock it.
+This has the disadvantage that it also sets the Locked state so next time you bring up the search GUI you are searching in all bundles again and you have to unlock it.
 
 <b>2. Omnisearch query</b>
 
-If you start you query with a pre-defined character (@ by default) Lintalist will search in all bundles independent of the ones that are currently loaded or locked in the search Gui. You can define this character in the settings (OmniChar). If you don't want to use Omnisearch while typing a query simply disable it by erasing the Omnichar in the settings menu.
+When you start your query with a predefined character (@ by default) Lintalist will search in all bundles independent of the ones that are currently loaded or locked in the search Gui. You can define this character in the settings (OmniChar). If you don't want to use Omnisearch while typing a query simply disable it by erasing the OmniChar in the settings menu.
 
 Query: state -> will find "state" in the currently loaded bundle(s)
 Query: @state -> will find "state" in all bundles
 
 <b>3. Omnisearch shortcuts</b>
 
-- While search gui is active: press <kbd>F2</kbd> to toggle the Omnisearch.
-- If you press <kbd>Ctrl</kbd>+<kbd>Capslock</kbd> the search gui is opened in Omnisearch mode (tip: use <kbd>F2</kbd> to toggle). You can define the hotkey in the settings (StartOmniSearchHotkey)
+- While search GUI is active: press <kbd>F2</kbd> to toggle the Omnisearch.
+- If you press <kbd>Ctrl</kbd>+<kbd>Capslock</kbd> the search GUI is opened in Omnisearch mode (tip: use <kbd>F2</kbd> to toggle). You can define the hotkey in the settings (StartOmniSearchHotkey)
 
 Note: while using option 2 &amp; 3 the text "(All)" will be added to the statusbar (bottom right) to indicate you are using Omnisearch when the results are updated.
   
@@ -308,6 +309,13 @@ Shortcuts while search window is not active
 <tr><td><b><kbd> F7 </kbd></b></td><td>Add new Snippet                                 </td></tr>
 <tr><td><b><kbd> F8 </kbd></b></td><td>Delete Snippet                                  </td></tr>
 <tr><td><b><kbd> F10 </kbd></b></td><td>Bundle properties                              </td></tr>
+<tr><td><b><kbd>Ctrl</kbd>+<kbd>1..5</kbd></b></td><td>1: Sort Part 1 (toggle)
+2: Sort Part 2 (toggle)
+3: Sort Shorthand (toggle)
+4: Sort Key (toggle)
+5: Sort Bundle name (toggle)
+
+The sort will work even the column is not visible - for example if you do not show the Bundle name in the search results (see DisplayBundle) you can still sort it.</td></tr>
 </tbody>
 </table>
 
@@ -545,7 +553,7 @@ If you have several very similar snippets in a bundle, you can add some info in 
 </tr>
 </table>
 
-Another example would be for example timesheet management. Often certain types of jobs or clients have special codes assigned to them. Instead of having to remember these codes you can simply create a bundle which would allow you to search for a clients name and paste the code in your timesheet.
+Another example would be time-sheet management. Often certain types of jobs or clients have special codes assigned to them. Instead of having to remember these codes you can simply create a bundle which would allow you to search for a clients name and paste the code in your time-sheet.
 
 <table>
 <tr>
@@ -574,6 +582,29 @@ You can develop your own if you learn to write AutoHotkey scripts, see <b><a hre
 
 Reminder: You can also use <a href='#FormattedText'>Formatted Text Snippets</a> (html, markdown, image and RTF).
 
+Plugins as processed as follows:
+
+1. Local variables first
+2. Process each plugins in the order they are presented in the snippet e.g. left to right.
+3. If it is a nested plugin: the order is from the left to right AND inside out.
+
+Consider the following example:
+
+<blockquote class='boxed'>
+This is <code>[[plugin1]]</code>
+we continue with a triple nested plugin:
+<code>[[plugin2 [[plugin2-1 [[plugin2-1-1]] ]] ]]</code>
+and ending with
+<code>[[plugin3]]</code>
+
+</blockquote>
+Plugins are process in the following order:
+1. [[plugin1]] is processed first
+2. followed by [[plugin2-1-1]] followed by [[plugin2-1]] followed by [[plugin2]]
+3. and finally [[plugin3]]
+
+<b>Available plugins:</b>
+
 <table>
 <thead>
 <tr>
@@ -595,7 +626,7 @@ Neat trick: using a local variable or User input
 <code>[[C=[[Input=Repeat which character|-]]|[[Input=How many times?|10]]]]</code> Repeat the entered character(s) 10 times.
 </td></tr> 
 
-<tr id='calc-plugin'><td><code>[[Calc=]]</code></td><td>Evaluation of the math expressions - see <a href='#Calc'>documentation below</a>.</td></tr>
+<tr id='calc-plugin'><td><code>[[Calc=]]</code> *2</td><td>Evaluation of the math expressions - see <a href='#Calc'>documentation below</a>.</td></tr>
 
 <tr id='calendar-plugin'><td><code>[[Calendar=Format]]</code></td><td>Displays a calendar window to allow you to select a date in a specific format (see DateTime above).
 Basic example <code>[[Calendar=dd-MMM-yyyy]]</code> --> Select a date and it will be inserted like so: 25-Jan-2011
@@ -605,7 +636,7 @@ Basic example <code>[[Calendar=dd-MMM-yyyy]]</code> --> Select a date and it wil
 The options are delimited by a | character .
 Basic example <code>[[Choice=Red|Green|Blue]]</code> inserts the selected colour in the text.</td></tr>
 
-<tr id='clipboard-plugin'><td><code>[[Clipboard]]</code> *</td><td>Insert current Clipboard content.
+<tr id='clipboard-plugin'><td><code>[[Clipboard]]</code> *1</td><td>Insert current Clipboard content.
 * Additional parameters are available, see <a href='#ClipEx'>Extending Clipboard &amp; Selected text</a>.</td></tr>
 
 <tr id='counter-plugin'><td><code>[[Counter=Name|Value]]</code></td><td>You can use multiple counters <b>across bundles</b>.
@@ -613,12 +644,14 @@ Basic example <code>[[Counter=InvoiceNumber]]</code> --> increment by one and in
 By default it will increment the counter by one, you can change that by specifying the Value.
 <code>[[Counter=InvoiceNumber|5]]</code> Add 5 and insert.
 
-<b>Tip</b>: if you want to use the same counter multiple times in a snippet without incrementation simply "Add zero" (<b>|0</b>) for the second and subsequent instances. 
-
 <code>text &hellip; [[counter=cName]] &hellip; text &hellip; 2nd instance [[counter=cName<b>|0</b>]] with same value</code>
 
 These counters are saved between sessions and stored in settings.ini
 You can manage these counters (add, edit, delete) via the tray menu option: Manage counters.
+
+<b>Tips</b>:
+1. if you want to use the same counter multiple times in a snippet without incrementation simply "Add zero" (<b>|0</b>) for the second and subsequent instances. 
+2. if a counter is not created/managed using the "Mange counters" tool the unknown counter will be automatically created. This way you can create counters 'on the fly' using for example the <code>[[Input=]]</code> plugin.
 </td></tr>
 
 <tr id='datetime-plugin'><td><code>[[DateTime=Format|Value|TimeUnits]]</code></td><td>Insert current Date and/or Time using the FormatTime options,
@@ -631,9 +664,18 @@ You can also perform some calculations, example:
 TimeUnits can be either Seconds, Minutes, Hours, or Days.
 </td></tr>
 
-<tr id='file-plugin'><td><code>[[File=Filename]]</code></td><td>Will insert text from specified file into the text, 
+<tr id='file-plugin'><td><code>[[File=Filename|select|clean]]</code></td><td>Will insert text from specified file into the text, 
 either full path or relative to Lintalist directory.
-Basic example <code>[[File=c:\file.txt]]</code> inserts content from that file into the text.</td></tr>
+Basic example <code>[[File=c:\file.txt]]</code> inserts content from that file into the text.
+
+[v1.6+] The file plugin has two options <code><i>|Select</i></code> and <code><i>|Clean</i></code>.
+
+<code>|Select</code>: if you want to select a file to use add <code><i>|Select</i></code>. The "filename" is now used as the directory where you want the Select File dialog to start. If you leave it empty it will start in the Lintalist folder, you can use relative paths (..)
+Basic example: <code>[[File=..|select]]</code> --> select a text file in the parent folder of Lintalist.
+
+<code>|Clean</code>: if you know the text file has the following characters in them |[] <b>AND</b> you are using the File plugin as an input for another plugin you need to tell Lintalist to remove the []| characters by using the |Clean option. Otherwise the plugin using the file as an input will most likely fail.
+The order of Select and Clean doesn't matter, you can use one or both at the same time.
+</td></tr>
 
 <tr id='input-plugin'><td><code>[[Input=Text|Default]]</code></td>
 <td>Ask for user input (simple inputbox)
@@ -643,7 +685,7 @@ You can provide a default response after the question by using the pipe char (|)
 example <code>[[Input=My favourite color|Green]]</code>
 </td></tr>
 
-<tr id='selected-plugin'><td><code>[[Selected]]</code> *</td><td>Replace by selected text if any. This will allow you to insert any 
+<tr id='selected-plugin'><td><code>[[Selected]]</code> *1</td><td>Replace by selected text if any. This will allow you to insert any 
 selected text, for example to wrap selected text in a HTML tag.
 * Additional parameters are available, see <a href='#ClipEx'>Extending Clipboard &amp; Selected text</a>.</td></tr>
 
@@ -651,12 +693,15 @@ selected text, for example to wrap selected text in a HTML tag.
 Use the Shorthand code of another snippet <b>from the same bundle</b>. This way you can chain snippets together.
 Basic example <code>[[Snippet=shorthandcode]]</code></td></tr> 
 
-<tr id='localvar-plugin'><td><code>[[Var=Name]]</code></td><td>Insert local variables. These variables are available <b>across bundles</b>. See <a href='#LocalBundle'>Local bundle variables</a> below. As of v1.0.3 local variables are also available in scripts (making it the only plugin available in scripts for the time being)</td></tr>
+<tr id='snippet-split'><td><code>[[Split=input|?1|?2]]</code> *3         </td><td>Split input into variables - see <a href='#Split'>Split and SplitRepeat</a> below.</td></tr> 
+<tr id='snippet-split'><td><code>[[SplitRepeat=input|?1|?2|?3]]</code> *3</td><td>Split input into variables - see <a href='#Split'>Split and SplitRepeat</a> below.</td></tr> 
+
+<tr id='localvar-plugin'><td><code>[[Var=Name]]</code> *4</td><td>Insert local variables. These variables are available <b>across bundles</b>. See <a href='#LocalBundle'>Local bundle variables</a> below. As of v1.0.3 local variables are also available in scripts (making it the only plugin available in scripts for the time being)</td></tr>
 
 </tbody>
 </table>
 
-<h3 id='ClipEx'>* <em>Extending Clipboard &amp; Selected text</em></h3>
+<h3 id='ClipEx'>*1 <em>Extending Clipboard &amp; Selected text</em></h3>
 
 Additional parameters are available for the <code>[[Clipboard]]</code> and <code>[[Selected]]</code> plugins.
 
@@ -683,9 +728,9 @@ line2		&lt;li&gt;line2&lt;/li&gt;
 line3		&lt;li&gt;line3&lt;/li&gt;</td></tr>
 </table>
 
-<h3 id='Calc'><em>Calc plugin</em></h3>
+<h3 id='Calc'>*2 <em>Calc plugin</em></h3>
 
-The evaluations of the math expressions in the calc plugin are done by the Monster/Eval function by Laszlo.
+The evaluations of the math expressions in the Calc plugin are done by the Monster/Eval function by Laszlo.
 It is capable of basic and advanced math operations including standard AutoHotkey and predefined functions.
 A number of predefined constants are also available. <span class='small'>Source: <a href='http://www.autohotkey.com/forum/viewtopic.php?t=17058'>forum thread</a></span>
 
@@ -735,8 +780,146 @@ In <b>calc</b> you can use this as follows:
 
 <b>Advanced math:</b> examples of the more advanced options are available in the <a href='http://www.autohotkey.com/forum/viewtopic.php?t=17058'>forum thread</a> (or study the code in plugins\calc.ahk). Should you have a requirement for such advanced operations you are encouraged to experiment with a standalone Eval script before applying this to the Calc plugin.
 
+<h3 id='Split'>*3 <em>Split and SplitRepeat</em></h3>
 
-<h3 id='LocalBundle'><em>Local bundle (Variables) [[Var=...]]</em></h3>
+<code>[[Split=input|?1|?2]]</code> and <code>[[SplitRepeat=input|?1|?2|?3]]</code>
+
+The <b>Split</b> plugin creates an "array" of sequentially numbered temporary variables which you can place anywhere in your snippet.
+This can for example be useful if you copy multiple columns and / or rows from a spreadsheet and want to insert them at specific locations in your snippet text.
+
+<table>
+<tr>
+<th>Option</th>
+<th>Meaning</th>
+</tr>
+<tr><td>input</td><td>Can be text, another plugin, or the reserved keywords: <em>selected</em> and <em>clipboard</em>.
+<b>Note:</b> the input must not contain the following three characters: <b>[]|</b>
+</td></tr>
+<tr><td>?1</td><td>the character to split the input at.
+There are a number of reserved options <em>\s</em> = space, <em>\t</em> = tab, <em>\n</em> = new line - but you should be able to use any character apart from these: []|
+If only use <em>?1</em> it will create a simple array of variables you can use like so <code>[[sp=1]]</code> <code>[[sp=2]]</code> <code>[[sp=3]]</code> etc
+Think of it as a <b>column</b> marker.</td></tr>
+<tr><td>?2</td><td>You can omit this, but if you do use a second parameter it will create a two-dimensional array of variables you can use like so <code>[[sp=1,1]]</code> <code>[[sp=1,2]]</code> <code>[[sp=3,2]]</code> etc.
+If you use both <em>?1</em> and <em>?2</em> - <em>?1</em> is the <b>row</b> marker, and <em>?2</em> the <b>column</b> marker.</td></tr>
+</table>
+
+<b>Examples</b>
+
+This selected text: <em class='sel'>word1 word2 word3</em>
+
+<blockquote class='boxed'>
+<code>[[Split=selected|\s]]</code>
+Hello <code>[[sp=1]]</code>
+Hello <code>[[sp=2]]</code>
+Hello <code>[[sp=3]]</code>
+
+</blockquote>
+Result:
+<blockquote class='boxed'>
+Hello word1
+Hello word2
+Hello word3
+
+</blockquote>
+
+Read a text file and use the third line:
+<blockquote class='boxed'>
+<code>[[Split=[[File=example.txt]]|\n]]</code>
+The third line of the text file is <code>[[sp=3]]</code>
+
+</blockquote>
+
+Two-dimensional example - this selected text:
+
+<em class='sel'>wordA1 wordA2 wordA3
+wordB1 wordB2 wordB3</em>
+
+using this snippet
+<blockquote class='boxed'>
+<code>[[Split=selected|\n|\s]]</code>
+Hello <code>[[sp=1,1]]</code> ; wordA1
+Hello <code>[[sp=1,2]]</code>
+Hello <code>[[sp=1,3]]</code>
+Hello <code>[[sp=2,1]]</code>
+Hello <code>[[sp=2,2]]</code> ; wordB2
+Hello <code>[[sp=2,3]]</code>
+
+</blockquote>
+Result
+<blockquote class='boxed'>
+Hello wordA1
+Hello wordA2
+Hello wordA3
+Hello wordB1
+Hello wordB2
+Hello wordB3
+
+</blockquote>
+
+
+
+<b>SplitRepeat</b> is similar to Split but has the unique ability to repeat a snippet until all "parts" have been processed.
+It takes up to three "split" parameters. ?1|?2|?3.
+
+This can be useful if you don't know in advance how many lines or rows you need to process from your input source.
+
+<table>
+<tr>
+<th>Option</th>
+<th>Meaning</th>
+</tr>
+<tr><td>input</td><td>Can be text, another plugin, or the reserved keywords: <em>selected</em> and <em>clipboard</em></td></tr>
+<tr><td>?1</td><td>the character to "repeat" the input at.
+There are a number of reserved options <em>\s</em> = space, <em>\t</em> = tab, <em>\n</em> = new line - but you should be able to use any character apart from []|
+This is useful of you want to process each line from an <em>input</em>.
+</td></tr>
+<tr><td>?2</td><td>Think of <em>?2</em> as the <b>row</b> marker - see Split above.</td></tr>
+<tr><td>?3</td><td>Think of <em>?3</em> as the <b>column</b> marker - see Split above.</td></tr>
+</table>
+
+
+Basic example: this selected text <em class='sel'>a,b,c,d</em> using this snippet
+
+<blockquote class='boxed'>
+<code>[[SplitRepeat=selected|,]]</code>
+Hello <code>[[sp=1]][[C=\n]]</code>
+
+</blockquote>
+Result:
+<blockquote class='boxed'>
+Hello a
+Hello b
+Hello c
+Hello d
+
+</blockquote>
+
+Works with two-dimensions as well, this selected text
+
+<em class='sel'>wordA1,cA1	wordA2,cA2	wordA3,cA3
+wordB1,cB1	wordB2,cB2	wordB3,cB3
+wordC1,cC1	wordC2,cC2	wordC3,cC3</em>
+
+Using this snippet:
+<blockquote class='boxed'>
+<code>[[SplitRepeat=selected|\n|\t|,]]</code>
+1-1 Hello <code>[[sp=1,1]]</code>
+1-2 Hello <code>[[sp=1,2]]</code>
+
+</blockquote>
+Result:
+<blockquote class='boxed'>
+1-1 Hello wordA1
+1-2 Hello cA1
+1-1 Hello wordB1
+1-2 Hello cB1
+1-1 Hello wordC1
+1-2 Hello cC1
+
+</blockquote>
+
+
+<h3 id='LocalBundle'>*4 <em>Local bundle (Variables) [[Var=...]]</em></h3>
 
 By using the <code>[[Var=]]</code> code in your texts you can insert variables which are defined in a special bundle and are stored in <b>local\local.txt</b>. This file has a similar setup to a regular bundle but only has two parts: a name and the content. You can use this to store (personal) information which you can reuse so you do not have to update it multiple times or share it with someone else. This could be your name or address for example:
 
@@ -754,7 +937,7 @@ So if your address changes you only have to update the Address variable and all 
 
 <b>Manage local variables (Local bundle editor)</b>
 
-You can edit your local variables using the Local bundle editor. You can access the editor via the Tray menu or via the Edit menu in the Search gui (Manage local variables)
+You can edit your local variables using the Local bundle editor. You can access the editor via the Tray menu or via the Edit menu in the Search GUI (Manage local variables)
 
 <span class='small'>Local bundle editor</span>
 <img src='img/lintalist-local-bundle-editor.png' alt='Local bundle editor' border='0'  style='max-width:100%;' />
@@ -830,8 +1013,11 @@ Formatted text, styled text, or rich text, as opposed to plain text, has styling
 
 <h3 id='html-FormattedText'><em>HTML</em></h3>
 
-To paste HTML code as formatted text you have to include [[html]] in your snippet, usually at the start of the snippet but it can be anywhere.
+To paste HTML code as formatted text you have to include <code>[[html]]</code> in your snippet, usually at the start of the snippet but it can be anywhere.
 You are allowed to omit the html, head and body tags.
+You can nest or chain various HTML snippets using the <code>[[Snippet=]]</code> plugin.
+If one or more of the nested snippets contains the <code>[[html]]</code> plugin the entire snippet will be converted to HTML.
+Do not mix and match HTML and MD snippets to avoid unexpected end results.
 
 <blockquote class='boxed'>
 <code>[[html]]</code>
@@ -858,7 +1044,9 @@ You are allowed to omit the html, head and body tags.
 <b>Notes:</b>
 1. Some applications will need a HTTP URI for images to work (webmail for example) - background info on file URI: <a href='https://en.wikipedia.org/wiki/File_URI_scheme'>wikipedia</a>.
 If you want to use an image file on your computer you can omit adding the entire file path "file://c:/..../path/to/file.jpg"
-Lintalist will automatically insert the full path relative to the folder where lintalist is installed. Examples:
+Lintalist will automatically insert the full path relative to the folder where lintalist is installed. 
+
+Examples:
 
 An image in a Images sub-folder:
 
@@ -870,8 +1058,9 @@ An image two folders "up" from the Lintalist folder:
 
 <h3 id='markdown-FormattedText'><em>Markdown</em></h3>
 
-To paste Markdown code as formatted text you have to include [[md]] in your snippet.
+To paste Markdown code as formatted text you have to include <code>[[md]]</code> in your snippet.
 Note that only basic Markdown code is properly converted, nested lists are not supported (yet) for example and table formatting is rudimentary - see remarks below.
+You can nest or chain several MD snippets, but do not mix and match with HTML snippets to avoid unexpected end results.
 
 <blockquote class='boxed'>
 <code>[[md]]</code>
@@ -1041,7 +1230,7 @@ The most important fields are Name and TitleMatch. The name is used in the Bundl
 
 New bundles are stored in the bundle directory. Lintalist is restarted after you add a new bundle. A first snippet is automatically added when a new bundle is created.
 
-Once you have created a bundle you can add new snippets via the Edit, New snippet menu or press F7 - make sure the bundle is loaded first by seleting it via the Bundle menu in the Search window. You can add as many snippets as you like. Once ready do not forget to unlock the bundle by ticking the Lock check box in the Lintalist search window.
+Once you have created a bundle you can add new snippets via the Edit, New snippet menu or press F7 - make sure the bundle is loaded first by selecting it via the Bundle menu in the Search window. You can add as many snippets as you like. Once ready do not forget to unlock the bundle by ticking the Lock check box in the Lintalist search window.
 
 An illustrated guide is available in the <a href="https://github.com/lintalist/lintalist/wiki/Adding-a-new-Bundle-using-Lintalist">Wiki</a>.
 

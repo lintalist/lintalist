@@ -1,5 +1,7 @@
 ﻿Lintalist: Searchable interactive lists to copy & paste text, run scripts, using easily exchangeable bundles - http://lintalist.github.io/
 
+[![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/lintalist/lintalist?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
+
 # Introduction
 
 Lintalist allows you to store and (incrementally) **search** and **edit texts**

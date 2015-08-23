@@ -4,7 +4,7 @@ Name            : Lintalist
 Author          : Lintalist
 Purpose         : Searchable interactive lists to copy & paste text, run scripts,
                   using easily exchangeable bundles
-Version         : 1.5
+Version         : 1.6
 Code            : https://github.com/lintalist/
 Website         : http://lintalist.github.io/
 AHKscript Forum : http://ahkscript.org/boards/viewtopic.php?f=6&t=3378
@@ -34,22 +34,28 @@ SendMode, Input
 ;SetKeyDelay, -1
 SetWorkingDir, %A_ScriptDir%
 FileEncoding, UTF-8
+SortDirection:="Sort"
 
 ; Title + Version are included in Title and used in #IfWinActive hotkeys and WinActivate
 Title=Lintalist
-Version=1.5
+Version=1.6
 
 ; ClipCommands are used in ProcessText and allow user input and other variable input into text snippets
-; ClipCommands=[[Input,[[DateTime,[[Choice,[[Selected,[[Var,[[File,[[Snippet=
+; ClipCommands=[[Input,[[DateTime,[[Choice,[[Selected,[[Var,[[File,[[Snippet= etc automatically built up
+; in Plugins\Plugins.ahk
 Gosub, ReadPluginSettings
 
 AppWindow=%title% - %version%   ; Name of Gui
 GroupAdd, AppTitle, %AppWindow% ; we can now use #IfWinActive with the INI value (main scripts hotkeys)
 
+GroupAdd, BundleHotkeys, Select bundle ahk_class AutoHotkeyGUI
+GroupAdd, BundleHotkeys, Append snippet to bundle ahk_class AutoHotkeyGUI
+GroupAdd, BundleHotkeys, Lintalist bundle editor ahk_class AutoHotkeyGUI
+GroupAdd, BundleHotkeys, Lintalist snippet editor ahk_class AutoHotkeyGUI
+
 OnExit, SaveSettings ; store settings (locked state, search mode, gui size etc in INI + Make sure changes to Bundles are saved)
 
 ; /Default settings
-
 
 ; Tray Menu
 Menu, Tray, NoStandard
@@ -96,12 +102,12 @@ if 0 > 0  ; check cl parameters
 		 param := %A_Index%  ; Fetch the contents of the variable whose name is contained in A_Index.
 		 if (param = "-Active")
 			cl_Active:=1
-		 if InStr(param,"-Bundle")	
+		 if InStr(param,"-Bundle")
 			{
 			 cl_Bundle:=StrSplit(param,"=").2
 			 If !FileExist(A_ScriptDir "\bundles\" cl_Bundle)
 				cl_Bundle:=""
-		 	} 
+		 	}
 		 param:=""
 		}
 	}
@@ -152,6 +158,7 @@ Gosub, QuickStartGuide
 
 ; setup hotkey
 
+Hotkey, IfWinNotActive, ahk_group BundleHotkeys
 Hotkey, %StartSearchHotkey%, GUIStart
 If (StartOmniSearchHotkey <> "")
 	Hotkey, %StartOmniSearchHotkey%, GUIStartOmni
@@ -159,6 +166,7 @@ If (QuickSearchHotkey <> "")
 	Hotkey, %QuickSearchHotkey%, ShortText
 If (ExitProgramHotKey <> "")
 	Hotkey, %ExitProgramHotKey%, SaveSettings
+Hotkey, IfWinNotActive
 
 ViaShorthand=0
 
@@ -198,10 +206,7 @@ Return
 GUIStartOmni:
 OmniSearch:=1
 GuiStart: ; build GUI
-If WinActive("Select bundle") or WinActive("Append snippet to bundle") ; TODO replace by HOTKEY On,Off command
-		Return
-If (WinActive("Lintalist bundle editor") or WinActive("Lintalist snippet editor")) ; TODO replace by HOTKEY On,Off command
-		Return
+OmniSearchText:=""
 LastText = fadsfSDFDFasdFdfsadfsadFDSFDf
 If !WinActive(AppWindow)
 	GetActiveWindowStats()
@@ -295,8 +300,8 @@ If (SubStr(CurrText,1,1) = OmniChar) or (OmniSearch = 1)
 	{
 	 SearchBundles:=Group
 	 OmniSearchText:=" (All)"
-	} 
-Else 
+	}
+Else
 	{
 	 SearchBundles:=Load
  	 OmniSearchText:=""
@@ -391,7 +396,7 @@ Loop, parse, SearchBundles, CSV
 		}
 	 If (match = 0)
 		SB_SetText(LV_GetCount() "/" . ListTotal OmniSearchText,2) ; otherwise it won't show zero results
-	 
+
 	}
 
 If (CurrHits = 1)
@@ -405,6 +410,8 @@ If (CurrHits = 1)
 If (DisplayBundle > 1)
 	Gosub, ColorList
 
+If (ColumnSort <> "NoSort")
+	SortResults(ColumnSortOption1,ColumnSortOption2,SortDirection)
 Return
 
 ColorList:
@@ -459,7 +466,7 @@ Clicked:
 		{
 		 gosub,editf7
 		}
-	
+
 Return
 
 ; We made a selection and now want to paste and process the selected text or run script
@@ -483,9 +490,9 @@ Script :=Snippet[Paste1,Paste2,5] ; script (if there is a script, run script ins
 
 If ((Paste2 <> 1) and (SortByUsage = 1)) ; if it already is the first don't bother moving it to the top...
 	{
-	 BackupSnippet:=Snippet[Paste1].Remove(Paste2)
-	 Snippet[Paste1].Insert(1,BackupSnippet)
-	 BackupSnippet=
+	 BackupSnippet:=Snippet[Paste1].Delete(Paste2)
+	 Snippet[Paste1].InsertAt(1,BackupSnippet)
+	 BackupSnippet:=""
 	 Snippet[Paste1,"Save"]:="1"
 	}
 
@@ -498,11 +505,6 @@ If (Script = "") or (ScriptPaused = 1) ; script is empty so we need to paste Tex
 		 StringReplace, Text1, Text1, [[Clipboard]], %Clipboard%, All
 		 StringReplace, Text2, Text2, [[Clipboard]], %Clipboard%, All
 		}
-	 If (InStr(Text1, "[[Clipboard=") > 0) or (InStr(Text2, "[[Clipboard=") > 0)
-		{ ; preprocess clipboard before inserting into snippet
-		 Text1:=ProcessClipboard(Text1)
-		 Text2:=ProcessClipboard(Text2)
-		}
 	 If (PastText1 = 1) OR (Text2 = "")
 		Clip:=Text1
 	 Else If (PastText1 = 0) ; if shift-enter use Text2 BUT if it is empty revert to Text1
@@ -514,38 +516,20 @@ If (Script = "") or (ScriptPaused = 1) ; script is empty so we need to paste Tex
 		Clip:=Text2
 	 ClipSet("s",1,SendMethod,Clipboard) ; store in clip1
 	 ClearClipboard()
-	 Gosub, ProcessText
 	 ; process formatted text: HTML, Markdown, RTF and Image
-	 If RegExMatch(Clip,"iU)\[\[(html|md|rtf=.*|image=.*)\]\]")
+	 ; RTF and Image are processed here, MD and HTML just before pasting to allow for nesting snippets using [[snippet=]]
+	 formatMD:=0,formatHTML:=0
+
+ 	 If RegExMatch(Clip,"iU)\[\[(rtf=.*|image=.*)\]\]")
 		{
 		 WinClip.Clear()
 		 formatted:=1
-		 if InStr(Clip,"[[md]]")
-			{
-			 StringReplace,Clip,Clip,[[md]],,All
-			 Clip:=Markdown2HTML(Clip)
-			 Clip:=FixURI(Clip,"html",A_ScriptDir)
-			 WinClip.SetHTML(clip)
-			 Clip:=RegExReplace(clip,"iU)</*[^>]*>") ; strip HTML tags so we can paste normal text if need be
-			 CheckCursorPos()
-			 WinClip.SetText(Clip)
-			}
-		 else if InStr(Clip,"[[html]]")
-			{
-			 StringReplace,Clip,Clip,[[html]],,all
-			 Clip:=FixURI(Clip,"html",A_ScriptDir)
-			 Gosub, ProcessText
-			 WinClip.SetHTML(Clip)
-			 Clip:=RegExReplace(clip,"iU)</*[^>]*>") ; strip HTML tags so we can paste normal text if need be
-			 CheckCursorPos()
-			 WinClip.SetText(Clip)
-			}
-		 else if InStr(Clip,"[[rtf=")
+		 if InStr(Clip,"[[rtf=")
 			{
 			 RegExMatch(Clip, "iU)\[\[rtf=([^[]*)\]\]", ClipQ, 1)
-			 ClipQ1:=FixURI(ClipQ1,"rtf",A_ScriptDir)
 			 FileRead,Clip,%ClipQ1%
 			 Gosub, ProcessText
+			 ClipQ1:=FixURI(ClipQ1,"rtf",A_ScriptDir)
 			 WinClip.SetRTF(Clip)
 			}
 		 else if InStr(Clip,"[[image=")
@@ -557,7 +541,23 @@ If (Script = "") or (ScriptPaused = 1) ; script is empty so we need to paste Tex
 		 Clip:="", ClipQ1:=""
 		}
 	 Else
-		Clipboard:=ClipSet("s",2,SendMethod,Clip) ; set clip2
+	 	{
+		 Gosub, ProcessText
+		 if (formatMD = 1) or (formatHTML = 1)
+			{
+			 StringReplace,Clip,Clip,[[md]],,All
+			 StringReplace,Clip,Clip,[[html]],,All
+			 if (formatMD = 1)
+			 	Clip:=Markdown2HTML(Clip)
+			 Clip:=FixURI(Clip,"html",A_ScriptDir)
+			 WinClip.SetHTML(Clip)
+			 Clip:=RegExReplace(clip,"iU)</*[^>]*>") ; strip HTML tags so we can paste normal text if need be
+			 WinClip.SetText(Clip)
+			}
+		else	
+		 	Clipboard:=ClipSet("s",2,SendMethod,Clip) ; set clip2
+	 	}
+	 	
 	 If !(formatted > 0)  ; only check for ^| post if it is a plain text snippet
 	 	CheckCursorPos()
 	 formatted:=0
@@ -571,7 +571,7 @@ If (Script = "") or (ScriptPaused = 1) ; script is empty so we need to paste Tex
 		{
 		 SendKey(SendMethod, "^v")
 		}
-	 
+
 	 If (((BackLeft > 0) or (BackUp > 0)) and (PasteMethod <> 2)) ; place caret at postion defined in snippet text via ^|
 		{
 		 If (BackUp > 0)
@@ -601,7 +601,7 @@ If (Script = "") or (ScriptPaused = 1) ; script is empty so we need to paste Tex
 		{
 		 ClipSet("ea",1,SendMethod)
 		}
- 
+
 	}
 Else If (Script <> "") and (ScriptPaused = 0) ; we run script by saving it to tmp file and running it
 	{
@@ -622,7 +622,7 @@ Else If (Script <> "") and (ScriptPaused = 0) ; we run script by saving it to tm
 	}
 If (OnPaste = 1)
 	Gosub, SaveSettings
-OmniSearch:=0	
+OmniSearch:=0
 Return
 
 CheckHitList(CheckHitList, CheckFor, Bundle, RE = 0) ; RE no longer needed?
@@ -654,6 +654,12 @@ CheckHitList(CheckHitList, CheckFor, Bundle, RE = 0) ; RE no longer needed?
 	 Return HitKeyHistory
 	}
 
+; Sort results - https://github.com/lintalist/lintalist/issues/21
+SortResults(SortColumn,SortOption,SortDirection)
+	{
+	 LV_ModifyCol(SortColumn,SortOption " " SortDirection)
+	}
+
 ; Change with of LV columns depending on content (e.g. autohide if it holds no data)
 UpdateLVColWidth()
 	{
@@ -671,8 +677,9 @@ UpdateLVColWidth()
 	 WinGetPos , , , AvailableWidth, , %AppWindow%
 	 If (AvailableWidth = "")
 		AvailableWidth:=Width
-	 c1w:=Round((AvailableWidth - factor) / 2)
-	 c2w:=c1w
+	 ColumnWidth:=Round((AvailableWidth - factor) / 10)
+	 c1w:=Round((ColumnWidth) * (ColumnWidthPart1/10))
+	 c2w:=Round((ColumnWidth) * (ColumnWidthPart2/10))
 
 	 If (Col3 = 0)     ; shortcut column
 		{
@@ -703,7 +710,9 @@ UpdateLVColWidth()
 		 LV_ModifyCol(1,c1w) ; col1 is paste1 column
 		 LV_ModifyCol(2,c2w) ; paste2 column has content so show it
 		}
-	
+
+	 If (ColumnSort <> "NoSort")
+		SortResults(ColumnSortOption1,ColumnSortOption2,SortDirection)
 	}
 
 ; Shows the lines in the preview window (edit2)
@@ -721,16 +730,22 @@ ShowPreview(Section="1")
 	 StringSplit, Paste, Paste, _
 	 If (Section = 3)
 		{
+		 Section = 5 ; 5 = actual script (array element)
 		 If (Snippet[Paste1,Paste2,5] = "") ;  if script is empty default to 2
 			Section = 2
-		 Else
-			Section = 5                     ; 5 = actual script (array element)
 		}
 	 If (Section = 2)
 		{
 		 If (Snippet[Paste1,Paste2,2] = "")
 			Section = 1
 		}
+	 If (Section = 1)
+		{
+		 If (Snippet[Paste1,Paste2,1] = "")
+			Section = 2
+		}
+
+
 	 GuiControl,1: , Edit2, % Snippet[Paste1,Paste2,Section] ; set preview Edit control %
 	 Return
 	}
@@ -774,6 +789,10 @@ lasttext = fadsfSDFDFasdFdfsadfsadFDSFDf
 Gosub, GetText
 Return
 
+#IfWinActive Lintalist snippet editor
+:*:[::[[]]{left 2}
+#IfWinActive
+
 ; Not the best of methods, but it works best for some reason
 ; Hotkeys active in Gui, 10:
 #IfWinActive, Select bundle
@@ -786,6 +805,12 @@ Return
 Esc::
 ;Gosub, 10GuiClose
 Gosub, CancelChoice
+Return
+#IfWinActive
+
+#IfWinActive, Calendar ahk_class AutoHotkeyGUI
+Esc::
+Gosub, CalendarCancel
 Return
 #IfWinActive
 
@@ -831,7 +856,7 @@ If WinExist("Lintalist snippet editor")
 	{
 	 WinActivate, Lintalist snippet editor
 	 return
-	} 
+	}
 EditMode = EditSnippet
 Gui, 1:Submit, NoHide
 ControlFocus, SysListView321, %AppWindow%
@@ -930,12 +955,12 @@ If WinExist("Lintalist bundle editor")
 	{
 	 WinActivate, Lintalist bundle editor
 	 return
-	} 
+	}
 If WinExist(AppWindow)
 	{
 	 Gui, 81:+Owner1
 	 Gui, 1:+Disabled
-	} 
+	}
 Gosub, BundlePropertiesEditor
 Return
 
@@ -1048,6 +1073,18 @@ If (DisplayBundle > 1)
 ShowPreview(PreviewSection)
 If (DisplayBundle > 1)
 	GuiControl, +Redraw, SelItem
+Return
+
+^1:: ; sort part1
+^2:: ; part part2
+^3:: ; sort key
+^4:: ; sort shorthand
+^5:: ; sort bundle
+If (SubStr(A_ThisHotkey,0) = LastSort)
+	SortDirection:=SortDirection = "Sort" ? "SortDesc" : "Sort"
+LastSort:=SubStr(A_ThisHotkey,0)
+; if LastSort = 5 we must pass on 6 as that is the actual column number of the Bundle name column
+SortResults(LastSort = 5 ? 6 : LastSort,ColumnSortOption2,SortDirection)
 Return
 
 #IfWinActive
@@ -1181,7 +1218,7 @@ If (MultipleHotkey=1) ; via hotkey
 	}
 Else If (MultipleHotkey=0) ; choice gui (see ProcessText label)
 	{
-	 StringReplace, Clip, Clip, [[Choice=%Clipq1%]], %Item%
+	 StringReplace, Clip, Clip, %PluginText%, %Item%, All
 	 Item=
 	 MultipleHotkey=0
 	 Gosub, ProcessText
@@ -1410,7 +1447,7 @@ Else
 
 If InStr(A_ThisMenuItem,"=")
 	Send {left 2}
-	
+
 Return
 ;/EditorMenu
 
@@ -1477,33 +1514,45 @@ SB_SetText(MenuNames,1) ; show active file in statusbar
 SB_SetText(ListTotal . "/" . ListTotal OmniSearchText,2) ; show hits / total
 Return
 
-; check if text to paste has any special parameters [[ClipCommands - you can write your own plugins see DOCs for more info
+
 ProcessText:
+
 	Loop ; get personal variables first... only exception from the plugins as it is a built-in feature with the local bundle editor as well
 		{
+		 ProcessTextString:=""
+		 LocalVarName:=""
 		 If (InStr(Clip, "[[Var=") = 0)
 			break
-		 RegExMatch(Clip, "iU)\[\[Var=([^[]*)\]\]", ClipQ, 1)
-		 StringReplace, clip, clip, [[Var=%ClipQ1%]], % LocalVar_%ClipQ1%, All ; %
+		 ProcessTextString:=GrabPlugin(Clip,"var")
+		 LocalVarName:=RTrim(StrSplit(ProcessTextString,"=").2,"]")
+		 StringReplace, clip, clip, %ProcessTextString%, % LocalVar_%LocalVarName%, All ; %
 		}
+	 Gosub, CheckFormat
+	 RegExMatch(clip,"iUs)\[\[[^\[]*\]\]",ProcessTextString)
+	 PluginText:=ProcessTextString
+	 PluginName:=Trim(StrSplit(PluginText,"=").1,"[]")
+	 PluginOptions:=GrabPluginOptions(PluginText)
+	 If IsLabel("GetSnippet" PluginName)
+		Gosub, GetSnippet%PluginName%
 
-	 Loop, parse, ClipCommand, |
+	 If (RegExMatch(Clip, "i)(" ClipCommandRE ")") > 0) ; make sure all "plugins" are processed before proceeding
+		Gosub, ProcessText
+	 Gosub, CheckFormat
+Return
+
+CheckFormat:
+	 If InStr(Clip,"[[md]]")
 		{
-		 If (A_LoopField = "")
-			Continue
-		 If InStr(Clip, A_LoopField)
-			{
-			 Filter:=SubStr(A_LoopField, 3)
-			 Gosub, GetSnippet%Filter%
-			}
-		 If (Filter = "Image")
-			Break
+		 StringReplace,Clip,Clip,[[md]],,All
+		 formatMD:=1
+		 formatted:=1
 		}
-
-
-If (RegExMatch(Clip, "i)(" ClipCommandRE ")") > 0) ; make sure all "plugins" are processed before proceeding
-	Gosub, ProcessText
-
+ 	 If InStr(Clip,"[[html]]")
+		{
+		 StringReplace,Clip,Clip,[[html]],,All
+		 formatHTML:=1
+		 formatted:=1
+		}	 	
 Return
 
 CheckCursorPos()
@@ -1672,6 +1721,12 @@ Menu, Plugins, Add, Insert [[Enc=]]     , EditorMenuHandler
 Menu, Plugins, Add, Insert [[File=]]    , EditorMenuHandler
 Menu, Plugins, Add, Insert [[Input=]]   , EditorMenuHandler
 Menu, Plugins, Add, Insert [[Snippet=]] , EditorMenuHandler
+Menu, Split, Add, Insert [[Split=]]   , EditorMenuHandler
+Menu, Split, Add, Insert [[SplitRepeat=]] , EditorMenuHandler
+Menu, Split, Add
+Menu, Split, Add, Insert [[sp=1]]   , EditorMenuHandler
+Menu, Split, Add, Insert [[sp=1`,1]]   , EditorMenuHandler
+Menu, Plugins, Add, Insert [[Split/Repeat]], :Split
 
 Menu, Plugins, Add
 
@@ -1681,7 +1736,7 @@ Menu, Plugins, Add, Insert [[md]]       , EditorMenuHandler
 Menu, Plugins, Add, Insert [[rtf=]]     , EditorMenuHandler
 
 ;Menu, Tools, Add, Encrypt text          , EditorMenuHandler
-;Menu, Tools, Add, 
+;Menu, Tools, Add,
 Menu, Tools, Add, Convert CSV file         , EditorMenuHandler
 Menu, Tools, Add, Convert List             , EditorMenuHandler
 Menu, Tools, Add, Convert Texter bundle    , EditorMenuHandler
@@ -1746,6 +1801,7 @@ Return
 #Include %A_ScriptDir%\include\QuickStart.ahk
 #Include %A_ScriptDir%\include\FixURI.ahk
 #Include %A_ScriptDir%\include\SetIcon.ahk
+#Include %A_ScriptDir%\include\PluginHelper.ahk
 #Include %A_ScriptDir%\include\WinClip.ahk    ; by Deo
 #Include %A_ScriptDir%\include\WinClipAPI.ahk ; by Deo
 #Include %A_ScriptDir%\include\Markdown2HTML.ahk ; by fincs + additions
@@ -1763,5 +1819,35 @@ Loop, parse, LocalCounter_0, CSV
 IniWrite, %Counters%   , Settings.ini, Settings, Counters
 Return
 
+/*
+; Possible to expand with Ligatures and other variations - see link below
+; https://en.wiktionary.org/wiki/Appendix:Variations_of_%22a%22 ... ; etc
+; see also http://ahkscript.org/boards/viewtopic.php?p=47793#p47793
+; and https://github.com/lintalist/lintalist/issues/33
+LetterVariations(text)
+	{
+	 static Array := { "a" : "áàâǎăãảạäåāąấầẫẩậắằẵẳặǻ"
+	 , "c" : "ćĉčċç"
+	 , "d" : "ďđð"
+	 , "e" : "éèêěĕẽẻėëēęếềễểẹệ"
+	 , "g" : "ğĝġģ"
+	 , "h" : "ĥħ"
+	 , "i" : "íìĭîǐïĩįīỉịĵ"
+	 , "k" : "ķ"
+	 , "l" : "ĺľļłŀ"
+	 , "n" : "ńňñņ"
+	 , "o" : "óòŏôốồỗổǒöőõøǿōỏơớờỡởợọộ"
+	 , "s" : "ṕṗŕřŗśŝšş"
+	 , "t" : "ťţŧ"
+	 , "u" : "úùŭûǔůüǘǜǚǖűũųūủưứừữửựụ"
+	 , "w" : "ẃẁŵẅ"
+	 , "y" : "ýỳŷÿỹỷỵ"
+	 , "z" : "źžż" }
+
+	 for k, v in Array
+		 text:=RegExReplace(text,k,"[" k v "]")
+	 Return text
+	}
+*/
 
 #Include *i %A_ScriptDir%\autocorrect.ahk

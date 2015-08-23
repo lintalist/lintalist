@@ -7,13 +7,13 @@ Version       : 1.0
 GetSnippetChoice:
 ;;;;;;;;;;; warning: ugly hack/code
 MakeChoice:
-	  If (InStr(Clip, "[[Choice") > 0)
+	  If (InStr(Clip, "[[Choice=") > 0) or (A_Index > 100)
 		{
-		 RegExMatch(Clip, "iU)\[\[Choice=([^[]*)\]\]", ClipQ, 1)
+
 		 MultipleHotkey=0
 		 Gui, 10:Destroy
 		 Gui, 10:+Owner +AlwaysOnTop
-		 Gui, 10:Add, ListBox, w400 h200 x5 y5 vItem gChoiceMouseOK, %ClipQ1%
+		 Gui, 10:Add, ListBox, w400 h200 x5 y5 vItem gChoiceMouseOK, %PluginOptions%
 		 Gui, 10:Add, button, gCancelChoice, Cancel
 		 Gui, 10:Add, button, default gChoiceOK hidden, OK
 		 Gui, 10:Show, w410 h240, Select and press enter
@@ -34,5 +34,7 @@ If (InStr(Clip, "[[Choice") > 0)
 Return
 
 CancelChoice:
-Gui, 10:Destroy	
+PluginText:=""
+PluginOptions:=""
+Gui, 10:Destroy
 Return

@@ -6,21 +6,21 @@ Credit        : Sentence case by Laszlo & None
 Updated       : 20150215
 */
 
-ClipSelEx(SelectedText,ClipQ1)
+ClipSelEx(SelectedText,Options)
 	{
-	 If ClipQ1 in upper,u
+	 If Options in upper,u
 		{
 		 StringUpper, SelectedText, SelectedText
 		}
-	 Else If ClipQ1 in lower,l
+	 Else If Options in lower,l
 		{
 		 StringLower, SelectedText, SelectedText
 		}
-	 Else If ClipQ1 in title,t
+	 Else If Options in title,t
 		{
 		 StringUpper, SelectedText, SelectedText, T
 		}
-	 Else If ClipQ1 in sentence,s
+	 Else If Options in sentence,s
 		{
 		 /*
 			Sentence case by Laszlo & None
@@ -34,31 +34,36 @@ ClipSelEx(SelectedText,ClipQ1)
 		 Loop Parse, X, CSV
 			SelectedText := RegExReplace(SelectedText,"i)\b" A_LoopField "\b", A_LoopField)
 		}
-	 Else If (InStr(ClipQ1,"wrap|") or InStr(ClipQ1,"w|"))
+	 Else If (InStr(Options,"wrap|") or InStr(Options,"w|"))
 		{
-		 StringSplit, ClipQ1, ClipQ1, |
+		 StringSplit, Options, Options, |
 		 If InStr(SelectedText,"`n")
 			{
 			 loop, parse, SelectedText, `n, `r
-				ReplaceClipSelEx .= ClipQ12 A_LoopField ClipQ13 "`n"
+				ReplaceClipSelEx .= Options2 A_LoopField Options3 "`n"
 			}
 		 else
-			ReplaceClipSelEx := ClipQ12 SelectedText ClipQ13 "`n"
+			ReplaceClipSelEx := Options2 SelectedText Options3 "`n"
 		 ReplaceClipSelEx:=Trim(ReplaceClipSelEx,"`n")	
 		 SelectedText:=ReplaceClipSelEx
 		} 
 	 Return SelectedText
 	}
 
-ProcessClipboard(Snippet)
+/*
+ProcessClipboard(ClipText)
 	{
-	 RegExMatch(Snippet, "iU)\[\[Clipboard(.*)\]\]", ClipQ, 1)
+	 global clip, ProcessTextString, PluginText, PluginOptions
+	 clip:=ClipText
+	 plName:="Clipboard"
+	 #IncludeAgain %A_ScriptDir%\plugins\resolvenested.ahk ; ProcessTextString + PluginText
+	 PluginOptions:=GrabPluginOptions(PluginText)
+
 	 Text:=Clipboard
-	 StringReplace, ClipQ1, ClipQ1, =,, All ; trim any = chars
-	 OrgClipQ1:=ClipQ1
-	 StringLower, ClipQ1, ClipQ1
-	 Text:=ClipSelEx(Text,ClipQ1)
-	 If (ClipQ1 <> "")
-		StringReplace, Snippet, Snippet, [[Clipboard=%OrgClipQ1%]], %Text%, All
-	 Return Snippet
+	 MsgBox % Text "`n--------------`n" PluginOptions
+
+	 Text:=ClipSelEx(Text,PluginOptions)
+	 StringReplace, clip, clip, %PluginText%, %Text%, All
+	 Return clip
 	}
+*/

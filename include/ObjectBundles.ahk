@@ -325,27 +325,20 @@ ParseBundle(Patterns, Counter)
 		 Snippet[Counter,A_Index]:=StrSplit(list%A_Index%,Chr(7))
 		 List%A_Index%:=""
 		 ;MsgBox % Snippet[counter,A_Index,1] ; debug
-		 fix1 := Snippet[Counter,A_Index,1]
-		 fix2 := Snippet[Counter,A_Index,2]
-		 ;fix preview 
-		 StringReplace, fix1, fix1, `r, ,all
-		 StringReplace, fix1, fix1, `n, \n,all
-		 StringReplace, fix1, fix1, %A_Tab%, \t,all
-		 StringReplace, fix2, fix2, `r, ,all
-		 StringReplace, fix2, fix2, `n, \n,all
-		 StringReplace, fix2, fix2, %A_Tab%, %A_Space%,all
-		 ;/fix preview
-		 Snippet[Counter,A_Index,"1v"]:=fix1
-		 Snippet[Counter,A_Index,"2v"]:=fix2
+
+		 Snippet[Counter,A_Index,"1v"]:=FixPreview(Snippet[Counter,A_Index,1])
+		 Snippet[Counter,A_Index,"2v"]:=FixPreview(Snippet[Counter,A_Index,2])
 		 
 		 If (Snippet[Counter,A_Index,3] <> "") ; if no hotkey defined: skip
 			{
+			 Hotkey, IfWinNotActive, ahk_group BundleHotkeys	
 			 Hotkey, % "$" . Snippet[Counter,A_Index,3], ShortCut ; setup hotkeys
 			 If (ShortcutPaused = 1)
 				{
 				 Hotkey, % "$" . Snippet[Counter,A_Index,3], Off ; turn hotkeys off ...
 				}
 			 HotKeyHitList_%Counter% .= Snippet[Counter,A_Index,3] Chr(5)
+			 Hotkey, IfWinNotActive
 			}
 			
 		 If (Snippet[Counter,A_Index,4] <> "")                 ; if no shorthand defined: skip
@@ -380,4 +373,12 @@ IniWrite, default.txt, %A_ScriptDir%\Settings.ini, Settings, AlwaysLoadBundles
 IniWrite, default.txt, %A_ScriptDir%\Settings.ini, Settings, DefaultBundle
 IniWrite, default.txt, %A_ScriptDir%\Settings.ini, Settings, LastBundle
 Return "default.txt"
+	}
+
+FixPreview(in)
+	{
+	 StringReplace, in, in, `r, ,all
+	 StringReplace, in, in, `n, \n,all
+	 StringReplace, in, in, %A_Tab%, \t,all
+	 return in		
 	}

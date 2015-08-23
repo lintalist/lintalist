@@ -12,18 +12,15 @@ by Laszlo
 */
 
 GetSnippetCalc:
-PLUGINNAME=CALC
 Loop 
 	{
-	 If (InStr(Clip, "[[" PLUGINNAME ) = 0)
+	 If (InStr(Clip, "[[Calc=" ) = 0) or (A_Index > 100)
 		Break
-	 RegExMatch(Clip, "iU)\[\[" PLUGINNAME "=(.*)\]\]", ClipQ, 1) ; ClipQ1 will contain the parameter(s)
-	 ClipQ2:=Eval(ClipQ1)
-	 StringReplace, clip, clip, [[%PLUGINNAME%=%ClipQ1%]], %ClipQ2%, All
-	 ClipQ1=
-	 ClipQ2=
+	 StringReplace, clip, clip, %PluginText%, % Eval(PluginOptions), All
+	 PluginOptions:=""
+	 PluginText:=""
+	 ProcessTextString:=""
 	} 
-PLUGINNAME= ; clear variable
 Return
 
 

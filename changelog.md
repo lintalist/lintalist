@@ -1,3 +1,39 @@
+### v1.6
+
+* New/Changed: improved plugin parsing so any type of nested snippets are now  
+  allowed (used to be a limited set in a particular order) #37
+* New: Split & SplitRepeat plugins #37
+* New: Fall back on part2 of snippet it part1 happens to be empty  
+  https://github.com/lintalist/lintalist/issues/36
+* New: you can now create counters "on the fly" - if the name of a counter is  
+  unknown it will be added automatically and saved in the settings. The start  
+  value is 0 so when first using it the value used in the snippet will be 1  
+  https://github.com/lintalist/lintalist/issues/26
+* New: ColumnWidth setting to set percentage of width for part1 and part2 in  
+  results https://github.com/lintalist/lintalist/issues/22
+* New: Optional sort for the five columns in the listview, ColumnSort setting  
+  ht: FanaticGuru - https://github.com/lintalist/lintalist/issues/21
+  Hotkeys: ctrl-1 to 5
+* New: File plugin - options for Select and Clean, now uses FixURI() as well.
+* New/Editor: hotstring to expand [ to [[]] while in Snippet editor.
+* Editor/ObjectBundles: fix preview moved to function (code refactored)
+* Editor: new snippet now uses .InsertAt vs .MaxIndex+1  (.Push and .InsertAt where introduced in AutoHotkey 1.1.21.00)  
+  hopefully fixes issue with "hidden" new snippet https://github.com/lintalist/lintalist/issues/37#issuecomment-108025595  
+  New snippets are now insert at the beginning of the Snippet object,  
+  so the new item should be the first of the items in the active  
+  bundle (depending on sort, see New: Optional sort) - should be a good indication that the  
+  new snippet has been added correctly.
+* Change: Sort settings in the Configuration treeview  
+  https://github.com/lintalist/lintalist/issues/35
+* Change: Calendar now uses Multi-select (shows two months side by side). This  
+  allows the user to shift-click or click-drag to select a range of adjacent  
+  dates (the user may still select a single date too).
+* Change: made bundle hotkeys context sensitive to avoid them being used in Lintalist guis.  
+  https://github.com/lintalist/lintalist/issues/38
+  Also applied to regular Lintalist (GUI) hotkeys replacing some code at Guistart label.
+* Change/Fix: Nesting of HTML and MD snippets now allowed.  
+  https://github.com/lintalist/lintalist/issues/42
+
 ### v1.5
 
 * New: Optional - Show bundle name in search results and/or use Colour to  
@@ -14,7 +50,7 @@
   properties now independent of snippet. Delete a bundle using the editor.  
   ht: @danielo515 https://github.com/lintalist/lintalist/issues/19 and  
   https://github.com/lintalist/lintalist/issues/28
-* New: Omnisearch - start search query with @, press F2 while search or 
+* New: Omnisearch - start search query with @, press F2 while search or
   ctrl-capslock to search in all bundles regardless of loaded and/or locked  
   bundles in search Gui.  
   ht: @danielo515 https://github.com/lintalist/lintalist/issues/31  
@@ -73,12 +109,12 @@
 * Fix: Pgup/Pgdown now works again in search Gui
 * Fix: Caret plugin misfired (first time only) when it was called via a
   shorthand snippet AND if that was the first snippet used after Lintalist was started.
- 
+
 ### Changelog v1.2
 
 * New: Command line parameter "**-Active**" to start Lintalist and open the search window:  
   Usage Running lintalist.exe installed: lintalist.exe lintalist.ahk -Active  
-  Usage AutoHotkey installed: lintalist.ahk -Active 
+  Usage AutoHotkey installed: lintalist.ahk -Active
   https://github.com/lintalist/lintalist/issues/6 - ht: @thiagotalma
 * New: Configuration setting "**ActivateWindow**" which you can use to achieve
   the same as "-Active" - https://github.com/lintalist/lintalist/issues/6 - ht: @thiagotalma

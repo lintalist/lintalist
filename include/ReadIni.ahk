@@ -72,6 +72,9 @@ INISetup:={ AlwaysLoadBundles:     {default:"",find:"bundles\"}
 			, SingleClickSends:    {default:"0"}
 			, OmniChar:            {default:"@"}
 			, DisplayBundle:       {default:"0"}
+			, ColumnWidth:         {default:"50-50"}
+			, ColumnSort:          {default:"NoSort"}
+			;, SearchLetterVariations: {default:"0"}
 			, Font:                {default:"Arial"}
             , FontSize:            {default:"10"} }
 
@@ -98,6 +101,18 @@ INISetup:={ AlwaysLoadBundles:     {default:"",find:"bundles\"}
 		; finalise certain settings
 		SplitPath, Icon1, , , , Icon1 ; trim ext
 		SplitPath, Icon2, , , , Icon2 ; trim ext
+
+		StringSplit, ColumnWidthPart, ColumnWidth, -
+
+		if (ColumnSort <> "NoSort")
+			{
+			 StringSplit, ColumnSortOption, ColumnSort, -
+			 if (ColumnSortOption1 = "Part1")
+				ColumnSortOption1:=1
+			 else	
+				ColumnSortOption1:=2
+			}
+			
 
 		Loop, parse, TriggerKeys, CSV
 			{

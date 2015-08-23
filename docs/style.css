@@ -186,3 +186,12 @@ blockquote {
 	border: 1px solid #c0c0c0;
 	box-shadow: #eee 5px 5px 5px;
 	}
+
+em.sel {
+	background-color: #008;
+	color: #fff;
+	padding: 5px;
+	display: inline-block;
+	
+	margin:0;
+	}	

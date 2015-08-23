@@ -1,8 +1,8 @@
 /*
 
 FixURI()
-Lintalist v1.1
-Date: 20150101
+Lintalist v1.2
+Date: 20150815
 
 Return: fixed text (Clip for html and md) and path (RTF and Image)
 
@@ -21,6 +21,10 @@ image/rtf (here text is simply the path, returns "fixed" path)
 	Fix, replace with "missing" if not found
 	- "path\tofile.jpg"
 
+1.2: now used by the File plugin as well.
+
+txt (here text is either the path or a folder for the Select option)
+
 */
 
 FixURI(text,source,sourcedir="") {
@@ -29,7 +33,7 @@ FixURI(text,source,sourcedir="") {
 	else
 		sourcedir:=RTrim(sourcedir,"\") "\"
 
-	if (source = "image") or (source = "rtf")
+	if (source = "image") or (source = "rtf") or (source = "txt")
 		{
 		 If RegExMatch(text,"i)^[a-z]\:\\")
 			{

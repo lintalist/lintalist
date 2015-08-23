@@ -5,26 +5,49 @@ Version       : 1.0
 */
 
 GetSnippetCounter:
-	Loop ; get Data & Time [[DateTime=yy mm dd|2|days]]
+	Loop ; get counters
 		{
-		 If (InStr(Clip, "[[Counter=") = 0)
+		 If (InStr(Clip, "[[Counter=") = 0) or (A_Index > 100)
 			Break
-		 RegExMatch(Clip, "iU)\[\[Counter=([^[]*)\]\]", ClipQ, 1)
-		 If (InStr(ClipQ1,"|"))
+			
+		 If (InStr(PluginOptions,"|"))
 			{
-			 StringSplit, ClipQ1, ClipQ1, |
-			 LocalCounter_%ClipQ11% := LocalCounter_%ClipQ11% + ClipQ12
-			 ClipQ2:=% LocalCounter_%ClipQ11%
+			 CounterName:=CheckforNewCounter(StrSplit(PluginOptions,"|").1)
+			 CounterMath:=StrSplit(PluginOptions,"|").2
+			 LocalCounter_%CounterName% := LocalCounter_%CounterName% + CounterMath
+			 If (CounterMath = 0)
+			 	{
+	 	 	 	 StringReplace, clip, clip, %PluginText%, % LocalCounter_%CounterName%, All
+				 StringReplace, PluginText, PluginText, |0
+	 	 	 	 StringReplace, clip, clip, %PluginText%, % LocalCounter_%CounterName%, All
+	 	 	 	} 
+	 	 	 else
+	 	 	 	{
+		 	 	 StringReplace, clip, clip, %PluginText%, % LocalCounter_%CounterName%
+	 	 	 	}
 			}
 		 Else
 			{
-			 LocalCounter_%ClipQ1%++
-			 ClipQ2:=% LocalCounter_%ClipQ1%
+			 CounterName:=CheckforNewCounter(PluginOptions)
+			 LocalCounter_%CounterName%++
+			 StringReplace, clip, clip, %PluginText%, % LocalCounter_%CounterName%
 			} 
-		 StringReplace, clip, clip, [[Counter=%ClipQ1%]], %ClipQ2%
-		 ClipQ1=
-		 ClipQ2=
-		 ClipQ11=
-		 ClipQ12=
+
+		 CounterName:=""
+		 CounterMath:=""
+ 		 PluginOptions:=""
+		 PluginText:=""
+		 ProcessTextString:=""
+
 	  }
 Return
+
+CheckforNewCounter(in)
+	{
+	 global
+	 If InStr("," LocalCounter_0 ",", in)
+	 	Return in
+	 LocalCounter_0 .= in ","
+	 LocalCounter_%in% = 0
+	 Return in
+	}

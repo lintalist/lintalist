@@ -6,25 +6,24 @@ Version       : 1.0
 
 
 GetSnippetDateTime:
- 	 Loop ; get Data & Time [[DateTime=yy mm dd|2|days]]
+ 	 Loop ; get Date & Time [[DateTime=yy mm dd|2|days]]
 		{
-		 If (InStr(Clip, "[[DateTime=") = 0)
+		 If (InStr(Clip, "[[DateTime=") = 0) or (A_Index > 100)
 			Break
-		 RegExMatch(Clip, "iU)\[\[DateTime=([^[]*)\]\]", ClipQ, 1)
-		 If (InStr(ClipQ1,"|"))
+		 
+		 If (InStr(PluginOptions,"|"))
 			{
-			 StringSplit, ClipQ1, ClipQ1, |
 			 FormatTime, DT,, yyyyMMddHHmmss
-			 EnvAdd, DT, %ClipQ12%, %ClipQ13%
-			 FormatTime, DT,%DT%, %ClipQ11%
+			 EnvAdd, DT, % StrSplit(PluginOptions,"|").2, % StrSplit(PluginOptions,"|").3
+			 FormatTime, DT, %DT%, % StrSplit(PluginOptions,"|").1
 			}
 		 Else
-			FormatTime, DT,, %ClipQ1%
-		 StringReplace, clip, clip, [[DateTime=%ClipQ1%]], %DT%
-		 DT=
-		 ClipQ1=
-		 ClipQ11=
-		 ClipQ12=
-		 ClipQ13=
+			FormatTime, DT,, %PluginOptions%
+		 StringReplace, clip, clip, %PluginText%, %DT%, All
+		 DT:=""
+		 PluginOptions:=""
+		 PluginText:=""
+		 ProcessTextString:=""
+
 	  } 
 Return

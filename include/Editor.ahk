@@ -232,24 +232,31 @@ If (Shorthand <> OldShorthand) ; if new shorthand check for duplicate
 
 If (HKey <> OldKey) ; if new hotkey check for duplicate
 	{
-ThisHotkey=
-StringReplace, ThisHotkey, HKey,+,\+,All
-StringReplace, ThisHotkey, ThisHotkey,!,\!,All
-StringReplace, ThisHotkey, ThisHotkey,^,\^,All
-StringReplace, ThisHotkey, ThisHotkey,#,\#,All
-;MsgBox % ThisHotkey
-ThisHotkey:=RegExReplace(ThisHotkey, "i)^([!#^+\\]*)", "[$1]{_}")
-Stringreplace, ThisHotkey, ThisHotkey, \,\, useerrorlevel
-Length:=ErrorLevel
-Stringreplace, ThisHotkey, ThisHotkey, {_},{%Length%}, All
-;MsgBox % "Check Hotkey: " ThisHotkey
+; commented this for v1.6 - https://github.com/lintalist/lintalist/issues/38
+; also code seems to be redundant, was checking HotkeyHitlist for ThisHotkey and not Hkey
+		
+;ThisHotkey=
+;StringReplace, ThisHotkey, HKey,+,\+,All
+;StringReplace, ThisHotkey, ThisHotkey,!,\!,All
+;StringReplace, ThisHotkey, ThisHotkey,^,\^,All
+;StringReplace, ThisHotkey, ThisHotkey,#,\#,All
+;;MsgBox % ThisHotkey
+;ThisHotkey:=RegExReplace(ThisHotkey, "i)^([!#^+\\]*)", "[$1]{_}")
+;Stringreplace, ThisHotkey, ThisHotkey, \,\, useerrorlevel
+;Length:=ErrorLevel
+;Stringreplace, ThisHotkey, ThisHotkey, {_},{%Length%}, All
+;MsgBox % "Check Hotkey: " OldKey " v " Hkey
+
 HitKeyHistory=
-HitKeyHistory:=CheckHitList("Hotkey", ThisHotkey, Check, 1)
+HitKeyHistory:=CheckHitList("Hotkey", HKey, Check, 1)
 If (HitKeyHistory <> "")
 	{
-	 MsgBox,48,Warning, Hotkey collision.`nThis keyboard shortcut is already in use in this Bundle.`nHotkey disabled for this snippet.
+	 MsgBox,48,Warning, Hotkey collision.`nThis keyboard shortcut is already in use in this Bundle.`nHotkey reset for this snippet.
 	 If (EditMode <> "MoveSnippet")
-		 	Return
+	 	{
+		 GuiControl,71:, msctls_hotkey321, %OldKey%
+		 Return
+		}	
 	 HKey=
 	}
 }
@@ -262,18 +269,8 @@ If (EditMode = "EditSnippet")
 	 Snippet[Paste1,Paste2,4] := Shorthand  ; Shorthand
 	 Snippet[Paste1,Paste2,5] := Script     ; Script (if there is a script run script instead)
 
-     ;fix preview 
-	 fix1 := Snippet[Paste1,Paste2,1]
-	 fix2 := Snippet[Paste1,Paste2,2]
-	 StringReplace, fix1, fix1, `r, ,all
-	 StringReplace, fix1, fix1, `n, \n,all
-	 StringReplace, fix1, fix1, %A_Tab%, \t,all
-	 StringReplace, fix2, fix2, `r, ,all
-	 StringReplace, fix2, fix2, `n, \n,all
-	 StringReplace, fix2, fix2, %A_Tab%, %A_Space%,all
-	 ;/fix preview
-	 Snippet[Paste1,Paste2,"1v"]:=fix1
-	 Snippet[Paste1,Paste2,"2v"]:=fix2
+	 Snippet[Paste1,Paste2,"1v"]:=FixPreview(Text1)
+	 Snippet[Paste1,Paste2,"2v"]:=FixPreview(Text2)
 	 
 	 List_ToSave_%Paste1%=1
 	 Snippet[Paste1,"Save"]:=1
@@ -283,6 +280,11 @@ Else If (EditMode = "AppendSnippet") or (EditMode = "CopySnippet") or (EditMode 
 	{
 	 If (Text1 = "") and (Text2 = "") and (HKey = "") and (Shorthand = "") and (Script = "")
 		Return ; nothing to do
+
+	 ;Snippet[AppendToBundle].Push({1:Text1,2:Text2,3:HKey,4:Shorthand,5:Script,"1v":FixPreview(Text1),"2v":FixPreview(Text2)})
+	 Snippet[AppendToBundle].InsertAt(1,{1:Text1,2:Text2,3:HKey,4:Shorthand,5:Script,"1v":FixPreview(Text1),"2v":FixPreview(Text2)})
+
+/*
 	 Snippet[AppendToBundle,"Save"]:=1
 	 listcounter:= Snippet[AppendToBundle].MaxIndex() + 1
 	 Snippet[AppendToBundle,listcounter,1]:=Text1
@@ -304,7 +306,7 @@ Else If (EditMode = "AppendSnippet") or (EditMode = "CopySnippet") or (EditMode 
 	 
 	 Snippet[AppendToBundle,listcounter,"1v"]:=fix1
 	 Snippet[AppendToBundle,listcounter,"2v"]:=fix2
-	 
+*/	 
 	 Append=
 (
 
@@ -382,18 +384,22 @@ ShortHandHitList_%Counter%:=Chr(5) ; clear
 ; MsgBox % Counter
 If (OldKey <> "") ; and (OldKey <> HKey)
 	{
+	 Hotkey, IfWinNotActive, ahk_group BundleHotkeys	
 	 Hotkey, % "$" . OldKey, Off ; set old hotkey off ...
+	 Hotkey, IfWinNotActive
 	}
 Loop, % Snippet[Counter].MaxIndex() ; LoopIt
 	{ 
 	 If (Snippet[Counter,A_Index,3] <> "") ; if no hotkey defined: skip
 		{
+		 Hotkey, IfWinNotActive, ahk_group BundleHotkeys	
 		 Hotkey, % "$" . Snippet[Counter,A_Index,3], ShortCut ; set hotkeys
 		 If (ShortcutPaused = 1)
 			{
 			 Hotkey, % "$" . Snippet[Counter,A_Index,3], Off ; set hotkeys off ...
 			}
 		 HotKeyHitList_%Counter% .= Snippet[Counter,A_Index,3] Chr(5)
+		 Hotkey, IfWinNotActive
 		}
 			
 	 If (Snippet[Counter,A_Index,4] <> "") ; if no shorthand defined: skip

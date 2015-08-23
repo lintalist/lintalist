@@ -6,25 +6,42 @@ Updated       : ..
 Author        : ..
 */
 
+; The plugin is called from Lintalist.ahk from the ProcessText label and
+; sets the following global variables you can (must) use in your plugin
+; (clip is the global variable being processed before being set as clipboard so
+; it can be pasted)
+; 
+; PluginText    : that is the entire plugin including [[]] e.g. [[input=question|preference]]
+; PluginName    : the name of the plugin e.g. input
+; PluginOptions : options used in the plugin e.g. question|preference
+;                 to access multiple options you can use the following: 
+;                 % StrSplit(PluginOptions,"|").1 -> question
+;                 % StrSplit(PluginOptions,"|").2 -> preference
+;                 and so on...
+
 ; replace PLUGINNAME with the actual name of the plugin, this is used here as 
 ; filename of the plugin AND in the [[PLUGINNAME=...]] so choose wisely
 GetSnippetPLUGINNAME: ; save as PLUGINNAME.ahk
 PLUGINNAME=
 Loop 
 	{
-	 If (InStr(Clip, "[[" PLUGINNAME ) = 0)
+	 If (InStr(Clip, "[[" PLUGINNAME "=") = 0) or (A_Index > 100)
 	 	Break
-	 RegExMatch(Clip, "iU)\[\[" PLUGINNAME "=(.*)\]\]", ClipQ, 1) ; ClipQ1 will contain the parameter(s)
+	 	
 	 ; do your magic here
-	 ; ClipQ2 -> Store the info you want to replace the Plugin with, see StringReplace below
+	 ; process the plugin/options so it sets the content of 'PluginSnippetVariable'
+	 ; which you use to replace the PluginText with.
+	 
 	 
 	 
 	 
 	 
 	 ; /do your magic here
-	 StringReplace, clip, clip, [[%PLUGINNAME%=%ClipQ1%]], %ClipQ2%, All
-	 ClipQ1=
-	 ClipQ2=
+	 StringReplace, clip, clip, %PluginText%, %PluginSnippetVariable%, All
+	 ; don't forget to clear 'PluginSnippetVariable'
+	 PluginOptions:=""
+	 PluginText:=""
+	 ProcessTextString:=""
 	} 
 PLUGINNAME= ; clear variable
 Return

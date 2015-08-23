@@ -11,10 +11,9 @@ tutorials, full documentation and support forum to get you started.
 
 Call a plugin from a snippet by using [[PLUGINNAME=parameter(s)]]
 
-A regular expression is used to extract the parameters, you can not 
-use [[]] in a plugins' name or in the parameters as it will most 
-likely fail. If you want to pass on multiple parameters, using a 
-vertical bar (|) as separator is recommended.
+You can not use [[]] in a plugins' name or in the parameters as it will
+most likely fail. If you want to pass on multiple parameters, using a
+vertical bar or pipe (|) as separator is recommended.
 
 Note:
 You can start with a template: copy the file "template.plugin"
