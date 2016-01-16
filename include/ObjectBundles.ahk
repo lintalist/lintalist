@@ -56,7 +56,7 @@ LoadBundle(Reload="")
 		}
 
 	 ; setup imagelist and define icons
-	 #Include %A_ScriptDir%\include\ImageList.ahk
+	 #IncludeAgain %A_ScriptDir%\include\ImageList.ahk
 
 	 Loop, Parse, Load, CSV
 	 {

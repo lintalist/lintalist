@@ -1,7 +1,11 @@
 ﻿/* 
-Plugin        : Calendar [Standard Lintalist]
-Purpose       : Select a date from a Calendar
-Version       : 1.0
+Plugin     : Calendar [Standard Lintalist]
+Purpose    : Select a date from a Calendar
+Version    : 1.1
+
+History:
+- 1.1 Calendar now uses Multi-select (shows two months side by side) - Lintalist v1.6
+- 1.0 first version
 */
 
 GetSnippetCalendar:

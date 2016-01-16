@@ -447,23 +447,26 @@ Return
 
 EditControlInEditor(ControlID)
 	{
-	 Global WhichControl
+	 Global WhichControl,SnippetEditor,TmpDir
 	 WhichControl:=ControlID
 	 GuiControlGet, ToFile, , %ControlID%
 	 FileDelete, __tmplintalistedit.txt
-	 FileAppend, %ToFile%, __tmplintalistedit.txt
-	 Run, __tmplintalistedit.txt
+	 FileAppend, %ToFile%, %TmpDir%\__tmplintalistedit.txt
+	 If (SnippetEditor = "")
+	 	Run, %TmpDir%\__tmplintalistedit.txt
+	 else
+	 	Run, %SnippetEditor% %TmpDir%\__tmplintalistedit.txt
 	 winwait, __tmplintalistedit.txt
 	 SetTimer, CheckEdit, 500, On
 	 Return
 	}
 
 CheckEdit:
-IfWinExist, __tmplintalistedit.txt
+IfWinExist, %TmpDir%\__tmplintalistedit.txt
 	Return
 SetTimer, CheckEdit, Off
-FileRead, NewText, __tmplintalistedit.txt
-FileDelete, __tmplintalistedit.txt
+FileRead, NewText, %TmpDir%\__tmplintalistedit.txt
+FileDelete, %TmpDir%\__tmplintalistedit.txt
 WinActivate, Lintalist bundle editor
 Gui, 71:Default
 GuiControl, ,%WhichControl%, %NewText%

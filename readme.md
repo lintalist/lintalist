@@ -1,7 +1,5 @@
 ﻿Lintalist: Searchable interactive lists to copy & paste text, run scripts, using easily exchangeable bundles - http://lintalist.github.io/
 
-[![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/lintalist/lintalist?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
-
 # Introduction
 
 Lintalist allows you to store and (incrementally) **search** and **edit texts**
@@ -9,7 +7,7 @@ in bundles and **paste** a selected text in your active program. The text **can*
 be interactive, for example, you can automatically insert the current time and
 date, ask for (basic) user input or make a selection from a list etc. 
 
-AHKScript.org thread: http://ahkscript.org/boards/viewtopic.php?f=6&t=3378
+AutoHotkey.com forum thread: https://autohotkey.com/boards/viewtopic.php?f=6&t=3378
 
 Other features:
 
@@ -19,7 +17,7 @@ Other features:
 * Use the standard Plugins (date, variables, counters, clipboard etc) or develop your own
 * Read more in the documentation...
 
-Lintalist is open source and developed in [AutoHotkey](http://ahkscript.org/),
+Lintalist is open source and developed in [AutoHotkey](https://autohotkey.com/),
 an easy to learn scripting language for Windows (WinXP and above)
 
 __Lintalist search window__
@@ -61,8 +59,10 @@ lintalist.exe and just start lintalist.ahk directly.
 
 ### Elsewhere
 
-* [AutoHotkey.com](http://www.autohotkey.com/board/topic/107687-lintalist-searchable-interactive-lists-to-copy-paste-text/)
+* [AutoHotkey.com](https://autohotkey.com/boards/viewtopic.php?f=6&t=3378)
 * [Portablefreeware.com](http://www.portablefreeware.com/index.php?id=2686)
+* [DonationCoder.com](http://www.donationcoder.com/forum/index.php?topic=41475)
 * [Alternativeto.net](http://alternativeto.net/software/lintalist/)
 
-Copyright 2009-2015 Lintalist. See license.txt
+
+Copyright 2009-2016 Lintalist. See license.txt

@@ -4,10 +4,10 @@ Name            : Lintalist
 Author          : Lintalist
 Purpose         : Searchable interactive lists to copy & paste text, run scripts,
                   using easily exchangeable bundles
-Version         : 1.6
+Version         : 1.7
 Code            : https://github.com/lintalist/
 Website         : http://lintalist.github.io/
-AHKscript Forum : http://ahkscript.org/boards/viewtopic.php?f=6&t=3378
+AHKscript Forum : https://autohotkey.com/boards/viewtopic.php?f=6&t=3378
 License         : Copyright (c) 2009-2015 Lintalist
 
 This program is free software; you can redistribute it and/or modify it under the
@@ -38,7 +38,7 @@ SortDirection:="Sort"
 
 ; Title + Version are included in Title and used in #IfWinActive hotkeys and WinActivate
 Title=Lintalist
-Version=1.6
+Version=1.7
 
 ; ClipCommands are used in ProcessText and allow user input and other variable input into text snippets
 ; ClipCommands=[[Input,[[DateTime,[[Choice,[[Selected,[[Var,[[File,[[Snippet= etc automatically built up
@@ -60,25 +60,30 @@ OnExit, SaveSettings ; store settings (locked state, search mode, gui size etc i
 ; Tray Menu
 Menu, Tray, NoStandard
 Menu, Tray, Icon, icons\lintalist_suspended.ico ; while loading show suspended icon
-Menu, Tray, Add, &Help,          	 TrayMenuHandler
-Menu, Tray, Add, Quick Start Guide,  TrayMenuHandler
-Menu, Tray, Add, &Configuration,     TrayMenuHandler
+Menu, tray, Add, %AppWindow%,             GlobalMenuHandler
+Menu, tray, Default, %AppWindow%
 Menu, Tray, Add,
-Menu, Tray, Add, Check for updates,  TrayMenuHandler
+Menu, Tray, Add, &Help,          	      GlobalMenuHandler
+Menu, Tray, Add, &About,          	      GlobalMenuHandler
+Menu, Tray, Add, &Quick Start Guide,      GlobalMenuHandler
 Menu, Tray, Add,
-Menu, Tray, Add, &Manage Bundles,    TrayMenuHandler
-Menu, Tray, Add, &Manage local variables, EditMenuHandler
-Menu, Tray, Add, &Manage counters,   TrayMenuHandler
+Menu, Tray, Add, &Configuration,          GlobalMenuHandler
 Menu, Tray, Add,
-Menu, Tray, Add, &Load All Bundles,  MenuHandler
-Menu, Tray, Add, &Reload Bundles,    TrayMenuHandler
+Menu, Tray, Add, Check for updates,       GlobalMenuHandler
 Menu, Tray, Add,
-Menu, Tray, Add, &Pause Lintalist,   TrayMenuHandler
-Menu, Tray, Add, Pause &Shortcut,    TrayMenuHandler
-Menu, Tray, Add, Pause &Shorthand,   TrayMenuHandler
-Menu, Tray, Add, Pause &Scripts,     TrayMenuHandler
+Menu, Tray, Add, &Manage Bundles,         GlobalMenuHandler
+Menu, Tray, Add, &Manage local variables, GlobalMenuHandler
+Menu, Tray, Add, &Manage counters,        GlobalMenuHandler
 Menu, Tray, Add,
-Menu, Tray, Add, E&xit,              TrayMenuHandler
+Menu, Tray, Add, &Load All Bundles,       MenuHandler ; exception
+Menu, Tray, Add, &Reload Bundles,         GlobalMenuHandler
+Menu, Tray, Add,
+Menu, Tray, Add, &Pause Lintalist,        GlobalMenuHandler
+Menu, Tray, Add, Pause &Shortcut,         GlobalMenuHandler
+Menu, Tray, Add, Pause &Shorthand,        GlobalMenuHandler
+Menu, Tray, Add, Pause &Scripts,          GlobalMenuHandler
+Menu, Tray, Add,
+Menu, Tray, Add, E&xit,                   GlobalMenuHandler
 Menu, Tray, Check, &Pause Lintalist ; indicate program is still loading
 Menu, Tray, Tip, %AppWindow% - inactive
 ; Tray Menu continue below
@@ -220,8 +225,9 @@ Gui, 1:Add, Picture, x4 y4 w16 h16, icons\search.png
 Gui, 1:Add, Edit, 0x8000 x25 y2 w%SearchBoxWidth% h20 gGetText vCurrText, %CurrText%
 Gui, 1:Add, Button, x300 y2 w30 h20 0x8000 Default hidden gPaste, OK
 Gui, 1:Font, s8, Arial
-Gui, 1:Add, CheckBox, 0x8000 gCase vCase x%cax% y%Yctrl% w50, &Case
-Gui, 1:Add, CheckBox, 0x8000 gLock vLock x%lox% y%Yctrl% w50, &Lock
+Gui, 1:Add, CheckBox, 0x8000 gSearchLetterVariations vSearchLetterVariations x%lex% y%Yctrl% w40, L&v?
+Gui, 1:Add, CheckBox, 0x8000 gLock vLock x%lox% y%Yctrl% w40, &Lck
+Gui, 1:Add, CheckBox, 0x8000 gCase vCase x%cax% y%Yctrl% w40, &Cse
 Gui, 1:Add, Radio,    0x8000 gSetSearchMethod vSMNorm x%nox% y%Yctrl% w50, &Rglr ; Regular Search method
 Gui, 1:Add, Radio,    0x8000 gSetSearchMethod vSMFuzz x%fzx% y%Yctrl% w50, F&zzy ; Fuzzy
 Gui, 1:Add, Radio,    0x8000 gSetSearchMethod vSMRegx x%rex% y%Yctrl% w50, RgE&x ; Regular Expression
@@ -236,6 +242,8 @@ Else If (SearchMethod = 3)
 Else If (SearchMethod = 4)
 	GuiControl, , SMMagc, 1
 
+If (SearchLetterVariations = 1) ; Search Letter variations state also stored in ini
+	GuiControl, , SearchLetterVariations, 1
 If (Lock = 1) or (LoadAll=1) ; lock state also stored in ini
 	GuiControl, , Lock, 1
 If (Case = 1)                ; case state also stored in ini
@@ -250,14 +258,17 @@ Gui, 1:Add, edit, x0 y%YPosPreview% -VScroll w%LVWidth% h%PreviewHeight%, previe
 Gui, 1:Font, s8, Arial
 Gui, 1:Add, StatusBar,,
 SB1:=Round(.8*Width)
-SB_SetParts(SB1)
+SB2:=Width-SB1
+SB_SetParts(SB1,SB2)
+SB_SetIcon("icons\lintalist_bundle.ico",,1)
+SB_SetIcon("icons\search.ico",,2)
 Gosub, GetText
 XY:=StayOnMonXY(Width, Height, Mouse, MouseAlternative, Center) ; was XY:=StayOnMonXY(Width, Height, 0, 1, 0)
 StringSplit, Pos, XY, |
 Gui, Show, w%Width% h%Height% x%Pos1% y%Pos2%, %AppWindow%
 If (DisplayBundle > 1)
 	CLV := New LV_Colors(HLV)
-GuiJustShown:=1
+; GuiJustShown:=1 ; not used? commented in v1.7
 If (JumpSearch=1) ; Send clipboard text to search control
 	{
 	 JumpSearch=0
@@ -269,16 +280,21 @@ If (JumpSearch=1) ; Send clipboard text to search control
 ShowPreview(PreviewSection)
 ControlSend, Edit1, {End}, %AppWindow%  ; 20110623
 Gosub, GetText                          ; 20110623
+PlaySound(PlaySound,"open")
 Return
 
 ; Incremental Search, here is where the magic starts, based on 320mph version by Fures, if you know of an even FASTER way let me know ;-)
 
 GetText:
+Critical, 50 ; experimental-v1.7
 ;MsgBox % "y1-----" Snippet[1,1,1] ; debug
 StartTime := A_TickCount
 ControlGetText, CurrText, Edit1, %AppWindow%
 If (CurrText = LastText)
-	Return
+	{
+	 Critical, off ; experimental-v1.7
+	 Return
+	}
 CurrLen:=StrLen(CurrText)
 ; LoadBundle() ; 20121209
 If (CurrLen = 0) or (CurrLen =< MinLen)
@@ -287,6 +303,7 @@ If (CurrLen = 0) or (CurrLen =< MinLen)
 	 UpdateLVColWidth()
 	 LastText = fadsfSDFDFasdFdfsadfsadFDSFDf
 	 Gosub, SetStatusBar
+	 Critical, off ; experimental-v1.7
 	 Return
 	}
 Gui, 1:Default
@@ -304,16 +321,16 @@ If (SubStr(CurrText,1,1) = OmniChar) or (OmniSearch = 1)
 Else
 	{
 	 SearchBundles:=Load
- 	 OmniSearchText:=""
+	 OmniSearchText:=""
 	}
 
 LastText:=CurrText
-GuiControlGet, Case, , Button2
+GuiControlGet, Case, , Case
 ShowPreviewToggle=1
 
 Loop, parse, SearchBundles, CSV
 	{
-	 If (A_TickCount - StartTime > 250)
+	 If (A_TickCount - StartTime > 150) ; was 250 for <1.6 - experimental-v1.7
 		ControlGetText, CurrText, Edit1, %AppWindow%
 	 If (CurrText <> LastText)
 		 Goto GetText
@@ -323,55 +340,48 @@ Loop, parse, SearchBundles, CSV
 	 Loop,% Max ; %
 		{
 		 SearchText:=LTrim(CurrText,OmniChar)
+
+		 If (SearchLetterVariations = 1) and (SearchMethod <> 4)
+		 	SearchText:=LetterVariations(SearchText,Case)
+		 	
 		 match=0
 		 SearchThis1:=Snippet[Bundle,A_Index,1] ; part '1' (enter)
 		 SearchThis2:=Snippet[Bundle,A_Index,2] ; part '2' (shift-enter)
 		 SearchThis3:=Snippet[Bundle,A_Index,4] ; shorthand
+
 		 If (SearchMethod = 1) ; normal
 			{
-			 If (InStr(SearchThis1,SearchText,Case) > 0) or (InStr(SearchThis2,SearchText,Case) > 0) or (InStr(SearchThis3,SearchText,Case) > 0)
-				{
-				 Match++
-				}
+			 if (SearchLetterVariations = 0)
+			 	Search(SearchMethod)
+			 else If (SearchLetterVariations = 1) ; search normal with letter variations making it a RegExMatch search
+				 Search(3) ; RegEx search
 			}
 
-		 If (SearchMethod = 2) ; fuzzy
+		 else If (SearchMethod = 2) ; fuzzy
 			{
-			 Found = 0
-			 Words = 0
-			 Loop, parse, SearchText, %A_Space%
-				{
-				 If (InStr(SearchThis1,A_LoopField,Case) > 0) or (InStr(SearchThis2,A_LoopField,Case) > 0) or (InStr(SearchThis3,A_LoopField,Case) > 0)
-					Found++
-				 Words:=A_Index
-				}
-			 If (Found = Words)
-				{
-				 Match++
-				}
+			 ;Found = 0
+			 ;Words = 0
+			 ;Loop, parse, SearchText, %A_Space%
+				;{
+				; If (InStr(SearchThis1,A_LoopField,Case) > 0) or (InStr(SearchThis2,A_LoopField,Case) > 0) or (InStr(SearchThis3,A_LoopField,Case) > 0)
+				;	Found++
+				; Words:=A_Index
+				;}
+			 ;If (Found = Words)
+				;{
+				; Match++
+				;}
+			 Search(SearchMethod)
 			}
 
-		 If (SearchMethod = 3) ; regex
+		 else If (SearchMethod = 3) ; regex
 			{
-			 If (Case = 0)     ; case insensitive, add auto i) option
-				SearchRe := "i)" . SearchText
-			 Else
-				SearchRe := SearchText
-			 If (RegExMatch(SearchThis1, SearchRe) > 0) or (RegExMatch(SearchThis2, SearchRe) > 0) or (RegExMatch(SearchThis3, SearchRe) > 0)
-				{
-				 Match++
-				}
+			 Search(SearchMethod)
 			}
 
-		 If (SearchMethod = 4) ; magic (=regex)
+		 else If (SearchMethod = 4) ; magic (=regex)
 			{
-			 SearchRe := RegExReplace(SearchText,"(.)","$1.*")
-			 If (Case = 0)     ; case insensitive, add auto i) option
-				SearchRe := "i)" . SearchRe
-			 If (RegExMatch(SearchThis1, SearchRe) > 0) or (RegExMatch(SearchThis2, SearchRe) > 0) or (RegExMatch(SearchThis3, SearchRe) > 0)
-				{
-				 Match++
-				}
+			 Search(SearchMethod)
 			}
 
 		If (match > 0) ; we have a match
@@ -414,6 +424,64 @@ If (ColumnSort <> "NoSort")
 	SortResults(ColumnSortOption1,ColumnSortOption2,SortDirection)
 Return
 
+Search(mode=1)
+	{
+	 global
+	 if (Mode = 1) ; normal
+		{
+		 If (InStr(SearchThis1,SearchText,Case) > 0) or (InStr(SearchThis2,SearchText,Case) > 0) or (InStr(SearchThis3,SearchText,Case) > 0)
+			{
+			 Match++
+			}
+		}
+
+	 else if (Mode = 2) ; fuzzy search as of v1.7 using RegExMatch - could be slower
+		{
+		 SearchRe:=RegExReplace(SearchText,"imU)([\.\*\?\+\{\}\\^\$\(\)])","\$1") ; we need to escape regex symbols - [] are excluded atm
+		 if InStr(SearchRe,A_Space) ; prepare regular expression to ensure search is done independent on the position of the words
+			SearchRe:="(?=.*" RegExReplace(Trim(SearchRe," "),"iUms)(.*)\s","$1)(?=.*") ")"
+		 SearchRe:="iUmsS)" SearchRe
+		 If (Case = 1)     ; case sensitive, remove i) option
+			SearchRe := LTrim(SearchRe,"i")
+		 ;;ToolTip, % "Case: " case " : SearchRe: " SearchRe ; debug only
+		 If (RegExMatch(SearchThis1, SearchRe) > 0) or (RegExMatch(SearchThis2, SearchRe) > 0) or (RegExMatch(SearchThis3, SearchRe) > 0)
+			{
+			 Match++
+			}
+		}
+
+	 else if (Mode = 3) ; Regular expression search
+		{
+		 If (SearchMethod = 1) ; normal
+		 	SearchRe:=RegExReplace(SearchText,"imU)([\.\*\?\+\{\}\\^\$\(\)])","\$1") ; we need to escape regex symbols - [] are excluded atm	
+		 If (Case = 0)     ; case insensitive, add auto i) option
+			SearchRe := "i)" . SearchText
+		 Else
+			SearchRe := SearchText
+		 If (RegExMatch(SearchThis1, SearchRe) > 0) or (RegExMatch(SearchThis2, SearchRe) > 0) or (RegExMatch(SearchThis3, SearchRe) > 0)
+			{
+			 Match++
+			}
+		}	
+
+	 else if (Mode = 4) ; Magic search
+		{
+		 SearchRe:="iUmsS)"
+		 Loop, parse, SearchText
+		 	 SearchRe .= LetterVariations(A_LoopField,case) ".*"
+		 SearchRe:=RTrim(SearchRe,".*")	 
+		 If (Case = 1)     ; case sensitive, remove i) option
+			SearchRe := LTrim(SearchRe,"i")
+			
+		 ; ;ToolTip, % "Case: " case " : SearchRe: " SearchRe ; debug only
+		 If (RegExMatch(SearchThis1, SearchRe) > 0) or (RegExMatch(SearchThis2, SearchRe) > 0) or (RegExMatch(SearchThis3, SearchRe) > 0)
+			{
+			 Match++
+			}
+		}
+			
+	}
+
 ColorList:
 If (LV_GetCount() = 0)
 	Return
@@ -429,7 +497,6 @@ Loop, % LV_GetCount()
 If (DisplayBundle > 1)
 	GuiControl, +Redraw, SelItem
 Return
-
 
 ; (Double)click in listview, action defined in INI
 Clicked:
@@ -460,11 +527,11 @@ Clicked:
 		}
 	else if (DoubleClickSends = 5)
 		{
-		 gosub,editf4
+		 gosub, editf4
 		}
 	else if (DoubleClickSends = 6)
 		{
-		 gosub,editf7
+		 gosub, editf7
 		}
 
 Return
@@ -565,11 +632,13 @@ If (Script = "") or (ScriptPaused = 1) ; script is empty so we need to paste Tex
 	 If (PasteMethod = 0) ; paste it and clear formatted clipboard
 		{
 		 SendKey(SendMethod, "^v")
+		 PlaySound(PlaySound,"paste")
 		 WinClip.Clear()
 		}
 	 else If (PasteMethod = 1) ; paste it, keep formatted clipboard
 		{
 		 SendKey(SendMethod, "^v")
+		 PlaySound(PlaySound,"paste")
 		}
 
 	 If (((BackLeft > 0) or (BackUp > 0)) and (PasteMethod <> 2)) ; place caret at postion defined in snippet text via ^|
@@ -750,6 +819,14 @@ ShowPreview(Section="1")
 	 Return
 	}
 
+; Search Letter variations checkbox
+SearchLetterVariations:
+SearchLetterVariations:=!SearchLetterVariations
+ControlFocus, Edit1, %AppWindow%
+lasttext = fadsfSDFDFasdFdfsadfsadFDSFDf
+Gosub, GetText
+Return
+
 ; Case sensitive search checkbox
 Case:
 Case:=!Case
@@ -832,11 +909,18 @@ Gosub, 10GuiClose
 Return
 #IfWinActive
 
+#IfWinActive, About Lintalist -   ; About
+Esc::
+Gosub, 55GuiClose
+Return
+#IfWinActive
+
 ; Hotkeys active in Main GUI
 ; Reference: Endless scrolling in a listview [hugov] http://www.autohotkey.com/forum/topic44914.html
 
 #IfWinActive, ahk_group AppTitle   ; Hotkeys only work in the just created GUI
 Esc::
+PlaySound(PlaySound,"close")
 Gosub, 1GuiClose ; for some reason this is needed, 1GuiEscape doesn't seem to work
 IfWinExist, Lintalist bundle editor
 	Gosub, 71GuiClose
@@ -968,6 +1052,7 @@ Return
 
 ;Enter:: ; not present but default Gui action, paste text from part1
 
+^NumpadEnter:: ; allow Numpad enter to work as well [v1.7]
 ^Enter:: ; paste text from part1 EVEN if snippet has script e.g. don't run script
 ctrlenter:
 If (ScriptPaused = 0)
@@ -981,6 +1066,7 @@ If (ScriptPaused = 1) and (StoreScriptPaused = 0)
 StoreScriptPaused=
 Return
 
++NumpadEnter:: ; allow Numpad enter to work as well [v1.7]
 +Enter:: ; paste text from part2, but if there is a script, run the script
 shiftenter:
 PastText1=0
@@ -1005,11 +1091,12 @@ If (DisplayBundle > 1)
 	GuiControl, -Redraw, SelItem
 ControlSend, Edit1, ^{end}, %AppWindow% ; v1.4 to keep caret at end of typed text in searchbox
 PreviousPos:=LV_GetNext()
-If (PreviousPos = 0) ; exeption, focus is not on listview this will allow you to jump to last item via UP key
+If (PreviousPos = 0) ; exception, focus is not on listview this will allow you to jump to last item via UP key
 	{
 	 ControlSend, SysListview321, {End}, %AppWindow%
 	 If (DisplayBundle > 1)
 		 GuiControl, +Redraw, SelItem
+	 ShowPreview(PreviewSection)	 
 	 Return
 	}
 ControlSend, SysListview321, {Up}, %AppWindow%
@@ -1249,24 +1336,20 @@ ViaShorthand=0
 OmniSearch:=0
 Return
 
-; for traymenu
-TrayMenuHandler:
+; For tray and Search/Edit Gui menu - not including the File and Plugin Menus
+GlobalMenuHandler:
+
+ControlGetFocus, Control, Lintalist snippet editor
+
+; tray menu
 If (A_ThisMenuItem = "&Help")
 	Run, docs\index.html
-Else If (A_ThisMenuItem = "Quick Start Guide")
+Else If (A_ThisMenuItem = "&About")
+	Gosub, ShowAbout
+Else If (A_ThisMenuItem = "&Quick Start Guide")
 	Gosub, QuickStartGuideMenu
 Else If (A_ThisMenuItem = "Check for updates")
 	Run, %A_AhkPath% %A_ScriptDir%\include\update.ahk
-Else If (A_ThisMenuItem = "&Manage local variables")
-		{
-		 RunWait, %A_AhkPath% include\localbundleeditor.ahk
-		 MsgBox, 36, Restart?, In order for any changes to take effect you must reload.`nOK to restart? ; 4+32 = 36
-		 IfMsgBox, Yes
-			{
-			 Gui, 1:Destroy
-			 Reload
-			}
-		}
 Else If (A_ThisMenuItem = "&Manage counters")
 		{
 		 Gosub, SaveSettingsCounters
@@ -1315,13 +1398,11 @@ Else If (A_ThisMenuItem = "Pause &Scripts")
 	 ScriptPaused:=!ScriptPaused
 	 Menu, tray, ToggleCheck, Pause &Scripts
 	}
+Else If (A_ThisMenuItem = "&Manage Bundles") or (A_ThisMenuItem = "&Manage Bundles`tF10")
+	 Gosub, EditF10
 
-Return
-; /for traymenu
-
-;EditMenu
-EditMenuHandler:
-If (A_ThisMenuItem = "&Edit Snippet`tF4")
+; edit menu
+Else If (A_ThisMenuItem = "&Edit Snippet`tF4")
 	Gosub, EditF4
 Else If (A_ThisMenuItem = "&Copy Snippet`tF5")
 	Gosub, EditF5
@@ -1335,10 +1416,41 @@ Else If (A_ThisMenuItem = "&Manage Bundles") or (A_ThisMenuItem = "&Manage Bundl
 	 Gosub, EditF10
 Else If (A_ThisMenuItem = "&Help")
 	Run, docs\index.html
-Return
-;/EditMenu
+Else If (A_ThisMenuItem = "&Manage local variables")
+		{
+		 RunWait, %A_AhkPath% include\localbundleeditor.ahk
+		 MsgBox, 36, Restart?, In order for any changes to take effect you must reload.`nOK to restart? ; 4+32 = 36
+		 IfMsgBox, Yes
+			{
+			 Gui, 1:Destroy
+			 Reload
+			}
+		}
 
-; for filemenu
+; Tools menu
+Else If (A_ThisMenuItem = "Encrypt text")
+	 Run, %A_AhkPath% include\EncodeText.ahk
+else If (A_ThisMenuItem = "Convert CSV file")
+	Run, %A_AhkPath% Extras\BundleConverters\CSV.ahk
+else If (A_ThisMenuItem = "Convert List")
+	Run, %A_AhkPath% Extras\BundleConverters\List.ahk
+else If (A_ThisMenuItem = "Convert Texter bundle")
+	Run, %A_AhkPath% Extras\BundleConverters\Texter.ahk
+else If (A_ThisMenuItem = "Convert UltraEdit taglist")
+	Run, %A_AhkPath% Extras\BundleConverters\UltraEdit.ahk
+
+Return
+
+
+; tools
+
+
+Return
+
+; /for For tray and Search/Edit Gui menu
+
+
+; for filemenu - e.g. the bundles menu option
 MenuHandler:
 If (A_ThisMenuItem = "&Load All Bundles")
 	{
@@ -1419,22 +1531,9 @@ Else
 Return
 ; /for filemenu
 
-;EditorMenu
-EditorMenuHandler:
-ControlGetFocus, Control, Lintalist snippet editor
-; Tools menu
-If (A_ThisMenuItem = "Encrypt text")
-	 Run, %A_AhkPath% include\EncodeText.ahk
-else If (A_ThisMenuItem = "Convert CSV file")
-	Run, %A_AhkPath% Extras\BundleConverters\CSV.ahk
-else If (A_ThisMenuItem = "Convert List")
-	Run, %A_AhkPath% Extras\BundleConverters\List.ahk
-else If (A_ThisMenuItem = "Convert Texter bundle")
-	Run, %A_AhkPath% Extras\BundleConverters\Texter.ahk
-else If (A_ThisMenuItem = "Convert UltraEdit taglist")
-	Run, %A_AhkPath% Extras\BundleConverters\UltraEdit.ahk
-
 ; Plugins menu
+PluginMenuHandler:
+ControlGetFocus, Control, Lintalist snippet editor
 If Control not in Edit2,Edit3
 	Return
 
@@ -1449,7 +1548,7 @@ If InStr(A_ThisMenuItem,"=")
 	Send {left 2}
 
 Return
-;/EditorMenu
+;/PluginMenuHandler
 
 PauseShortcut: ; Toggle Hotkeys defined in Bundles
 ;ShortcutPaused:=!ShortcutPaused
@@ -1517,25 +1616,29 @@ Return
 
 ProcessText:
 
-	Loop ; get personal variables first... only exception from the plugins as it is a built-in feature with the local bundle editor as well
+	Loop ; get local variables first... only exception from the plugins as it is a built-in feature with the local variable editor as well
 		{
 		 ProcessTextString:=""
 		 LocalVarName:=""
 		 If (InStr(Clip, "[[Var=") = 0)
 			break
 		 ProcessTextString:=GrabPlugin(Clip,"var")
+		 If InStr(ProcessTextString, "[[",,3) ; just in case we use another plugin to determine the name of the local variable
+			break
 		 LocalVarName:=RTrim(StrSplit(ProcessTextString,"=").2,"]")
 		 StringReplace, clip, clip, %ProcessTextString%, % LocalVar_%LocalVarName%, All ; %
 		}
 	 Gosub, CheckFormat
 	 RegExMatch(clip,"iUs)\[\[[^\[]*\]\]",ProcessTextString)
 	 PluginText:=ProcessTextString
-	 PluginName:=Trim(StrSplit(PluginText,"=").1,"[]")
+	 ; PluginName:=Trim(StrSplit(PluginText,"=").1,"[]") ; debug only
+	 PluginName:=Trim(StrSplit(StrSplit(PluginText,"=").1,"_").1,"[]")
+	 ; MsgBox % PluginText "`n" PluginName ; debug only
 	 PluginOptions:=GrabPluginOptions(PluginText)
 	 If IsLabel("GetSnippet" PluginName)
 		Gosub, GetSnippet%PluginName%
 
-	 If (RegExMatch(Clip, "i)(" ClipCommandRE ")") > 0) ; make sure all "plugins" are processed before proceeding
+	 If (RegExMatch(Clip, "i)(" ClipCommandRE "|\[\[var)") > 0) ; make sure all "plugins" are processed before proceeding incl. local variables
 		Gosub, ProcessText
 	 Gosub, CheckFormat
 Return
@@ -1637,19 +1740,17 @@ Catch
 	 ;
 	}
 
-Menu, Edit, Add, &Edit Snippet`tF4,  EditMenuHandler
-Menu, Edit, Add, &Copy Snippet`tF5,  EditMenuHandler
-Menu, Edit, Add, &Move Snippet`tF6,  EditMenuHandler
-Menu, Edit, Add, &New Snippet`tF7,   EditMenuHandler
-Menu, Edit, Add, &Remove Snippet`tF8,EditMenuHandler
+Menu, Edit, Add, &Edit Snippet`tF4,       GlobalMenuHandler
+Menu, Edit, Add, &Copy Snippet`tF5,       GlobalMenuHandler
+Menu, Edit, Add, &Move Snippet`tF6,       GlobalMenuHandler
+Menu, Edit, Add, &New Snippet`tF7,        GlobalMenuHandler
+Menu, Edit, Add, &Remove Snippet`tF8,     GlobalMenuHandler
 Menu, Edit, Add,
-Menu, Edit, Add, &Manage Bundles`tF10, EditMenuHandler
-Menu, Edit, Add, &Manage local variables, TrayMenuHandler
-Menu, Edit, Add, &Manage counters,   TrayMenuHandler
+Menu, Edit, Add, &Manage Bundles`tF10,    GlobalMenuHandler
+Menu, Edit, Add, &Manage local variables, GlobalMenuHandler
+Menu, Edit, Add, &Manage counters,        GlobalMenuHandler
 Menu, Edit, Add,
-Menu, Edit, Add, &Configuration,     TrayMenuHandler
-Menu, Edit, Add,
-Menu, Edit, Add, &Help,              TrayMenuHandler
+Menu, Edit, Add, &Configuration,          GlobalMenuHandler
 Menu, MenuBar, Add, &Edit, :Edit
 
 Return
@@ -1676,75 +1777,81 @@ Loop, parse, MenuName_HitList, |
 	 Menu, File, Add, % "&"MenuText1, MenuHandler
 	}
 Menu, File, Add
-Menu, File, Add, &Reload Bundles,     TrayMenuHandler
+Menu, File, Add, &Reload Bundles,     GlobalMenuHandler
 Menu, MenuBar, Add, &Bundle, :File
 
 Return
 
 BuildEditorMenu:
 ClipSelMenu:="Upper,Lower,Title,Sentence,Wrap|>|<"
-Menu, ClipboardMenu, Add, Clipboard, EditorMenuHandler
-Menu, SelectedMenu , Add, Selected , EditorMenuHandler
+Menu, ClipboardMenu, Add, Clipboard, PluginMenuHandler
+Menu, SelectedMenu , Add, Selected , PluginMenuHandler
 Loop, parse, ClipSelMenu, CSV
 	{
-	 Menu, ClipboardMenu, Add, Clipboard=%A_LoopField%, EditorMenuHandler
-	 Menu, SelectedMenu , Add, Selected=%A_LoopField% , EditorMenuHandler
+	 Menu, ClipboardMenu, Add, Clipboard=%A_LoopField%, PluginMenuHandler
+	 Menu, SelectedMenu , Add, Selected=%A_LoopField% , PluginMenuHandler
 	}
 Menu, Plugins, Add, Insert [[Clipboard]], :ClipboardMenu
 Menu, Plugins, Add, Insert [[Selected]] , :SelectedMenu
 
 Menu, Plugins, Add
 
-Menu, LocalCounter, Add, Counter=, EditorMenuHandler
+Menu, LocalCounter, Add, Counter=, PluginMenuHandler
 	 Loop, parse, LocalCounter_0, CSV
 		{
 		 If (A_LoopField <> "")
-			Menu, LocalCounter, Add, Counter=%A_LoopField%, EditorMenuHandler
+			Menu, LocalCounter, Add, Counter=%A_LoopField%, PluginMenuHandler
 		}
 Menu, Plugins, Add, Insert [[Counter=]] , :LocalCounter
-Menu, LocalVar, Add, var=, EditorMenuHandler
+Menu, LocalVar, Add, var=, PluginMenuHandler
 Loop, parse, LocalVarMenu, CSV
 	{
 	 If (A_LoopField <> "")
-		Menu, LocalVar, Add, var=%A_LoopField%, EditorMenuHandler
+		Menu, LocalVar, Add, var=%A_LoopField%, PluginMenuHandler
 	}
 Menu, Plugins, Add, Insert [[Var=]]     , :LocalVar
 
 Menu, Plugins, Add
 
-Menu, Plugins, Add, Insert [[C=]]       , EditorMenuHandler
-Menu, Plugins, Add, Insert [[Calc=]]    , EditorMenuHandler
-Menu, Plugins, Add, Insert [[Calendar=]], EditorMenuHandler
-Menu, Plugins, Add, Insert [[Choice=]]  , EditorMenuHandler
-Menu, Plugins, Add, Insert [[DateTime=]], EditorMenuHandler
-Menu, Plugins, Add, Insert [[Enc=]]     , EditorMenuHandler
-Menu, Plugins, Add, Insert [[File=]]    , EditorMenuHandler
-Menu, Plugins, Add, Insert [[Input=]]   , EditorMenuHandler
-Menu, Plugins, Add, Insert [[Snippet=]] , EditorMenuHandler
-Menu, Split, Add, Insert [[Split=]]   , EditorMenuHandler
-Menu, Split, Add, Insert [[SplitRepeat=]] , EditorMenuHandler
+Menu, Plugins, Add, Insert [[C=]]        , PluginMenuHandler
+Menu, Plugins, Add, Insert [[Calc=]]     , PluginMenuHandler
+Menu, Plugins, Add, Insert [[Calendar=]] , PluginMenuHandler
+Menu, Plugins, Add, Insert [[Choice=]]   , PluginMenuHandler
+Menu, Plugins, Add, Insert [[DateTime=]] , PluginMenuHandler
+;Menu, Plugins, Add, Insert [[Enc=]]      , PluginMenuHandler
+Menu, Plugins, Add, Insert [[File=]]     , PluginMenuHandler
+Menu, Plugins, Add, Insert [[Input=]]    , PluginMenuHandler
+Menu, Plugins, Add, Insert [[Snippet=]]  , PluginMenuHandler
+Menu, Split, Add, Insert [[Split=]]      , PluginMenuHandler
+Menu, Split, Add, Insert [[SplitRepeat=]], PluginMenuHandler
 Menu, Split, Add
-Menu, Split, Add, Insert [[sp=1]]   , EditorMenuHandler
-Menu, Split, Add, Insert [[sp=1`,1]]   , EditorMenuHandler
+Menu, Split, Add, Insert [[sp=1]]        , PluginMenuHandler
+Menu, Split, Add, Insert [[sp=1`,1]]     , PluginMenuHandler
 Menu, Plugins, Add, Insert [[Split/Repeat]], :Split
 
 Menu, Plugins, Add
 
-Menu, Plugins, Add, Insert [[Image=]]   , EditorMenuHandler
-Menu, Plugins, Add, Insert [[html]]     , EditorMenuHandler
-Menu, Plugins, Add, Insert [[md]]       , EditorMenuHandler
-Menu, Plugins, Add, Insert [[rtf=]]     , EditorMenuHandler
+Menu, Plugins, Add, Insert [[Image=]]   , PluginMenuHandler
+Menu, Plugins, Add, Insert [[html]]     , PluginMenuHandler
+Menu, Plugins, Add, Insert [[md]]       , PluginMenuHandler
+Menu, Plugins, Add, Insert [[rtf=]]     , PluginMenuHandler
 
-;Menu, Tools, Add, Encrypt text          , EditorMenuHandler
+;Menu, Tools, Add, Encrypt text          , GlobalMenuHandler
 ;Menu, Tools, Add,
-Menu, Tools, Add, Convert CSV file         , EditorMenuHandler
-Menu, Tools, Add, Convert List             , EditorMenuHandler
-Menu, Tools, Add, Convert Texter bundle    , EditorMenuHandler
-Menu, Tools, Add, Convert UltraEdit taglist, EditorMenuHandler
+Menu, Tools, Add, Convert CSV file         , GlobalMenuHandler
+Menu, Tools, Add, Convert List             , GlobalMenuHandler
+Menu, Tools, Add, Convert Texter bundle    , GlobalMenuHandler
+Menu, Tools, Add, Convert UltraEdit taglist, GlobalMenuHandler
+
+Menu, Help, Add, &Help, GlobalMenuHandler
+Menu, Help, Add, &About, GlobalMenuHandler
+Menu, Help, Add, &Quick Start Guide, GlobalMenuHandler
 
 Menu, MenuBar2, Add, &Plugins, :Plugins
 Menu, MenuBar2, Add, &Tools, :Tools ; make it available in Edit gui
 Menu, MenuBar , Add, &Tools, :Tools ; make it available in Search gui
+Menu, MenuBar2, Add, &Help, :Help , Right ; make it available in Edit gui (Right works as of v1.1.22.07+)
+Menu, MenuBar , Add, &Help, :Help , Right ; make it available in Search gui
 Return
 
 ; OnExit
@@ -1769,6 +1876,7 @@ IniWrite, %DefaultBundle%, Settings.ini, Settings, DefaultBundle
 IniWrite, %SearchMethod%, Settings.ini, Settings, SearchMethod
 IniWrite, %Load%        , Settings.ini, Settings, Load
 IniWrite, %LoadAll%     , Settings.ini, Settings, LoadAll
+IniWrite, %SearchLetterVariations%        , Settings.ini, Settings, SearchLetterVariations
 IniWrite, %Lock%        , Settings.ini, Settings, Lock
 IniWrite, %Case%        , Settings.ini, Settings, Case
 IniWrite, %Width%       , Settings.ini, Settings, Width
@@ -1802,6 +1910,9 @@ Return
 #Include %A_ScriptDir%\include\FixURI.ahk
 #Include %A_ScriptDir%\include\SetIcon.ahk
 #Include %A_ScriptDir%\include\PluginHelper.ahk
+#Include %A_ScriptDir%\include\ShowAbout.ahk
+#Include %A_ScriptDir%\include\PlaySound.ahk
+#Include %A_ScriptDir%\include\LetterVariations.ahk
 #Include %A_ScriptDir%\include\WinClip.ahk    ; by Deo
 #Include %A_ScriptDir%\include\WinClipAPI.ahk ; by Deo
 #Include %A_ScriptDir%\include\Markdown2HTML.ahk ; by fincs + additions
@@ -1818,36 +1929,5 @@ Loop, parse, LocalCounter_0, CSV
 	}
 IniWrite, %Counters%   , Settings.ini, Settings, Counters
 Return
-
-/*
-; Possible to expand with Ligatures and other variations - see link below
-; https://en.wiktionary.org/wiki/Appendix:Variations_of_%22a%22 ... ; etc
-; see also http://ahkscript.org/boards/viewtopic.php?p=47793#p47793
-; and https://github.com/lintalist/lintalist/issues/33
-LetterVariations(text)
-	{
-	 static Array := { "a" : "áàâǎăãảạäåāąấầẫẩậắằẵẳặǻ"
-	 , "c" : "ćĉčċç"
-	 , "d" : "ďđð"
-	 , "e" : "éèêěĕẽẻėëēęếềễểẹệ"
-	 , "g" : "ğĝġģ"
-	 , "h" : "ĥħ"
-	 , "i" : "íìĭîǐïĩįīỉịĵ"
-	 , "k" : "ķ"
-	 , "l" : "ĺľļłŀ"
-	 , "n" : "ńňñņ"
-	 , "o" : "óòŏôốồỗổǒöőõøǿōỏơớờỡởợọộ"
-	 , "s" : "ṕṗŕřŗśŝšş"
-	 , "t" : "ťţŧ"
-	 , "u" : "úùŭûǔůüǘǜǚǖűũųūủưứừữửựụ"
-	 , "w" : "ẃẁŵẅ"
-	 , "y" : "ýỳŷÿỹỷỵ"
-	 , "z" : "źžż" }
-
-	 for k, v in Array
-		 text:=RegExReplace(text,k,"[" k v "]")
-	 Return text
-	}
-*/
 
 #Include *i %A_ScriptDir%\autocorrect.ahk

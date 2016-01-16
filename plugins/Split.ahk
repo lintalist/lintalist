@@ -1,14 +1,22 @@
 ﻿/* 
 Plugin        : Split [Standard Lintalist]
 Purpose       : Split input into variables
-Version       : 1.0
+Version       : 1.1
+
+History:
+- 1.1 Adding named split - Lintalist v1.7
+- 1.0 first version
 */
 
 GetSnippetSplit:
 	 Loop 
 		{
-		 If (InStr(Clip, "[[Split=") = 0) or (A_Index > 100)
-			Break
+		 ;If (InStr(Clip, "[[Split=") = 0) or (A_Index > 100) or (InStr(Clip, "[[Split_") = 0)
+		;	Break
+		 named:=Trim(StrSplit(StrSplit(PluginText,"=").1,"_").2,"[]")
+		 if (named <> "")
+		 	named:="_" named
+;		 MsgBox % clip ":" named
 		 sp:={}
 		 StringReplace, clip, clip, %PluginText%`n, , All
 		 StringReplace, clip, clip, %PluginText%, , All
@@ -36,7 +44,7 @@ GetSnippetSplit:
 				 row:=k
 				 for column,cell in v ; msgbox % row "," a_index
 				 	{
-					 StringReplace, clip, clip, % "[[sp=" row "," A_Index "]]", % cell, All
+					 StringReplace, clip, clip, % "[[sp" named "=" row "," A_Index "]]", % cell, All
 					} 
 				}
 			}
@@ -44,9 +52,13 @@ GetSnippetSplit:
 			{
 			 sp:=StrSplit(spwhat,SplitDelimiter(StrSplit(PluginOptions,"|").2),"`r")
 			 for k, v in sp
-				StringReplace, clip, clip, [[sp=%k%]], %v%, All
+				StringReplace, clip, clip, [[sp%named%=%k%]], %v%, All
+			;msgbox % clip	
 			}
-		 clip:=RegExReplace(clip,"iU)\[\[sp=.*\]\]") ; remove any stray [[sp=?]]
+		 clip:=RegExReplace(clip,"iU)\[\[sp" named "=.*\]\]") ; remove any stray named [[sp=]]
+		 ;If (InStr(Clip, "[[Split=") = 0)
+		 ;	clip:=RegExReplace(clip,"iU)\[\[sp=.*\]\]") ; remove any stray [[sp=?]]
+
 		 sp:=""
 		 row:=""
 		 sprow:=""
@@ -55,8 +67,16 @@ GetSnippetSplit:
 		 PluginOptions:=""
 		 PluginText:=""
 		 ProcessTextString:=""
+		 if (named = "")
+			named:="="
+		 If (InStr(Clip, "[[Split" named) = 0) or (A_Index > 100)
+				Break
+
 		}
+	 named:=""
 Return
+
+
 
 SplitDelimiter(delim)
 	{

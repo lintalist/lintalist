@@ -1,7 +1,11 @@
 ﻿/* 
 Plugin        : Snippet [Standard Lintalist]
 Purpose       : Insert contents from another snippet (this way you can chain snippets together)
-Version       : 1.0
+Version       : 1.1
+
+History:
+- 1.1 Modified for improvement of nested snippets in Lintalist v1.6
+- 1.0 first version
 */
 
 GetSnippetSnippet:

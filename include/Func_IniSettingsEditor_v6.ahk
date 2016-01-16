@@ -348,7 +348,7 @@ IniSettingsEditor(ProgName,IniFile,OwnedBy = 0,DisableGui = 0) {
 
             ;hide/show browse button depending on key type
             Typ := %CurrID%Typ 
-            If Typ in File,Folder 
+            If Typ in File,Folder,Exe
                 GuiControl, Show , Button2, 
             Else 
                 GuiControl, Hide , Button2, 
@@ -492,8 +492,14 @@ IniSettingsEditor(ProgName,IniFile,OwnedBy = 0,DisableGui = 0) {
 ;           ;select file LINTALIST "FIX"
 					StartFolder:=A_ScriptDir
           FileSelectFile, Selected,M , %StartFolder%\bundles\, Select file for %SelSec% - %SelKey%, Any file (*.txt)  
+      }
+
+else      If (Typ = "Exe"){ 
+		  StartFolder:=A_ScriptDir
+          FileSelectFile, Selected, , %StartFolder%\bundles\, Select EXE for Snippet Editor, (*.exe) 
+      }
           
-      }Else If (Typ = "Folder"){ 
+      Else If (Typ = "Folder"){ 
           ;get StartFolder
           IfExist %A_ScriptDir%\%StartVal% 
               StartFolder = %A_ScriptDir%\%StartVal% 

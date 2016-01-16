@@ -1,9 +1,12 @@
 ﻿/* 
 Plugin        : File [Standard Lintalist]
 Purpose       : Insert the contents of a file
-Version       : 1.2
+Version       : 1.1
 
-- as of v1.2 it now also used FixURI, and select and clean have been added
+History:
+- 1.1 as of Lintalist v1.6 it now also uses FixURI, and the options select and clean have been added
+- 1.0 first version
+
 */
 
 GetSnippetFile:

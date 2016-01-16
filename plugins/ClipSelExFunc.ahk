@@ -1,9 +1,13 @@
 ﻿/*
 Plugin func   : Used in Selected & Clipboard plugins
 Purpose       : Process text for upper, lower, title, sentence and wrap options
-Version       : 1.4
 Credit        : Sentence case by Laszlo & None
 Updated       : 20150215
+Version       : 1.0
+
+History:
+- 1.0 first version added to Lintalist v1.4
+
 */
 
 ClipSelEx(SelectedText,Options)

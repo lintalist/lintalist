@@ -48,8 +48,9 @@ mgx:=Width-50   ; position of magic radio
 rex:=Width-100	; position of regexp radio
 fzx:=Width-150  ; position of fuzzy radio
 nox:=Width-200	; position of normal radio
-cax:=Width-250  ; position of case sensitive checkbox
-lox:=Width-300  ; position of lock checkbox
+cax:=Width-243  ; position of case sensitive checkbox
+lox:=Width-286  ; position of lock checkbox
+lex:=Width-329  ; position of letter variations checkbox
 
 LVWidth:=Width-2                			; Listview Width
 LVHeight:=Height-PreviewHeight-70+ExtraLV   ; Listview Height

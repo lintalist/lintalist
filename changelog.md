@@ -1,3 +1,30 @@
+### v1.7
+
+* New: SnippetEditor Setting - Allow user to set editor to use for "Edit in Editor" button  
+  in the Snippet Editor  
+  ht @starstuff - https://github.com/lintalist/lintalist/issues/46
+  Note: added EXE type to Func_IniSettingsEditor_v6.ahk
+* New: PlaySound Setting - Play sounds after paste, open or close of Search Gui (beeps, default  
+  Windows media or user files)  
+  ht @starstuff - https://github.com/lintalist/lintalist/issues/45  
+* New: SearchLetterVariations setting -  Allow for variations of letters in search query - https://github.com/lintalist/lintalist/issues/33  
+  Searching for 'e' is translated to searching for 'eéèë...' etc  
+  You can toggle this setting via the Search GUI - https://github.com/lintalist/lintalist/issues/33  
+  Note: Consequence for Fuzzy search is that this now always using a RegEx which could be slower.
+* New: added help menu with Help and About options and added About to tray menu - https://github.com/lintalist/lintalist/issues/47  
+  also refactored tray and edit menu handlers by merging most of the options in these two handlers  
+  to prevent errors such as https://github.com/lintalist/lintalist/issues/44
+* New: Allow Ctrl+ and Shift+NumpadEnter to also bypass script just like normal Enter  
+  ht: @jaredbidlow https://github.com/lintalist/lintalist/issues/50
+* New: Split plugin now accepts "named Split" [[split_name]]  
+  ht: afh - https://github.com/lintalist/lintalist/issues/48
+* Fix: Tray menu: manage bundles and manage local variables weren't working  
+  ht: @starstuff - https://github.com/lintalist/lintalist/issues/44
+* Fix: First time of UP key press didn't update ShowPreview, should work correctly now
+* Fix: Always resolve Vars in nested situations  
+  ht: @dbielz - https://github.com/lintalist/lintalist/issues/56
+* New: Added icons to status bar
+
 ### v1.6
 
 * New/Changed: improved plugin parsing so any type of nested snippets are now  

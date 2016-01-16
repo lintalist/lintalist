@@ -2,8 +2,11 @@
 Plugin        : Calc [Standard Lintalist]
 Purpose       : Evaluate arithmetic expressions
 Credits       : Laszlo
-Version       : 1.4
 Updated       : 20150215
+Version       : 1.0
+
+History:
+- 1.0 first version added to Lintalist v1.4
 
 Monster: evaluate math expressions in strings w/o external programs
 http://www.autohotkey.com/forum/viewtopic.php?t=17058 

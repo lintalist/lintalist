@@ -1,8 +1,12 @@
 ﻿/* 
 Plugin        : Selected [Standard Lintalist]
 Purpose       : Cut currently selected text (if any) to clipboard and place it in the text at the desired location
-Version       : 1.4
 Updated       : 20150215
+Version       : 1.1
+
+History:
+- 1.1 Modified to accept parameters in Lintalist v1.4
+- 1.0 first version
 
 Syntax (also for clipboard):
 	[[Selected=UPPER-U]]

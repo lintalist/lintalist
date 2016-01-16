@@ -1,7 +1,11 @@
 ﻿/* 
 Plugin        : Input [Standard Lintalist]
 Purpose       : Ask for user Input using a simple InputBox
-Version       : 1.0
+Version       : 1.1
+
+History:
+- 1.1 Modified for improvement of nested snippets in Lintalist v1.6
+- 1.0 first version
 */
 
 GetSnippetInput:

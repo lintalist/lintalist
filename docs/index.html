@@ -14,14 +14,14 @@
 <div id='container'>
 <div id='intro'>
 <p style='color:#000;font-family:georgia;font-size:14px;line-height:150%;text-shadow: #fff 1px 1px 0px;' align='justify'>
-<span style='float:right;margin:0;padding:0;margin-top:10px;margin-right:100px;font-size:10px;color:#000;text-shadow: #eee 1px 1px 0px;'><a href='http://ahkscript.org/' style='color:#000;'><img src='img/poweredbyahk.png' alt='' border='0' style='padding-top:4px;' /></a></span>
+<span style='float:right;margin:0;padding:0;margin-top:10px;margin-right:100px;font-size:10px;color:#000;text-shadow: #eee 1px 1px 0px;'><a href='https://autohotkey.com/' style='color:#000;'><img src='img/poweredbyahk.png' alt='' border='0' style='padding-top:4px;' /></a></span>
 <img src='img/lintalist.png' alt='Lintalist' title='Lintalist' border='0' style='margin-left:-20px;padding-bottom:40px;' /><br clear='all' />
 <b>Lintalist</b> allows you to store and (incrementally) <b>search</b> and <b>edit texts</b> in bundles and <b>paste</b> a selected text in your active program. The text <b>can</b> be interactive, for example you can automatically insert the current time and date, ask for (basic) user input or make a selection from a list etc and finally it can also <b>run a script</b>. You can use <b>keyboard shortcuts</b> or <b>abbreviations</b> to paste the text (or run the script) without opening the search window.<br />
 <br />
-<span style='font-size:.8em;'>You can <b>extend Lintalist</b> by writing your own <b><a href='#InteractiveBundleText'>plugins</a></b>. Lintalist is open source and developed in <a href='http://ahkscript.org/'>AutoHotkey</a>, an easy to learn scripting language for Windows.
+<span style='font-size:.8em;'>You can <b>extend Lintalist</b> by writing your own <b><a href='#InteractiveBundleText'>plugins</a></b>. Lintalist is open source and developed in <a href='https://autohotkey.com/'>AutoHotkey</a>, an easy to learn scripting language for Windows.
 [WinXP(sp3)/Vista/7/8]<br /></span>
 <span style='font-size:.8em;'>As of LintaList v1.1 several types of formatted text are supported in Snippets.</span>
-<span class='date' style='float:right;display:inline;margin-top:0px;'>doc rev. 20150823</span></p>
+<span class='date' style='float:right;display:inline;margin-top:0px;'>doc rev. 20160116</span></p>
 </div>
 
 <div class='column'>
@@ -59,22 +59,25 @@
 <p><b>Feedback</b></p>
 
 <ul>
-<li><a href='https://github.com/lintalist/lintalist/issues'>Issues at GH</a></li>
-<li><a href='http://ahkscript.org/boards/viewtopic.php?f=6&t=3378'>ahkscript.org forum</a> (Guest posting allowed)</li>
+<li><a href='https://github.com/lintalist/lintalist/issues'>Issues at GH</a> (preferred)</li>
+<li><a href='https://autohotkey.com/boards/viewtopic.php?f=6&t=3378'>autohotkey.com forum</a> (Guest posting allowed)</li>
 <li><a href='http://www.portablefreeware.com/index.php?id=2686'>Portablefreeware.com</a></li>
+<li><a href='http://www.donationcoder.com/forum/index.php?topic=41475.0'>Donationcoder.com</a></li>
 <li><a href='http://alternativeto.net/software/lintalist/'>AlternativeTo</a></li>
-<li><a href='https://gitter.im/lintalist/lintalist'>Gitter</a></li>
 </ul>
 
 </div>
 
 <div class='column'>
-<p><b>Download Lintalist <em>1.6</em></b>
+<p><b>Download Lintalist <em>1.7</em></b>
 <p>
 <a href='https://github.com/lintalist/lintalist/releases'><img src='img/lintalist65x65.gif' alt='Download Lintalist' width='65' align='left' border='0' style='margin-right: 5px;' /></a>
 Download (incl. source):<br />
-<a href='https://github.com/lintalist/lintalist/releases'><b>Latest release</b></a> (600 kb)<br />Simply unpack and run lintalist.ahk or lintalist.exe<br />
+<a href='https://github.com/lintalist/lintalist/releases'><b>Latest release</b></a> (720 kb)<br />Simply unpack and run lintalist.ahk or lintalist.exe<br />
 </p>
+
+<span class='tip' style="margin-bottom:10px;"><img src="img/usb.png" width=50 align=right title="USB image by Alessandro Rei (GNU/GPL) - http://findicons.com/icon/255067/usb?id=256158">Lintalist is a <b>portable application</b>. It stores all settings and bundles in the folder the program resides in. <a href="#portable">More...</a>
+</span>
 
 <p><b>Lintalist</b> Source code:<br />
 <a href='https://github.com/lintalist/lintalist/'>github.com/lintalist/lintalist</a></p>
@@ -99,20 +102,28 @@ As noted above Lintalist allows you to store and (incrementally) <b>search</b> a
 The texts, shortcuts, abbreviations and scripts are called <b>snippets</b> and they are stored in a so called <b>bundle</b>. A bundle is a simple text file, making it easy to understand, maintain and exchange bundles between users.
 
 The bundles are <b>context sensitive</b>: based on the <b>(partial) window title</b> of the currently active program it will try to load one or more matching bundles, this will allow you to use the same shortcuts and shorthands in different applications and files making it even more flexible. You don't have to use or remember any shortcuts or shorthands because you can <b>search your bundles</b> at any time by opening the search window. Think of it as text-expander which will save you countless keystrokes and has a number of additional features: hotkeys, full text search, plugins and scripts.
+Some might compare it to the "tag list" or "clip libraries" you might find in many text editors.
 
 <span class='tip'>Bundles and Snippets can be edited using the <a href='#Editing'>Lintalist Bundle &amp; Snippet Editors</a> OR in your preferred text editor.</span>
+
 For example: If you are editing a HTML file, Lintalist could use both a HTML and CSS bundle, but if you are editing a CSS file only the CSS Bundle is loaded. So, in your HTML file the shortcut <strong>ctrl+b</strong> can insert <strong>&lt;strong&gt;&lt;/strong&gt;</strong> at the caret position (or wrap the tag around the selected text) and while editing your CSS file the shortcut <strong>ctrl+b</strong> can insert <strong>font-style: bold;</strong> at the caret position. If a shortcut is found in multiple active bundles a pop-up-menu will appear so you can choose which snippet & bundle you prefer.
 
-<b>Note:</b> although Lintalist can expand abbreviations it is not intended to replicate or replace the native AutoHotkey Hotstrings features, see <a href='http://ahkscript.org/docs/Hotstrings.htm'>http://ahkscript.org/docs/Hotstrings.htm</a> for an introduction and description of all the options.
+<b>Note:</b> although Lintalist can expand abbreviations it is not intended to replicate or replace the native AutoHotkey Hotstrings features, see <a href='https://autohotkey.com/docs/Hotstrings.htm'>autohotkey.com/docs/Hotstrings.htm</a> for an introduction and description of all the options.
 
 <span class='tip'>If you find this inconvenient, edit one of the snippets and change the shortcut or shorthand.</span>
-This program is written in AutoHotkey, a free, open-source (scripting) utility for Windows. Learn more at <a href='http://ahkscript.org/'>ahkscript.org</a>.
+This program is written in AutoHotkey, a free, open-source (scripting) utility for Windows. Learn more at <a href='https://autohotkey.com/'>autohotkey.com</a>.
 <!--
 <div class='column' style='float:right;'>
 <h3 id='Usage'><em>Useful for...</em></h2>
 - (Canned) email responses in a support environment
 </div>
 -->
+<span class='tip' id='portable' style='width:250px;float:right;margin:10px;margin-top:40px;border-top:3px dashed #FCDC3B;border-bottom:3px dashed #FCDC3B;background-color:#FFF8DC;' ><img src="img/usb.png" width=50 align=right title="USB image by Alessandro Rei (GNU/GPL) - http://findicons.com/icon/255067/usb?id=256158">Lintalist is a <b>portable application</b>. It stores all settings and bundles in the folder the program resides in. 
+
+When you run it for the very first time it does ask if you want a shortcut on your desktop or would like to automatically start it with Windows but you don't have to do that. You can run the program from a USB drive or dropbox account for example.
+
+If you want to take your copy of Lintalist with you all you have to do is copy the Lintalist folder. Same goes for making a backup.
+</span>
 <h3 id='FeatureList'>Full Feature List:</h3>
 
 - Full text snippet search using four different search modes
@@ -122,6 +133,7 @@ This program is written in AutoHotkey, a free, open-source (scripting) utility f
 - Run (AutoHotkey-)scripts
 - Local variables (user specific)
 - Bundle converters (simple lists, CSV, UltraEdit, Texter)
+- Portable application
 - Plugins are easy to develop, included by default are:
   - return caret to position in text
   - insert date & time incl. dates and time math
@@ -142,7 +154,7 @@ Installing Lintalist is easy, just download the ZIP file and unpack it in a fold
 If you are already an AutoHotkey user and have it installed, it is recommended to run <b>Lintalist.ahk</b>, this will ensure you will be running Lintalist with your preferred version of AutoHotkey. If you don't have AutoHotkey installed you can start <b>Lintalist.exe</b>.
 
 <b>Notes:</b>
-- Lintalist.exe: A renamed AutoHotkey.exe (v1.1.22.04 32-bit Unicode, See http://ahkscript.org/ and/or http://ahkscript.org/download/)
+- Lintalist.exe: A renamed AutoHotkey.exe (v1.1.23 32-bit Unicode, See https://autohotkey.com/ and/or https://autohotkey.com/download/)
 - Lintalist.ahk: The actual (main) source code of the program (see https://github.com/lintalist/lintalist)
 
 <h2 id='Searching'>Normal use: Starting Lintalist and searching for a Snippet</h2>
@@ -195,7 +207,7 @@ You can search for text in your bundles using four different methods:
   
 <tr><td><b>RgE<span style='text-decoration:underline;'>x</span></b></td><td><kbd>Alt</kbd>+<kbd>x</kbd> is Regular Expression search (Perl-compatible, PCRE) so you can search for patterns
   Example: se\w*g will find '<b style='color:#c00;'>searching</b>' '<b style='color:#c00;'>sewing</b>' etc.
-  See <a href='http://ahkscript.org/docs/commands/RegExMatch.htm'>http://ahkscript.org/docs/commands/RegExMatch.htm</a> for more information
+  See <a href='https://autohotkey.com/docs/commands/RegExMatch.htm'>autohotkey.com/docs/commands/RegExMatch.htm</a> for more information
   about using Regular expression for searching [see notes about RgEx search below
   for some background info as not ALL Regular Expressions may produce the expected
   results]</td></tr>
@@ -226,7 +238,14 @@ A new line is replaced by <b>\n</b> and a tab by <b>\t</b> and it will search <b
 
 <span style='color:#c00;'>&lt;techtalk&gt;</span> If the <b>Case check-box</b> is not checked your searches will be case-insensitive. When using the RegEx search method the "i)" option for the regular expression will automatically be inserted before each snippet is searched. This may lead to unexpected results if you pass on other options for your RegEx search. 
 
-Example: The case-insensitive RegEx 'se\w*g' it is actually using the following regular expression 'i)se\w*g' while searching. This is done for convenience (otherwise you would have to type i) every time you wanted to do a case-insensitive search (RegEx is by default case sensitive). If you want to pass on extra options it is best to turn Case sensitive ON and add the options you need as described here <a href='http://ahkscript.org/docs/commands/RegExMatch.htm#Options'>http://ahkscript.org/docs/commands/RegExMatch.htm#Options</a>. This behaviour may change in future version of Lintalist. <span style='color:#c00;'>&lt;/techtalk&gt;</span>
+Example: The case-insensitive RegEx 'se\w*g' it is actually using the following regular expression 'i)se\w*g' while searching. This is done for convenience (otherwise you would have to type i) every time you wanted to do a case-insensitive search (RegEx is by default case sensitive). If you want to pass on extra options it is best to turn Case sensitive ON and add the options you need as described here <a href='https://autohotkey.com/docs/commands/RegExMatch.htm#Options'>autohotkey.com/docs/commands/RegExMatch.htm#Options</a>. This behaviour may change in future version of Lintalist. <span style='color:#c00;'>&lt;/techtalk&gt;</span>
+
+<b>Search letter variations [v1.7+]</b> 
+
+Sometimes accented letters are part of the text you are searching for. These can be difficult or slow to type. By adding the variations of these letters to the search string you can search for cafe but still find café. So the 'e' in the query will be translated to searching for 'eéèêḙěĕẽḛẻėëēȩęᶒɇȅếềễểḝḗḕȇẹệæǽǣœᵫ'.
+When active all search modes will use a Regular Expression (Regular and Fuzzy)
+(De)Activate the setting via the <i>L<u>v</u>?</i> checkbox in the Search GUI (<kbd>Alt</kbd>+<kbd>v</kbd>) or the SearchLetterVariations setting in the Configuration menu.
+More information in the comments of 'include\LetterVariations.ahk'
 
 <h3 id='Omni'><em>Omni</em>search (search all bundles)</h3>
 
@@ -582,11 +601,11 @@ You can develop your own if you learn to write AutoHotkey scripts, see <b><a hre
 
 Reminder: You can also use <a href='#FormattedText'>Formatted Text Snippets</a> (html, markdown, image and RTF).
 
-Plugins as processed as follows:
+Plugins are processed as follows:
 
 1. Local variables first
-2. Process each plugins in the order they are presented in the snippet e.g. left to right.
-3. If it is a nested plugin: the order is from the left to right AND inside out.
+2. Process each plugin in the order they are presented in the snippet e.g. left to right.
+3. If it is a nested plugin: the order is from the left to right AND from the inside out.
 
 Consider the following example:
 
@@ -598,7 +617,7 @@ and ending with
 <code>[[plugin3]]</code>
 
 </blockquote>
-Plugins are process in the following order:
+The plugins are processed in the following order:
 1. [[plugin1]] is processed first
 2. followed by [[plugin2-1-1]] followed by [[plugin2-1]] followed by [[plugin2]]
 3. and finally [[plugin3]]
@@ -618,7 +637,7 @@ The ^| code will be removed from the text and the caret will
 be placed before the word text.</td></tr>
 
 <tr id='c-plugin'><td><code>[[C=Char|Repeat]]</code></td><td>By default pasted texts are trimmed which means spaces and tabs will be trimmed from the snippet. You can use this plugin to insert one or more spaces and/or tabs at the beginning or end of a snippet. Or you can use it as a shorthand-code to insert a repeating text or character.
-Basic example <code>[[C=-|30]] insert 30 -'s</code>
+Basic example <code>[[C=-|30]]</code> insert 30 -'s
 Use [[C=space]] or [[C=\s]] for a space, [[C=tab]] or [[C=\t]] for a tab, and [[C=enter]] or [[C=\n]] for a new line.
 
 Neat trick: using a local variable or User input
@@ -655,7 +674,7 @@ You can manage these counters (add, edit, delete) via the tray menu option: Mana
 </td></tr>
 
 <tr id='datetime-plugin'><td><code>[[DateTime=Format|Value|TimeUnits]]</code></td><td>Insert current Date and/or Time using the FormatTime options,
-<a href='http://ahkscript.org/docs/commands/FormatTime.htm'>http://ahkscript.org/docs/commands/FormatTime.htm</a>
+<a href='https://autohotkey.com/docs/commands/FormatTime.htm'>autohotkey.com/docs/commands/FormatTime.htm</a>
 (Date & Time formats, may be dependent on your user locale).
 Basic example <code>[[DateTime=dd-MMM-yyyy]]</code> --> 25-Jan-2011 (Todays date)
 
@@ -735,7 +754,7 @@ It is capable of basic and advanced math operations including standard AutoHotke
 A number of predefined constants are also available. <span class='small'>Source: <a href='http://www.autohotkey.com/forum/viewtopic.php?t=17058'>forum thread</a></span>
 
 &#8226; Arithmetic operators: +, -, *, /, \ (or % = mod), ** (or @ = power)
-&#8226; AHK Functions:        <a href="http://ahkscript.org/docs/Functions.htm#Abs">Abs</a>, <a href="http://ahkscript.org/docs/Functions.htm#Ciel">Ceil</a>, <a href="http://ahkscript.org/docs/Functions.htm#Exp">Exp</a>, <a href="http://ahkscript.org/docs/Functions.htm#Floor">Floor</a>, <a href="http://ahkscript.org/docs/Functions.htm#Log">Log</a>, <a href="http://ahkscript.org/docs/Functions.htm#Ln">Ln</a>, <a href="http://ahkscript.org/docs/Functions.htm#Round">Round</a>, <a href="http://ahkscript.org/docs/Functions.htm#Sqrt">Sqrt</a>, <a href="http://ahkscript.org/docs/Functions.htm#Sin">Sin</a>, <a href="http://ahkscript.org/docs/Functions.htm#Cos">Cos</a>, <a href="http://ahkscript.org/docs/Functions.htm#Tan">Tan</a>, <a href="http://ahkscript.org/docs/Functions.htm#ASin">ASin</a>, <a href="http://ahkscript.org/docs/Functions.htm#ACos">ACos</a>, <a href="http://ahkscript.org/docs/Functions.htm#ATan">ATan</a>
+&#8226; AHK Functions:        <a href="https://autohotkey.com/docs/Functions.htm#Abs">Abs</a>, <a href="https://autohotkey.com/docs/Functions.htm#Ciel">Ceil</a>, <a href="https://autohotkey.com/docs/Functions.htm#Exp">Exp</a>, <a href="https://autohotkey.com/docs/Functions.htm#Floor">Floor</a>, <a href="https://autohotkey.com/docs/Functions.htm#Log">Log</a>, <a href="https://autohotkey.com/docs/Functions.htm#Ln">Ln</a>, <a href="https://autohotkey.com/docs/Functions.htm#Round">Round</a>, <a href="https://autohotkey.com/docs/Functions.htm#Sqrt">Sqrt</a>, <a href="https://autohotkey.com/docs/Functions.htm#Sin">Sin</a>, <a href="https://autohotkey.com/docs/Functions.htm#Cos">Cos</a>, <a href="https://autohotkey.com/docs/Functions.htm#Tan">Tan</a>, <a href="https://autohotkey.com/docs/Functions.htm#ASin">ASin</a>, <a href="https://autohotkey.com/docs/Functions.htm#ACos">ACos</a>, <a href="https://autohotkey.com/docs/Functions.htm#ATan">ATan</a>
 &#8226; Predefined functions: SGN, Fib, Fac (=sign, Fibonacci numbers, Factorials)
 &#8226; Predefined constants: e, pi, inch, foot, mile, ounce, pint, gallon, oz, lb.
 
@@ -772,13 +791,13 @@ That brings the total to: <code>[[Calc=[[Input=Number bought]]*[[var=itemprice]]
 
 </blockquote>
 
-Note about trigonometry functions: Sin(), Cos(), Tan() etc use <b>radians</b>. To convert a radians value to <b>degrees</b>, multiply it by 180/pi (approximately 57.29578). To convert a degrees value to radians, multiply it by pi/180 (approximately 0.01745329252). The value of pi (approximately 3.141592653589793) is 4 times the arctangent of 1. <span class='small'>Source: <a href='http://ahkscript.org/docs/Functions.htm#Sin'>AHK Docs</a></span>	
+Note about trigonometry functions: Sin(), Cos(), Tan() etc use <b>radians</b>. To convert a radians value to <b>degrees</b>, multiply it by 180/pi (approximately 57.29578). To convert a degrees value to radians, multiply it by pi/180 (approximately 0.01745329252). The value of pi (approximately 3.141592653589793) is 4 times the arctangent of 1. <span class='small'>Source: <a href='https://autohotkey.com/docs/Functions.htm#Sin'>AHK Docs</a></span>	
 In <b>calc</b> you can use this as follows:
 
 	sin(30/180*pi)
 	180/pi*asin(0.5)
 
-<b>Advanced math:</b> examples of the more advanced options are available in the <a href='http://www.autohotkey.com/forum/viewtopic.php?t=17058'>forum thread</a> (or study the code in plugins\calc.ahk). Should you have a requirement for such advanced operations you are encouraged to experiment with a standalone Eval script before applying this to the Calc plugin.
+<b>Advanced math:</b> examples of the more advanced options are available in the <a href='https://autohotkey.com/board/topic/15675-monster-evaluate-math-expressions-in-strings/'>forum thread</a> (or study the code in plugins\calc.ahk). Should you have a requirement for such advanced operations you are encouraged to experiment with a standalone Eval script before applying this to the Calc plugin.
 
 <h3 id='Split'>*3 <em>Split and SplitRepeat</em></h3>
 
@@ -845,7 +864,7 @@ Hello <code>[[sp=2,2]]</code> ; wordB2
 Hello <code>[[sp=2,3]]</code>
 
 </blockquote>
-Result
+Result:
 <blockquote class='boxed'>
 Hello wordA1
 Hello wordA2
@@ -915,6 +934,78 @@ Result:
 1-2 Hello cB1
 1-1 Hello wordC1
 1-2 Hello cC1
+
+</blockquote>
+
+<b><i>Named Splits</i></b>
+
+<code>[[Split_name=input|?1|?2]]</code> and <code>[[SplitRepeat_name=input|?1|?2|?3]]</code>
+
+If need to use multiple split in the same snippet you can make use of named Splits to prevent the output of the first split to interfere with the second split - see <a href='https://github.com/lintalist/lintalist/issues/48'>issue #48</a>. This will also allow you to combine Split and SplitRepeat in the same snippet.
+
+<b>Examples</b>
+
+This selected text: <em class='sel'>WordA1 WordA2 WordA3	WordB1 WordB2	WordC1 WordC2</em>
+
+<blockquote class='boxed'>
+<code>[[Split<span style='color:blue'>_MyName</span>=selected|\t]]</code>
+<code>[[SplitRepeat<span style='color:magenta'>_OtherName</span>=[[sp<span style='color:blue'>_MyName</span>=2]]|\s]]</code>
+result=<code>[[sp<span style='color:magenta'>_OtherName</span>=1]]</code>
+
+</blockquote>
+Result:
+<blockquote class='boxed'>
+result=<span style='color:magenta'>WordB1</span>
+result=<span style='color:magenta'>WordB2</span>
+
+</blockquote>
+
+This selected text: <em class='sel'>wordA1,cA1	wordA2,cA2	wordA3,cA3</em>
+
+Read a text file and use the third line:
+<blockquote class='boxed'>
+<code>[[Split<span style='color:blue'>_File</span>=[[File=example.txt]]|\n]]</code>
+The third line of the text file is <code>[[sp<span style='color:blue'>_File</span>=3]]</code>
+<code>[[Split<span style='color:magenta'>_Sel</span>=Selected|\t|,]]</code>
+<code>[[sp<span style='color:magenta'>_Sel</span>=1,2]]</code>
+<code>[[sp<span style='color:magenta'>_Sel</span>=3,1]]</code>
+
+</blockquote>
+Result:
+<blockquote class='boxed'>
+The third line of the text file is: <span style='color:blue'>[...]</span>
+<span style='color:magenta'>cA2</span>
+<span style='color:magenta'>wordA3</span>
+
+</blockquote>
+
+<b id='combiningsplit'>Combining Split and Choice to create a Snippet with Logic</b>.
+
+You select an option using the Choice plugin and use the result to insert specific information later on.
+The chosen item (output of Choice) is used as input for a named Split. As the SP will always be the first (e.g. 1), you can use that as a "variable" to select an option in a second named Split.
+<blockquote class='boxed'>
+<code>[[Split<span style='color:blue'>_C1</span>=[[choice=1	Option1|2	Option2|3	Option3|4	Option4]]|\t]]</code>
+<code>[[Split<span style='color:magenta'>_CSub</span>=sub1 sub2 sub3 sub4|\s]]</code>
+
+You made Choice Number <code>[[SP<span style='color:blue'>_C1</span>=1]]</code>
+And the sub-selection that goes with it is:
+<code>[[SP<span style='color:magenta'>_CSub</span>=[[SP<span style='color:blue'>_C1</span>=1]]]]</code>
+
+</blockquote>
+Result (if you chose option 3):
+<blockquote class='boxed'>
+You made Choice Number <span style='color:blue'>3</span>
+And the sub-selection that goes with it is:
+<span style='color:magenta'>sub3</span>
+
+</blockquote>
+The above method could also be used with Local variables
+<blockquote class='boxed'>
+<code>[[Split<span style='color:blue'>_C1</span>=[[choice=1	Option1|2	Option2|3	Option3|4	Option4]]|\t]]</code>
+
+You made Choice Number <code>[[SP<span style='color:blue'>_C1</span>=1]]</code>
+And the sub-selection that goes with it is:
+<code>[[var=LocalVariable[[SP<span style='color:blue'>_C1</span>=1]]]]</code> <span class='llcomment'>; [[SP_C1=1]] would be replaced by 1, 2, 3 or 4 so it would insert the contents of LocalVariable1..4</span>
 
 </blockquote>
 
@@ -991,7 +1082,7 @@ Functions:
   Method: 1, 2, 3 or 4. 
   1 = SendInput, 2 = SendEvent, 3 = SendPlay, 4 = ControlSend
   For more background info see the AutoHotkey Send documentation
-  <a href='http://ahkscript.org/docs/commands/Send.htm'>http://ahkscript.org/docs/commands/Send.htm</a>
+  <a href='https://autohotkey.com/docs/commands/Send.htm'>autohotkey.com/docs/commands/Send.htm</a>
 
 - ClipSet(Task,ClipNum=1,SendMethod=1,Value="") 
   Used by Lintalist to set/restore clipboard.
@@ -1074,7 +1165,7 @@ this is a **normal line** of *text* with some markup
 1. numbered list entry
 2. numbered list entry
 
-Inserting a link [ahkscript](http://ahkscript.org) also works
+Inserting a link [AutoHotkey](https://autohotkey.com) also works
 
 As does an image:
 
@@ -1086,7 +1177,7 @@ Or a table (slightly deferring from the original markdown)
 cell 1   |cell 2
 cell 3   |cell 4
 
-Credits: This markdown conversion to HTML function comes from [GenDocs](http://ahkscript.org/boards/viewtopic.php?f=6&t=1797)
+Credits: This markdown conversion to HTML function comes from [GenDocs](https://autohotkey.com/boards/viewtopic.php?f=6&t=1797)
 
 Example of HTML block:
 
@@ -1166,9 +1257,11 @@ You can find an example image file in the Extras\formatted\ folder.
 
 <h3 id='F4'><span class='key'>F4</span> (Edit Snippet)</h3>
 
-Start searching your bundle and select the snippet you want to edit (highlight with cursor or mouse) and use F4 to edit it. The Lintalist Bundle Editor will be shown so you can now edit the shortcut, shorthand, both text parts and the script. If you prefer to edit the texts or scripts in your default text editor click the corresponding 'Edit in Editor' button. It will open the text or script in a new editor window. Save the temporary file and close the editor to automatically copy any changes back to the Lintalist Bundle Editor. You can use the plugins menu to insert plugins including the available local variables and counters.
+Start searching your bundle and select the snippet you want to edit (highlight with cursor or mouse) and use F4 to edit it. The Lintalist Bundle Editor will be shown so you can now edit the shortcut, shorthand, both text parts and the script. If you prefer to edit the texts or scripts in your default text editor* click the corresponding 'Edit in Editor' button. It will open the text or script in a new editor window. Save the temporary file and close the editor to automatically copy any changes back to the Lintalist Bundle Editor. You can use the plugins menu to insert plugins including the available local variables and counters.
 
 To store the modified snippet click the save button, the changes are immediately available.
+
+* [v1.7+] you can change the editor used via the "SnippetEditor" setting in the configuration menu.
 
 <span class='small'>Snippet editor</span>
 <img src='img/lintalist-snippet-editor.png' alt='Snippet editor' border='0'  style='max-width:100%;' />
@@ -1250,7 +1343,7 @@ The following converters are available via <b>Extras\BundleConverters\</b> (requ
 
 If you have made a converter let me know so I can add a link to it or possible include it with Lintalist.
 
-Also, if you know of taglists, bundles, etc of other editors and programs you would like to see converted drop a line at the AHKScript forum or <a href='https://github.com/lintalist/lintalist/issues'>GH</a> and include a link to some examples if possible.
+Also, if you know of taglists, bundles, etc of other editors and programs you would like to see converted drop a line at the AutoHotkey forum or <a href='https://github.com/lintalist/lintalist/issues'>GH</a> and include a link to some examples if possible.
 
 <h2 id='cmdline'>Command line <em>parameters</em>  <span class='small'>[v1.2+]</span></h2>
 

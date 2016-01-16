@@ -1,7 +1,11 @@
 ﻿/* 
 Plugin        : Choice [Standard Lintalist]
 Purpose       : Make a selection from a list [part of code also place in lintalist.ahk and used to allow users to select a bundle]
-Version       : 1.0
+Version       : 1.1
+
+History:
+- 1.1 Modified for improvement of nested snippets in Lintalist v1.6
+- 1.0 first version
 */
 
 GetSnippetChoice:

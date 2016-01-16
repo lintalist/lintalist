@@ -1,7 +1,12 @@
 ﻿/* 
 Plugin        : C [Standard Lintalist]
 Purpose       : Insert C[har(s)]
-Version       : 1.0
+Version       : 1.1
+
+History:
+- 1.1 Modified for improvement of nested snippets in Lintalist v1.6
+- 1.0 first version
+
 */
 
 GetSnippetC:

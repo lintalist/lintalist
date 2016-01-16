@@ -1,14 +1,22 @@
 ﻿/* 
 Plugin        : SplitRepeat [Standard Lintalist]
 Purpose       : Split input into variables and repeat snippet
-Version       : 1.0
+Version       : 1.1
+
+History:
+- 1.1 Adding named split - Lintalist v1.7
+- 1.0 first version
 */
 
 GetSnippetSplitRepeat:
  	 Loop 
 		{
-		 If (InStr(Clip, "[[SplitRepeat=") = 0) or (A_Index > 100)
-			Break
+;		 If (InStr(Clip, "[[SplitRepeat=") = 0) or (A_Index > 100)
+;			Break
+		 named:=Trim(StrSplit(StrSplit(PluginText,"=").1,"_").2,"[]")
+		 if (named <> "")
+		 	named:="_" named
+
          sp:={}
          spsingle:=""
          StringReplace, clip, clip, %PluginText%`n, , All
@@ -41,7 +49,7 @@ GetSnippetSplitRepeat:
 					 row:=k
 					 for column,cell in v ; msgbox % row "," a_index
 						{
-						 StringReplace, spRowText, spRowText, % "[[sp=" row "," A_Index "]]", % cell, All
+						 StringReplace, spRowText, spRowText, % "[[sp" named "=" row "," A_Index "]]", % cell, All
 						} 
 					}
 				 spRowOutput .= spRowText
@@ -56,14 +64,14 @@ GetSnippetSplitRepeat:
 				 spRowText:=clip
 				 for k, v in sp
 					{
-					 StringReplace, spRowText, spRowText, [[sp=%k%]], %v%, All
+					 StringReplace, spRowText, spRowText, [[sp%named%=%k%]], %v%, All
 					}
 				 spRowOutput .= spRowText
 				}	
 			}	
 		 clip:=RTrim(spRowOutput,"`n")
 		 spRowOutput:=""
-		 clip:=RegExReplace(clip,"iU)\[\[sp=.*\]\]") ; remove any stray [[sp=?]]
+		 clip:=RegExReplace(clip,"iU)\[\[sp" named "=.*\]\]") ; remove any stray [[sp=?]]
 		 spsingle:=""
 		 sp:=""
 		 row:=""
@@ -74,6 +82,12 @@ GetSnippetSplitRepeat:
 		 PluginOptions:=""
 		 PluginText:=""
 		 ProcessTextString:=""
+		 if (named = "")
+			named:="="
+	 	 If (InStr(Clip, "[[SplitRepeat" named) = 0) or (A_Index > 100)
+			Break
+
 		}
+	 named:=""
 Return
 

@@ -1,0 +1,25 @@
+﻿; Settings used for the PlaySound setting
+; General tips & notes:
+; - try to use short sounds files
+; - if you want to omit an action leave the key value below empty
+; - for Beeps: durations below 40 are barily audible
+; - for Windows/Media and User Sounds: you should be able to use relative paths if you wish
+;   e.g. paste=..\..\paste.mp3 should play the sound file in the Lintalist root
+
+; BEEPS - Freq|duration,Freq|duration,etc
+[1]
+paste=300|50,400|50
+open=300|40,400|40,500|40
+close=500|40,400|40,300|40
+
+; WINDOWS MEDIA/WAV - Windows\Media\
+[2]
+paste=ding.wav
+open=notify.wav
+close=chord.wav
+
+; User Sounds - place them in Extras\sounds\
+[3]
+paste=paste.mp3
+open=open.mp3
+close=close.mp3

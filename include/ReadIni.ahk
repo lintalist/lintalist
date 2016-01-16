@@ -74,9 +74,11 @@ INISetup:={ AlwaysLoadBundles:     {default:"",find:"bundles\"}
 			, DisplayBundle:       {default:"0"}
 			, ColumnWidth:         {default:"50-50"}
 			, ColumnSort:          {default:"NoSort"}
-			;, SearchLetterVariations: {default:"0"}
+			, SearchLetterVariations: {default:"0"}
 			, Font:                {default:"Arial"}
-            , FontSize:            {default:"10"} }
+            , FontSize:            {default:"10"}
+            , PlaySound:           {default:""}
+            , SnippetEditor:       {default:""} }
 
 	 for k, v in INISetup
 		{
@@ -130,6 +132,7 @@ INISetup:={ AlwaysLoadBundles:     {default:"",find:"bundles\"}
 			ShowGrid = Grid
 
 	 ReadCountersIni()
+	 ReadPlaySoundIni()
 	}                         
 
 Append2Ini(Setting,file)
@@ -156,6 +159,24 @@ ReadCountersIni()
 	 	 	 _ctemp2=
 	 	 	}
 	 	}  
+	}
+
+ReadPlaySoundIni()
+	{
+	 Global
+	 local ini
+	 ini=%A_ScriptDir%\Sound.ini
+	 IfNotExist, %ini%
+	 	FileCopy, %A_ScriptDir%\Extras\sounds\Sound.ini.txt, %ini%
+	 IniRead, playsound_1_open , %ini%, 1, open,  %A_Space%
+	 IniRead, playsound_1_paste, %ini%, 1, paste, %A_Space%
+	 IniRead, playsound_1_close, %ini%, 1, close, %A_Space%
+	 IniRead, playsound_2_open , %ini%, 2, open,  %A_Space%
+	 IniRead, playsound_2_paste, %ini%, 2, paste, %A_Space%
+	 IniRead, playsound_2_close, %ini%, 2, close, %A_Space%
+	 IniRead, playsound_3_open , %ini%, 3, open,  %A_Space%
+	 IniRead, playsound_3_paste, %ini%, 3, paste, %A_Space%
+	 IniRead, playsound_3_close, %ini%, 3, close, %A_Space%
 	}
 	
 CreateDefaultIni()
