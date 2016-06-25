@@ -4,6 +4,9 @@
 ; Date:    20140426
 
 #NoTrayIcon
+#SingleInstance, force
+SetTitleMatchMode, 2
+Menu, Tray, Icon, %A_ScriptDir%\..\icons\lintalist.ico 
 
 OnExit, 20GuiClose 
 EditorTitle=Lintalist local bundle editor
@@ -12,7 +15,13 @@ LoadPersonalBundle()
 StringSplit, var, LocalVariables, |
 content:=% LocalVar_%var1%
 Previous:=var1
-Gui, 20: +Toolwindow
+
+IfWinExist, Lintalist ahk_class AutoHotkeyGUI
+	WinGet, LintalistHwnd, ID, Lintalist ahk_class AutoHotkeyGUI
+
+;Gui, 20: +Toolwindow
+If LintalistHwnd
+	Gui, 20: +0x40000000 -0x80000000 +Owner%LintalistHwnd%
 Gui, 20: Add, Text, x10  y10 , Local variable (select to edit)
 Gui, 20: Add, Text, x240 y10 , Content
 

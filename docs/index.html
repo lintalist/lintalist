@@ -21,7 +21,7 @@
 <span style='font-size:.8em;'>You can <b>extend Lintalist</b> by writing your own <b><a href='#InteractiveBundleText'>plugins</a></b>. Lintalist is open source and developed in <a href='https://autohotkey.com/'>AutoHotkey</a>, an easy to learn scripting language for Windows.
 [WinXP(sp3)/Vista/7/8]<br /></span>
 <span style='font-size:.8em;'>As of LintaList v1.1 several types of formatted text are supported in Snippets.</span>
-<span class='date' style='float:right;display:inline;margin-top:0px;'>doc rev. 20160116</span></p>
+<span class='date' style='float:right;display:inline;margin-top:0px;'>doc rev. 20160625</span></p>
 </div>
 
 <div class='column'>
@@ -69,7 +69,7 @@
 </div>
 
 <div class='column'>
-<p><b>Download Lintalist <em>1.7</em></b>
+<p><b>Download Lintalist <em>1.8</em></b>
 <p>
 <a href='https://github.com/lintalist/lintalist/releases'><img src='img/lintalist65x65.gif' alt='Download Lintalist' width='65' align='left' border='0' style='margin-right: 5px;' /></a>
 Download (incl. source):<br />
@@ -154,7 +154,7 @@ Installing Lintalist is easy, just download the ZIP file and unpack it in a fold
 If you are already an AutoHotkey user and have it installed, it is recommended to run <b>Lintalist.ahk</b>, this will ensure you will be running Lintalist with your preferred version of AutoHotkey. If you don't have AutoHotkey installed you can start <b>Lintalist.exe</b>.
 
 <b>Notes:</b>
-- Lintalist.exe: A renamed AutoHotkey.exe (v1.1.23 32-bit Unicode, See https://autohotkey.com/ and/or https://autohotkey.com/download/)
+- Lintalist.exe: A renamed AutoHotkey.exe (v1.1.24 32-bit Unicode, See https://autohotkey.com/ and/or https://autohotkey.com/download/)
 - Lintalist.ahk: The actual (main) source code of the program (see https://github.com/lintalist/lintalist)
 
 <h2 id='Searching'>Normal use: Starting Lintalist and searching for a Snippet</h2>
@@ -634,7 +634,11 @@ The plugins are processed in the following order:
 <tr id='caret-plugin'><td><code>^|</code></td><td>Caret position after pasting.
 Basic example: "Hello, this is a sample <code>^|</code>text"
 The ^| code will be removed from the text and the caret will 
-be placed before the word text.</td></tr>
+be placed before the word text.
+
+[v1.8+] If you paste a snippet into an editor which supports Multi-caret/edit you can use those in Lintalist snippets by placing multiple caret locations in your snippet. If you don't want to use MultiCaret simply avoid using multiple ^| in a Lintalist snippet.
+Supported editors: Atom, Brackets, EverEdit, Sublime Text, TextAdept, UltraEdit 23+. See <a href='MultiCaret.md'>docs/MultiCaret.md</a> for details.
+</td></tr>
 
 <tr id='c-plugin'><td><code>[[C=Char|Repeat]]</code></td><td>By default pasted texts are trimmed which means spaces and tabs will be trimmed from the snippet. You can use this plugin to insert one or more spaces and/or tabs at the beginning or end of a snippet. Or you can use it as a shorthand-code to insert a repeating text or character.
 Basic example <code>[[C=-|30]]</code> insert 30 -'s
@@ -647,8 +651,11 @@ Neat trick: using a local variable or User input
 
 <tr id='calc-plugin'><td><code>[[Calc=]]</code> *2</td><td>Evaluation of the math expressions - see <a href='#Calc'>documentation below</a>.</td></tr>
 
-<tr id='calendar-plugin'><td><code>[[Calendar=Format]]</code></td><td>Displays a calendar window to allow you to select a date in a specific format (see DateTime above).
+<tr id='calendar-plugin'><td><code>[[Calendar=Format|LCID]]</code></td><td>Displays a calendar window to allow you to select a date in a specific format (see DateTime below).
 Basic example <code>[[Calendar=dd-MMM-yyyy]]</code> --> Select a date and it will be inserted like so: 25-Jan-2011
+
+[v1.8+] You can now specify an LCID. If you do not define one, the current user's locale is used to format the Date string. To use the system's locale instead, specify LSys. To use a specific locale, specify the letter L followed by a hexadecimal or decimal locale identifier (LCID). You can find a list of Locale IDs Assigned by Microsoft here <a href='https://msdn.microsoft.com/goglobal/bb964664.aspx' target='_blank'>msdn.microsoft.com/goglobal/bb964664.aspx</a>
+
 </td></tr>
 
 <tr id='choice-plugin'><td><code>[[Choice=item1|item2|..]]</code></td><td>Selected an item from a list. 
@@ -673,7 +680,7 @@ You can manage these counters (add, edit, delete) via the tray menu option: Mana
 2. if a counter is not created/managed using the "Mange counters" tool the unknown counter will be automatically created. This way you can create counters 'on the fly' using for example the <code>[[Input=]]</code> plugin.
 </td></tr>
 
-<tr id='datetime-plugin'><td><code>[[DateTime=Format|Value|TimeUnits]]</code></td><td>Insert current Date and/or Time using the FormatTime options,
+<tr id='datetime-plugin'><td><code>[[DateTime=Format|Value|TimeUnits|LCID]]</code></td><td>Insert current Date and/or Time using the FormatTime options,
 <a href='https://autohotkey.com/docs/commands/FormatTime.htm'>autohotkey.com/docs/commands/FormatTime.htm</a>
 (Date & Time formats, may be dependent on your user locale).
 Basic example <code>[[DateTime=dd-MMM-yyyy]]</code> --> 25-Jan-2011 (Todays date)
@@ -681,6 +688,8 @@ Basic example <code>[[DateTime=dd-MMM-yyyy]]</code> --> 25-Jan-2011 (Todays date
 You can also perform some calculations, example:
 <code>[[DateTime=dd-MMM-yyyy|5|Days]]</code> --> 30-Jan-2011, 5 days from today.
 TimeUnits can be either Seconds, Minutes, Hours, or Days.
+
+[v1.8+] You can now specify an LCID, see Calendar above. Example: <code>[[DateTime=dd MMMM yyyy|||L1036]]</code> --> show month in French.
 </td></tr>
 
 <tr id='file-plugin'><td><code>[[File=Filename|select|clean]]</code></td><td>Will insert text from specified file into the text, 
@@ -704,6 +713,15 @@ You can provide a default response after the question by using the pipe char (|)
 example <code>[[Input=My favourite color|Green]]</code>
 </td></tr>
 
+<tr id='random-plugin'><td><code>[[Random=1|10]]</code>
+or
+<code>[[Random=a|b|c]]</code></td><td>There are two methods to use Random. 1: Return a random number, 2: Return a random item from a pipe delimited list.
+<code>[[Random=1|10]]</code> -> return value between 1 and 10
+<code>[[Random=item|from|a list of|entries]]</code> -> returns random item from one of these four items
+
+[v1.8+]
+</td></tr>
+
 <tr id='selected-plugin'><td><code>[[Selected]]</code> *1</td><td>Replace by selected text if any. This will allow you to insert any 
 selected text, for example to wrap selected text in a HTML tag.
 * Additional parameters are available, see <a href='#ClipEx'>Extending Clipboard &amp; Selected text</a>.</td></tr>
@@ -716,6 +734,8 @@ Basic example <code>[[Snippet=shorthandcode]]</code></td></tr>
 <tr id='snippet-split'><td><code>[[SplitRepeat=input|?1|?2|?3]]</code> *3</td><td>Split input into variables - see <a href='#Split'>Split and SplitRepeat</a> below.</td></tr> 
 
 <tr id='localvar-plugin'><td><code>[[Var=Name]]</code> *4</td><td>Insert local variables. These variables are available <b>across bundles</b>. See <a href='#LocalBundle'>Local bundle variables</a> below. As of v1.0.3 local variables are also available in scripts (making it the only plugin available in scripts for the time being)</td></tr>
+
+<tr><td><code>[[html]], [[md]], [[rtf=]], [[image=]]</code> </td><td>Use these for <a href='#FormattedText'>Formatted Text Snippets</a>.</td></tr>
 
 </tbody>
 </table>
@@ -1062,6 +1082,7 @@ available:
 Variables:
 
 - ActiveWindowID (use with ahk_id)
+- ActiveWindowProcessName (use with ahk_exe)
 - ActiveWindowClass (use with ahk_class)
 - ActiveWindowTitle
 - ActiveControl
@@ -1356,7 +1377,7 @@ There is also a configuration setting that can do this: ActivateWindow
 
 <b>-Bundle=</b><i>filename.txt</i>: load specific bundle and lock
 
-
+<b>-Ini=</b><i>filename-for-settings.ini</i>: use a different settings file (default is settings.ini) [v1.8+]
 
 <h2 id='FAQ'>F.A.<em>Q</em> &amp; Known <em>Issues</em></h2>
 

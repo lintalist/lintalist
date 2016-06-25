@@ -4,12 +4,20 @@
 ; Date:    20140426
 
 #NoTrayIcon
+#SingleInstance, force
+SetTitleMatchMode, 2
+Menu, Tray, Icon, %A_ScriptDir%\..\icons\lintalist.ico 
+
+ini=%1%
 
 OnExit, 20GuiClose 
 EditorTitle=Lintalist counters editor
 Save=0
 
-	 IniRead, Counters, %A_ScriptDir%\..\settings.ini, settings, Counters, 0	
+IfWinExist, Lintalist ahk_class AutoHotkeyGUI
+	WinGet, LintalistHwnd, ID, Lintalist ahk_class AutoHotkeyGUI
+
+	 IniRead, Counters, %ini%, settings, Counters, 0	
 	 If (Counters <> 0)
 	 	{
 	 	 Loop, parse, counters, |
@@ -25,7 +33,9 @@ Save=0
 	 	 StringTrimRight,LocalCounter_0,LocalCounter_0,1
 	 	}
 
-Gui, 20: +Toolwindow
+;Gui, 20: +Toolwindow
+If LintalistHwnd
+	Gui, 20: +0x40000000 -0x80000000 +Owner%LintalistHwnd%
 Gui, 20: Add, Text, x10  y10 , Counter (double Click to edit)
 
 Gui, 20: Add, Listview, h300 w377 x10 y30 gCheck Grid, Name|Value
@@ -104,7 +114,7 @@ Loop
 	 	break
  	 Counters .= VarName "," VarValue "|"
 	}
-iniwrite, %Counters%, %A_ScriptDir%\..\Settings.ini, Settings, Counters
+iniwrite, %Counters%, %ini%, Settings, Counters
 Save=0
 ExitApp
 Return

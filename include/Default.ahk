@@ -12,8 +12,9 @@ Functions     :
 GetActiveWindowStats() ; Get Active Window & Control
 	{
 	 global
-	 WinGet, ActiveWindowID, ID, A      
-	 WinGetClass, ActiveWindowClass, A  
+	 WinGet, ActiveWindowID, ID, A
+	 WinGet, ActiveWindowProcessName, ProcessName, A ; TODO TODOMC
+	 WinGetClass, ActiveWindowClass, A
 	 ControlGetFocus, ActiveControl, A
 	 WinGetActiveTitle, ActiveWindowTitle
 	 StringReplace, ActiveWindowTitle, ActiveWindowTitle, [, , All

@@ -1,3 +1,27 @@
+### v1.8
+
+* New: Command line parameters -Ini: load specific settings file (ini)  
+  https://github.com/lintalist/lintalist/issues/8
+* New: Multi-caret implemented for certain text editors (see DOC)  
+  https://github.com/lintalist/lintalist/issues/61
+* New: Random plugin, return random value or entry from a list  
+  https://github.com/lintalist/lintalist/issues/64  
+  (Random button added to Choice plugin)
+* New: Calendar and DateTime now accept Locale Identifiers (LCID) parameter  
+  ht @dbielz https://github.com/lintalist/lintalist/issues/58
+* Change: Snippet, Bundle, Counter and Local variable editors are now all visible  
+  on the taskbar as a child window of a disabled Lintalist Search GUI (if present)  
+  this makes it easer to switch from/to the appropriate editor using alt-tab and mouse  
+  https://github.com/lintalist/lintalist/issues/57
+* Added: Choice plugin GUI now has "Endless scrolling in a listbox" similar to  
+  Search GUI listview + New Random button
+* Fix: Cancelling a snippet with Choice plugin no longer makes Shorthand stop working  
+  https://github.com/lintalist/lintalist/issues/52
+* Fix: After using quick search with one result e.g. automatic pasting of the only  
+  snippet, pressing space or tab executed the snippet again. Cleared the typing history  
+  after each paste fixed it.
+* Fix: Pause shortcut could cause error, added #IfWinNotActive ahk_group
+
 ### v1.7
 
 * New: SnippetEditor Setting - Allow user to set editor to use for "Edit in Editor" button  
@@ -7,7 +31,7 @@
 * New: PlaySound Setting - Play sounds after paste, open or close of Search Gui (beeps, default  
   Windows media or user files)  
   ht @starstuff - https://github.com/lintalist/lintalist/issues/45  
-* New: SearchLetterVariations setting -  Allow for variations of letters in search query - https://github.com/lintalist/lintalist/issues/33  
+* New: SearchLetterVariations setting -  Allow for variations of letters in search query
   Searching for 'e' is translated to searching for 'eéèë...' etc  
   You can toggle this setting via the Search GUI - https://github.com/lintalist/lintalist/issues/33  
   Note: Consequence for Fuzzy search is that this now always using a RegEx which could be slower.

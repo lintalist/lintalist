@@ -1,17 +1,16 @@
 ﻿/* 
 Plugin     : Calendar [Standard Lintalist]
 Purpose    : Select a date from a Calendar
-Version    : 1.1
+Version    : 1.2
 
 History:
+- 1.2 Removed Goto
 - 1.1 Calendar now uses Multi-select (shows two months side by side) - Lintalist v1.6
 - 1.0 first version
 */
 
 GetSnippetCalendar:
 MakeCalendar:
-
-
 Gui, 10:Destroy
 Gui, 10:+Owner +AlwaysOnTop
 Gui, 10:Add, MonthCal, vMyCalendar Multi W-2 4
@@ -19,17 +18,15 @@ Gui, 10:Add, Button, default gCalendarOK, Select Date
 Gui, 10:Add, Button, xp+100 yp gCalendarCancel, Cancel
 Gui, 10:Add, Text, xp+100 yp+5, (hold shift to select start-end date)
 Gui, 10:Show, , Calendar
-		 Loop ; ugly hack: can't use return here because, well it returns and would thus skip the gui and proceed to paste
+		 Loop
 			{
 			 If (MadeChoice = 1) or (InStr(Clip, "[[Calendar") = 0)
 				{
 				 MadeChoice = 0
 				 Break
 				}
-			 Sleep 20 ; needed for ahk_l, if no sleep CPU usages jumps to 50%, no responding to hotkeys and no tray menu, no longer remember the revision of AHK_L this happened with or if it still required
+			 Sleep, 20
 			}
-If (InStr(Clip, "[[Calendar") > 0)
-		Goto, MakeCalendar
 Return
 
 CalendarOK: ; selected via Enter

@@ -4,7 +4,7 @@ Name            : Lintalist
 Author          : Lintalist
 Purpose         : Searchable interactive lists to copy & paste text, run scripts,
                   using easily exchangeable bundles
-Version         : 1.7
+Version         : 1.8
 Code            : https://github.com/lintalist/
 Website         : http://lintalist.github.io/
 AHKscript Forum : https://autohotkey.com/boards/viewtopic.php?f=6&t=3378
@@ -35,10 +35,13 @@ SendMode, Input
 SetWorkingDir, %A_ScriptDir%
 FileEncoding, UTF-8
 SortDirection:="Sort"
+IniFile:="Settings.ini"
+
+PluginMultiCaret:=0 ; TODOMC
 
 ; Title + Version are included in Title and used in #IfWinActive hotkeys and WinActivate
 Title=Lintalist
-Version=1.7
+Version=1.8
 
 ; ClipCommands are used in ProcessText and allow user input and other variable input into text snippets
 ; ClipCommands=[[Input,[[DateTime,[[Choice,[[Selected,[[Var,[[File,[[Snippet= etc automatically built up
@@ -52,6 +55,9 @@ GroupAdd, BundleHotkeys, Select bundle ahk_class AutoHotkeyGUI
 GroupAdd, BundleHotkeys, Append snippet to bundle ahk_class AutoHotkeyGUI
 GroupAdd, BundleHotkeys, Lintalist bundle editor ahk_class AutoHotkeyGUI
 GroupAdd, BundleHotkeys, Lintalist snippet editor ahk_class AutoHotkeyGUI
+GroupAdd, BundleHotkeys, Lintalist counters editor ahk_class AutoHotkeyGUI
+GroupAdd, BundleHotkeys, Lintalist local bundle editor ahk_class AutoHotkeyGUI
+GroupAdd, BundleHotkeys, Lintalist settings ahk_class AutoHotkeyGUI
 
 OnExit, SaveSettings ; store settings (locked state, search mode, gui size etc in INI + Make sure changes to Bundles are saved)
 
@@ -112,7 +118,9 @@ if 0 > 0  ; check cl parameters
 			 cl_Bundle:=StrSplit(param,"=").2
 			 If !FileExist(A_ScriptDir "\bundles\" cl_Bundle)
 				cl_Bundle:=""
-		 	}
+			}
+		 if InStr(param,"-Ini")
+			 IniFile:=StrSplit(param,"=").2
 		 param:=""
 		}
 	}
@@ -121,6 +129,7 @@ if 0 > 0  ; check cl parameters
 
 ; INI ---------------------------------------
 ReadIni()
+ReadMultiCaretIni()
 
 if cl_Bundle
 	{
@@ -163,7 +172,7 @@ Gosub, QuickStartGuide
 
 ; setup hotkey
 
-Hotkey, IfWinNotActive, ahk_group BundleHotkeys
+Hotkey, IfWinNotExist, ahk_group BundleHotkeys
 Hotkey, %StartSearchHotkey%, GUIStart
 If (StartOmniSearchHotkey <> "")
 	Hotkey, %StartOmniSearchHotkey%, GUIStartOmni
@@ -171,7 +180,7 @@ If (QuickSearchHotkey <> "")
 	Hotkey, %QuickSearchHotkey%, ShortText
 If (ExitProgramHotKey <> "")
 	Hotkey, %ExitProgramHotKey%, SaveSettings
-Hotkey, IfWinNotActive
+Hotkey, IfWinNotExist
 
 ViaShorthand=0
 
@@ -180,6 +189,7 @@ ViaShorthand=0
 SendKeysToFix=Enter,Space,Esc,Tab,Home,End,PgUp,PgDn,Up,Down,Left,Right,F1,F2,F2,F3,F4,F5,F6,F7,F8,F9,F10,F11,F12,AppsKey
 ;TerminatingCharacters={Alt}{LWin}{RWin}{Shift}{enter}{space}{esc}{tab}{Home}{End}{PgUp}{PgDn}{Up}{Down}{Left}{Right}{F1}{F2}{F2}{F3}{F4}{F5}{F6}{F7}{F8}{F9}{F10}{F11}{F12}.,¿?¡!'"()[]{}{}}{{}~$&*-+=\/><^|@#:`%;  ; "%
 TerminatingCharacters={Alt}{LWin}{RWin}{enter}{space}{esc}{tab}{Home}{End}{PgUp}{PgDn}{Up}{Down}{Left}{Right}{F1}{F2}{F2}{F3}{F4}{F5}{F6}{F7}{F8}{F9}{F10}{F11}{F12}  ; "%
+CheckTypedLoop:
 Loop
 	{
 	 ;Get one key at a time
@@ -191,6 +201,7 @@ Loop
 	 Input, TypedChar, L1 V I, {BS}%TerminatingCharacters%
 	 CheckTyped(TypedChar,ErrorLevel)
 	}
+Return
 
 ; fix 201102 for switching windows with mouse, clear typed stack
 ~*Lbutton::
@@ -356,33 +367,8 @@ Loop, parse, SearchBundles, CSV
 			 else If (SearchLetterVariations = 1) ; search normal with letter variations making it a RegExMatch search
 				 Search(3) ; RegEx search
 			}
-
-		 else If (SearchMethod = 2) ; fuzzy
-			{
-			 ;Found = 0
-			 ;Words = 0
-			 ;Loop, parse, SearchText, %A_Space%
-				;{
-				; If (InStr(SearchThis1,A_LoopField,Case) > 0) or (InStr(SearchThis2,A_LoopField,Case) > 0) or (InStr(SearchThis3,A_LoopField,Case) > 0)
-				;	Found++
-				; Words:=A_Index
-				;}
-			 ;If (Found = Words)
-				;{
-				; Match++
-				;}
-			 Search(SearchMethod)
-			}
-
-		 else If (SearchMethod = 3) ; regex
-			{
-			 Search(SearchMethod)
-			}
-
-		 else If (SearchMethod = 4) ; magic (=regex)
-			{
-			 Search(SearchMethod)
-			}
+		 else
+		 	Search(SearchMethod)
 
 		If (match > 0) ; we have a match
 			{
@@ -648,6 +634,13 @@ If (Script = "") or (ScriptPaused = 1) ; script is empty so we need to paste Tex
 			 SendInput, {Up %BackUp%}{End}
 			}
 		 SendInput, {Left %BackLeft%}
+		 If PluginMultiCaret
+		 	{
+			 Loop, % PluginMultiCaret
+			 	SendInput, % MultiCaret[ActiveWindowProcessName].key  ; TODOMC
+			 SendInput, % MultiCaret[ActiveWindowProcessName].clr     ; TODOMC
+			 PluginMultiCaret=0
+		 	}
 		}
 	 Backleft=0
 	 If (ViaText = 1) ; we came from shorttext
@@ -692,6 +685,7 @@ Else If (Script <> "") and (ScriptPaused = 0) ; we run script by saving it to tm
 If (OnPaste = 1)
 	Gosub, SaveSettings
 OmniSearch:=0
+Typed:=""
 Return
 
 CheckHitList(CheckHitList, CheckFor, Bundle, RE = 0) ; RE no longer needed?
@@ -915,6 +909,37 @@ Gosub, 55GuiClose
 Return
 #IfWinActive
 
+; Endless scrolling in a listbox
+; https://autohotkey.com/board/topic/28879-example-endless-scrolling-in-a-listbox/
+#IfWinActive, Select and press enter ahk_class AutoHotkeyGUI
+Up::
+SendMessage, 0x188, 0, 0, ListBox1, Select and press enter  ; 0x188 is LB_GETCURSEL (for a ListBox).
+PreviousPos:=ErrorLevel+1
+ControlSend, ListBox1, {Up}, Select and press enter
+SendMessage, 0x18b, 0, 0, ListBox1, Select and press enter  ; 0x18b is LB_GETCOUNT (for a ListBox).
+ItemsInList:=ErrorLevel
+SendMessage, 0x188, 0, 0, ListBox1, Select and press enter  ; 0x188 is LB_GETCURSEL (for a ListBox).
+ChoicePos:=ErrorLevel+1
+If (ChoicePos = PreviousPos)
+	{
+	SendMessage, 0x18b, 0, 0, ListBox1, Select and press enter  ; 0x18b is LB_GETCOUNT (for a ListBox).
+	SendMessage, 390, (Errorlevel-1), 0, ListBox1, Select and press enter  ; LB_SETCURSEL = 390
+	}
+Return
+
+Down::
+SendMessage, 0x188, 0, 0, ListBox1, Select and press enter  ; 0x188 is LB_GETCURSEL (for a ListBox).
+PreviousPos:=ErrorLevel+1
+SendMessage, 0x18b, 0, 0, ListBox1, Select and press enter  ; 0x18b is LB_GETCOUNT (for a ListBox).
+ItemsInList:=ErrorLevel
+ControlSend, ListBox1, {Down}, Select and press enter
+SendMessage, 0x188, 0, 0, ListBox1, Select and press enter  ; 0x188 is LB_GETCURSEL (for a ListBox).
+ChoicePos:=ErrorLevel+1
+If (ChoicePos = PreviousPos)
+	SendMessage, 390, 0, 0, ListBox1, Select and press enter  ; LB_SETCURSEL = 390 - position 'one'
+Return
+#IfWinActive
+
 ; Hotkeys active in Main GUI
 ; Reference: Endless scrolling in a listview [hugov] http://www.autohotkey.com/forum/topic44914.html
 
@@ -948,7 +973,9 @@ SelItem := LV_GetNext()
 If (SelItem = 0)
 	SelItem = 1
 LV_GetText(Paste, SelItem, 5) ; get bundle_index from 5th column
-Gui, 71:+Owner1
+;Gui, 71:+Owner1
+; source: https://autohotkey.com/board/topic/21449-how-to-prevent-the-parent-window-from-losing-focus/?p=153870
+Gui, 71:+0x40000000 -0x80000000 +Owner1 ; Add WS_CHILD, remove WS_POPUP, set owner/parent
 Gui, 1:+Disabled
 Gosub, BundleEditor
 Return
@@ -1042,7 +1069,8 @@ If WinExist("Lintalist bundle editor")
 	}
 If WinExist(AppWindow)
 	{
-	 Gui, 81:+Owner1
+	 ;Gui, 81:+Owner1
+	 Gui, 81:+0x40000000 -0x80000000 +Owner1 ; Add WS_CHILD, remove WS_POPUP, set owner/parent
 	 Gui, 1:+Disabled
 	}
 Gosub, BundlePropertiesEditor
@@ -1356,8 +1384,16 @@ Else If (A_ThisMenuItem = "&Manage counters")
 		 StoreCounters:=Counters
 		 StoreLocalCounter_0:=LocalCounter_0
 		 SaveUpdatedBundles()
-		 RunWait, %A_AhkPath% include\CounterEditor.ahk
-		 IniRead, Counters, settings.ini, settings, Counters, 0
+		 If WinExist(AppWindow " ahk_class AutoHotkeyGUI")
+			Gui, 1:+Disabled
+		 RunWait, %A_AhkPath% include\CounterEditor.ahk %IniFile%
+		 IniRead, Counters, %IniFile%, settings, Counters, 0
+		 If WinExist(AppWindow " ahk_class AutoHotkeyGUI")
+			{
+			 Gui, 1:-Disabled
+			 WinActivate, %AppWindow% ahk_class AutoHotkeyGUI
+			}
+
 		 If (Counters <> StoreCounters)
 			{
 			 MsgBox, 36, Restart?, In order for any changes to take effect you must reload.`nOK to restart? ; 4+32 = 36
@@ -1365,24 +1401,25 @@ Else If (A_ThisMenuItem = "&Manage counters")
 				{
 				 Gui, 1:Destroy
 				 ReadCountersIni()
-				 Reload
+				 Run % DllCall( "GetCommandLineW", "Str" ) ; reload with command line parameters
 				}
 			}
 		}
 Else If (A_ThisMenuItem = "E&xit")
 	ExitApp
 Else If (A_ThisMenuItem = "&Reload Bundles")
-	Reload
+	; Reload
+	Run % DllCall( "GetCommandLineW", "Str" ) ; reload with command line parameters
 Else If (A_ThisMenuItem = "&Pause Lintalist")
 	Gosub, PauseProgram
 Else If (A_ThisMenuItem = "&Configuration")
 	{
-	 IniSettingsEditor("LintaList","settings.ini")
+	 IniSettingsEditor("Lintalist",A_ScriptDir "\" IniFile)
 	 MsgBox, 36, Restart?, In order for any changes to take effect you must reload.`nOK to restart? ; 4+32 = 36
 	 IfMsgBox, Yes
 		{
 		 Gui, 1:Destroy
-		 Reload
+		 Run % DllCall( "GetCommandLineW", "Str" ) ; reload with command line parameters
 		}
 	}
 Else If (A_ThisMenuItem = "Pause &Shorthand")
@@ -1418,12 +1455,19 @@ Else If (A_ThisMenuItem = "&Help")
 	Run, docs\index.html
 Else If (A_ThisMenuItem = "&Manage local variables")
 		{
+		 If WinExist(AppWindow " ahk_class AutoHotkeyGUI")
+			Gui, 1:+Disabled
 		 RunWait, %A_AhkPath% include\localbundleeditor.ahk
+		 If WinExist(AppWindow " ahk_class AutoHotkeyGUI")
+			{
+			 Gui, 1:-Disabled
+			 WinActivate, %AppWindow% ahk_class AutoHotkeyGUI
+			}
 		 MsgBox, 36, Restart?, In order for any changes to take effect you must reload.`nOK to restart? ; 4+32 = 36
 		 IfMsgBox, Yes
 			{
 			 Gui, 1:Destroy
-			 Reload
+			 Run % DllCall( "GetCommandLineW", "Str" ) ; reload with command line parameters
 			}
 		}
 
@@ -1561,6 +1605,7 @@ Loop, parse, Group, CSV
 		 StringSplit, _h, A_LoopField, % Chr(7) ; %
 		 If (_h1 <> "")
 			{
+			 Hotkey, IfWinNotActive, ahk_group BundleHotkeys
 			 If (ShortcutPaused = 0) ; for some reason Toggle doesn't work so hence the On/Off method
 				{
 				 Hotkey, $%_h1%, On
@@ -1569,6 +1614,7 @@ Loop, parse, Group, CSV
 				{
 				 Hotkey, $%_h1%, Off
 				}
+			 Hotkey, IfWinNotActive, off
 			}
 		 _h1= ; clear vars
 		 _h2=
@@ -1660,23 +1706,36 @@ Return
 
 CheckCursorPos()
 	{
-	 Global BackLeft, BackUp
+	 Global BackLeft, BackUp, PluginMultiCaret, MultiCaret, ActiveWindowProcessName
 	 BackLeft=0
 	 BackUp=0
+	 PluginMultiCaret=0
+
 	 If InStr(Clipboard, "^|") ; Find caret pos after paste
 		{
 		 Clip:=Clipboard
 		 StringReplace, Clip, Clip, `r, , All ; remove `r as we don't need these for caret pos
+		 StringReplace, Clip, Clip, ^|, ^|, UseErrorLevel
+		 If (ErrorLevel > 1)
+		 	PluginMultiCaret:=ErrorLevel
 		 UpLines:=SubStr(Clip,InStr(Clip,"^|")+2)
 		 StringReplace, UpLines, UpLines, `n, `n, UseErrorLevel
 		 BackUp:=ErrorLevel
 		 If (BackUp > 0)
 			{
-			 BackLeft:=StrLen(SubStr(UpLines,1,InStr(UpLines,"`n")))-1
+			 If (PluginMultiCaret > 0)
+			 	BackLeft:=StrLen(SubStr(UpLines,1,InStr(UpLines,"`n")))-1 + StrLen(MultiCaret[ActiveWindowProcessName].str) ; TODOMC
+			 else
+				BackLeft:=StrLen(SubStr(UpLines,1,InStr(UpLines,"`n")))-1
 			}
 		 Else If (BackUp = 0)
 			BackLeft:=StrLen(UpLines)
-		 StringReplace, Clipboard, Clipboard, ^|, ,All
+		 If (PluginMultiCaret <> 0) and MultiCaret.HasKey(ActiveWindowProcessName)
+			{
+			 StringReplace, Clipboard, Clipboard, ^|, % MultiCaret[ActiveWindowProcessName].str, All ; TODOMC
+			}
+		 else
+		 	StringReplace, Clipboard, Clipboard, ^|, ,All ; TODOMC
 		 UpLines=
 		 Clip=
 		}
@@ -1869,22 +1928,22 @@ LastBundle=
 Loop, parse, Load, CSV ; store loaded bundles
 	LastBundle .= FileName_%A_LoopField% ","
 StringTrimRight, LastBundle, LastBundle, 1
-IniWrite, %LastBundle%  , Settings.ini, Settings, LastBundle
+IniWrite, %LastBundle%  , %IniFile%, Settings, LastBundle
 If (SubStr(DefaultBundle, 0) = ",")
 	StringTrimRight, DefaultBundle, DefaultBundle, 1
-IniWrite, %DefaultBundle%, Settings.ini, Settings, DefaultBundle
-IniWrite, %SearchMethod%, Settings.ini, Settings, SearchMethod
-IniWrite, %Load%        , Settings.ini, Settings, Load
-IniWrite, %LoadAll%     , Settings.ini, Settings, LoadAll
-IniWrite, %SearchLetterVariations%        , Settings.ini, Settings, SearchLetterVariations
-IniWrite, %Lock%        , Settings.ini, Settings, Lock
-IniWrite, %Case%        , Settings.ini, Settings, Case
-IniWrite, %Width%       , Settings.ini, Settings, Width
-IniWrite, %Height%      , Settings.ini, Settings, Height
-IniWrite, %ShorthandPaused%, Settings.ini, Settings, ShorthandPaused
-IniWrite, %ShortcutPaused% , Settings.ini, Settings, ShortcutPaused
-IniWrite, %ScriptPaused%   , Settings.ini, Settings, ScriptPaused
-IniWrite, %ShowQuickStartGuide%, Settings.ini, Settings, ShowQuickStartGuide
+IniWrite, %DefaultBundle%, %IniFile%, Settings, DefaultBundle
+IniWrite, %SearchMethod%, %IniFile%, Settings, SearchMethod
+IniWrite, %Load%        , %IniFile%, Settings, Load
+IniWrite, %LoadAll%     , %IniFile%, Settings, LoadAll
+IniWrite, %SearchLetterVariations%        , %IniFile%, Settings, SearchLetterVariations
+IniWrite, %Lock%        , %IniFile%, Settings, Lock
+IniWrite, %Case%        , %IniFile%, Settings, Case
+IniWrite, %Width%       , %IniFile%, Settings, Width
+IniWrite, %Height%      , %IniFile%, Settings, Height
+IniWrite, %ShorthandPaused%, %IniFile%, Settings, ShorthandPaused
+IniWrite, %ShortcutPaused% , %IniFile%, Settings, ShortcutPaused
+IniWrite, %ScriptPaused%   , %IniFile%, Settings, ScriptPaused
+IniWrite, %ShowQuickStartGuide%, %IniFile%, Settings, ShowQuickStartGuide
 Gosub, SaveSettingsCounters
 ; /INI
 
@@ -1913,6 +1972,7 @@ Return
 #Include %A_ScriptDir%\include\ShowAbout.ahk
 #Include %A_ScriptDir%\include\PlaySound.ahk
 #Include %A_ScriptDir%\include\LetterVariations.ahk
+#Include %A_ScriptDir%\include\ReadMultiCaretIni.ahk
 #Include %A_ScriptDir%\include\WinClip.ahk    ; by Deo
 #Include %A_ScriptDir%\include\WinClipAPI.ahk ; by Deo
 #Include %A_ScriptDir%\include\Markdown2HTML.ahk ; by fincs + additions
@@ -1927,7 +1987,7 @@ Loop, parse, LocalCounter_0, CSV
 		Continue
 	 Counters .= A_LoopField "," LocalCounter_%A_LoopField% "|"
 	}
-IniWrite, %Counters%   , Settings.ini, Settings, Counters
+IniWrite, %Counters%   , %IniFile%, Settings, Counters
 Return
 
 #Include *i %A_ScriptDir%\autocorrect.ahk

@@ -120,7 +120,7 @@ LoadAllBundles()
 			StringTrimRight, AlwaysLoadBundles, AlwaysLoadBundles, 1
 		 If (SubStr(AlwaysLoadBundles, 1, 1) = ",") ; if it has changed write to ini so it will be faster at next startup. The Bundle isn't there so no need to try and load it again next time around.
 			StringTrimLeft, AlwaysLoadBundles, AlwaysLoadBundles, 1
-		 IniWrite, %AlwaysLoadBundles%, Settings.ini, Settings, AlwaysLoadBundles
+		 IniWrite, %AlwaysLoadBundles%, %IniFile%, Settings, AlwaysLoadBundles
 		}
      Changed:=LastBundle
 	 Loop, parse, LastBundle, CSV
@@ -136,7 +136,7 @@ LoadAllBundles()
 			StringTrimRight, LastBundle, LastBundle, 1
 		 If (SubStr(LastBundle, 1, 1) = ",") ; if it has changed write to ini so it will be faster at next startup. The Bundle isn't there so no need to try and load it again next time around.
 			StringTrimLeft, LastBundle, LastBundle, 1
-		 IniWrite, %LastBundle%, Settings.ini, Settings, LastBundle
+		 IniWrite, %LastBundle%, %IniFile%, Settings, LastBundle
 	}		 	 
 	 If (LastBundle	= "") and (Lock = 1)
 		Lock=0 ; unlock as it won't be able to load the bundle that was last locked anyway
@@ -154,7 +154,7 @@ LoadAllBundles()
 			StringTrimRight, DefaultBundle, DefaultBundle, 1
 		 If (SubStr(DefaultBundle, 1, 1) = ",") ; if it has changed write to ini so it will be faster at next startup. The Bundle isn't there so no need to try and load it again next time around.
 			StringTrimLeft, DefaultBundle, DefaultBundle, 1
-		 IniWrite, %DefaultBundle%, Settings.ini, Settings, DefaultBundle
+		 IniWrite, %DefaultBundle%, %IniFile%, Settings, DefaultBundle
 	}		
 	 Loop, parse, AvailableBundles, CSV
 		{
@@ -354,6 +354,7 @@ ParseBundle(Patterns, Counter)
 
 CreateFirstBundle()
 	{
+Global IniFile		
 FileAppend, 
 (
 BundleFormat: 1
@@ -369,9 +370,9 @@ Patterns:
   LLScript:
 ), %A_ScriptDir%\bundles\default.txt
 DefaultBundle:="default.txt"
-IniWrite, default.txt, %A_ScriptDir%\Settings.ini, Settings, AlwaysLoadBundles
-IniWrite, default.txt, %A_ScriptDir%\Settings.ini, Settings, DefaultBundle
-IniWrite, default.txt, %A_ScriptDir%\Settings.ini, Settings, LastBundle
+IniWrite, default.txt, %A_ScriptDir%\%IniFile%, Settings, AlwaysLoadBundles
+IniWrite, default.txt, %A_ScriptDir%\%IniFile%, Settings, DefaultBundle
+IniWrite, default.txt, %A_ScriptDir%\%IniFile%, Settings, LastBundle
 Return "default.txt"
 	}
 

@@ -17,8 +17,8 @@ Return
 Startup:
 Gui, Startup:Submit
 Gui, Startup:Destroy
-IniWrite, %SetStartup%   , Settings.ini, Settings, SetStartup
-IniWrite, %SetDesktop%   , Settings.ini, Settings, SetDesktop
+IniWrite, %SetStartup%   , %IniFile%, Settings, SetStartup
+IniWrite, %SetDesktop%   , %IniFile%, Settings, SetDesktop
 
 CheckShortcuts:
 SplitPath, A_AhkPath, SP_ScriptName

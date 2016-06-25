@@ -7,7 +7,7 @@ ReadIni()
 	{
 	 Global
 	 local ini
-	 ini=%A_ScriptDir%\settings.ini
+	 ini=%A_ScriptDir%\%IniFile%
 	 IfNotExist, %ini%
 	 	{
 		 CreateDefaultIni()
@@ -181,6 +181,7 @@ ReadPlaySoundIni()
 	
 CreateDefaultIni()
 	{
+	 Global IniFile
 	 NewIni=
 	 (
 `; Lintalist uses a modified version of Func_IniSettingsEditor, http://www.autohotkey.com/forum/viewtopic.php?p=69534#69534
@@ -198,6 +199,6 @@ CreateDefaultIni()
 [Settings]
 
 )
-FileAppend, %NewIni%, %A_ScriptDir%\settings.ini
+FileAppend, %NewIni%, %A_ScriptDir%\%IniFile%
 }
 

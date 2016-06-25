@@ -29,7 +29,7 @@ Return
 
 55GuiStartupCheckbox:
 Gui, 55:Submit, NoHide
-IniWrite, %ShowQuickStartGuide%, %A_ScriptDir%\Settings.ini, Settings, ShowQuickStartGuide
+IniWrite, %ShowQuickStartGuide%, %A_ScriptDir%\%IniFile%, Settings, ShowQuickStartGuide
 Return
 
 55GuiClose:

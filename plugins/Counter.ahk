@@ -1,6 +1,6 @@
 ﻿/* 
 Plugin        : Counter [Standard Lintalist]
-Purpose       : Increment and insert value of specific counter. See include\readini.ahk + SaveSettings label in lintatlist.ahk for read/write in settings.ini - manager counters via tray menu (starts include\CounterEditor.ahk)
+Purpose       : Increment and insert value of specific counter. See include\readini.ahk + SaveSettings label in lintalist.ahk for read/write in settings.ini - manager counters via tray menu (starts include\CounterEditor.ahk)
 Version       : 1.1
 History:
 - 1.1 create counters "on the fly" - Lintalist v1.6
