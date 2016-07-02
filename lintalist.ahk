@@ -4,7 +4,7 @@ Name            : Lintalist
 Author          : Lintalist
 Purpose         : Searchable interactive lists to copy & paste text, run scripts,
                   using easily exchangeable bundles
-Version         : 1.8
+Version         : 1.8.1
 Code            : https://github.com/lintalist/
 Website         : http://lintalist.github.io/
 AHKscript Forum : https://autohotkey.com/boards/viewtopic.php?f=6&t=3378
@@ -41,7 +41,7 @@ PluginMultiCaret:=0 ; TODOMC
 
 ; Title + Version are included in Title and used in #IfWinActive hotkeys and WinActivate
 Title=Lintalist
-Version=1.8
+Version=1.8.1
 
 ; ClipCommands are used in ProcessText and allow user input and other variable input into text snippets
 ; ClipCommands=[[Input,[[DateTime,[[Choice,[[Selected,[[Var,[[File,[[Snippet= etc automatically built up
@@ -1880,6 +1880,7 @@ Menu, Plugins, Add, Insert [[DateTime=]] , PluginMenuHandler
 ;Menu, Plugins, Add, Insert [[Enc=]]      , PluginMenuHandler
 Menu, Plugins, Add, Insert [[File=]]     , PluginMenuHandler
 Menu, Plugins, Add, Insert [[Input=]]    , PluginMenuHandler
+Menu, Plugins, Add, Insert [[Random=]]  , PluginMenuHandler
 Menu, Plugins, Add, Insert [[Snippet=]]  , PluginMenuHandler
 Menu, Split, Add, Insert [[Split=]]      , PluginMenuHandler
 Menu, Split, Add, Insert [[SplitRepeat=]], PluginMenuHandler

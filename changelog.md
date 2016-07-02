@@ -1,3 +1,9 @@
+### v1.8.1
+
+* Added Random plugin to Editor menu(s)
+* Added: Komodo Edit 10+ Configuration to MultiCaret.ini (for new users only, existing
+  users can add it manually if they use Komodo)
+
 ### v1.8
 
 * New: Command line parameters -Ini: load specific settings file (ini)  

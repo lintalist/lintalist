@@ -63,6 +63,10 @@ clr={del}
 str=___
 key=^d
 clr={del}
+[komodo.exe]
+str=___
+key=^d
+clr={del}
 [sublime_text.exe]
 str=___
 key=^d

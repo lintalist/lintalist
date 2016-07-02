@@ -69,7 +69,7 @@
 </div>
 
 <div class='column'>
-<p><b>Download Lintalist <em>1.8</em></b>
+<p><b>Download Lintalist <em>1.8.1</em></b>
 <p>
 <a href='https://github.com/lintalist/lintalist/releases'><img src='img/lintalist65x65.gif' alt='Download Lintalist' width='65' align='left' border='0' style='margin-right: 5px;' /></a>
 Download (incl. source):<br />
@@ -242,7 +242,7 @@ Example: The case-insensitive RegEx 'se\w*g' it is actually using the following 
 
 <b>Search letter variations [v1.7+]</b> 
 
-Sometimes accented letters are part of the text you are searching for. These can be difficult or slow to type. By adding the variations of these letters to the search string you can search for cafe but still find café. So the 'e' in the query will be translated to searching for 'eéèêḙěĕẽḛẻėëēȩęᶒɇȅếềễểḝḗḕȇẹệæǽǣœᵫ'.
+Sometimes accented letters are part of the text you are searching for. These can be difficult or slow to type. By adding the variations of these letters to the search string you can search for cafe but still find caf&eacute;. So the 'e' in the query will be translated to searching for 'e&#xE9;&#xE8;&#xEA;&#x1E19;&#x11B;&#x115;&#x1EBD;&#x1E1B;&#x1EBB;&#x117;&#xEB;&#x113;&#x229;&#x119;&#x1D92;&#x247;&#x205;&#x1EBF;&#x1EC1;&#x1EC5;&#x1EC3;&#x1E1D;&#x1E17;&#x1E15;&#x207;&#x1EB9;&#x1EC7;&#xE6;&#x1FD;&#x1E3;&#x153;&#x1D6B;'.
 When active all search modes will use a Regular Expression (Regular and Fuzzy)
 (De)Activate the setting via the <i>L<u>v</u>?</i> checkbox in the Search GUI (<kbd>Alt</kbd>+<kbd>v</kbd>) or the SearchLetterVariations setting in the Configuration menu.
 More information in the comments of 'include\LetterVariations.ahk'
@@ -637,7 +637,7 @@ The ^| code will be removed from the text and the caret will
 be placed before the word text.
 
 [v1.8+] If you paste a snippet into an editor which supports Multi-caret/edit you can use those in Lintalist snippets by placing multiple caret locations in your snippet. If you don't want to use MultiCaret simply avoid using multiple ^| in a Lintalist snippet.
-Supported editors: Atom, Brackets, EverEdit, Sublime Text, TextAdept, UltraEdit 23+. See <a href='MultiCaret.md'>docs/MultiCaret.md</a> for details.
+Supported editors: Atom, Brackets, EverEdit, Komodo Edit, Sublime Text, TextAdept, UltraEdit 23+. See <a href='MultiCaret.md'>docs/MultiCaret.md</a> for details.
 </td></tr>
 
 <tr id='c-plugin'><td><code>[[C=Char|Repeat]]</code></td><td>By default pasted texts are trimmed which means spaces and tabs will be trimmed from the snippet. You can use this plugin to insert one or more spaces and/or tabs at the beginning or end of a snippet. Or you can use it as a shorthand-code to insert a repeating text or character.

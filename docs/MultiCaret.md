@@ -88,6 +88,7 @@ the text editors default behaviour.
 - Atom
 - Brackets
 - EverEdit
+- Komodo
 - Sublime Text
 - TextAdept
 - UltraEdit 23+
