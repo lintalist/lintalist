@@ -48,3 +48,6 @@ https://github.com/AHK-just-me/Class_LV_Colors
 
 Calc plugin: All code belongs to MONSTER by Laszlo
 http://www.autohotkey.com/forum/viewtopic.php?t=17058
+
+AutoXYWH() by toralf & tmplinshi
+http://ahkscript.org/boards/viewtopic.php?t=1079

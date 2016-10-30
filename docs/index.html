@@ -21,7 +21,7 @@
 <span style='font-size:.8em;'>You can <b>extend Lintalist</b> by writing your own <b><a href='#InteractiveBundleText'>plugins</a></b>. Lintalist is open source and developed in <a href='https://autohotkey.com/'>AutoHotkey</a>, an easy to learn scripting language for Windows.
 [WinXP(sp3)/Vista/7/8]<br /></span>
 <span style='font-size:.8em;'>As of LintaList v1.1 several types of formatted text are supported in Snippets.</span>
-<span class='date' style='float:right;display:inline;margin-top:0px;'>doc rev. 20160625</span></p>
+<span class='date' style='float:right;display:inline;margin-top:0px;'>doc rev. 20161030</span></p>
 </div>
 
 <div class='column'>
@@ -69,7 +69,7 @@
 </div>
 
 <div class='column'>
-<p><b>Download Lintalist <em>1.8.1</em></b>
+<p><b>Download Lintalist <em>1.9</em></b>
 <p>
 <a href='https://github.com/lintalist/lintalist/releases'><img src='img/lintalist65x65.gif' alt='Download Lintalist' width='65' align='left' border='0' style='margin-right: 5px;' /></a>
 Download (incl. source):<br />
@@ -154,7 +154,7 @@ Installing Lintalist is easy, just download the ZIP file and unpack it in a fold
 If you are already an AutoHotkey user and have it installed, it is recommended to run <b>Lintalist.ahk</b>, this will ensure you will be running Lintalist with your preferred version of AutoHotkey. If you don't have AutoHotkey installed you can start <b>Lintalist.exe</b>.
 
 <b>Notes:</b>
-- Lintalist.exe: A renamed AutoHotkey.exe (v1.1.24 32-bit Unicode, See https://autohotkey.com/ and/or https://autohotkey.com/download/)
+- Lintalist.exe: A renamed AutoHotkey.exe (v1.1.24.02 32-bit Unicode, See https://autohotkey.com/ and/or https://autohotkey.com/download/)
 - Lintalist.ahk: The actual (main) source code of the program (see https://github.com/lintalist/lintalist)
 
 <h2 id='Searching'>Normal use: Starting Lintalist and searching for a Snippet</h2>
@@ -637,7 +637,7 @@ The ^| code will be removed from the text and the caret will
 be placed before the word text.
 
 [v1.8+] If you paste a snippet into an editor which supports Multi-caret/edit you can use those in Lintalist snippets by placing multiple caret locations in your snippet. If you don't want to use MultiCaret simply avoid using multiple ^| in a Lintalist snippet.
-Supported editors: Atom, Brackets, EverEdit, Komodo Edit, Sublime Text, TextAdept, UltraEdit 23+. See <a href='MultiCaret.md'>docs/MultiCaret.md</a> for details.
+Supported editors: Atom, Brackets, EverEdit, Komodo Edit, Sublime Text, TextAdept, UltraEdit 23+, Visual Studio Code editor. See <a href='MultiCaret.md'>docs/MultiCaret.md</a> for details.
 </td></tr>
 
 <tr id='c-plugin'><td><code>[[C=Char|Repeat]]</code></td><td>By default pasted texts are trimmed which means spaces and tabs will be trimmed from the snippet. You can use this plugin to insert one or more spaces and/or tabs at the beginning or end of a snippet. Or you can use it as a shorthand-code to insert a repeating text or character.
@@ -660,7 +660,11 @@ Basic example <code>[[Calendar=dd-MMM-yyyy]]</code> --> Select a date and it wil
 
 <tr id='choice-plugin'><td><code>[[Choice=item1|item2|..]]</code></td><td>Selected an item from a list. 
 The options are delimited by a | character .
-Basic example <code>[[Choice=Red|Green|Blue]]</code> inserts the selected colour in the text.</td></tr>
+Basic example <code>[[Choice=Red|Green|Blue]]</code> inserts the selected colour in the text.
+
+[v1.9+] If the first option starts with a question mark (?), the first option will be removed from the list and shown as text in the Choice GUI. This can serve as a hint or reminder what the Choice is about. 
+Example: <code>[[Choice=?Favourite colour|Red|Green|Blue]]</code>. Same as above only the GUI will show "Favourite colour" in the GUI above the options.
+</td></tr>
 
 <tr id='clipboard-plugin'><td><code>[[Clipboard]]</code> *1</td><td>Insert current Clipboard content.
 * Additional parameters are available, see <a href='#ClipEx'>Extending Clipboard &amp; Selected text</a>.</td></tr>
@@ -1148,7 +1152,7 @@ Do not mix and match HTML and MD snippets to avoid unexpected end results.
 &lt;p&gt;Images also work - either use an http URI: (http://lintalist.github.io/img/lintalist.png)&lt;br /&gt;
 &lt;img src='http://lintalist.github.io/img/lintalist.png'&gt;&lt;/p&gt;
 
-&lt;p&gt;or a file URI: ()&lt;br /&gt; 
+&lt;p&gt;or a file URI: (docs/lintalist.png)&lt;br /&gt; 
 &lt;img src='docs/lintalist.png'&gt;&lt;/p&gt;
 
 </blockquote>
@@ -1339,8 +1343,16 @@ There are two methods of adding a new Bundle to Lintalist.
 2. Use Lintalist to create a bundle and start adding snippets.
 
 To add a new bundle (a collection of snippets) open the Lintalist search window and use the Edit, Bundle properties menu (or press F10). The Lintalist bundle editor will be opened where you can enter the name and other information. When you click save you will be asked for a file name of your bundle. 
+<a name='TitleMatch'>
+The most important fields are <b>Name</b> and <b>TitleMatch</b>. The <b>Name</b> is used in the Bundle menu and can be displayed in the search results (see configuration) and the <b>TitleMatch</b> field will allow you to make a Bundle context sensitive which means the search, abbreviations and shortcuts will only be available in Windows which match the title you enter in the <b>TitleMatch</b> field.
 
-The most important fields are Name and TitleMatch. The name is used in the Bundle menu and can be displayed in the search results (see configuration) and the TitleMatch field will allow you to make a Bundle context sensitive which means the search, abbreviations and shortcuts will only be available in Windows which match the title you enter in the TitleMatch field.
+The <b>TitleMatch</b> field can be a comma separated list of partial window title matches. You can <b>not</b> use Wildcards.
+Example: .txt,.doc is OK, *.txt,*.doc is not.
+
+As of <b>v1.9</b> you can also do the opposite: use the <b>TitleMatch</b> field to define the windows where the bundle should NOT be active by starting the list with a <b>!</b> (exclamation mark).
+This can be useful if you want a bundle to work everywhere except in a specific window. 
+Example: <code>!txt</code> will make the bundle work everywhere apart from txt files.
+Just to note that this feature hasn't been tested as vigorously as the regular TitleMatch mode. 
 
 New bundles are stored in the bundle directory. Lintalist is restarted after you add a new bundle. A first snippet is automatically added when a new bundle is created.
 
@@ -1383,7 +1395,7 @@ There is also a configuration setting that can do this: ActivateWindow
 
 <h3>Faq</h3>
 
-<a name='faq1'></a><b>Q1:</b> Nothing gets pasted / I just see the letter v
+<a name='faq1'></a><b>Q1:</b> Nothing gets pasted / I just see the letter v (or nothing at all)
 <b>A1:</b> You probably need to increase the PasteDelay setting. Right-click tray icon, configuration, PasteDelay. 
     Increase the milliseconds. You may need to experiment a bit to find a good setting.
 
@@ -1415,6 +1427,11 @@ There is also a configuration setting that can do this: ActivateWindow
 <b>A1:</b> If this happens try "Reload Bundles" or restart Lintalist, for some reason Lintalist can not find 
     or access the bundle or possibly it has lost track of which bundle it should append to.
     This should be fixed in a future update of Lintalist
+
+<a name='ki2'></a><b>K2:</b> It doesn't always work with Flash edit controls
+<b>A2:</b> When the Lintalist GUI becomes active the Flash (edit) control looses focus. It is not possible to 
+    reliably detect and (re)focus these types of controls. If you experience this often you could resort to
+    manual pasting after you've changed the <b>PasteMethod</b> setting to 1 or 2 - See <a href='https://github.com/lintalist/lintalist/issues/68#issuecomment-256087094'>#68</a>
 
 <!-- 
 <a name='ki'></a><b>K:</b> 

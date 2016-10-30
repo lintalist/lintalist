@@ -1,8 +1,8 @@
 ﻿; LintaList Include
 ; Purpose: Load and Parse LintaList Bundles at startup into memory
 ;          and later determine which one to load
-; Version: 1.1
-; Date:    20150101
+; Version: 1.2
+; Date:    20161018
 
 WhichBundle() ; determine which bundle to use based on active window (titlematch)
 	{
@@ -21,10 +21,19 @@ WhichBundle() ; determine which bundle to use based on active window (titlematch
 		 MatchList:=TitleMatchList_%A_LoopField%
 		 MatchList=%MatchList% ; autotrim
 		 ;MsgBox % MatchList ; debug
-		 If ActiveWindowTitle contains %MatchList%
+		 If RegExMatch(MatchList,"^!") ; v1.9 adding NOT active match issue #30
 			{
-			 Load .= A_LoopField ","
+			 MatchList:=SubStr(MatchList,2)
+			 If ActiveWindowTitle not contains %MatchList%
+				{
+				 Load .= A_LoopField ","
+				}
 			}
+		 Else
+			If ActiveWindowTitle contains %MatchList%
+				{
+				 Load .= A_LoopField ","
+				}
 		}
 	 If (Load = "") ; Load default bundle if no match found, default is set in ini DefaultBundleIndex is defined in LoadAllBundles() 
 		Load .= DefaultBundleIndex ","
@@ -45,7 +54,7 @@ LoadBundle(Reload="")
 	 If (ReLoad = "")
 		WhichBundle()
 	 Else
-	 	Load:=Reload	
+		Load:=Reload	
 	 Col2=0
 	 Col3=0
 	 Col4=0
@@ -122,7 +131,7 @@ LoadAllBundles()
 			StringTrimLeft, AlwaysLoadBundles, AlwaysLoadBundles, 1
 		 IniWrite, %AlwaysLoadBundles%, %IniFile%, Settings, AlwaysLoadBundles
 		}
-     Changed:=LastBundle
+	 Changed:=LastBundle
 	 Loop, parse, LastBundle, CSV
 		{
 		 If A_LoopField in %AvailableBundles%
@@ -381,5 +390,6 @@ FixPreview(in)
 	 StringReplace, in, in, `r, ,all
 	 StringReplace, in, in, `n, \n,all
 	 StringReplace, in, in, %A_Tab%, \t,all
-	 return in		
+	 return in
 	}
+	

@@ -4,7 +4,7 @@ Name            : Lintalist
 Author          : Lintalist
 Purpose         : Searchable interactive lists to copy & paste text, run scripts,
                   using easily exchangeable bundles
-Version         : 1.8.1
+Version         : 1.9
 Code            : https://github.com/lintalist/
 Website         : http://lintalist.github.io/
 AHKscript Forum : https://autohotkey.com/boards/viewtopic.php?f=6&t=3378
@@ -41,7 +41,7 @@ PluginMultiCaret:=0 ; TODOMC
 
 ; Title + Version are included in Title and used in #IfWinActive hotkeys and WinActivate
 Title=Lintalist
-Version=1.8.1
+Version=1.9
 
 ; ClipCommands are used in ProcessText and allow user input and other variable input into text snippets
 ; ClipCommands=[[Input,[[DateTime,[[Choice,[[Selected,[[Var,[[File,[[Snippet= etc automatically built up
@@ -53,6 +53,7 @@ GroupAdd, AppTitle, %AppWindow% ; we can now use #IfWinActive with the INI value
 
 GroupAdd, BundleHotkeys, Select bundle ahk_class AutoHotkeyGUI
 GroupAdd, BundleHotkeys, Append snippet to bundle ahk_class AutoHotkeyGUI
+GroupAdd, BundleHotkeys, Select and press enter ahk_class AutoHotkeyGUI
 GroupAdd, BundleHotkeys, Lintalist bundle editor ahk_class AutoHotkeyGUI
 GroupAdd, BundleHotkeys, Lintalist snippet editor ahk_class AutoHotkeyGUI
 GroupAdd, BundleHotkeys, Lintalist counters editor ahk_class AutoHotkeyGUI
@@ -696,7 +697,7 @@ CheckHitList(CheckHitList, CheckFor, Bundle, RE = 0) ; RE no longer needed?
 	 Loop, parse, Bundle, CSV
 		{
 		 CheckBundle:=A_LoopField
-		 If RegExMatch(%CheckHitList%_%CheckBundle%, "imU)" Chr(5) . "\Q" . CheckFor . "\E" . Chr(5)) ; we have a hit so we to find the snippet ID
+		 If RegExMatch(%CheckHitList%_%CheckBundle%, "imU)" Chr(5) . "\Q" . CheckFor . "\E" . Chr(5)) ; we have a hit so we have to find the snippet ID
 			{
 			 Loop, % Snippet[CheckBundle].MaxIndex() ; %
 				{
@@ -1978,6 +1979,7 @@ Return
 #Include %A_ScriptDir%\include\WinClipAPI.ahk ; by Deo
 #Include %A_ScriptDir%\include\Markdown2HTML.ahk ; by fincs + additions
 #Include %A_ScriptDir%\include\Class_LV_Colors.ahk ; by just me
+#Include %A_ScriptDir%\include\AutoXYWH.ahk ; by toralf & tmplinshi
 ; /Includes
 
 SaveSettingsCounters:

@@ -92,4 +92,5 @@ the text editors default behaviour.
 - Sublime Text
 - TextAdept
 - UltraEdit 23+
+- Visual Studio Code editor (=code.exe)
 

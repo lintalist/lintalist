@@ -1,3 +1,20 @@
+### v1.9
+
+* New: Choice plugin - Added option to provide "information/question" hint  
+  by starting first item with a ? - HT @flyingaliens https://github.com/lintalist/lintalist/issues/68  
+  (see DOC)
+* Fix: Choice plugin - Reverted back to Loop, works better for multiple  
+  Choice plugins https://github.com/lintalist/lintalist/issues/68
+* Fix: Lintalist - Added "Select and press enter" Choice gui to  
+  BundleHotkeys group to disable the possibility of activating Lintalist again
+* Fix: Random plugin - Count correct number of RandomItems (+ 1)
+* New: Introduce "Not Titlematch" for bundles by using an exclamation mark  
+  (see DOC) https://github.com/lintalist/lintalist/issues/30
+* Change: Allow Editor GUI to be resized using AutoXYWH()  
+  https://github.com/lintalist/lintalist/issues/67
+* Added: Visual Studio Code (code.exe) Configuration to MultiCaret.ini (for new  
+  users only, existing users can add it manually if they use Visual Studio Code)
+
 ### v1.8.1
 
 * Added Random plugin to Editor menu(s)

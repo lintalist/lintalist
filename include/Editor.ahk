@@ -1,7 +1,7 @@
 ﻿; LintaList Include
 ; Purpose: Bundle & Snippet Editor
-; Version: 1.0.2
-; Date:    20140421
+; Version: 1.0.3
+; Date:    20161004
 ;
 ; Hotkeys used in Search GUI to start Bundle & Snippet Editor
 ; F4  = Edit snippet 		
@@ -156,15 +156,15 @@ Filename:=Filename_%paste1%
 
 ActionText:=RegExReplace(EditMode,"([A-Z])"," $1")
 
-Gui, 71:+Owner
+Gui, 71:+Owner +Resize +MinSize740x520
 Gui, 71:Menu, MenuBar2
 Gui, 71:font,s12 bold
-Gui, 71:Add, Text,     x600   y10, %ActionText%
+Gui, 71:Add, Text,     x600   y10 vActionText, %ActionText%
 Gui, 71:font,s10 normal
 Gui, 71:Add, Picture , x20    y10 w16 h16, %A_ScriptDir%\icons\lintalist_bundle.png
 Gui, 71:Add, Text    , x40    y13               , Bundle:`t%A_Space%%A_Space%%A_Space%%Name%
 Gui, 71:Add, Text    , x340   y13               , File:%A_Space%%A_Space%%A_Space%%Filename%
-Gui, 71:Add, Text,     x20    y45 w700 h1 0x10
+Gui, 71:Add, Text,     x20    y45 w700 h1 0x10 vTextLine
 Gui, 71:Add, Picture , x20    y65 w16 h16, %A_ScriptDir%\icons\keyboard.png
 Gui, 71:Add, Text    , x40    y65                  , Hotkey: 
 Gui, 71:Add, Hotkey  , xp+50  y63  w140 h20 vHKey  , %HKey%
@@ -173,31 +173,52 @@ Gui, 71:Add, Checkbox, xp+150 y65  w70  h20 vWinKey %checked%, Win
 Gui, 71:Add, Text    , xp+100 y65  w150 h20           , Shorthand: 
 Gui, 71:Add, Edit    , xp+70  y63  w150 h20 vShorthand, %Shorthand%
 
-Gui, 71:Add, Picture , x20    y100 w16 h16, %A_ScriptDir%\icons\text_dropcaps.png
-Gui, 71:Add, Text    , x40    y100                    , Part 1 (Enter)
+Gui, 71:Add, Picture , x20    y100 w16 h16 vPicture1, %A_ScriptDir%\icons\text_dropcaps.png
+Gui, 71:Add, Text    , x40    y100  vText1Label       , Part 1 (Enter)
 Gui, 71:Add, Edit    , x20    y120  h120 w700 vText1  , %Text1%
 
-Gui, 71:Add, Picture , x20    yp+125 w16 h16, %A_ScriptDir%\icons\text_dropcaps.png
-Gui, 71:Add, Text    , x40    yp                  , Part 2 (Shift-Enter)
+Gui, 71:Add, Picture , x20    yp+125 w16 h16 vPicture2, %A_ScriptDir%\icons\text_dropcaps.png
+Gui, 71:Add, Text    , x40    yp    vText2Label      , Part 2 (Shift-Enter)
 Gui, 71:Add, Edit    , x20    yp+20 h90 w700 vText2  , %Text2%
 
-Gui, 71:Add, Picture , x20    yp+95 w16 h16, %A_ScriptDir%\icons\script_code.png
-Gui, 71:Add, Text    , x40    yp                  , Script
+Gui, 71:Add, Picture , x20    yp+95 w16 h16 vPicture3, %A_ScriptDir%\icons\script_code.png
+Gui, 71:Add, Text    , x40    yp    vText3Label              , Script
 Gui, 71:Add, Edit    , x20    yp+20 h90 w700 vScript , %Script%
 
 Gui, 71:font, s8, arial
-Gui, 71:Add, Button, x610 y100 h20 w110 0x8000 g71EditPart1 , 1 - Edit in Editor ; part1
-Gui, 71:Add, Button, x610 y245 h20 w110 0x8000 g71EditPart2 , 2 - Edit in Editor ; part2
-Gui, 71:Add, Button, x610 y360 h20 w110 0x8000 g71EditScript, 3 - Edit in Editor ; script
+Gui, 71:Add, Button, x610 y100 h20 w110 0x8000 g71EditPart1  vEditorButton1, 1 - Edit in Editor ; part1
+Gui, 71:Add, Button, x610 y245 h20 w110 0x8000 g71EditPart2  vEditorButton2, 2 - Edit in Editor ; part2
+Gui, 71:Add, Button, x610 y360 h20 w110 0x8000 g71EditScript vEditorButton3, 3 - Edit in Editor ; script
 Gui, 71:font, s10
 
-Gui, 71:Add, Button, x20    y480 h30 w210 g71Save, &Save
-Gui, 71:Add, Button, xp+245 yp   h30 w210 g71GuiClose, &Cancel
-Gui, 71:Add, Button, xp+245 yp   h30 w210 g71Help, Help
+Gui, 71:Add, Button, x20    y480 h30 w210 g71Save     vActionButton1, &Save
+Gui, 71:Add, Button, xp+245 yp   h30 w210 g71GuiClose vActionButton2, &Cancel
+Gui, 71:Add, Button, xp+245 yp   h30 w210 g71Help     vActionButton3, Help
 
 Gui, 71:Show, w740 h520, Lintalist snippet editor
 WinActivate, Lintalist snippet editor
 ControlFocus, Edit2, Lintalist snippet editor
+Return
+
+; Resize editor GUI
+71GuiSize:
+	If (A_EventInfo = 1) ; The window has been minimized.
+		Return
+	AutoXYWH("w h0.3"     , "Text1")
+	AutoXYWH("w h0.3 y0.3", "Text2")
+	AutoXYWH("w h0.4 y0.6", "Script")
+	AutoXYWH("y0.3"       , "Text2Label")
+	AutoXYWH("y0.3"       , "Picture2")
+	AutoXYWH("y0.6"       , "Text3Label")
+	AutoXYWH("y0.6"       , "Picture3")
+	AutoXYWH("x"          , "EditorButton1")
+	AutoXYWH("x y0.3"     , "EditorButton2")
+	AutoXYWH("x y0.6"     , "EditorButton3")
+	AutoXYWH("x0.5 y"     , "ActionButton1")
+	AutoXYWH("x0.5 y"     , "ActionButton2")
+	AutoXYWH("x0.5 y"     , "ActionButton3")
+	AutoXYWH("w"          , "TextLine")
+	AutoXYWH("x"          , "ActionText")
 Return
 
 71Help:
@@ -462,7 +483,7 @@ EditControlInEditor(ControlID)
 	}
 
 CheckEdit:
-IfWinExist, %TmpDir%\__tmplintalistedit.txt
+IfWinExist, __tmplintalistedit.txt
 	Return
 SetTimer, CheckEdit, Off
 FileRead, NewText, %TmpDir%\__tmplintalistedit.txt

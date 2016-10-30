@@ -59,6 +59,10 @@ clr={del}
 str=___
 key=^b
 clr={del}
+[code.exe]
+str=___
+key=^d
+clr={del}
 [everedit.exe]
 str=___
 key=^d
