@@ -5,7 +5,6 @@
 ; Date:    20101010
 
 SetShortcuts:
-
 Gui, Startup:Add, Text, ,This seems to be the first time you start Lintalist.`nDo you want to:`n
 Gui, Startup:Add, Checkbox, vSetStartup, Automatically start Lintalist at start up?
 Gui, Startup:Add, Checkbox, vSetDesktop checked, Create a Shortcut on your Desktop?
@@ -17,8 +16,10 @@ Return
 Startup:
 Gui, Startup:Submit
 Gui, Startup:Destroy
-IniWrite, %SetStartup%   , %IniFile%, Settings, SetStartup
-IniWrite, %SetDesktop%   , %IniFile%, Settings, SetDesktop
+SetStartup_Start:=SetStartup
+SetDesktop_Start:=SetDesktop
+;IniWrite, %SetStartup%   , %IniFile%, Settings, SetStartup
+;IniWrite, %SetDesktop%   , %IniFile%, Settings, SetDesktop
 
 CheckShortcuts:
 SplitPath, A_AhkPath, SP_ScriptName

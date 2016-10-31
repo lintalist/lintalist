@@ -4,7 +4,7 @@ Name            : Lintalist
 Author          : Lintalist
 Purpose         : Searchable interactive lists to copy & paste text, run scripts,
                   using easily exchangeable bundles
-Version         : 1.9
+Version         : 1.9.1
 Code            : https://github.com/lintalist/
 Website         : http://lintalist.github.io/
 AHKscript Forum : https://autohotkey.com/boards/viewtopic.php?f=6&t=3378
@@ -41,7 +41,7 @@ PluginMultiCaret:=0 ; TODOMC
 
 ; Title + Version are included in Title and used in #IfWinActive hotkeys and WinActivate
 Title=Lintalist
-Version=1.9
+Version=1.9.1
 
 ; ClipCommands are used in ProcessText and allow user input and other variable input into text snippets
 ; ClipCommands=[[Input,[[DateTime,[[Choice,[[Selected,[[Var,[[File,[[Snippet= etc automatically built up
@@ -1415,6 +1415,7 @@ Else If (A_ThisMenuItem = "&Pause Lintalist")
 	Gosub, PauseProgram
 Else If (A_ThisMenuItem = "&Configuration")
 	{
+	 Gosub, SaveStartupSettings
 	 IniSettingsEditor("Lintalist",A_ScriptDir "\" IniFile)
 	 MsgBox, 36, Restart?, In order for any changes to take effect you must reload.`nOK to restart? ; 4+32 = 36
 	 IfMsgBox, Yes
@@ -1946,6 +1947,8 @@ IniWrite, %ShorthandPaused%, %IniFile%, Settings, ShorthandPaused
 IniWrite, %ShortcutPaused% , %IniFile%, Settings, ShortcutPaused
 IniWrite, %ScriptPaused%   , %IniFile%, Settings, ScriptPaused
 IniWrite, %ShowQuickStartGuide%, %IniFile%, Settings, ShowQuickStartGuide
+
+Gosub, SaveStartupSettings
 Gosub, SaveSettingsCounters
 ; /INI
 
@@ -1992,5 +1995,17 @@ Loop, parse, LocalCounter_0, CSV
 	}
 IniWrite, %Counters%   , %IniFile%, Settings, Counters
 Return
+
+; to be sure we retain our settings from the very first startup -----------------
+; only used once.
+SaveStartupSettings:
+If (SetStartup_Start <> "")
+	IniWrite, %SetStartup_Start%   , %IniFile%, Settings, SetStartup
+If (SetDesktop_Start <> "")
+	IniWrite, %SetDesktop_Start%   , %IniFile%, Settings, SetDesktop
+SetStartup_Start:=""
+SetDesktop_Start:=""
+Return
+; -------------------------------------------------------------------------------
 
 #Include *i %A_ScriptDir%\autocorrect.ahk

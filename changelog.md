@@ -1,3 +1,8 @@
+### v1.9.1
+
+* Fix: At very first startup SetDesktop and SetStartup default settings wouldn't be  
+  properly be stored for them to be usuable with Func_IniSettingsEditor()
+
 ### v1.9
 
 * New: Choice plugin - Added option to provide "information/question" hint  
