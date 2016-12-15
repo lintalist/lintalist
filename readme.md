@@ -1,4 +1,6 @@
-﻿Lintalist: Searchable interactive lists to copy & paste text, run scripts, using easily exchangeable bundles - http://lintalist.github.io/
+I just forked this at GitHub. This is NOT the original lintalist. For that see https://github.com/lintalist/lintalist
+
+Lintalist: Searchable interactive lists to copy & paste text, run scripts, using easily exchangeable bundles - http://lintalist.github.io/
 
 # Introduction
 
