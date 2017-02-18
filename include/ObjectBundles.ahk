@@ -1,20 +1,20 @@
 ﻿; LintaList Include
 ; Purpose: Load and Parse LintaList Bundles at startup into memory
 ;          and later determine which one to load
-; Version: 1.2
-; Date:    20161018
+; Version: 1.3
+; Date:    20170204
 
 WhichBundle() ; determine which bundle to use based on active window (titlematch)
 	{
 	 global 
 	 ;ToolTip, % load, 0,0 ; debug
-	 If (Lock = 1) ; Load was already set by FileMenu or was locked by user
-		 Return
 	 If (LoadAll = 1)
 		{
 		 Load:=Group
 		 Return
 		}	 
+	 If (Lock = 1) ; Load was already set by FileMenu or was locked by user
+		 Return
 	 Load= ; clear
 	 Loop, parse, group, CSV ; detect which list to use
 		{
@@ -54,7 +54,7 @@ LoadBundle(Reload="")
 	 If (ReLoad = "")
 		WhichBundle()
 	 Else
-		Load:=Reload	
+		Load:=Reload
 	 Col2=0
 	 Col3=0
 	 Col4=0
@@ -72,7 +72,7 @@ LoadBundle(Reload="")
 	  Bundle:=A_LoopField
 	  MenuItem:=MenuName_%Bundle%
 	  If (MenuItem <> "") ; just to be sure
-		Menu, file, Check, &%MenuItem%
+			Menu, file, Check, &%MenuItem%
 
 	  Max:=Snippet[Bundle].MaxIndex()
 	  Max:=MaxRes

@@ -65,4 +65,4 @@ lintalist.exe and just start lintalist.ahk directly.
 * [Alternativeto.net](http://alternativeto.net/software/lintalist/)
 
 
-Copyright 2009-2016 Lintalist. See license.txt
+Copyright 2009-2017 Lintalist. See license.txt
