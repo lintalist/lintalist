@@ -16,6 +16,9 @@
 ; VersionCompare by boiler 
 ; http://ahkscript.org/boards/viewtopic.php?f=6&t=5959
 
+; JJ EDIT BEGIN
+; All URLs and names updated for Lintalist for Math.
+; JJ EDIT END
 
 DetectHiddenWindows, On
 SetTitleMatchMode, 2
@@ -25,7 +28,7 @@ SetWorkingDir, %A_ScriptDir%\..
 IniRead, beta, version.ini, settings, beta
 if (beta=1)
 	{
-	 MsgBox, 48, Disabled, This is a beta-release of Lintalist`nChecking for updates has been disabled.
+	 MsgBox, 48, Disabled, This is a beta-release of Lintalist for Math`nChecking for updates has been disabled.
 	 ExitApp
 	}
 
@@ -37,7 +40,7 @@ UnpackFolder:=LintalistFolder "\tmpscrpts"
 FileDelete, %UnpackFolder%\checkupdate.ini
 FileDelete, %UnpackFolder%\update.zip
 
-URLDownloadToFile, https://raw.githubusercontent.com/lintalist/lintalist/master/version.ini, %UnpackFolder%\checkupdate.ini
+URLDownloadToFile, https://raw.githubusercontent.com/jensjacobt/lintalist-for-math/master/version.ini, %UnpackFolder%\checkupdate.ini
                    
 IniRead, currentversion, %LintalistFolder%\version.ini, settings, version
 If (currentversion = "ERROR")
@@ -62,28 +65,28 @@ If VersionCompare(currentversion, checkversion) < 2
 If (checkauto = 0)
 	{
 	 MsgBox, 16, Error, Automatic update not possible, read the release notes first.
-	 Run, https://github.com/lintalist/lintalist/releases
+	 Run, https://github.com/jensjacobt/lintalist-for-math/releases
 	 ExitApp
 	}
 
 SetTimer, ChangeButtonNames, 10
-MsgBox, 4150, Update, There is a Lintalist update.`nNew version: v%checkversion%`nDo you wish to download and install update?
+MsgBox, 4150, Update, There is a Lintalist for Math update.`nNew version: v%checkversion%`nDo you wish to download and install update?
 IfMsgBox, TryAgain
 	{
-	 Run, https://github.com/lintalist/lintalist/releases
+	 Run, https://github.com/jensjacobt/lintalist-for-math/releases
 	 ExitApp
 	}
 Else IfMsgBox, Continue
 	ExitApp
 
-UrlDownloadToFile, https://github.com/lintalist/lintalist/archive/master.zip, %UnpackFolder%\update.zip
+UrlDownloadToFile, https://github.com/jensjacobt/lintalist-for-math/archive/master.zip, %UnpackFolder%\update.zip
 If (ErrorLevel = 1 )
 	{
 	 MsgBox, 16, Error, Downloading the update failed
 	 ExitApp
 	}
 
-FileRemoveDir, %UnpackFolder%\lintalist-master, 1
+FileRemoveDir, %UnpackFolder%\lintalist-for-math-master, 1
 
 BackupZip:=UnpackFolder "\Backup-" A_Now ".zip"
 backup := new ZipFile(BackupZip)
@@ -109,20 +112,20 @@ Sleep, 1000
 
 ; From the AHK docs:
 ; The following copies all files and folders inside a folder to a different folder:
-ErrorCount := CopyFilesAndFolders( UnpackFolder "\lintalist-master\*.*", LintalistFolder, true)
+ErrorCount := CopyFilesAndFolders( UnpackFolder "\lintalist-for-math-master\*.*", LintalistFolder, true)
 if ErrorCount <> 0
     MsgBox %ErrorCount% files/folders could not be copied.
 
 WinClose, %LintalistFolder%\lintalist.ahk
 Sleep, 1000 
 
-FileRemoveDir, %UnpackFolder%\lintalist-master, 1
+FileRemoveDir, %UnpackFolder%\lintalist-for-math-master, 1
 FileDelete, %UnpackFolder%\checkupdate.ini
 FileDelete, %UnpackFolder%\update.zip
 
 Run, %LintalistFolder%\lintalist.ahk
 
-MsgBox, 64, Updated, Lintalist has been updated.`nA backup is made and can be found in:`n%BackupZip%
+MsgBox, 64, Updated, Lintalist for Math has been updated.`nA backup is made and can be found in:`n%BackupZip%
 
 ExitApp
 
@@ -135,9 +138,19 @@ ExitApp
 ; Not limited to 4 sections.  Can handle 5.3.2.1.6.19.6 (and so on) if needed.
 ; Returns 1 if version1 is more recent, 2 if version 2 is more recent, 0 if they are the same.
 ; http://ahkscript.org/boards/viewtopic.php?f=6&t=5959
-
+; JJ ADD BEGIN
+; This has been extended to include a letter at the end of the string. 
+; That letter states the version of Lintalist for Math built on the given version number of Lintalist.
+; E.g. version 1.9.1c would be the third (c) version built of Lintalist 1.9.1.
+; JJ ADD END
 VersionCompare(version1, version2)
 	{
+	 ; JJ ADD BEGIN
+	 StringRight, letter1, version1, 1
+	 StringRight, letter2, version2, 1
+	 StringTrimRight, version1, version1, 1
+	 StringTrimRight, version2, version2, 1
+	 ; JJ ADD END
 	 StringSplit, verA, version1, .
 	 StringSplit, verB, version2, .
 	 Loop, % (verA0> verB0 ? verA0 : verB0)
@@ -151,6 +164,12 @@ VersionCompare(version1, version2)
 		 if (verB%A_Index% > verA%A_Index%)
 			return 2
 		}
+	 ; JJ ADD BEGIN
+	 if (letter1 > letter 2)
+		 return 1
+	 if (letter2 > letter1)
+		 return 2
+	 ; JJ ADD END
 	 return 0
 	}
 

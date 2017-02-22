@@ -1,14 +1,14 @@
 ﻿/*
 
-Name            : Lintalist
-Author          : Lintalist
+Name            : Lintalist for Math
+Author          : Lintalist & jensjacobt
 Purpose         : Searchable interactive lists to copy & paste text, run scripts,
                   using easily exchangeable bundles
-Version         : 1.9.1
-Code            : https://github.com/lintalist/
-Website         : http://lintalist.github.io/
-AHKscript Forum : https://autohotkey.com/boards/viewtopic.php?f=6&t=3378
-License         : Copyright (c) 2009-2015 Lintalist
+Version         : 1.9.1a
+Code            : https://github.com/jensjacobt/lintalist-for-math
+Website         :
+AHKscript Forum :
+License         : Copyright (c) 2009-2015 Lintalist ??
 
 This program is free software; you can redistribute it and/or modify it under the
 terms of the GNU General Public License as published by the Free Software Foundation;
@@ -30,6 +30,11 @@ SetTitleMatchMode, 2
 ListLines, off
 TmpDir:= A_ScriptDir "\tmpscrpts"
 CoordMode, ToolTip, Screen
+; JJ ADD BEGIN
+CoordMode, Mouse, Client
+CoordMode, Pixel, Client
+BlockInput SendAndMouse
+; JJ ADD END
 SendMode, Input
 ;SetKeyDelay, -1
 SetWorkingDir, %A_ScriptDir%
@@ -40,8 +45,8 @@ IniFile:="Settings.ini"
 PluginMultiCaret:=0 ; TODOMC
 
 ; Title + Version are included in Title and used in #IfWinActive hotkeys and WinActivate
-Title=Lintalist
-Version=1.9.1
+Title=Lintalist for Math
+Version=1.9.1a
 
 ; ClipCommands are used in ProcessText and allow user input and other variable input into text snippets
 ; ClipCommands=[[Input,[[DateTime,[[Choice,[[Selected,[[Var,[[File,[[Snippet= etc automatically built up
@@ -175,6 +180,10 @@ Gosub, QuickStartGuide
 
 Hotkey, IfWinNotExist, ahk_group BundleHotkeys
 Hotkey, %StartSearchHotkey%, GUIStart
+; JJ ADD BEGIN
+If (MathSnippetHelperHotkey <> "")
+	Hotkey, %MathSnippetHelperHotkey%, MathSnippetHelperStart
+; JJ ADD END
 If (StartOmniSearchHotkey <> "")
 	Hotkey, %StartOmniSearchHotkey%, GUIStartOmni
 If (QuickSearchHotkey <> "")
@@ -183,13 +192,37 @@ If (ExitProgramHotKey <> "")
 	Hotkey, %ExitProgramHotKey%, SaveSettings
 Hotkey, IfWinNotExist
 
+; JJ ADD BEGIN
+; Setup general hotkeys
+If (MathReloadAllHotkey <> "")
+	Hotkey, %MathReloadAllHotkey%, MathReloadAllBundles
+If (MathPastePureHotkey <> "")
+	Hotkey, %MathPastePureHotkey%, MathPastePureText
+
+; Setup Maple hotkeys
+Hotkey, IfWinActive, - Maple ahk_class SunAwtFrame
+If (MathYellowBGHotkey <> "")
+	Hotkey, %MathYellowBGHotkey%, MathSetTextBackgroundColor
+If (MathOrangeTextHotkey <> "")
+	Hotkey, %MathOrangeTextHotkey%, MathSetTextColorToOrange
+If (MathRedTextHotkey <> "")
+	Hotkey, %MathRedTextHotkey%, MathSetTextColorToRed
+If (MathSetUpHotkey <> "")
+	Hotkey, %MathSetUpHotkey%, MathSetUpCommenting
+Hotkey, IfWinActive
+; JJ ADD END
+
 ViaShorthand=0
 
 ; /INI --------------------------------------
 
 SendKeysToFix=Enter,Space,Esc,Tab,Home,End,PgUp,PgDn,Up,Down,Left,Right,F1,F2,F2,F3,F4,F5,F6,F7,F8,F9,F10,F11,F12,AppsKey
 ;TerminatingCharacters={Alt}{LWin}{RWin}{Shift}{enter}{space}{esc}{tab}{Home}{End}{PgUp}{PgDn}{Up}{Down}{Left}{Right}{F1}{F2}{F2}{F3}{F4}{F5}{F6}{F7}{F8}{F9}{F10}{F11}{F12}.,¿?¡!'"()[]{}{}}{{}~$&*-+=\/><^|@#:`%;  ; "%
-TerminatingCharacters={Alt}{LWin}{RWin}{enter}{space}{esc}{tab}{Home}{End}{PgUp}{PgDn}{Up}{Down}{Left}{Right}{F1}{F2}{F2}{F3}{F4}{F5}{F6}{F7}{F8}{F9}{F10}{F11}{F12}  ; "%
+; JJ EDIT BEGIN
+; Added - and _ and !.,{Ctrl}
+; Also edited the config files for TriggerKeys
+TerminatingCharacters={Alt}{LWin}{RWin}{enter}{space}{esc}{tab}{Home}{End}{PgUp}{PgDn}{Up}{Down}{Left}{Right}{F1}{F2}{F2}{F3}{F4}{F5}{F6}{F7}{F8}{F9}{F10}{F11}{F12}-_{!}.,{Ctrl}  ; "%
+; JJ EDIT BEGIN
 CheckTypedLoop:
 Loop
 	{
@@ -559,6 +592,82 @@ If (Script = "") or (ScriptPaused = 1) ; script is empty so we need to paste Tex
 		 StringReplace, Text1, Text1, [[Clipboard]], %Clipboard%, All
 		 StringReplace, Text2, Text2, [[Clipboard]], %Clipboard%, All
 		}
+	; JJ ADD BEGIN
+	;WinGetClass, ActiveWindowClass1, A
+	;WinGetActiveTitle, ActiveWindowTitle1
+	isMaple:=1
+	IfNotInString, ActiveWindowTitle, - Maple
+		isMaple:=0
+	if (ActiveWindowClass <> "SunAwtFrame")
+		isMaple:=0
+	IfInString, Text1, [[image= ; don't use Maple handling for images
+		isMaple:=0
+		; Burde også tjekkes for Text2
+	If (isMaple = 1) ; If pasting to Maple - will paste Text 1 by default (and fall back to Text 2)
+		{
+		If (Text1 = "")
+			Text1:=Text2
+		; Lav udskiftninger fra plugins (vigtigt at det sker inden "Gosub, ProcessText")
+		StringReplace, Text1, Text1, `^, {hatchar}, All
+		Text1 := RegExReplace(Text1, "iU)\[\[Underline=([^[]*)\]\]",  "^u$1^u")
+		Text1 := RegExReplace(Text1, "iU)\[\[Math=([^[]*)\]\]",  "^r$1^m")
+		; Foretag udskiftninger af specielle tegn, så send-kommandoen fungerer som forventet
+		StringReplace, Text1, Text1, ``, ````, All  ; Do this replacement first to avoid interfering with the others below.
+		StringReplace, Text1, Text1, `r`n, ``r, All  ; Using `r works better than `n in MS Word, etc.
+		StringReplace, Text1, Text1, `n, ``r, All
+		;StringReplace, Text1, Text1, `^, {ASC 0094}, All  ; {ASC 0094}, All ; handled below instead
+		StringReplace, Text1, Text1, {right}, {right}, All  ; {ASC 0094}, All
+		StringReplace, Text1, Text1, `!, {!}, All
+		StringReplace, Text1, Text1, `+, {+}, All
+		StringReplace, Text1, Text1, `#, {#}, All
+		StringReplace, Text1, Text1, ``r, `^`+j`^m, All
+		;~ While(SubStr(Text1, StrLen(Text1)-4) = "^+j^m")
+			;~ StringTrimRight, Text1, Text1, 5
+		;~ MsgBox, %Text1% ; for debugging
+		Clip0 = %ClipBoardAll% ; store clipboard
+		Clip := "^m" . Text1
+		Gosub, ProcessText ; to support all plugins except for rtf, md, image, html, and clipboard with formatting/case change
+		;~ MsgBox, %Clip% ; for debugging
+		If (InStr(Clip, "{hatchar}"))
+		{
+			ClipArray := StrSplit(Clip, "{hatchar}")
+			LastClip := ClipArray.Pop()
+			for index, element in ClipArray
+			{
+				SendInput, %element%
+				Sleep, 200
+				SendInput, {ASC 0094}
+				Sleep, 10
+			}
+			SendInput, %LastClip%
+			LastClip=
+			ClipArray=
+		}
+		else
+			SendInput, ^m%Clip%
+			;SendKey(SendMethod, Clip)
+		ClipBoard = %Clip0% ; restore clipboard
+		Text1=
+		Text2=
+		Clip=
+		VarSetCapacity(Clip0, 0)
+		Return
+		}
+	Else
+		{
+		; Fjern symboler som kun giver mening i Maple
+		StringReplace, Text1, Text1, `^`^, `^, All
+		StringReplace, Text1, Text1, `{right`}, , All
+		StringReplace, Text1, Text1, %A_Tab%, ``t, All
+		StringReplace, Text1, Text1, `;, ```;, All
+
+		StringReplace, Text2, Text2, `^`^, `^, All
+		StringReplace, Text2, Text2, `{right`}, , All
+		StringReplace, Text2, Text2, %A_Tab%, ``t, All
+		StringReplace, Text2, Text2, `;, ```;, All
+		}
+	; JJ ADD END
+
 	 If (PastText1 = 1) OR (Text2 = "")
 		Clip:=Text1
 	 Else If (PastText1 = 0) ; if shift-enter use Text2 BUT if it is empty revert to Text1
@@ -741,6 +850,8 @@ UpdateLVColWidth()
 	 WinGetPos , , , AvailableWidth, , %AppWindow%
 	 If (AvailableWidth = "")
 		AvailableWidth:=Width
+	 If (A_ScreenDPI <> 96 AND A_OSType = "WIN32_NT" AND SubStr(A_OSVersion, 1, 3) = "10.")
+		factor *= (A_ScreenDPI/96)
 	 ColumnWidth:=Round((AvailableWidth - factor) / 10)
 	 c1w:=Round((ColumnWidth) * (ColumnWidthPart1/10))
 	 c2w:=Round((ColumnWidth) * (ColumnWidthPart2/10))
@@ -777,6 +888,18 @@ UpdateLVColWidth()
 
 	 If (ColumnSort <> "NoSort")
 		SortResults(ColumnSortOption1,ColumnSortOption2,SortDirection)
+	
+	 ; JJ ADD BEGIN
+	 If (A_ScreenDPI <> 96 AND A_OSType = "WIN32_NT" AND SubStr(A_OSVersion, 1, 3) = "10.")
+		{
+		 Gui +LastFound
+		 Loop % LV_GetCount("Column")
+			{
+			 SendMessage, 4125, A_Index - 1, 0, SysListView321  ; 4125 is LVM_GETCOLUMNWIDTH.
+			 LV_ModifyCol(A_index, Round((96/A_ScreenDPI)**2*ErrorLevel))
+			}
+		}
+	 ; JJ ADD END
 	}
 
 ; Shows the lines in the preview window (edit2)
@@ -960,6 +1083,9 @@ LastText=asdfADSDFGadsf
 Gosub, GetText
 Return
 
+; JJ ADD BEGIN
+!Enter::
+; JJ ADD END
 F4:: ; edit snippet
 EditF4:
 If WinExist("Lintalist snippet editor")
@@ -1009,6 +1135,9 @@ Gui, 1:+Disabled
 Gosub, BundleEditor
 Return
 
+; JJ ADD BEGIN
+^n::
+; JJ ADD END
 F7:: ; create new snippet e.g. append
 EditF7:
 EditMode = AppendSnippet
@@ -1017,6 +1146,18 @@ Gui, 1:+Disabled
 Gosub, BundleEditor
 Return
 
+; JJ ADD BEGIN
+Del::
+ControlGetFocus, ControlInFocus
+If(ControlInFocus = "Edit1")
+{
+  ;SendKey(SendMethod, "{Delete}") ; dropped for the line below which is faster
+  Send, {Delete}
+  ControlInFocus=
+  Return
+}
+ControlInFocus=
+; JJ ADD END
 F8:: ; delete snippet
 EditF8:
 InEditMode = 1
@@ -1844,6 +1985,12 @@ Menu, MenuBar, Add, &Bundle, :File
 Return
 
 BuildEditorMenu:
+; JJ ADD BEGIN
+Menu, Plugins, Add, Insert [[Math=]]     , PluginMenuHandler
+Menu, Plugins, Add, Insert [[Underline=]], PluginMenuHandler
+Menu, Plugins, Add
+; JJ ADD END
+
 ClipSelMenu:="Upper,Lower,Title,Sentence,Wrap|>|<"
 Menu, ClipboardMenu, Add, Clipboard, PluginMenuHandler
 Menu, SelectedMenu , Add, Selected , PluginMenuHandler
@@ -2003,9 +2150,155 @@ If (SetStartup_Start <> "")
 	IniWrite, %SetStartup_Start%   , %IniFile%, Settings, SetStartup
 If (SetDesktop_Start <> "")
 	IniWrite, %SetDesktop_Start%   , %IniFile%, Settings, SetDesktop
+If (SetStartmenu_Start <> "")
+	IniWrite, %SetStartmenu_Start%   , %IniFile%, Settings, SetStartmenu
 SetStartup_Start:=""
 SetDesktop_Start:=""
+SetStartmenu_Start:=""
 Return
 ; -------------------------------------------------------------------------------
 
+; JJ ADD BEGIN
+
+; ctrl+u: Tilføj understregning til markering, når der redigeres i Lintalist snippet editor.
+#IfWinActive, Lintalist snippet editor ahk_class AutoHotkeyGUI
+^u::
+ClipSaved := ClipboardAll
+Clipboard:=0
+Send, ^x
+Sleep 150
+Send, [[Underline=^v]]
+Clipboard := ClipSaved
+ClipSaved =
+Return
+#IfWinActive
+
+
+; Indsæt udklipsholderen som ren tekst (hvilket afhjælper noget formateringsbøvl i Maple)
+MathPastePureText:
+Clip0 = %ClipBoardAll%
+ClipBoard = %ClipBoard%
+SendInput ^v
+Sleep 150                      ; Don't change clipboard while it is pasted! (Sleep > 0)
+ClipBoard = %Clip0%
+VarSetCapacity(Clip0, 0)
+Return
+
+
+; Genindlæs Lintalist med alle bundles indlæst
+MathReloadAllBundles:
+If (LoadAll = 0)
+		{
+		 LoadAll=1
+		 Menu, tray, Check, &Load All Bundles
+		 Try
+			{
+			 Menu, file, Check, &Load All Bundles
+			}
+		 Catch
+			{
+			 ;
+			}
+		}
+	 Lock = 0
+	 GuiControl, 1: ,Lock, 0
+		LoadBundle()
+	 UpdateLVColWidth()
+	 Gosub, SetStatusBar
+	 ShowPreview(PreviewSection)
+	 Loop, parse, MenuName_HitList, |
+		{
+		 StringSplit, MenuText, A_LoopField, % Chr(5) ; %
+		 Menu, file, UnCheck, &%MenuText1%
+		}
+Reload
+Return
+
+
+; Giv tekstmarkeringen gul baggrundsfarve i Maple
+MathSetTextBackgroundColor:
+SendEvent !r{Right}h
+WinWaitActive, Select a Color, , 3
+SendEvent {TAB 26}{Space}
+SendEvent {ALT DOWN}o{ALT UP}
+Return
+
+
+; Giv tekstmarkeringen halvgennemsigtig orange farve i Maple
+MathSetTextColorToOrange:
+SendEvent !r{Right}c
+WinWaitActive, Select a Color, , 3
+SendEvent {TAB 33}{Space}
+SendEvent {ALT DOWN}o{ALT UP}
+Return
+
+
+; Giv tekstmarkeringen en rød farve i Maple
+MathSetTextColorToRed:
+SendEvent !r{Right}c
+WinWaitActive, Select a Color, , 3
+SendEvent {TAB 16}{Space}
+SendEvent {ALT DOWN}o{ALT UP}
+Return
+
+
+; Kopier markeret tekst og guide i tilblivelsen af ny hotstring
+MathSnippetHelperStart:
+ClipSet("c",1,SendMethod)
+GoSub, GUIStart
+WinWaitActive, ahk_class AutoHotkeyGUI, , 3
+If ErrorLevel
+{
+	Gui, 1:Destroy
+	Return
+}
+GoSub, EditF7
+Sleep, 200
+IfWinActive, Lintalist snippet editor
+{
+	ClipSet("vt",1,SendMethod)
+	SendInput, +{Tab}
+	ClipSet("ea",1,SendMethod)
+	WinWaitActive, %AppWindow%, , 60
+	if ErrorLevel
+		Return
+	Reload
+}
+ClipSet("ea",1,SendMethod)
+Return
+
+
+; Giv Maple Input rød farve, zoom til 100 % og udfold alle sektioner.
+MathSetUpCommenting:
+SendEvent {Alt}rs
+WinWaitActive, Style Management, , 3
+SendEvent {TAB}Maple Input{TAB 3}{Enter}
+WinWaitActive, Character Style, , 3
+SendEvent {SHIFT DOWN}{TAB 3}{SHIFT UP}{Enter}
+GetClientSize(WinExist(), w, h)
+;~ MsgBox, Width: %w%`nHeight: %h% ; for debugging
+Sleep, 250
+ImageSearch, FoundX, FoundY, 0, 0, w, h, *5 %A_ScriptDir%\icons\img-col.png
+if(ErrorLevel <> 0)
+	MsgBox, Fejl %ErrorLevel%
+FoundX := FoundX + 3
+FoundY := FoundY + 3
+Click, %FoundX%, %FoundY%
+SendEvent {Sleep 30}{TAB}{Enter}
+WinWaitActive, Style Management, , 3
+SendEvent {TAB}{Enter}{ALT DOWN}vee{ALT UP}{CTRL DOWN}2{CTRL UP}
+Return	
+
+
+; Få bredde (w) og højde (h) af det givne vindue (hwnd)
+GetClientSize(hwnd, ByRef w, ByRef h)
+
+{
+    VarSetCapacity(rc, 16)
+    DllCall("GetClientRect", "uint", hwnd, "uint", &rc)
+    w := NumGet(rc, 8, "int")
+    h := NumGet(rc, 12, "int")
+}
+
+; JJ ADD END
 #Include *i %A_ScriptDir%\autocorrect.ahk

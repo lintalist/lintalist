@@ -1,0 +1,37 @@
+﻿BundleFormat: 1
+Name: Default
+Description: Default bundle for Lintalist
+Author: Lintalist
+TitleMatch: 
+Patterns:
+- LLPart1: win+a: Giv tekstmarkeringen gul baggrundsfarve i Maple                                                                                                                                                                               
+NB: Dette er blot til information. Selve genvejstasten kan ændres i menuen Edit > Configration.
+  LLPart2: 
+  LLKey: 
+  LLShorthand: 
+  LLScript: 
+- LLPart1: win+w: Giv Maple Input rød farve, zoom til 100 % og udfold alle sektioner.                                                                                                                                                                               
+NB: Dette er blot til information. Selve genvejstasten kan ændres i menuen Edit > Configration.
+  LLPart2: 
+  LLKey: 
+  LLShorthand: 
+  LLScript: 
+- LLPart1: win+z: Giv tekstmarkeringen halvgennemsigtig orange farve i Maple                                                                                                                                                                               
+NB: Dette er blot til information. Selve genvejstasten kan ændres i menuen Edit > Configration.
+  LLPart2: 
+  LLKey: 
+  LLShorthand: 
+  LLScript: 
+- LLPart1: win+v: Indsæt udklipsholderen som ren tekst (hvilket afhjælper noget formateringsbøvl i Maple)                                                                                                                                                                               
+NB: Dette er blot til information. Selve genvejstasten kan ændres i menuen Edit > Configration.
+  LLPart2: 
+  LLKey: 
+  LLShorthand: 
+  LLScript: 
+- LLPart1: Dette er et eksempel med et matematisk udtryk [[Math=x^t+2{right}+2x]], et par linjeskift
+
+og lidt [[Underline=understreget tekst]], så man kan se et par muligheder.
+  LLPart2: 
+  LLKey: 
+  LLShorthand: lineks
+  LLScript: 

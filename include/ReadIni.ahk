@@ -33,7 +33,7 @@ INISetup:={ AlwaysLoadBundles:     {default:"",find:"bundles\"}
 			, StartSearchHotkey:   {default:"Capslock",empty:"Capslock"}
 			, StartOmniSearchHotkey: {default:"^Capslock"}
 			, QuickSearchHotkey:   {default:"#z"}
-			, ExitProgramHotKey:   {default:"^#q"}
+			, ExitProgramHotKey:   {default:"^#q"}             
 			, CompactWidth:        {default:"450",min:"300"}
 			, CompactHeight:       {default:"450",min:"300"}
 			, WideWidth:           {default:"760",min:"300"}
@@ -63,6 +63,7 @@ INISetup:={ AlwaysLoadBundles:     {default:"",find:"bundles\"}
 			, Counters:            {default:"0"}
 			, SetStartup:          {default:"0"}
 			, SetDesktop:          {default:"0"}
+			, SetStartmenu:        {default:"0"}
 			, ShowQuickStartGuide: {default:"1"}
 			, ActivateWindow:      {default:"0"}
 			, OnPaste:             {default:"0"}
@@ -79,6 +80,17 @@ INISetup:={ AlwaysLoadBundles:     {default:"",find:"bundles\"}
             , FontSize:            {default:"10"}
             , PlaySound:           {default:""}
             , SnippetEditor:       {default:""} }
+
+; JJ ADD BEGIN
+; Added separately to not get "Expression too long" error
+INISetup["MathYellowBGHotkey"]      := {default:"#a"}
+INISetup["MathOrangeTextHotkey"]    := {default:"#z"}
+INISetup["MathRedTextHotkey"]       := {default:"#c"}
+INISetup["MathPastePureHotkey"]     := {default:"#v"}
+INISetup["MathSetUpHotkey"]         := {default:"#w"}
+INISetup["MathSnippetHelperHotkey"] := {default:"#h"}
+INISetup["MathReloadAllHotkey"]     := {default:"#q"}
+; JJ ADD END      
 
 	 for k, v in INISetup
 		{

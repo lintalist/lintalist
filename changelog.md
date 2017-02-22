@@ -1,3 +1,34 @@
+### v1.9.1a (Initial version of Lintalist for Math)
+* New: Hardcoded shortcuts:
+  - Alt + Enter: Edit selected snippet (same as F4).
+  - Ctrl + n: Add new snippet (same as F7).
+  - Delete: Delete selected snippet.
+* New: Hotkeys (which can be changed or disabled in the settings menu):
+  - MathSnippetHelperHotkey (#h). HotKey used to add a new snippet to Lintalist
+    from the selected text (using dialogs).
+  - MathSetUpHotkey (#w). HotKey to set up Maple for commenting. It gives Maple
+    Input a red color, unfolds all sections, and sets zoom to 100 %.
+  - MathPastePureHotkey (#v). HotKey for pasting pure text. This helps with some
+    formatting issues in Maple.
+  - MathYellowBGHotkey (#a). HotKey for Maple. It gives the selected text a
+    yellow background color.
+  - MathOrangeTextHotkey (#z). HotKey for Maple. It gives the selected text a
+    faded orange color.
+  - MathRedTextHotkey (#c). HotKey for Maple. It gives the selected text a red
+    color.
+  - MathReloadAllHotkey (#q). HotKey that loads all bundles and reloads
+    Lintalist for Math.
+* New: Plugins:
+  - Math: A plugin to display math in Maple (and strip output in other programs).
+  - Underline: A plugin to underline text in Maple (but not in other programs).
+* New: Trigger keys added: -, \_
+* Change: Default trigger keys changed from "Tab,Space" to "-, \_".
+* Change: QuickSearchHotkey changed from "#z" to "^#z".
+* Change: Edited the default bundle to include some important shortcuts for
+  Maple and an example for the new plugins (Math og Underline).
+* Change: Disabled update feature (for now).
+* Change: Removed "Snippet succesfully added to bundle [...]" message.
+
 ### v1.9.1
 
 * Fix: At very first startup SetDesktop and SetStartup default settings wouldn't be  
@@ -60,7 +91,7 @@
   Windows media or user files)  
   ht @starstuff - https://github.com/lintalist/lintalist/issues/45  
 * New: SearchLetterVariations setting -  Allow for variations of letters in search query
-  Searching for 'e' is translated to searching for 'eéèë...' etc  
+  Searching for 'e' is translated to searching for 'eï¿½ï¿½ï¿½...' etc  
   You can toggle this setting via the Search GUI - https://github.com/lintalist/lintalist/issues/33  
   Note: Consequence for Fuzzy search is that this now always using a RegEx which could be slower.
 * New: added help menu with Help and About options and added About to tray menu - https://github.com/lintalist/lintalist/issues/47  

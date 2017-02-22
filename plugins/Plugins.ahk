@@ -39,6 +39,11 @@ Return
 ;#Include %A_ScriptDir%\plugins\enc.ahk         ; Enc(rypt) plugin (decode)
 #Include %A_ScriptDir%\plugins\ClipSelExFunc.ahk
 
+; JJ ADD BEGIN
+; Standard for Lintalist for math:
+#Include %A_ScriptDir%\plugins\Math.ahk
+#Include %A_ScriptDir%\plugins\Underline.ahk
+; JJ ADD END
 ;----------------------------------------------------------------
 ; See readme-howto.txt for further info on how to write a plugin.
 ; Simply add the new plugin script as include below and reload Lintalist
