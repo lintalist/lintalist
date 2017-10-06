@@ -15,7 +15,7 @@ ReadMultiCaretIni()
 	 Global MultiCaret
 	 ini=%A_ScriptDir%\multicaret.ini
 	 IfNotExist, %ini%
-	 	MultiCaretIni(ini)
+		MultiCaretIni(ini)
 	 ; IniRead, OutputVarSectionNames, Filename
 	 ; IniRead, OutputVar, Filename, Section, Key [, Default]
 	 IniRead, SectionNames, %ini%
@@ -25,7 +25,7 @@ ReadMultiCaretIni()
 		{
 		 section:=A_LoopField
 		 Loop, parse, keys, CSV
-		 	IniRead, %A_LoopField%, %ini%, %section%, %A_LoopField%, %A_Space%
+			IniRead, %A_LoopField%, %ini%, %section%, %A_LoopField%, %A_Space%
 		 if str
 		 	MultiCaret[section,"str"]:=str
 		 if key

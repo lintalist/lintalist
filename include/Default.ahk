@@ -32,7 +32,7 @@ GetActiveWindowStats() ; Get Active Window & Control
 		ActiveWindowTitle=%ActiveWindowTitle%
 		PasteDelay=%PasteDelay%
 		SendMethod=%SendMethod%
-		#include %A_ScriptDir%\include\default.ahk  
+		#include %A_ScriptDir%\include\default.ahk  	  
 	  
 	 )
 	}
@@ -52,7 +52,7 @@ SendKey(Method = 1, Keys = "")
  
  global PasteDelay
  Sleep, % PasteDelay
-
+ 
 ;	 If ((Save = 1) or (Save = ""))
 ;		ClipSet("s",1) ; safe current content and clear clipboard
 ;		ClearClipboard()
