@@ -60,6 +60,9 @@ features of Lintalist. More Lintalist documentation can be found at
 
   <dt>Math Plugin</dt>
   <dd>A plugin for Lintalist for Math paste formulas to Maple. See more below.</dd>
+  
+  <dt>Changed Default Trigger Keys</dt>
+  <dd>Both the keys "-" and "\_" will the Shorthand (abbreviation) if applicable.</dd>
 </dl>
 
 ### Math Plugin
@@ -79,8 +82,7 @@ Experiment to make more complex examples.
    to a new directory and run lintalist.exe (or lintalist.ahk if you are already
    an AutoHotkey user).
 2. AutoHotkey users (or installing updates): Download the
-   [master.zip](https://github.com/jensjacobt/lintalist-for-math/archive/master.zip) - unpack to a new (or your current Lintalist) directory and run lintalist.ahk
-   or lintalist.exe
+   [master.zip](https://github.com/jensjacobt/lintalist-for-math/archive/master.zip) - unpack to a new (or your current Lintalist) directory and run lintalist.ahk.
 
 # AutoHotkey
 
