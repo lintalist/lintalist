@@ -2,6 +2,7 @@
 ; Purpose: Local variable Editor [see Lintalist doc]
 ; Version: 1.0.3
 ; Date:    20140426
+FileEncoding, UTF-8 ; Adding support for UTF-8 characters in LocalVars - otherwise the file-encoding will fallback to ANSI when FileAppend is triggered
 
 #NoTrayIcon
 #SingleInstance, force
