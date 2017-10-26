@@ -22,7 +22,9 @@ features of Lintalist. More Lintalist documentation can be found at
 ### Lintalist for Math specific features (default hotkeys in parentheses)
 
 <dl>
-
+  <dt>Changed Default Trigger Keys</dt>
+  <dd>Both the keys "-" and "\_" will the Shorthand (abbreviation) if applicable.</dd>
+  
   <dt>Setup Maple for Commenting (Win + W)</dt>
   <dd>In Maple, give Maple Input a red color, unfold all sections,
     and set zoom to 100 %.</dd>
@@ -60,9 +62,6 @@ features of Lintalist. More Lintalist documentation can be found at
 
   <dt>Math Plugin</dt>
   <dd>A plugin for Lintalist for Math paste formulas to Maple. See more below.</dd>
-  
-  <dt>Changed Default Trigger Keys</dt>
-  <dd>Both the keys "-" and "\_" will the Shorthand (abbreviation) if applicable.</dd>
 </dl>
 
 ### Math Plugin
