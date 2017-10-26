@@ -1,3 +1,8 @@
+### v.1.9.2a (First release of Lintalist for Math based on 1.9.2 of master)
+
+* Updated: Now based on v1.9.2 of master (see changes below).
+* Fix: Improved MathSnippetHelper so that it should no longer hang on occasion.
+
 ### v1.9.2
 
 * New: replaced check/radio boxes with button bar (using Class_Toolbar by pulover) and  
@@ -9,6 +14,7 @@
 * Fix: SetIcon.ahk now also looks at Part2 of the snippet as it should
 
 ### v1.9.1a (Initial version of Lintalist for Math)
+
 * New: Hardcoded shortcuts:
   - Alt + Enter: Edit selected snippet (same as F4).
   - Ctrl + n: Add new snippet (same as F7).
