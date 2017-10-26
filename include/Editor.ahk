@@ -14,7 +14,9 @@ BundleEditor:
 InEditMode = 1
 
 ; clear editor vars just to be sure
- Text1=
+; JJ EDIT BEGIN
+ Text1=%MathHelperSnippet%
+ ; JJ EDIT END
  Text2=
  HKey=
  OldKey=
@@ -198,6 +200,11 @@ Gui, 71:Add, Button, xp+245 yp   h30 w210 g71Help     vActionButton3, Help
 Gui, 71:Show, w740 h520, Lintalist snippet editor
 WinActivate, Lintalist snippet editor
 ControlFocus, Edit2, Lintalist snippet editor
+; JJ ADD BEGIN
+If(MathHelperSnippet != "") {
+  ControlFocus, Edit1, Lintalist snippet editor
+}
+; JJ ADD END
 Return
 
 ; Resize editor GUI

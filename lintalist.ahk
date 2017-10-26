@@ -48,6 +48,10 @@ PluginMultiCaret:=0 ; TODOMC
 Title=Lintalist for Math
 Version=1.9.2a
 
+; JJ EDIT BEGIN
+MathHelperSnippet := ""
+; JJ EDIT END
+
 
 Gosub, ReadPluginSettings
 
@@ -2493,18 +2497,19 @@ If ErrorLevel
 	Gui, 1:Destroy
 	Return
 }
+MathHelperSnippet := ClipSet("g",1,SendMethod)
 GoSub, EditF7
-Sleep, 200
-IfWinActive, Lintalist snippet editor
-{
-	ClipSet("vt",1,SendMethod)
-	SendInput, +{Tab}
-	ClipSet("ea",1,SendMethod)
-	WinWaitActive, %AppWindow%, , 60
-	if ErrorLevel
-		Return
-	Reload
-}
+;Sleep, 200
+;IfWinActive, Lintalist snippet editor
+;{
+;	ClipSet("vt",1,SendMethod)
+;	SendInput, +{Tab}
+;	ClipSet("ea",1,SendMethod)
+;	WinWaitActive, %AppWindow%, , 60
+;	if ErrorLevel
+;		Return
+;	Reload
+;}
 ClipSet("ea",1,SendMethod)
 Return
 
