@@ -680,79 +680,7 @@ If (Script = "") or (ScriptPaused = 1) ; script is empty so we need to paste Tex
 		 StringReplace, Text2, Text2, [[Clipboard]], %Clipboard%, All
 		}
 	; JJ ADD BEGIN
-	;WinGetClass, ActiveWindowClass1, A
-	;WinGetActiveTitle, ActiveWindowTitle1
-	isMaple:=1
-	IfNotInString, ActiveWindowTitle, - Maple
-		isMaple:=0
-	if (ActiveWindowClass <> "SunAwtFrame")
-		isMaple:=0
-	IfInString, Text1, [[image= ; don't use Maple handling for images
-		isMaple:=0
-		; Burde også tjekkes for Text2
-	If (isMaple = 1) ; If pasting to Maple - will paste Text 1 by default (and fall back to Text 2)
-		{
-		If (Text1 = "")
-			Text1:=Text2
-		; Lav udskiftninger fra plugins (vigtigt at det sker inden "Gosub, ProcessText")
-		StringReplace, Text1, Text1, `^, {hatchar}, All
-		Text1 := RegExReplace(Text1, "iU)\[\[Underline=([^[]*)\]\]",  "^u$1^u")
-		Text1 := RegExReplace(Text1, "iU)\[\[Math=([^[]*)\]\]",  "^r$1^m")
-		; Foretag udskiftninger af specielle tegn, så send-kommandoen fungerer som forventet
-		StringReplace, Text1, Text1, ``, ````, All  ; Do this replacement first to avoid interfering with the others below.
-		StringReplace, Text1, Text1, `r`n, ``r, All  ; Using `r works better than `n in MS Word, etc.
-		StringReplace, Text1, Text1, `n, ``r, All
-		;StringReplace, Text1, Text1, `^, {ASC 0094}, All  ; {ASC 0094}, All ; handled below instead
-		StringReplace, Text1, Text1, {right}, {right}, All  ; {ASC 0094}, All
-		StringReplace, Text1, Text1, `!, {!}, All
-		StringReplace, Text1, Text1, `+, {+}, All
-		StringReplace, Text1, Text1, `#, {#}, All
-		StringReplace, Text1, Text1, ``r, `^`+j`^m, All
-		;~ While(SubStr(Text1, StrLen(Text1)-4) = "^+j^m")
-			;~ StringTrimRight, Text1, Text1, 5
-		;~ MsgBox, %Text1% ; for debugging
-		Clip0 = %ClipBoardAll% ; store clipboard
-		Clip := "^m" . Text1
-		Gosub, ProcessText ; to support all plugins except for rtf, md, image, html, and clipboard with formatting/case change
-		;~ MsgBox, %Clip% ; for debugging
-		If (InStr(Clip, "{hatchar}"))
-		{
-			ClipArray := StrSplit(Clip, "{hatchar}")
-			LastClip := ClipArray.Pop()
-			for index, element in ClipArray
-			{
-				SendInput, %element%
-				Sleep, 200
-				SendInput, {ASC 0094}
-				Sleep, 10
-			}
-			SendInput, %LastClip%
-			LastClip=
-			ClipArray=
-		}
-		else
-			SendInput, ^m%Clip%
-			;SendKey(SendMethod, Clip)
-		ClipBoard = %Clip0% ; restore clipboard
-		Text1=
-		Text2=
-		Clip=
-		VarSetCapacity(Clip0, 0)
-		Return
-		}
-	Else
-		{
-		; Fjern symboler som kun giver mening i Maple
-		StringReplace, Text1, Text1, `^`^, `^, All
-		StringReplace, Text1, Text1, `{right`}, , All
-		StringReplace, Text1, Text1, %A_Tab%, ``t, All
-		StringReplace, Text1, Text1, `;, ```;, All
-
-		StringReplace, Text2, Text2, `^`^, `^, All
-		StringReplace, Text2, Text2, `{right`}, , All
-		StringReplace, Text2, Text2, %A_Tab%, ``t, All
-		StringReplace, Text2, Text2, `;, ```;, All
-		}
+	Gosub, MathPaste
 	; JJ ADD END
 
 	 If (PastText1 = 1) OR (Text2 = "")
@@ -2535,7 +2463,6 @@ WinWaitActive, Style Management, , 3
 SendEvent {TAB}{Enter}{ALT DOWN}vee{ALT UP}{CTRL DOWN}2{CTRL UP}
 Return	
 
-
 ; Få bredde (w) og højde (h) af det givne vindue (hwnd)
 GetClientSize(hwnd, ByRef w, ByRef h)
 
@@ -2545,6 +2472,86 @@ GetClientSize(hwnd, ByRef w, ByRef h)
     w := NumGet(rc, 8, "int")
     h := NumGet(rc, 12, "int")
 }
+
+
+; Lintalist for Math-specfik paste procedure
+MathPaste:
+;WinGetClass, ActiveWindowClass1, A
+;WinGetActiveTitle, ActiveWindowTitle1
+isMaple:=1
+IfNotInString, ActiveWindowTitle, - Maple
+  isMaple:=0
+if (ActiveWindowClass <> "SunAwtFrame")
+  isMaple:=0
+IfInString, Text1, [[image= ; don't use Maple handling for images
+  isMaple:=0
+  ; Burde også tjekkes for Text2
+If (isMaple = 1) ; If pasting to Maple - will paste Text 1 by default (and fall back to Text 2)
+{
+  If (Text1 = "")
+    Text1:=Text2
+  ; Lav udskiftninger fra plugins (vigtigt at det sker inden "Gosub, ProcessText")
+  StringReplace, Text1, Text1, `^, {hatchar}, All
+  Text1 := RegExReplace(Text1, "iU)\[\[Underline=([^[]*)\]\]",  "^u$1^u")
+  Text1 := RegExReplace(Text1, "iU)\[\[Math=([^[]*)\]\]",  "^r$1^m")
+  ; Foretag udskiftninger af specielle tegn, så send-kommandoen fungerer som forventet
+  StringReplace, Text1, Text1, ``, ````, All  ; Do this replacement first to avoid interfering with the others below.
+  StringReplace, Text1, Text1, `r`n, ``r, All  ; Using `r works better than `n in MS Word, etc.
+  StringReplace, Text1, Text1, `n, ``r, All
+  ;StringReplace, Text1, Text1, `^, {ASC 0094}, All  ; {ASC 0094}, All ; handled below instead
+  StringReplace, Text1, Text1, {right}, {right}, All  ; {ASC 0094}, All
+  StringReplace, Text1, Text1, `!, {!}, All
+  StringReplace, Text1, Text1, `+, {+}, All
+  StringReplace, Text1, Text1, `#, {#}, All
+  StringReplace, Text1, Text1, ``r, `^`+j`^m, All
+  ;~ While(SubStr(Text1, StrLen(Text1)-4) = "^+j^m")
+    ;~ StringTrimRight, Text1, Text1, 5
+  ;~ MsgBox, %Text1% ; for debugging
+  Clip0 = %ClipBoardAll% ; store clipboard
+  Clip := "^m" . Text1
+  Gosub, ProcessText ; to support all plugins except for rtf, md, image, html, and clipboard with formatting/case change
+  ;~ MsgBox, %Clip% ; for debugging
+  If (InStr(Clip, "{hatchar}"))
+  {
+    ClipArray := StrSplit(Clip, "{hatchar}")
+    LastClip := ClipArray.Pop()
+    for index, element in ClipArray
+    {
+      SendInput, %element%
+      Sleep, 200
+      SendInput, {ASC 0094}
+      Sleep, 10
+    }
+    SendInput, %LastClip%
+    LastClip=
+    ClipArray=
+  }
+  Else
+    SendInput, ^m%Clip%
+    ;SendKey(SendMethod, Clip)
+  ClipBoard = %Clip0% ; restore clipboard
+  Text1=
+  Text2=
+  Clip=
+  VarSetCapacity(Clip0, 0)
+  Return
+}
+Else
+{
+  ; Fjern symboler som kun giver mening i Maple
+  StringReplace, Text1, Text1, `^`^, `^, All
+  StringReplace, Text1, Text1, `{right`}, , All
+  StringReplace, Text1, Text1, %A_Tab%, ``t, All
+  StringReplace, Text1, Text1, `;, ```;, All
+
+  StringReplace, Text2, Text2, `^`^, `^, All
+  StringReplace, Text2, Text2, `{right`}, , All
+  StringReplace, Text2, Text2, %A_Tab%, ``t, All
+  StringReplace, Text2, Text2, `;, ```;, All
+}
+Return
+
+
 
 ; JJ ADD END
 #Include *i %A_ScriptDir%\autocorrect.ahk
