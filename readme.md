@@ -23,7 +23,7 @@ features of Lintalist. More Lintalist documentation can be found at
 
 <dl>
   <dt>Changed Default Trigger Keys</dt>
-  <dd>Both the keys "-" and "\_" will the Shorthand (abbreviation) if applicable.</dd>
+  <dd>Both the keys "-" and "_" will the Shorthand (abbreviation) if applicable.</dd>
   
   <dt>Setup Maple for Commenting (Win + W)</dt>
   <dd>In Maple, give Maple Input a red color, unfold all sections,
