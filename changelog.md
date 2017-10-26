@@ -1,4 +1,20 @@
+### v.1.9.2a (First release of Lintalist for Math based on 1.9.2 of master)
+
+* Updated: Now based on v1.9.2 of master (see changes below).
+* Fix: Improved MathSnippetHelper so that it should no longer hang on occasion.
+
+### v1.9.2
+
+* New: replaced check/radio boxes with button bar (using Class_Toolbar by pulover) and  
+  icons from the Fugue & Diagona Icon sets by Yusuke Kamiyamane.  
+  #51 https://github.com/lintalist/lintalist/issues/51
+* New: Right click context menu listview #70 https://github.com/lintalist/lintalist/issues/70
+* Fix: Refactored LoadAll and Selected Bundle code, should work better now (lintalist.ahk)
+* Fix: Refactored duplicate hotkey and shorthand detection code, should work better now (editor.ahk)
+* Fix: SetIcon.ahk now also looks at Part2 of the snippet as it should
+
 ### v1.9.1a (Initial version of Lintalist for Math)
+
 * New: Hardcoded shortcuts:
   - Alt + Enter: Edit selected snippet (same as F4).
   - Ctrl + n: Add new snippet (same as F7).
@@ -32,7 +48,7 @@
 ### v1.9.1
 
 * Fix: At very first startup SetDesktop and SetStartup default settings wouldn't be  
-  properly be stored for them to be usuable with Func_IniSettingsEditor()
+  properly stored for them to be useable with Func_IniSettingsEditor()
 
 ### v1.9
 

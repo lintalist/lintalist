@@ -33,7 +33,7 @@ INISetup:={ AlwaysLoadBundles:     {default:"",find:"bundles\"}
 			, StartSearchHotkey:   {default:"Capslock",empty:"Capslock"}
 			, StartOmniSearchHotkey: {default:"^Capslock"}
 			, QuickSearchHotkey:   {default:"#z"}
-			, ExitProgramHotKey:   {default:"^#q"}             
+			, ExitProgramHotKey:   {default:"^#q"}
 			, CompactWidth:        {default:"450",min:"300"}
 			, CompactHeight:       {default:"450",min:"300"}
 			, WideWidth:           {default:"760",min:"300"}

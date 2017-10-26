@@ -1,7 +1,7 @@
 ﻿; LintaList Include
 ; Purpose: Bundle & Snippet Editor
-; Version: 1.0.3
-; Date:    20161004
+; Version: 1.0.4
+; Date:    20170204
 ;
 ; Hotkeys used in Search GUI to start Bundle & Snippet Editor
 ; F4  = Edit snippet 		
@@ -14,7 +14,9 @@ BundleEditor:
 InEditMode = 1
 
 ; clear editor vars just to be sure
- Text1=
+; JJ EDIT BEGIN
+ Text1=%MathHelperSnippet%
+ ; JJ EDIT END
  Text2=
  HKey=
  OldKey=
@@ -198,6 +200,11 @@ Gui, 71:Add, Button, xp+245 yp   h30 w210 g71Help     vActionButton3, Help
 Gui, 71:Show, w740 h520, Lintalist snippet editor
 WinActivate, Lintalist snippet editor
 ControlFocus, Edit2, Lintalist snippet editor
+; JJ ADD BEGIN
+If(MathHelperSnippet != "") {
+  ControlFocus, Edit1, Lintalist snippet editor
+}
+; JJ ADD END
 Return
 
 ; Resize editor GUI
@@ -238,49 +245,47 @@ If (EditMode = "EditSnippet")
 Else If (EditMode = "AppendSnippet") or (EditMode = "CopySnippet") or (EditMode = "MoveSnippet") 
 	Check:=AppendToBundle
 
-If (Shorthand <> OldShorthand) ; if new shorthand check for duplicate
+; Checking for duplicate shorthand within same bundle
+HitKeyHistory=
+HitKeyHistory:=CheckHitList("Shorthand", Shorthand, Check)
+; MsgBox % HitKeyHistory "`n" Paste1 "_" Paste2 "," ; debug
+If HitKeyHistory
 	{
-	 HitKeyHistory=
-	 HitKeyHistory:=CheckHitList("Shorthand", Shorthand, Check)
-	 If (HitKeyHistory <> "")
+	 If (HitKeyHistory = Paste1 "_" Paste2 ",") and (EditMode = "EditSnippet")
+	 	{
+		 ; its OK
+	 	}
+	 else
 		{
 		 MsgBox,48,Warning, Shorthand collision`nThis abbreviation is already in use in this Bundle.`nBundleName added to Shorthand, so be sure to edit.
-		 If (EditMode <> "MoveSnippet")
-		 	Return
 		 Shorthand:= MenuText1 ":" Shorthand
+		 GuiControl,71:, Edit1, %Shorthand%
+		 If (EditMode <> "MoveSnippet")
+			Return
 		}
 	}
 
-If (HKey <> OldKey) ; if new hotkey check for duplicate
-	{
-; commented this for v1.6 - https://github.com/lintalist/lintalist/issues/38
-; also code seems to be redundant, was checking HotkeyHitlist for ThisHotkey and not Hkey
-		
-;ThisHotkey=
-;StringReplace, ThisHotkey, HKey,+,\+,All
-;StringReplace, ThisHotkey, ThisHotkey,!,\!,All
-;StringReplace, ThisHotkey, ThisHotkey,^,\^,All
-;StringReplace, ThisHotkey, ThisHotkey,#,\#,All
-;;MsgBox % ThisHotkey
-;ThisHotkey:=RegExReplace(ThisHotkey, "i)^([!#^+\\]*)", "[$1]{_}")
-;Stringreplace, ThisHotkey, ThisHotkey, \,\, useerrorlevel
-;Length:=ErrorLevel
-;Stringreplace, ThisHotkey, ThisHotkey, {_},{%Length%}, All
-;MsgBox % "Check Hotkey: " OldKey " v " Hkey
-
+; Checking for duplicate hotkeys within same bundle
 HitKeyHistory=
 HitKeyHistory:=CheckHitList("Hotkey", HKey, Check, 1)
-If (HitKeyHistory <> "")
+; MsgBox % HitKeyHistory "`n" Paste1 "_" Paste2 "," ; debug
+If HitKeyHistory
 	{
-	 MsgBox,48,Warning, Hotkey collision.`nThis keyboard shortcut is already in use in this Bundle.`nHotkey reset for this snippet.
-	 If (EditMode <> "MoveSnippet")
-	 	{
-		 GuiControl,71:, msctls_hotkey321, %OldKey%
-		 Return
-		}	
-	 HKey=
+	 If (HitKeyHistory = Paste1 "_" Paste2 ",") and (EditMode = "EditSnippet")
+		{
+		 ; its OK
+		}
+	 else
+		{
+		 MsgBox,48,Warning, Hotkey collision.`nThis keyboard shortcut is already in use in this Bundle.`nHotkey reset for this snippet.
+		 If (EditMode <> "MoveSnippet")
+			{
+			 GuiControl,71:, msctls_hotkey321,  
+			 Return
+			}	
+		 HKey=
+		}
 	}
-}
 
 If (EditMode = "EditSnippet")
 	{

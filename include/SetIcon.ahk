@@ -2,7 +2,7 @@
 
 SetIcon()
 Lintalist v1.1
-Date: 20150101
+Date: 20170205
 
 Return: Icon for listview
 
@@ -21,23 +21,23 @@ SetIcon(text,script)
 	{
 	 If (script = "")
 		{
-		 IconVal:="Icon1"
-		 If RegExMatch(text[1],"\[\[html|md\]\]") or RegExMatch(text[1],"\[\[html|md\]\]")
+		 IconVal := "Icon1"
+		 If RegExMatch(text[1] text[2],"i)\[\[html|md\]\]")
 			IconVal:="Icon3"
-		 If RegExMatch(text[1],"\[\[rtf\=")
+		 If RegExMatch(text[1] text[2],"i)\[\[rtf\=")
 			IconVal:="Icon4"
-		 If RegExMatch(text[1],"\[\[image\=")
+		 If RegExMatch(text[1] text[2],"i)\[\[image\=")
 			IconVal:="Icon5"
 		}
-	else
+	 else
 		{
 		 IconVal := "Icon2"
-		 If RegExMatch(text[1],"\[\[html|md\]\]") or RegExMatch(text[1],"\[\[html|md\]\]")
+		 If RegExMatch(text[1] text[2],"i)\[\[html|md\]\]")
 			IconVal:="Icon6"
-		 If RegExMatch(text[1],"\[\[rtf\=")
+		 If RegExMatch(text[1] text[2],"i)\[\[rtf\=")
 			IconVal:="Icon7"
-		 If RegExMatch(text[1],"\[\[image\=")
+		 If RegExMatch(text[1] text[2],"i)\[\[image\=")
 			IconVal:="Icon8"
 		}
-	 Return IconVal	
+	 Return IconVal
 	}

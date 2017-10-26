@@ -4,11 +4,11 @@ Name            : Lintalist for Math
 Author          : Lintalist & jensjacobt
 Purpose         : Searchable interactive lists to copy & paste text, run scripts,
                   using easily exchangeable bundles
-Version         : 1.9.1a
+Version         : 1.9.2a
 Code            : https://github.com/jensjacobt/lintalist-for-math
 Website         :
 AHKscript Forum :
-License         : Copyright (c) 2009-2015 Lintalist ??
+License         : Copyright (c) 2009-2017 Lintalist
 
 This program is free software; you can redistribute it and/or modify it under the
 terms of the GNU General Public License as published by the Free Software Foundation;
@@ -46,11 +46,13 @@ PluginMultiCaret:=0 ; TODOMC
 
 ; Title + Version are included in Title and used in #IfWinActive hotkeys and WinActivate
 Title=Lintalist for Math
-Version=1.9.1a
+Version=1.9.2a
 
-; ClipCommands are used in ProcessText and allow user input and other variable input into text snippets
-; ClipCommands=[[Input,[[DateTime,[[Choice,[[Selected,[[Var,[[File,[[Snippet= etc automatically built up
-; in Plugins\Plugins.ahk
+; JJ EDIT BEGIN
+MathHelperSnippet := ""
+; JJ EDIT END
+
+
 Gosub, ReadPluginSettings
 
 AppWindow=%title% - %version%   ; Name of Gui
@@ -84,8 +86,8 @@ Menu, Tray, Add,
 Menu, Tray, Add, Check for updates,       GlobalMenuHandler
 Menu, Tray, Add,
 Menu, Tray, Add, &Manage Bundles,         GlobalMenuHandler
-Menu, Tray, Add, &Manage local variables, GlobalMenuHandler
-Menu, Tray, Add, &Manage counters,        GlobalMenuHandler
+Menu, Tray, Add, &Manage Local Variables, GlobalMenuHandler
+Menu, Tray, Add, &Manage Counters,        GlobalMenuHandler
 Menu, Tray, Add,
 Menu, Tray, Add, &Load All Bundles,       MenuHandler ; exception
 Menu, Tray, Add, &Reload Bundles,         GlobalMenuHandler
@@ -214,6 +216,52 @@ Hotkey, IfWinActive
 
 ViaShorthand=0
 
+; Toolbar setup
+; Create an ImageList.
+ILA := IL_CreateCustom(17, 5, 16)
+IL_Add(ILA, "icons\snippet_new.ico")
+IL_Add(ILA, "icons\snippet_edit.ico")
+IL_Add(ILA, "icons\snippet_copy.ico")
+
+IL_Add(ILA, "icons\scripts.ico")
+IL_Add(ILA, "icons\hotkeys.ico")
+IL_Add(ILA, "icons\shorthand.ico")
+
+IL_Add(ILA, "icons\lettervariations.ico")
+IL_Add(ILA, "icons\unlocked.ico")
+IL_Add(ILA, "icons\case.ico")
+
+IL_Add(ILA, "icons\search_1.ico")
+IL_Add(ILA, "icons\search_2.ico")
+IL_Add(ILA, "icons\search_3.ico")
+IL_Add(ILA, "icons\search_4.ico")
+IL_Add(ILA, "icons\locked.ico")
+
+IL_Add(ILA, "icons\no_scripts.ico")
+IL_Add(ILA, "icons\no_hotkeys.ico")
+IL_Add(ILA, "icons\no_shorthand.ico")
+
+MyToolbarIcons:={ "UnLocked" : "8"
+	, "Locked" : "14"
+	, "Scripts" : "4"
+	, "NoScripts" : "15"
+	, "Hotkeys" : "5"
+	, "NoHotkeys" : "16"
+	, "ShortHand" : "6"
+	, "NoShortHand" : "17" }
+
+; https://autohotkey.com/board/topic/94750-class-toolbar-create-and-modify-updated-19-08-2013/?p=599930
+IL_CreateCustom(InitialCount=17, GrowCount=5, IconSize=16)
+	{
+	 return DllCall("ImageList_Create"
+			, "Int", IconSize
+			, "Int", IconSize
+			, "UInt", 0x00000001 + 0x00000020
+			, "Int", InitialCount
+			, "Int", GrowCount)
+	}
+; /Toolbar setup
+
 ; /INI --------------------------------------
 
 SendKeysToFix=Enter,Space,Esc,Tab,Home,End,PgUp,PgDn,Up,Down,Left,Right,F1,F2,F2,F3,F4,F5,F6,F7,F8,F9,F10,F11,F12,AppsKey
@@ -250,7 +298,6 @@ Return
 Typed=
 Return
 
-
 ; Here we build the Search Gui and fill it with content from the bundles and apply settings
 
 GUIStartOmni:
@@ -264,35 +311,15 @@ Else
 	Gosub, ToggleView
 
 Gui, 1:Destroy ; just to be sure
-Gui, 1:+Border -Resize +MinSize%Width%x%Height%
+Gui, 1:+Border -DPIScale -Resize +MinSize%Width%x%Height%
 Gui, 1:Menu, MenuBar
 Gui, 1:Add, Picture, x4 y4 w16 h16, icons\search.png
 Gui, 1:Add, Edit, 0x8000 x25 y2 w%SearchBoxWidth% h20 gGetText vCurrText, %CurrText%
 Gui, 1:Add, Button, x300 y2 w30 h20 0x8000 Default hidden gPaste, OK
-Gui, 1:Font, s8, Arial
-Gui, 1:Add, CheckBox, 0x8000 gSearchLetterVariations vSearchLetterVariations x%lex% y%Yctrl% w40, L&v?
-Gui, 1:Add, CheckBox, 0x8000 gLock vLock x%lox% y%Yctrl% w40, &Lck
-Gui, 1:Add, CheckBox, 0x8000 gCase vCase x%cax% y%Yctrl% w40, &Cse
-Gui, 1:Add, Radio,    0x8000 gSetSearchMethod vSMNorm x%nox% y%Yctrl% w50, &Rglr ; Regular Search method
-Gui, 1:Add, Radio,    0x8000 gSetSearchMethod vSMFuzz x%fzx% y%Yctrl% w50, F&zzy ; Fuzzy
-Gui, 1:Add, Radio,    0x8000 gSetSearchMethod vSMRegx x%rex% y%Yctrl% w50, RgE&x ; Regular Expression
-Gui, 1:Add, Radio,    0x8000 gSetSearchMethod vSMMagc x%mgx% y%Yctrl% w50, &Magc ; Magic (regex)
 
-If (SearchMethod = 1)        ; Set radio button based on last used searchmethod (stored in ini on exit)
-	GuiControl, , SMNorm, 1
-Else If (SearchMethod = 2)
-	GuiControl, , SMFuzz, 1
-Else If (SearchMethod = 3)
-	GuiControl, , SMRegx, 1
-Else If (SearchMethod = 4)
-	GuiControl, , SMMagc, 1
-
-If (SearchLetterVariations = 1) ; Search Letter variations state also stored in ini
-	GuiControl, , SearchLetterVariations, 1
-If (Lock = 1) or (LoadAll=1) ; lock state also stored in ini
-	GuiControl, , Lock, 1
-If (Case = 1)                ; case state also stored in ini
-	GuiControl, , Case, 1
+; TBSTYLE_FLAT     := 0x0800 Required to show separators as bars.
+; TBSTYLE_TOOLTIPS := 0x0100 Required to show Tooltips.
+Gui, 1:Add, Custom, ClassToolbarWindow32 hwndhToolbar 0x0800 0x0100 0x0008 0x0040 x%barx% y%Yctrl% w325 h20
 
 Gui, 1:Font,s%fontsize%,%font%
 
@@ -308,6 +335,61 @@ SB_SetParts(SB1,SB2)
 SB_SetIcon("icons\lintalist_bundle.ico",,1)
 SB_SetIcon("icons\search.ico",,2)
 Gosub, GetText
+
+; Initialize Toolbars.
+; The variable you choose will be your handle to access the class for your toolbar.
+MyToolbar := New Toolbar(hToolbar)
+
+; Set ImageList.
+MyToolbar.SetImageList(ILA)
+; Add buttons; vertical bars count as buttons when calling them via their ID
+MyToolbar.Add("Enabled"
+	, "EditF7=New Snippet (F7):1"
+	, "EditF4=Edit Snippet (F4):2"
+	, "EditF5=Copy Snippet (F5):3"
+	, "" ; vertical bar
+	, "PauseScriptButton=Toggle Scripts:4"
+	, "PauseShortcutButton=Toggle Shortcuts:5"
+	, "PauseShorthandButton=Toggle Shorthand:6"
+	, "" ; vertical bar
+	, "SearchLetterVariations=Letter Variations (alt+v):7"
+	, "Lock=Lock (alt+l):8"
+	, "Case=Case Sensitive (alt+c):9"
+	, "" ; vertical bar
+	, "Label10=Regular Search (alt+r):10"
+	, "Label11=Fuzzy Search (alt+z):11"
+	, "Label12=Regular Expression Search (alt+x):12"
+	, "Label13=Magic Search (alt+m):13")
+
+; Should the button bar be changed we don't need to update all the
+; MyToolbar.ModifyButton calls, we can just update the IDs here.
+MyToolbarIDs:={ "NewSnippet" : "1"
+	, "EditSnippet" : "2"
+	, "CopySnippet" : "3"
+	, "ToggleScripts" : "5"
+	, "ToggleShortcuts" : "6"
+	, "ToggleShorthand" : "7"
+	, "ToggleLetterVariations" : "9"
+	, "ToggleLock" : "10"
+	, "ToggleCase" : "11"
+	, "RegularSearch" : "13"
+	, "FuzzySearch" : "14"
+	, "RegExSearch" : "15"
+	, "MagicSearch" : "16"}
+
+; Removes text labels and show them as tooltips.
+MyToolbar.SetMaxTextRows(0)
+
+; Set a function to monitor the Toolbar's messages.
+WM_COMMAND := 0x111
+OnMessage(WM_COMMAND, "TB_Messages")
+
+; Set a function to monitor notifications.
+WM_NOTIFY := 0x4E
+OnMessage(WM_NOTIFY, "TB_Notify")
+
+Gosub, TB_SetButtonStates
+
 XY:=StayOnMonXY(Width, Height, Mouse, MouseAlternative, Center) ; was XY:=StayOnMonXY(Width, Height, 0, 1, 0)
 StringSplit, Pos, XY, |
 Gui, Show, w%Width% h%Height% x%Pos1% y%Pos2%, %AppWindow%
@@ -324,7 +406,7 @@ If (JumpSearch=1) ; Send clipboard text to search control
 	}
 ShowPreview(PreviewSection)
 ControlSend, Edit1, {End}, %AppWindow%  ; 20110623
-Gosub, GetText                          ; 20110623
+;Gosub, GetText                         ; 20110623 commented 20170209 - avoids duplicate loading of LV
 PlaySound(PlaySound,"open")
 Return
 
@@ -370,7 +452,6 @@ Else
 	}
 
 LastText:=CurrText
-GuiControlGet, Case, , Case
 ShowPreviewToggle=1
 
 Loop, parse, SearchBundles, CSV
@@ -386,9 +467,9 @@ Loop, parse, SearchBundles, CSV
 		{
 		 SearchText:=LTrim(CurrText,OmniChar)
 
-		 If (SearchLetterVariations = 1) and (SearchMethod <> 4)
-		 	SearchText:=LetterVariations(SearchText,Case)
-		 	
+		 If SearchLetterVariations and (SearchMethod <> 4)
+			SearchText:=LetterVariations(SearchText,Case)
+
 		 match=0
 		 SearchThis1:=Snippet[Bundle,A_Index,1] ; part '1' (enter)
 		 SearchThis2:=Snippet[Bundle,A_Index,2] ; part '2' (shift-enter)
@@ -473,7 +554,7 @@ Search(mode=1)
 	 else if (Mode = 3) ; Regular expression search
 		{
 		 If (SearchMethod = 1) ; normal
-		 	SearchRe:=RegExReplace(SearchText,"imU)([\.\*\?\+\{\}\\^\$\(\)])","\$1") ; we need to escape regex symbols - [] are excluded atm	
+		 	SearchRe:=RegExReplace(SearchText,"imU)([\.\*\?\+\{\}\\^\$\(\)])","\$1") ; we need to escape regex symbols - [] are excluded atm
 		 If (Case = 0)     ; case insensitive, add auto i) option
 			SearchRe := "i)" . SearchText
 		 Else
@@ -482,24 +563,24 @@ Search(mode=1)
 			{
 			 Match++
 			}
-		}	
+		}
 
 	 else if (Mode = 4) ; Magic search
 		{
 		 SearchRe:="iUmsS)"
 		 Loop, parse, SearchText
 		 	 SearchRe .= LetterVariations(A_LoopField,case) ".*"
-		 SearchRe:=RTrim(SearchRe,".*")	 
+		 SearchRe:=RTrim(SearchRe,".*")
 		 If (Case = 1)     ; case sensitive, remove i) option
 			SearchRe := LTrim(SearchRe,"i")
-			
-		 ; ;ToolTip, % "Case: " case " : SearchRe: " SearchRe ; debug only
+
+		 ;;ToolTip, % "Case: " case " : SearchRe: " SearchRe ; debug only
 		 If (RegExMatch(SearchThis1, SearchRe) > 0) or (RegExMatch(SearchThis2, SearchRe) > 0) or (RegExMatch(SearchThis3, SearchRe) > 0)
 			{
 			 Match++
 			}
 		}
-			
+
 	}
 
 ColorList:
@@ -520,6 +601,12 @@ Return
 
 ; (Double)click in listview, action defined in INI
 Clicked:
+    ;  user has right-clicked within the listview control. The variable A_EventInfo contains the focused row number.
+	If (A_GuiEvent = "RightClick")
+		{
+		 Menu, edit, show ; this is the same menu as used in the Editor, Menubar (edit)
+		 Return
+		}
 
 	; ignore all other events apart from doubleclick and normal left-click
 	If A_GuiControlEvent not in DoubleClick,Normal
@@ -593,79 +680,7 @@ If (Script = "") or (ScriptPaused = 1) ; script is empty so we need to paste Tex
 		 StringReplace, Text2, Text2, [[Clipboard]], %Clipboard%, All
 		}
 	; JJ ADD BEGIN
-	;WinGetClass, ActiveWindowClass1, A
-	;WinGetActiveTitle, ActiveWindowTitle1
-	isMaple:=1
-	IfNotInString, ActiveWindowTitle, - Maple
-		isMaple:=0
-	if (ActiveWindowClass <> "SunAwtFrame")
-		isMaple:=0
-	IfInString, Text1, [[image= ; don't use Maple handling for images
-		isMaple:=0
-		; Burde også tjekkes for Text2
-	If (isMaple = 1) ; If pasting to Maple - will paste Text 1 by default (and fall back to Text 2)
-		{
-		If (Text1 = "")
-			Text1:=Text2
-		; Lav udskiftninger fra plugins (vigtigt at det sker inden "Gosub, ProcessText")
-		StringReplace, Text1, Text1, `^, {hatchar}, All
-		Text1 := RegExReplace(Text1, "iU)\[\[Underline=([^[]*)\]\]",  "^u$1^u")
-		Text1 := RegExReplace(Text1, "iU)\[\[Math=([^[]*)\]\]",  "^r$1^m")
-		; Foretag udskiftninger af specielle tegn, så send-kommandoen fungerer som forventet
-		StringReplace, Text1, Text1, ``, ````, All  ; Do this replacement first to avoid interfering with the others below.
-		StringReplace, Text1, Text1, `r`n, ``r, All  ; Using `r works better than `n in MS Word, etc.
-		StringReplace, Text1, Text1, `n, ``r, All
-		;StringReplace, Text1, Text1, `^, {ASC 0094}, All  ; {ASC 0094}, All ; handled below instead
-		StringReplace, Text1, Text1, {right}, {right}, All  ; {ASC 0094}, All
-		StringReplace, Text1, Text1, `!, {!}, All
-		StringReplace, Text1, Text1, `+, {+}, All
-		StringReplace, Text1, Text1, `#, {#}, All
-		StringReplace, Text1, Text1, ``r, `^`+j`^m, All
-		;~ While(SubStr(Text1, StrLen(Text1)-4) = "^+j^m")
-			;~ StringTrimRight, Text1, Text1, 5
-		;~ MsgBox, %Text1% ; for debugging
-		Clip0 = %ClipBoardAll% ; store clipboard
-		Clip := "^m" . Text1
-		Gosub, ProcessText ; to support all plugins except for rtf, md, image, html, and clipboard with formatting/case change
-		;~ MsgBox, %Clip% ; for debugging
-		If (InStr(Clip, "{hatchar}"))
-		{
-			ClipArray := StrSplit(Clip, "{hatchar}")
-			LastClip := ClipArray.Pop()
-			for index, element in ClipArray
-			{
-				SendInput, %element%
-				Sleep, 200
-				SendInput, {ASC 0094}
-				Sleep, 10
-			}
-			SendInput, %LastClip%
-			LastClip=
-			ClipArray=
-		}
-		else
-			SendInput, ^m%Clip%
-			;SendKey(SendMethod, Clip)
-		ClipBoard = %Clip0% ; restore clipboard
-		Text1=
-		Text2=
-		Clip=
-		VarSetCapacity(Clip0, 0)
-		Return
-		}
-	Else
-		{
-		; Fjern symboler som kun giver mening i Maple
-		StringReplace, Text1, Text1, `^`^, `^, All
-		StringReplace, Text1, Text1, `{right`}, , All
-		StringReplace, Text1, Text1, %A_Tab%, ``t, All
-		StringReplace, Text1, Text1, `;, ```;, All
-
-		StringReplace, Text2, Text2, `^`^, `^, All
-		StringReplace, Text2, Text2, `{right`}, , All
-		StringReplace, Text2, Text2, %A_Tab%, ``t, All
-		StringReplace, Text2, Text2, `;, ```;, All
-		}
+	Gosub, MathPaste
 	; JJ ADD END
 
 	 If (PastText1 = 1) OR (Text2 = "")
@@ -717,10 +732,10 @@ If (Script = "") or (ScriptPaused = 1) ; script is empty so we need to paste Tex
 			 Clip:=RegExReplace(clip,"iU)</*[^>]*>") ; strip HTML tags so we can paste normal text if need be
 			 WinClip.SetText(Clip)
 			}
-		else	
+		else
 		 	Clipboard:=ClipSet("s",2,SendMethod,Clip) ; set clip2
 	 	}
-	 	
+
 	 If !(formatted > 0)  ; only check for ^| post if it is a plain text snippet
 	 	CheckCursorPos()
 	 formatted:=0
@@ -850,8 +865,6 @@ UpdateLVColWidth()
 	 WinGetPos , , , AvailableWidth, , %AppWindow%
 	 If (AvailableWidth = "")
 		AvailableWidth:=Width
-	 If (A_ScreenDPI <> 96 AND A_OSType = "WIN32_NT" AND SubStr(A_OSVersion, 1, 3) = "10.")
-		factor *= (A_ScreenDPI/96)
 	 ColumnWidth:=Round((AvailableWidth - factor) / 10)
 	 c1w:=Round((ColumnWidth) * (ColumnWidthPart1/10))
 	 c2w:=Round((ColumnWidth) * (ColumnWidthPart2/10))
@@ -888,18 +901,6 @@ UpdateLVColWidth()
 
 	 If (ColumnSort <> "NoSort")
 		SortResults(ColumnSortOption1,ColumnSortOption2,SortDirection)
-	
-	 ; JJ ADD BEGIN
-	 If (A_ScreenDPI <> 96 AND A_OSType = "WIN32_NT" AND SubStr(A_OSVersion, 1, 3) = "10.")
-		{
-		 Gui +LastFound
-		 Loop % LV_GetCount("Column")
-			{
-			 SendMessage, 4125, A_Index - 1, 0, SysListView321  ; 4125 is LVM_GETCOLUMNWIDTH.
-			 LV_ModifyCol(A_index, Round((96/A_ScreenDPI)**2*ErrorLevel))
-			}
-		}
-	 ; JJ ADD END
 	}
 
 ; Shows the lines in the preview window (edit2)
@@ -937,52 +938,217 @@ ShowPreview(Section="1")
 	 Return
 	}
 
-; Search Letter variations checkbox
-SearchLetterVariations:
-SearchLetterVariations:=!SearchLetterVariations
-ControlFocus, Edit1, %AppWindow%
-lasttext = fadsfSDFDFasdFdfsadfsadFDSFDf
-Gosub, GetText
-Return
-
-; Case sensitive search checkbox
-Case:
-Case:=!Case
-ControlFocus, Edit1, %AppWindow%
-lasttext = fadsfSDFDFasdFdfsadfsadFDSFDf
-Gosub, GetText
-Return
-
-; Lock bundle checkbox
-Lock:
-Lock:=!Lock
-ControlFocus, Edit1, %AppWindow%
-If !Lock
+; This function is used to reset the search mode buttons when you switch search mode
+TB_ResetButtons(in)
 	{
-	 LoadBundle()
-	 UpdateLVColWidth()
+	 global
+	 loop, parse, in, CSV
+		MyToolbar.ModifyButton(A_LoopField,"Check",0)
 	}
-Gosub, SetStatusBar
-lasttext = fadsfSDFDFasdFdfsadfsadFDSFDf
-Gosub, GetText
-ShowPreview(PreviewSection)
 Return
 
-; Searchmethod radio
-SetSearchMethod:
-Gui, Submit, Nohide
-If (SMNorm = 1)
-	SearchMethod=1
-If (SMFuzz = 1)
-	SearchMethod=2
-If (SMRegx = 1)
-	SearchMethod=3
-If (SMMagc = 1)
-	SearchMethod=4
-ControlFocus, Edit1, %AppWindow%
-lasttext = fadsfSDFDFasdFdfsadfsadFDSFDf
-Gosub, GetText
+; This function will receive the messages sent by both Toolbar's buttons.
+TB_Messages(wParam, lParam)
+	{
+	 Global ; Function (or at least the Handles) must be global.
+	 MyToolbar.OnMessage(wParam) ; Handles toolbar's messages.
+	}
+
+; This function will receive the notifications.
+TB_Notify(wParam, lParam)
+	{
+	 Global ; Function (or at least the Handles) must be global.
+	 ReturnCode := MyToolbar.OnNotify(lParam) ; Handles notifications.
+	 return ReturnCode
+	}
+
+; When we open the GUI make sure each button in the correct state (un)checked
+TB_SetButtonStates:
+
+If ScriptPaused
+	MyToolbar.ModifyButton(MyToolbarIDs.ToggleScripts,"Check",ScriptPaused)
+Gosub, SetScriptButton
+
+If ShortcutPaused
+	MyToolbar.ModifyButton(MyToolbarIDs.ToggleShortcuts,"Check",ShortcutPaused)
+Gosub, SetShortcutButton
+
+If ShorthandPaused
+	MyToolbar.ModifyButton(MyToolbarIDs.ToggleShorthand,"Check",ShorthandPaused)
+Gosub, SetShorthandButton
+
+If SearchLetterVariations
+	MyToolbar.ModifyButton(MyToolbarIDs.ToggleLetterVariations,"Check",SearchLetterVariations)
+Gosub, SetShorthandButton
+
+Gosub, SetLockButton
+
+If Case
+	MyToolbar.ModifyButton(MyToolbarIDs.ToggleCase,"Check",Case)
+
+If (SearchMethod = 1)
+	MyToolbar.ModifyButton(MyToolbarIDs.RegularSearch,"Check",1)
+else If (SearchMethod = 2)
+	MyToolbar.ModifyButton(MyToolbarIDs.FuzzySearch,"Check",1)
+else If (SearchMethod = 3)
+	MyToolbar.ModifyButton(MyToolbarIDs.RegExSearch,"Check",1)
+else If (SearchMethod = 4)
+	MyToolbar.ModifyButton(MyToolbarIDs.MagicSearch,"Check",1)
 Return
+
+PauseScriptButton:
+	 ScriptPaused:=!ScriptPaused
+	 Menu, tray, ToggleCheck, Pause &Scripts
+	 PauseScriptButton:=MyToolbar.GetButtonState(MyToolbarIDs.ToggleScripts,"Checked")
+	 PauseScriptButton:=!PauseScriptButton
+	 MyToolbar.ModifyButton(MyToolbarIDs.ToggleScripts,"Check",PauseScriptButton)
+	 Gosub, SetScriptButton
+Return
+
+SetScriptButton:
+	 If ScriptPaused
+		MyToolbar.ModifyButtonInfo(MyToolbarIDs.ToggleScripts,"Image",MyToolbarIcons.NoScripts)
+	 else
+	 	MyToolbar.ModifyButtonInfo(MyToolbarIDs.ToggleScripts,"Image",MyToolbarIcons.Scripts)
+Return
+
+PauseShortcutButton:
+	 ShortcutPaused:=!ShortcutPaused
+	 Menu, tray, ToggleCheck, Pause &Shortcut
+	 PauseShortcutButton:=MyToolbar.GetButtonState(MyToolbarIDs.ToggleShortcuts,"Checked")
+	 PauseShortcutButton:=!PauseShortcutButton
+	 MyToolbar.ModifyButton(MyToolbarIDs.ToggleShortcuts,"Check",PauseShortcutButton)
+	 Gosub, SetShortcutButton
+Return
+
+SetShortcutButton:
+	 If ShortcutPaused
+		MyToolbar.ModifyButtonInfo(MyToolbarIDs.ToggleShortcuts,"Image",MyToolbarIcons.NoHotkeys)
+	 else
+	 	MyToolbar.ModifyButtonInfo(MyToolbarIDs.ToggleShortcuts,"Image",MyToolbarIcons.Hotkeys)
+Return
+
+PauseShorthandButton:
+	 ShorthandPaused:=!ShorthandPaused
+	 Menu, tray, ToggleCheck, Pause &Shorthand
+	 PauseShorthandButton:=MyToolbar.GetButtonState(MyToolbarIDs.ToggleShorthand,"Checked")
+	 PauseShorthandButton:=!PauseShorthandButton
+	 MyToolbar.ModifyButton(MyToolbarIDs.ToggleShorthand,"Check",PauseShorthandButton)
+	 Gosub, SetShorthandButton
+Return
+
+SetShorthandButton:
+	 If ShorthandPaused
+		MyToolbar.ModifyButtonInfo(MyToolbarIDs.ToggleShortHand,"Image",MyToolbarIcons.NoShortHand)
+	 else
+	 	MyToolbar.ModifyButtonInfo(MyToolbarIDs.ToggleShortHand,"Image",MyToolbarIcons.ShortHand)
+Return
+
+SetLockButton:
+	 MyToolbar.ModifyButton(MyToolbarIDs.ToggleLock,"Check",Lock)
+	 if lock
+		{
+		 MyToolbar.ModifyButtonInfo(MyToolbarIDs.ToggleLock,"Image",MyToolbarIcons.Locked)
+		}
+	 else if !lock
+		{
+		 MyToolbar.ModifyButtonInfo(MyToolbarIDs.ToggleLock,"Image",MyToolbarIcons.UnLocked)
+		}
+Return
+
+ResetSearch:
+	 lasttext = fadsfSDFDFasdFdfsadfsadFDSFDf
+	 Gosub, GetText
+Return
+
+; Shortcuts for the button bar
+#IfWinActive, ahk_group AppTitle
+
+; LetterVariations
+!v::
+SearchLetterVariations:
+	 SearchLetterVariations:=MyToolbar.GetButtonState(MyToolbarIDs.ToggleLetterVariations,"Checked")
+	 SearchLetterVariations:=!SearchLetterVariations
+	 MyToolbar.ModifyButton(MyToolbarIDs.ToggleLetterVariations,"Check",SearchLetterVariations)
+	 Gosub, ResetSearch
+Return
+
+; lock sensitive
+!l::
+Lock:
+	 lock:=MyToolbar.GetButtonState(MyToolbarIDs.ToggleLock,"Checked")
+	 lock:=!lock
+	 Gosub, SetLockButton
+	 if !lock
+		{
+		 LoadBundle()
+		 UpdateLVColWidth()
+		}
+	 Gosub, SetStatusBar
+	 Gosub, ResetSearch
+	 ShowPreview(PreviewSection)
+Return
+
+; Case sensitive
+!c::
+Case:
+	 case:=MyToolbar.GetButtonState(MyToolbarIDs.ToggleCase,"Checked")
+	 case:=!case
+	 MyToolbar.ModifyButton(MyToolbarIDs.ToggleCase,"Check",case)
+	 Gosub, ResetSearch
+Return
+
+; Regular search
+!r::
+Label10:
+	 SMState1:=MyToolbar.GetButtonState(MyToolbarIDs.RegularSearch,"Checked")
+	 if (SMState1 = 1)
+		Return
+	 SMState1:=!SMState1
+	 TB_ResetButtons(MyToolbarIDs.FuzzySearch "," MyToolbarIDs.RegExSearch "," MyToolbarIDs.MagicSearch)
+	 MyToolbar.ModifyButton(MyToolbarIDs.RegularSearch,"Check",SMState1)
+	 SearchMethod:=1
+	 Gosub, ResetSearch
+Return
+
+!z::
+Label11: ; Fuzzy Search
+	 SMState2:=MyToolbar.GetButtonState(MyToolbarIDs.FuzzySearch,"Checked")
+	 if (SMState2 = 1)
+		Return
+	 SMState2:=!SMState2
+	 TB_ResetButtons(MyToolbarIDs.RegularSearch "," MyToolbarIDs.RegExSearch "," MyToolbarIDs.MagicSearch)
+	 MyToolbar.ModifyButton(MyToolbarIDs.FuzzySearch,"Check",SMState2)
+	 SearchMethod:=2
+	 Gosub, ResetSearch
+Return
+
+!x::
+Label12: ; RegEx Search
+	 SMState3:=MyToolbar.GetButtonState(MyToolbarIDs.RegExSearch,"Checked")
+	 if (SMState3 = 1)
+		Return
+	 SMState3:=!SMState3
+	 TB_ResetButtons(MyToolbarIDs.RegularSearch "," MyToolbarIDs.FuzzySearch "," MyToolbarIDs.MagicSearch)
+	 MyToolbar.ModifyButton(MyToolbarIDs.RegExSearch,"Check",SMState3)
+	 SearchMethod:=3
+	 Gosub, ResetSearch
+Return
+
+!m::
+Label13: ; Magic Search
+	 SMState4:=MyToolbar.GetButtonState(MyToolbarIDs.MagicSearch,"Checked")
+	 if (SMState4 = 1)
+		Return
+	 SMState4:=!SMState4
+	 TB_ResetButtons(MyToolbarIDs.RegularSearch "," MyToolbarIDs.FuzzySearch "," MyToolbarIDs.RegExSearch)
+	 MyToolbar.ModifyButton(MyToolbarIDs.MagicSearch,"Check",SMState4)
+	 SearchMethod:=4
+	 Gosub, ResetSearch
+Return
+#IfWinActive
+
+; GUI related hotkeys
 
 #IfWinActive Lintalist snippet editor
 :*:[::[[]]{left 2}
@@ -1079,8 +1245,7 @@ Return
 
 F2::
 OmniSearch:=!OmniSearch
-LastText=asdfADSDFGadsf
-Gosub, GetText
+Gosub, ResetSearch
 Return
 
 ; JJ ADD BEGIN
@@ -1185,9 +1350,8 @@ IfMsgBox, Yes
 	 LoadBundle(Load)
 	 UpdateLVColWidth()
 	 ControlFocus, Edit1, %AppWindow%
-	 lasttext = fadsfSDFDFasdFdfsadfsadFDSFDf
+	 Gosub, ResetSearch
 	 Gosub, SetStatusBar
-	 Gosub, GetText
 	 ShowPreview(PreviewSection)
 	 Snippet[Paste1,"Save"]:="1"
 	}
@@ -1217,8 +1381,6 @@ If WinExist(AppWindow)
 	}
 Gosub, BundlePropertiesEditor
 Return
-
-
 
 ;Enter:: ; not present but default Gui action, paste text from part1
 
@@ -1266,7 +1428,7 @@ If (PreviousPos = 0) ; exception, focus is not on listview this will allow you t
 	 ControlSend, SysListview321, {End}, %AppWindow%
 	 If (DisplayBundle > 1)
 		 GuiControl, +Redraw, SelItem
-	 ShowPreview(PreviewSection)	 
+	 ShowPreview(PreviewSection)
 	 Return
 	}
 ControlSend, SysListview321, {Up}, %AppWindow%
@@ -1500,7 +1662,7 @@ WinGetPos, X, Y, , ,  %AppWindow% ; remember position set by user
 XY:=X "|" Y
 Gui, 1:Destroy
 CurrText=
-LastText=ladjflsajfasjflsdjlleiei
+lasttext = fadsfSDFDFasdFdfsadfsadFDSFDf
 ViaText=0
 ViaShorthand=0
 OmniSearch:=0
@@ -1520,7 +1682,7 @@ Else If (A_ThisMenuItem = "&Quick Start Guide")
 	Gosub, QuickStartGuideMenu
 Else If (A_ThisMenuItem = "Check for updates")
 	Run, %A_AhkPath% %A_ScriptDir%\include\update.ahk
-Else If (A_ThisMenuItem = "&Manage counters")
+Else If (A_ThisMenuItem = "&Manage Counters")
 		{
 		 Gosub, SaveSettingsCounters
 		 StoreCounters:=Counters
@@ -1566,17 +1728,14 @@ Else If (A_ThisMenuItem = "&Configuration")
 		}
 	}
 Else If (A_ThisMenuItem = "Pause &Shorthand")
-	Gosub, PauseShorthand
+	Gosub, PauseShorthandButton
 Else If (A_ThisMenuItem = "Pause &Shortcut")
 	{
-	ShortcutPaused:=!ShortcutPaused
-	Menu, tray, ToggleCheck, Pause &Shortcut
-	Gosub, PauseShortcut
+	 Gosub, PauseShortcut
 	}
 Else If (A_ThisMenuItem = "Pause &Scripts")
 	{
-	 ScriptPaused:=!ScriptPaused
-	 Menu, tray, ToggleCheck, Pause &Scripts
+	 Gosub, PauseScriptButton
 	}
 Else If (A_ThisMenuItem = "&Manage Bundles") or (A_ThisMenuItem = "&Manage Bundles`tF10")
 	 Gosub, EditF10
@@ -1596,7 +1755,7 @@ Else If (A_ThisMenuItem = "&Manage Bundles") or (A_ThisMenuItem = "&Manage Bundl
 	 Gosub, EditF10
 Else If (A_ThisMenuItem = "&Help")
 	Run, docs\index.html
-Else If (A_ThisMenuItem = "&Manage local variables")
+Else If (A_ThisMenuItem = "&Manage Local Variables")
 		{
 		 If WinExist(AppWindow " ahk_class AutoHotkeyGUI")
 			Gui, 1:+Disabled
@@ -1613,7 +1772,6 @@ Else If (A_ThisMenuItem = "&Manage local variables")
 			 Run % DllCall( "GetCommandLineW", "Str" ) ; reload with command line parameters
 			}
 		}
-
 ; Tools menu
 Else If (A_ThisMenuItem = "Encrypt text")
 	 Run, %A_AhkPath% include\EncodeText.ahk
@@ -1625,62 +1783,15 @@ else If (A_ThisMenuItem = "Convert Texter bundle")
 	Run, %A_AhkPath% Extras\BundleConverters\Texter.ahk
 else If (A_ThisMenuItem = "Convert UltraEdit taglist")
 	Run, %A_AhkPath% Extras\BundleConverters\UltraEdit.ahk
+; /tools
 
 Return
-
-
-; tools
-
-
-Return
-
 ; /for For tray and Search/Edit Gui menu
 
 
 ; for filemenu - e.g. the bundles menu option
 MenuHandler:
-If (A_ThisMenuItem = "&Load All Bundles")
-	{
-	 If (LoadAll = 1)
-		{
-		 LoadAll=0
-		 Menu, tray, UnCheck, &Load All Bundles
-		 Try
-			{
-			 Menu, file, UnCheck, &Load All Bundles
-			}
-		 Catch
-			{
-			 ;
-			}
-		}
-	 Else If (LoadAll = 0)
-		{
-		 LoadAll=1
-		 Menu, tray, Check, &Load All Bundles
-		 Try
-			{
-			 Menu, file, Check, &Load All Bundles
-			}
-		 Catch
-			{
-			 ;
-			}
-		}
-	 Lock = 0
-	 GuiControl, 1: ,Lock, 0
-		LoadBundle()
-	 UpdateLVColWidth()
-	 Gosub, SetStatusBar
-	 ShowPreview(PreviewSection)
-	 Loop, parse, MenuName_HitList, |
-		{
-		 StringSplit, MenuText, A_LoopField, % Chr(5) ; %
-		 Menu, file, UnCheck, &%MenuText1%
-		}
-	 Return
-	}
-Else
+If (A_ThisMenuItem <> "&Load All Bundles")
 	{
 	 LoadTmp=
 	 Loop, parse, MenuName_HitList, |
@@ -1689,13 +1800,7 @@ Else
 		 If ("&" . MenuText1 = A_ThisMenuItem)
 			{
 			 Load:=MenuText2
-			 Lock = 1
-			 GuiControl, 1:, Lock, 1
-			 LoadBundle()
-			 UpdateLVColWidth()
-			 Gosub, SetStatusBar
-			 ShowPreview(PreviewSection)
-			 LoadAll=0
+			 LoadAll:=0
 			 Menu, tray, UnCheck, &Load All Bundles
 			 Try
 				{
@@ -1714,7 +1819,59 @@ Else
 			 Break
 			}
 		}
+	 Lock:=1
 	}
+else
+	{
+	 ; first we take care of the checkmarks in the two menus (tray + search gui)
+	 ; checkmarks
+	 If (LoadAll = 1)
+		{
+		 LoadAll=0
+		 Load:=""
+		 Menu, tray, UnCheck, &Load All Bundles
+		 Try
+			{
+			 Menu, file, UnCheck, &Load All Bundles
+			}
+		 Catch
+			{
+			 ;
+			}
+
+		 ; uncheck all File menu items (bundle menu item in search gui)
+		 Loop, parse, MenuName_HitList, |
+			{
+			 StringSplit, MenuText, A_LoopField, % Chr(5) ; %
+			 Menu, file, UnCheck, &%MenuText1%
+			}
+
+		}
+	 Else If (LoadAll = 0)
+		{
+		 LoadAll=1
+		 Load:=Group
+		 Menu, tray, Check, &Load All Bundles
+		 Try
+			{
+			 Menu, file, Check, &Load All Bundles
+			}
+		 Catch
+			{
+			 ;
+			}
+		}
+	 ; /checkmarks
+	 Lock:=LoadAll
+	}
+
+	Gosub, SetLockButton
+	LoadBundle(Load)
+
+	UpdateLVColWidth()
+	Gosub, SetStatusBar
+	ShowPreview(PreviewSection)
+
 Return
 ; /for filemenu
 
@@ -1738,8 +1895,6 @@ Return
 ;/PluginMenuHandler
 
 PauseShortcut: ; Toggle Hotkeys defined in Bundles
-;ShortcutPaused:=!ShortcutPaused
-;Menu, tray, ToggleCheck, Pause &Shortcut
 Loop, parse, Group, CSV
 	{
 	 Bundle:=A_LoopField
@@ -1763,12 +1918,7 @@ Loop, parse, Group, CSV
 		 _h2=
 		}
 	}
-
-Return
-
-PauseShorthand:
-ShorthandPaused:=!ShorthandPaused
-Menu, tray, ToggleCheck, Pause &Shorthand
+Gosub, PauseShortcutButton
 Return
 
 PauseProgram:
@@ -1787,7 +1937,6 @@ Menu, tray, ToggleCheck, &Pause Lintalist
 Suspend
 Return
 
-
 SetStatusBar:
 MenuNames=
 ListTotal=0
@@ -1801,7 +1950,6 @@ StringTrimRight, MenuNames, MenuNames, 2
 SB_SetText(MenuNames,1) ; show active file in statusbar
 SB_SetText(ListTotal . "/" . ListTotal OmniSearchText,2) ; show hits / total
 Return
-
 
 ProcessText:
 
@@ -1844,7 +1992,7 @@ CheckFormat:
 		 StringReplace,Clip,Clip,[[html]],,All
 		 formatHTML:=1
 		 formatted:=1
-		}	 	
+		}
 Return
 
 CheckCursorPos()
@@ -1867,7 +2015,7 @@ CheckCursorPos()
 		 If (BackUp > 0)
 			{
 			 If (PluginMultiCaret > 0)
-			 	BackLeft:=StrLen(SubStr(UpLines,1,InStr(UpLines,"`n")))-1 + StrLen(MultiCaret[ActiveWindowProcessName].str) ; TODOMC
+				BackLeft:=StrLen(SubStr(UpLines,1,InStr(UpLines,"`n")))-1 + StrLen(MultiCaret[ActiveWindowProcessName].str) ; TODOMC
 			 else
 				BackLeft:=StrLen(SubStr(UpLines,1,InStr(UpLines,"`n")))-1
 			}
@@ -1878,7 +2026,7 @@ CheckCursorPos()
 			 StringReplace, Clipboard, Clipboard, ^|, % MultiCaret[ActiveWindowProcessName].str, All ; TODOMC
 			}
 		 else
-		 	StringReplace, Clipboard, Clipboard, ^|, ,All ; TODOMC
+			StringReplace, Clipboard, Clipboard, ^|, ,All ; TODOMC
 		 UpLines=
 		 Clip=
 		}
@@ -1942,17 +2090,37 @@ Catch
 	 ;
 	}
 
+
 Menu, Edit, Add, &Edit Snippet`tF4,       GlobalMenuHandler
+Menu, Edit, Icon,&Edit Snippet`tF4,       icons\snippet_edit.ico
+
 Menu, Edit, Add, &Copy Snippet`tF5,       GlobalMenuHandler
+Menu, Edit, Icon,&Copy Snippet`tF5,       icons\snippet_copy.ico
+
 Menu, Edit, Add, &Move Snippet`tF6,       GlobalMenuHandler
+Menu, Edit, Icon,&Move Snippet`tF6,       icons\snippet_move.ico
+
 Menu, Edit, Add, &New Snippet`tF7,        GlobalMenuHandler
+Menu, Edit, Icon,&New Snippet`tF7,        icons\snippet_new.ico
+
 Menu, Edit, Add, &Remove Snippet`tF8,     GlobalMenuHandler
+Menu, Edit, Icon,&Remove Snippet`tF8,     icons\snippet_remove.ico
+
 Menu, Edit, Add,
+
 Menu, Edit, Add, &Manage Bundles`tF10,    GlobalMenuHandler
-Menu, Edit, Add, &Manage local variables, GlobalMenuHandler
-Menu, Edit, Add, &Manage counters,        GlobalMenuHandler
+Menu, Edit, Icon,&Manage Bundles`tF10,    icons\lintalist_bundle.ico
+
+Menu, Edit, Add, &Manage Local Variables, GlobalMenuHandler
+Menu, Edit, Icon,&Manage Local Variables, icons\variables.ico
+
+Menu, Edit, Add, &Manage Counters,        GlobalMenuHandler
+Menu, Edit, Icon,&Manage Counters,        icons\counter.ico
+
 Menu, Edit, Add,
+
 Menu, Edit, Add, &Configuration,          GlobalMenuHandler
+Menu, Edit, Icon,&Configuration,          icons\gear.ico
 Menu, MenuBar, Add, &Edit, :Edit
 
 Return
@@ -2081,18 +2249,18 @@ StringTrimRight, LastBundle, LastBundle, 1
 IniWrite, %LastBundle%  , %IniFile%, Settings, LastBundle
 If (SubStr(DefaultBundle, 0) = ",")
 	StringTrimRight, DefaultBundle, DefaultBundle, 1
-IniWrite, %DefaultBundle%, %IniFile%, Settings, DefaultBundle
-IniWrite, %SearchMethod%, %IniFile%, Settings, SearchMethod
-IniWrite, %Load%        , %IniFile%, Settings, Load
-IniWrite, %LoadAll%     , %IniFile%, Settings, LoadAll
-IniWrite, %SearchLetterVariations%        , %IniFile%, Settings, SearchLetterVariations
-IniWrite, %Lock%        , %IniFile%, Settings, Lock
-IniWrite, %Case%        , %IniFile%, Settings, Case
-IniWrite, %Width%       , %IniFile%, Settings, Width
-IniWrite, %Height%      , %IniFile%, Settings, Height
-IniWrite, %ShorthandPaused%, %IniFile%, Settings, ShorthandPaused
-IniWrite, %ShortcutPaused% , %IniFile%, Settings, ShortcutPaused
-IniWrite, %ScriptPaused%   , %IniFile%, Settings, ScriptPaused
+IniWrite, %DefaultBundle%      , %IniFile%, Settings, DefaultBundle
+IniWrite, %SearchMethod%       , %IniFile%, Settings, SearchMethod
+IniWrite, %Load%               , %IniFile%, Settings, Load
+IniWrite, %LoadAll%            , %IniFile%, Settings, LoadAll
+IniWrite, %SearchLetterVariations% , %IniFile%, Settings, SearchLetterVariations
+IniWrite, %Lock%               , %IniFile%, Settings, Lock
+IniWrite, %Case%               , %IniFile%, Settings, Case
+IniWrite, %Width%              , %IniFile%, Settings, Width
+IniWrite, %Height%             , %IniFile%, Settings, Height
+IniWrite, %ShorthandPaused%    , %IniFile%, Settings, ShorthandPaused
+IniWrite, %ShortcutPaused%     , %IniFile%, Settings, ShortcutPaused
+IniWrite, %ScriptPaused%       , %IniFile%, Settings, ScriptPaused
 IniWrite, %ShowQuickStartGuide%, %IniFile%, Settings, ShowQuickStartGuide
 
 Gosub, SaveStartupSettings
@@ -2125,11 +2293,12 @@ Return
 #Include %A_ScriptDir%\include\PlaySound.ahk
 #Include %A_ScriptDir%\include\LetterVariations.ahk
 #Include %A_ScriptDir%\include\ReadMultiCaretIni.ahk
-#Include %A_ScriptDir%\include\WinClip.ahk    ; by Deo
-#Include %A_ScriptDir%\include\WinClipAPI.ahk ; by Deo
-#Include %A_ScriptDir%\include\Markdown2HTML.ahk ; by fincs + additions
+#Include %A_ScriptDir%\include\WinClip.ahk         ; by Deo
+#Include %A_ScriptDir%\include\WinClipAPI.ahk      ; by Deo
+#Include %A_ScriptDir%\include\Markdown2HTML.ahk   ; by fincs + additions
 #Include %A_ScriptDir%\include\Class_LV_Colors.ahk ; by just me
-#Include %A_ScriptDir%\include\AutoXYWH.ahk ; by toralf & tmplinshi
+#Include %A_ScriptDir%\include\AutoXYWH.ahk        ; by toralf & tmplinshi
+#Include %A_ScriptDir%\include\Class_Toolbar.ahk   ; by pulover
 ; /Includes
 
 SaveSettingsCounters:
@@ -2150,11 +2319,15 @@ If (SetStartup_Start <> "")
 	IniWrite, %SetStartup_Start%   , %IniFile%, Settings, SetStartup
 If (SetDesktop_Start <> "")
 	IniWrite, %SetDesktop_Start%   , %IniFile%, Settings, SetDesktop
+; JJ ADD BEGIN
 If (SetStartmenu_Start <> "")
 	IniWrite, %SetStartmenu_Start%   , %IniFile%, Settings, SetStartmenu
+; JJ ADD END
 SetStartup_Start:=""
 SetDesktop_Start:=""
+; JJ ADD BEGIN
 SetStartmenu_Start:=""
+; JJ ADD END
 Return
 ; -------------------------------------------------------------------------------
 
@@ -2252,18 +2425,19 @@ If ErrorLevel
 	Gui, 1:Destroy
 	Return
 }
+MathHelperSnippet := ClipSet("g",1,SendMethod)
 GoSub, EditF7
-Sleep, 200
-IfWinActive, Lintalist snippet editor
-{
-	ClipSet("vt",1,SendMethod)
-	SendInput, +{Tab}
-	ClipSet("ea",1,SendMethod)
-	WinWaitActive, %AppWindow%, , 60
-	if ErrorLevel
-		Return
-	Reload
-}
+;Sleep, 200
+;IfWinActive, Lintalist snippet editor
+;{
+;	ClipSet("vt",1,SendMethod)
+;	SendInput, +{Tab}
+;	ClipSet("ea",1,SendMethod)
+;	WinWaitActive, %AppWindow%, , 60
+;	if ErrorLevel
+;		Return
+;	Reload
+;}
 ClipSet("ea",1,SendMethod)
 Return
 
@@ -2289,7 +2463,6 @@ WinWaitActive, Style Management, , 3
 SendEvent {TAB}{Enter}{ALT DOWN}vee{ALT UP}{CTRL DOWN}2{CTRL UP}
 Return	
 
-
 ; Få bredde (w) og højde (h) af det givne vindue (hwnd)
 GetClientSize(hwnd, ByRef w, ByRef h)
 
@@ -2299,6 +2472,86 @@ GetClientSize(hwnd, ByRef w, ByRef h)
     w := NumGet(rc, 8, "int")
     h := NumGet(rc, 12, "int")
 }
+
+
+; Lintalist for Math-specfik paste procedure
+MathPaste:
+;WinGetClass, ActiveWindowClass1, A
+;WinGetActiveTitle, ActiveWindowTitle1
+isMaple:=1
+IfNotInString, ActiveWindowTitle, - Maple
+  isMaple:=0
+if (ActiveWindowClass <> "SunAwtFrame")
+  isMaple:=0
+IfInString, Text1, [[image= ; don't use Maple handling for images
+  isMaple:=0
+  ; Burde også tjekkes for Text2
+If (isMaple = 1) ; If pasting to Maple - will paste Text 1 by default (and fall back to Text 2)
+{
+  If (Text1 = "")
+    Text1:=Text2
+  ; Lav udskiftninger fra plugins (vigtigt at det sker inden "Gosub, ProcessText")
+  StringReplace, Text1, Text1, `^, {hatchar}, All
+  Text1 := RegExReplace(Text1, "iU)\[\[Underline=([^[]*)\]\]",  "^u$1^u")
+  Text1 := RegExReplace(Text1, "iU)\[\[Math=([^[]*)\]\]",  "^r$1^m")
+  ; Foretag udskiftninger af specielle tegn, så send-kommandoen fungerer som forventet
+  StringReplace, Text1, Text1, ``, ````, All  ; Do this replacement first to avoid interfering with the others below.
+  StringReplace, Text1, Text1, `r`n, ``r, All  ; Using `r works better than `n in MS Word, etc.
+  StringReplace, Text1, Text1, `n, ``r, All
+  ;StringReplace, Text1, Text1, `^, {ASC 0094}, All  ; {ASC 0094}, All ; handled below instead
+  StringReplace, Text1, Text1, {right}, {right}, All  ; {ASC 0094}, All
+  StringReplace, Text1, Text1, `!, {!}, All
+  StringReplace, Text1, Text1, `+, {+}, All
+  StringReplace, Text1, Text1, `#, {#}, All
+  StringReplace, Text1, Text1, ``r, `^`+j`^m, All
+  ;~ While(SubStr(Text1, StrLen(Text1)-4) = "^+j^m")
+    ;~ StringTrimRight, Text1, Text1, 5
+  ;~ MsgBox, %Text1% ; for debugging
+  Clip0 = %ClipBoardAll% ; store clipboard
+  Clip := "^m" . Text1
+  Gosub, ProcessText ; to support all plugins except for rtf, md, image, html, and clipboard with formatting/case change
+  ;~ MsgBox, %Clip% ; for debugging
+  If (InStr(Clip, "{hatchar}"))
+  {
+    ClipArray := StrSplit(Clip, "{hatchar}")
+    LastClip := ClipArray.Pop()
+    for index, element in ClipArray
+    {
+      SendInput, %element%
+      Sleep, 200
+      SendInput, {ASC 0094}
+      Sleep, 10
+    }
+    SendInput, %LastClip%
+    LastClip=
+    ClipArray=
+  }
+  Else
+    SendInput, ^m%Clip%
+    ;SendKey(SendMethod, Clip)
+  ClipBoard = %Clip0% ; restore clipboard
+  Text1=
+  Text2=
+  Clip=
+  VarSetCapacity(Clip0, 0)
+  Return
+}
+Else
+{
+  ; Fjern symboler som kun giver mening i Maple
+  StringReplace, Text1, Text1, `^`^, `^, All
+  StringReplace, Text1, Text1, `{right`}, , All
+  StringReplace, Text1, Text1, %A_Tab%, ``t, All
+  StringReplace, Text1, Text1, `;, ```;, All
+
+  StringReplace, Text2, Text2, `^`^, `^, All
+  StringReplace, Text2, Text2, `{right`}, , All
+  StringReplace, Text2, Text2, %A_Tab%, ``t, All
+  StringReplace, Text2, Text2, `;, ```;, All
+}
+Return
+
+
 
 ; JJ ADD END
 #Include *i %A_ScriptDir%\autocorrect.ahk

@@ -40,11 +40,11 @@ LetterVariations(text,c=0)
 	 , "y" : "ýỳŷÿỹỷỵ"
 	 , "z" : "źžż" }
 
-	 if (c = 0)
+	 if (c = 0) or (c = false) or (c = "")
 		for k, v in Array
 			text:=RegExReplace(text,"im)" k,"[" k v "]")
 
-	 if (c = 1)
+	 if (c = 1) or (c = true)
 		{
 		 for k, v in Array
 			{
