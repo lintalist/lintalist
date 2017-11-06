@@ -19,9 +19,9 @@
 <b>Lintalist</b> allows you to store and (incrementally) <b>search</b> and <b>edit texts</b> in bundles and <b>paste</b> a selected text in your active program. The text <b>can</b> be interactive, for example you can automatically insert the current time and date, ask for (basic) user input or make a selection from a list etc and finally it can also <b>run a script</b>. You can use <b>keyboard shortcuts</b> or <b>abbreviations</b> to paste the text (or run the script) without opening the search window.<br />
 <br />
 <span style='font-size:.8em;'>You can <b>extend Lintalist</b> by writing your own <b><a href='#InteractiveBundleText'>plugins</a></b>. Lintalist is open source and developed in <a href='https://autohotkey.com/'>AutoHotkey</a>, an easy to learn scripting language for Windows.
-[WinXP(sp3)/Vista/7/8]<br /></span>
+[WinXP(sp3)/Vista/7/8/10]<br /></span>
 <span style='font-size:.8em;'>As of LintaList v1.1 several types of formatted text are supported in Snippets.</span>
-<span class='date' style='float:right;display:inline;margin-top:0px;'>doc rev. 20170218</span></p>
+<span class='date' style='float:right;display:inline;margin-top:0px;'>doc rev. 20171106</span></p>
 </div>
 
 <div class='column'>
@@ -69,7 +69,7 @@
 </div>
 
 <div class='column'>
-<p><b>Download Lintalist <em>1.9.2</em></b>
+<p><b>Download Lintalist <em>1.9.3</em></b>
 <p>
 <a href='https://github.com/lintalist/lintalist/releases'><img src='img/lintalist65x65.gif' alt='Download Lintalist' width='65' align='left' border='0' style='margin-right: 5px;' /></a>
 Download (incl. source):<br />
@@ -154,7 +154,7 @@ Installing Lintalist is easy, just download the ZIP file and unpack it in a fold
 If you are already an AutoHotkey user and have it installed, it is recommended to run <b>Lintalist.ahk</b>, this will ensure you will be running Lintalist with your preferred version of AutoHotkey. If you don't have AutoHotkey installed you can start <b>Lintalist.exe</b>.
 
 <b>Notes:</b>
-- Lintalist.exe: A renamed AutoHotkey.exe (v1.1.24.05 32-bit Unicode, See https://autohotkey.com/ and/or https://autohotkey.com/download/)
+- Lintalist.exe: A renamed AutoHotkey.exe (v1.1.26.01 32-bit Unicode, See https://autohotkey.com/ and/or https://autohotkey.com/download/)
 - Lintalist.ahk: The actual (main) source code of the program (see https://github.com/lintalist/lintalist)
 
 <h2 id='Searching'>Normal use: Starting Lintalist and searching for a Snippet</h2>
@@ -739,7 +739,9 @@ Basic example <code>[[Snippet=shorthandcode]]</code></td></tr>
 
 <tr id='localvar-plugin'><td><code>[[Var=Name]]</code> *4</td><td>Insert local variables. These variables are available <b>across bundles</b>. See <a href='#LocalBundle'>Local bundle variables</a> below. As of v1.0.3 local variables are also available in scripts (making it the only plugin available in scripts for the time being)</td></tr>
 
-<tr><td><code>[[html]], [[md]], [[rtf=]], [[image=]]</code> </td><td>Use these for <a href='#FormattedText'>Formatted Text Snippets</a>.</td></tr>
+<tr><td><code>[[html]]</code>, <code>[[md]]</code>, <code>[[rtf=]]</code>, <code>[[image=]]</code> </td><td>Use these for <a href='#FormattedText'>Formatted Text Snippets</a>.</td></tr>
+
+<tr><td><code>[[llpart1]]</code>, <code>[[llpart1]]</code> </td><td>Use these for as placeholders for Snippet Part1 and Part2 in your <a href='#Script'>Script</a>.</td></tr>
 
 </tbody>
 </table>
@@ -1072,7 +1074,7 @@ Your sincerely,
 
 </blockquote>
 
-<h3 id='Script'>Script</h3>
+<h3 id='Script'>Script(s)</h3>
 
 You can include any valid AutoHotkey script into a snippet. The code is saved to a temporary file and run with AutoHotkey. The temporary script is written to <b>tmpscrpts\</b> in your Lintalist directory. After the script has finished it is deleted.
 
@@ -1114,6 +1116,40 @@ Functions:
   SendMethod as above with SendKey, set by configuration.
   See <b>include\default.ahk</b> for full details as ClipSet has a number of
   other functions which may be of interest for more advanced use(r)s.
+
+<b>Special Script plugins</b>
+
+Use <code>[[llpart1]]</code> and <code>[[llpart2]]</code> in your script to include the contents of Part1 and/or Part2 in your scripts.
+It will process any plugins before setting the result as a variable in a (multiline) variable in your script.
+
+This Snippet code:
+<blockquote class='boxed'>
+[[llpart1]]
+MsgBox % llpart1
+
+</blockquote>
+
+Will turn into the following script code:
+<blockquote class='boxed'>
+llpart1=
+(join`n
+....Text of Part1...
+)
+MsgBox % llpart1
+
+</blockquote>
+If Part1 or Part2 have the Caret plugin <code>^|</code>, the variables <em>LLBackLeft1, LLBackLeft2, LLBackUp1</em> and <em>LLBackUp2</em> are
+also stored. You can use these to position the caret by sending UP and LEFT keys (do UP first, LEFT second)
+
+<blockquote class='boxed'>
+; send or paste llpart1, for llpart2 use LLBackUp2 and LLBackLeft2
+If LLBackUp1
+	Send {Up %LLBackUp1%}
+If LLBackLeft1
+	Send {Left %LLBackLeft1%}
+
+</blockquote>
+
 
 <h2 id='FormattedText'>Formatted Text <em>Snippets</em></h2>
 
@@ -1417,7 +1453,7 @@ There is also a configuration setting that can do this: ActivateWindow
     will find find snippets with either THIS or THAT as part of the text (part1, part2, shorthand)
 
 <a name='faq5'></a><b>Q5:</b> I type the shorthand (abbreviation) or press the shortcut but nothing happens!
-<b>A4:</b> - Make sure shortcuts and shorthand are not disabled (tray menu). Perhaps Lintalist is paused.
+<b>A5:</b> - Make sure shortcuts and shorthand are not disabled (tray menu). Perhaps Lintalist is paused.
     - Another bundle may be locked so the bundle you think should be active isn't, unlock it.
     - Make sure the title match of the bundle is set correctly if it is not the default bundle.
 

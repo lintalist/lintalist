@@ -4,10 +4,10 @@ Name            : Lintalist
 Author          : Lintalist
 Purpose         : Searchable interactive lists to copy & paste text, run scripts,
                   using easily exchangeable bundles
-Version         : 1.9.2
+Version         : 1.9.3
 Code            : https://github.com/lintalist/
 Website         : http://lintalist.github.io/
-AHKscript Forum : https://autohotkey.com/boards/viewtopic.php?f=6&t=3378
+AutoHotkey Forum: https://autohotkey.com/boards/viewtopic.php?f=6&t=3378
 License         : Copyright (c) 2009-2017 Lintalist
 
 This program is free software; you can redistribute it and/or modify it under the
@@ -41,7 +41,7 @@ PluginMultiCaret:=0 ; TODOMC
 
 ; Title + Version are included in Title and used in #IfWinActive hotkeys and WinActivate
 Title=Lintalist
-Version=1.9.2
+Version=1.9.3
 
 Gosub, ReadPluginSettings
 
@@ -184,7 +184,7 @@ ViaShorthand=0
 
 ; Toolbar setup
 ; Create an ImageList.
-ILA := IL_CreateCustom(17, 5, 16)
+ILA := IL_CreateCustom(17, 5, IconSize) ; TODO BIGICONS
 IL_Add(ILA, "icons\snippet_new.ico")
 IL_Add(ILA, "icons\snippet_edit.ico")
 IL_Add(ILA, "icons\snippet_copy.ico")
@@ -227,6 +227,9 @@ IL_CreateCustom(InitialCount=17, GrowCount=5, IconSize=16)
 			, "Int", GrowCount)
 	}
 ; /Toolbar setup
+
+; Listview ColorList
+lvc:={1: "0xF5F5E2", 2: "0xF9F5EC", 3: "0xF9F3EC", 4: "0xF9EFEC", 5: "0xF5E8E2", 6: "0xFAF2EF", 7: "0xF8F1F1", 8: "0xFFEAEA", 9: "0xFAE7EC", 10: "0xFFE3FF", 11: "0xF8E9FC", 12: "0xEEEEFF", 13: "0xEFF9FC", 14: "0xF2F9F8", 15: "0xFFECEC", 16: "0xFFEEFB", 17: "0xFFECF5", 18: "0xFFEEFD", 19: "0xFDF2FF", 20: "0xFAECFF", 21: "0xF1ECFF", 22: "0xFFECFF", 23: "0xF4D2F4", 24: "0xF9EEFF", 25: "0xF5EEFD", 26: "0xEFEDFC", 27: "0xEAF1FB", 28: "0xDBF0F7", 29: "0xEEEEFF", 30: "0xECF4FF", 31: "0xF9FDFF", 32: "0xE6FCFF", 33: "0xF2FFFE", 34: "0xCFFEF0", 35: "0xEAFFEF", 36: "0xE3FBE9", 37: "0xF3F8F4", 38: "0xF1FEED", 39: "0xE7FFDF", 40: "0xF2FFEA", 41: "0xFFFFE3", 42: "0xFCFCE9"}
 
 ; /INI --------------------------------------
 
@@ -273,21 +276,23 @@ Else
 	Gosub, ToggleView
 
 Gui, 1:Destroy ; just to be sure
-Gui, 1:+Border -DPIScale -Resize +MinSize%Width%x%Height%
+Gui, 1:+Border +Resize +MinSize%Width%x%Height%
 Gui, 1:Menu, MenuBar
-Gui, 1:Add, Picture, x4 y4 w16 h16, icons\search.png
-Gui, 1:Add, Edit, 0x8000 x25 y2 w%SearchBoxWidth% h20 gGetText vCurrText, %CurrText%
+Gui, 1:Add, Picture, x4 y4 w%SearchIconSize% h-1, icons\search.ico ; TODO BIGICONS
+Gui, 1:Font, s%SearchFontSize% ; TODO BIGICONS
+Gui, 1:Add, Edit, 0x8000 x%SearchBoxX% y%SearchBoxY% w%SearchBoxWidth% h%SearchBoxHeight% -VScroll -HScroll gGetText vCurrText, %CurrText% ; TODO BIGICONS
 Gui, 1:Add, Button, x300 y2 w30 h20 0x8000 Default hidden gPaste, OK
+Gui, 1:Font ; TODO BIGICONS
 
 ; TBSTYLE_FLAT     := 0x0800 Required to show separators as bars.
 ; TBSTYLE_TOOLTIPS := 0x0100 Required to show Tooltips.
-Gui, 1:Add, Custom, ClassToolbarWindow32 hwndhToolbar 0x0800 0x0100 0x0008 0x0040 x%barx% y%Yctrl% w325 h20
+Gui, 1:Add, Custom, ClassToolbarWindow32 hwndhToolbar 0x0800 0x0100 0x0008 0x0040 x%barx% y%Yctrl% w550 ; TODO BIGICONS
 
 Gui, 1:Font,s%fontsize%,%font%
 
-Gui, 1:Add, Listview, %ShowGrid% count1000 x2 y%YLView% xLV0x100 hwndHLV vSelItem AltSubmit gClicked h%LVHeight% w%LVWidth% , Paste (Enter)|Paste (Shift+Enter)|Key|Short|Index|Bundle
+Gui, 1:Add, Listview, %ShowGrid% count1000 x2 y%YLView% xLV0x100 hwndHLV vSelItem AltSubmit gClicked h%LVHeight% w%LVWidth% , Paste (Enter)|Paste (Shift+Enter)|Key|Short|Index|Bundle ; TODO BIGICONS
 
-Gui, 1:Add, edit, x0 y%YPosPreview% -VScroll w%LVWidth% h%PreviewHeight%, preview
+Gui, 1:Add, edit, x0 yp+%LVHeight%+2 -VScroll w%LVWidth% h%PreviewHeight%, preview
 
 Gui, 1:Font, s8, Arial
 Gui, 1:Add, StatusBar,,
@@ -296,7 +301,7 @@ SB2:=Width-SB1
 SB_SetParts(SB1,SB2)
 SB_SetIcon("icons\lintalist_bundle.ico",,1)
 SB_SetIcon("icons\search.ico",,2)
-Gosub, GetText
+; Gosub, GetText ; commented v1.9.3
 
 ; Initialize Toolbars.
 ; The variable you choose will be your handle to access the class for your toolbar.
@@ -352,12 +357,12 @@ OnMessage(WM_NOTIFY, "TB_Notify")
 
 Gosub, TB_SetButtonStates
 
-XY:=StayOnMonXY(Width, Height, Mouse, MouseAlternative, Center) ; was XY:=StayOnMonXY(Width, Height, 0, 1, 0)
+XY:=StayOnMonXY(Width*DPIFactor()+20, Height*DPIFactor()+80, Mouse, MouseAlternative, Center) ; was XY:=StayOnMonXY(Width, Height, 0, 1, 0)
 StringSplit, Pos, XY, |
 Gui, Show, w%Width% h%Height% x%Pos1% y%Pos2%, %AppWindow%
 If (DisplayBundle > 1)
-	CLV := New LV_Colors(HLV)
-; GuiJustShown:=1 ; not used? commented in v1.7
+	 CLV := New LV_Colors(HLV)
+
 If (JumpSearch=1) ; Send clipboard text to search control
 	{
 	 JumpSearch=0
@@ -365,10 +370,10 @@ If (JumpSearch=1) ; Send clipboard text to search control
 	 ControlSend, Edit1, {End}, %AppWindow%
 	 Sleep 100     ; added as a fix to avoid duplicate search results, not sure if it helps
 	 Gosub, GetText
+	 UpdateLVColWidth()
 	}
-ShowPreview(PreviewSection)
 ControlSend, Edit1, {End}, %AppWindow%  ; 20110623
-;Gosub, GetText                         ; 20110623 commented 20170209 - avoids duplicate loading of LV
+Gosub, GetText                          ; 20110623
 PlaySound(PlaySound,"open")
 Return
 
@@ -393,6 +398,7 @@ If (CurrLen = 0) or (CurrLen =< MinLen)
 	 LastText = fadsfSDFDFasdFdfsadfsadFDSFDf
 	 Gosub, SetStatusBar
 	 Critical, off ; experimental-v1.7
+	 ShowPreview(PreviewSection)
 	 Return
 	}
 Gui, 1:Default
@@ -548,17 +554,14 @@ Search(mode=1)
 ColorList:
 If (LV_GetCount() = 0)
 	Return
-If (DisplayBundle > 1)
-	GuiControl, -Redraw, SelItem
-lvc:={1: "0xF5F5E2", 2: "0xF9F5EC", 3: "0xF9F3EC", 4: "0xF9EFEC", 5: "0xF5E8E2", 6: "0xFAF2EF", 7: "0xF8F1F1", 8: "0xFFEAEA", 9: "0xFAE7EC", 10: "0xFFE3FF", 11: "0xF8E9FC", 12: "0xEEEEFF", 13: "0xEFF9FC", 14: "0xF2F9F8", 15: "0xFFECEC", 16: "0xFFEEFB", 17: "0xFFECF5", 18: "0xFFEEFD", 19: "0xFDF2FF", 20: "0xFAECFF", 21: "0xF1ECFF", 22: "0xFFECFF", 23: "0xF4D2F4", 24: "0xF9EEFF", 25: "0xF5EEFD", 26: "0xEFEDFC", 27: "0xEAF1FB", 28: "0xDBF0F7", 29: "0xEEEEFF", 30: "0xECF4FF", 31: "0xF9FDFF", 32: "0xE6FCFF", 33: "0xF2FFFE", 34: "0xCFFEF0", 35: "0xEAFFEF", 36: "0xE3FBE9", 37: "0xF3F8F4", 38: "0xF1FEED", 39: "0xE7FFDF", 40: "0xF2FFEA", 41: "0xFFFFE3", 42: "0xFCFCE9"}
+GuiControl, -Redraw, SelItem
 Loop, % LV_GetCount()
 	{
 	 LV_GetText(Paste, A_Index, 5) ; get bundle_index from 5th column which is always hidden
 	 StringSplit, paste, paste, _
 	 CLV.Row(A_Index, lvc[paste1], 0x000000)
 	}
-If (DisplayBundle > 1)
-	GuiControl, +Redraw, SelItem
+GuiControl, +Redraw, SelItem
 Return
 
 ; (Double)click in listview, action defined in INI
@@ -691,11 +694,14 @@ If (Script = "") or (ScriptPaused = 1) ; script is empty so we need to paste Tex
 			 WinClip.SetText(Clip)
 			}
 		else
-		 	Clipboard:=ClipSet("s",2,SendMethod,Clip) ; set clip2
+			{
+			 If TryClipboard()
+				Clipboard:=ClipSet("s",2,SendMethod,Clip) ; set clip2
+			}
 	 	}
 
 	 If !(formatted > 0)  ; only check for ^| post if it is a plain text snippet
-	 	CheckCursorPos()
+	 	Clipboard:=CheckCursorPos(Clipboard)
 	 formatted:=0
 	 GUI, 1:Destroy
 	 If (PasteMethod = 0) ; paste it and clear formatted clipboard
@@ -736,7 +742,8 @@ If (Script = "") or (ScriptPaused = 1) ; script is empty so we need to paste Tex
 	 Clip=
 	 If (PasteMethod = 0) ; it was pasted, restore original clipboard
 		{
-		 Clipboard:=ClipSet("g",1,SendMethod)
+		 If TryClipboard()
+			Clipboard:=ClipSet("g",1,SendMethod)
 		}
 	 else If (PasteMethod = 1) ; it was pasted, clear the original stored clipboard (free memory)
 		{
@@ -759,6 +766,18 @@ Else If (Script <> "") and (ScriptPaused = 0) ; we run script by saving it to tm
 		 RegExMatch(Script, "iU)\[\[Var=([^[]*)\]\]", ClipQ, 1)
 		 StringReplace, Script, Script, [[Var=%ClipQ1%]], % LocalVar_%ClipQ1%, All ; %
 		}
+	 Loop, 2 ; check for plugins llpart1 and llpart2
+	 	{
+		 If InStr(Script,"[[llpart" A_Index "]]")
+			{
+			 Clip:=Text%A_Index%
+			 Gosub, ProcessText
+			 Clip:=CheckCursorPos(Clip)
+			 StringReplace,Script,Script,[[llpart%A_Index%]],llpart%A_Index%=`n(join``n`n%clip%`n)`n`nLLBackLeft%A_Index%:=%BackLeft%`nLLBackUp%A_Index%:=%BackUp%`n`n,All
+			 BackLeft:=0
+			 BackUp:=0
+			}
+	 	}
 	 FileAppend, % Script, %TmpDir%\tmpScript.ahk ; %
 	 GUI, 1:Destroy
 	 RunWait, %A_AhkPath% "%TmpDir%\tmpScript.ahk"
@@ -812,6 +831,7 @@ UpdateLVColWidth()
 	 global
 	 local c4w
 	 factor:=225
+	 Col4Correction:=Abs(FontSize-10)*10+10 ; if we set a bigger font size shorthand becomes to narrow very quickly ; TODO BIGICONS/fonts
 	 If DisplayBundle in 0,2 ; Bundle name, 6th column setting 0 & 2 hide column
 		{
 		 LV_ModifyCol(6,0)
@@ -823,9 +843,11 @@ UpdateLVColWidth()
 	 WinGetPos , , , AvailableWidth, , %AppWindow%
 	 If (AvailableWidth = "")
 		AvailableWidth:=Width
-	 ColumnWidth:=Round((AvailableWidth - factor) / 10)
-	 c1w:=Round((ColumnWidth) * (ColumnWidthPart1/10))
-	 c2w:=Round((ColumnWidth) * (ColumnWidthPart2/10))
+	 AvailableWidth:=Round(AvailableWidth/DPIFactor())
+
+	 ColumnWidth:=Round(((AvailableWidth - factor) / 10))
+	 c1w:=Round((ColumnWidth) * (ColumnWidthPart1/10) - (Col4Correction/4) - 15)
+	 c2w:=Round((ColumnWidth) * (ColumnWidthPart2/10) - (Col4Correction/4) - 10)
 
 	 If (Col3 = 0)     ; shortcut column
 		{
@@ -836,14 +858,14 @@ UpdateLVColWidth()
 	 Else
 		LV_ModifyCol(3,50)
 
-	 If (Col4 = 0)     ; abbreviation/shorthand column
+	 If (Col4 = 0)     ; abbreviation/shorthand column ; TODO BIGICONS/fonts
 		{
 		 LV_ModifyCol(4,0)
 		 c1w += 30
 		 c2w += 25
 		}
 	 Else
-		LV_ModifyCol(4,60)
+		 LV_ModifyCol(4,50+Col4Correction)
 
 	 If (Col2 = 0)           ; paste2 column is empty so no need to show
 		{
@@ -1194,7 +1216,7 @@ Return
 #IfWinActive, ahk_group AppTitle   ; Hotkeys only work in the just created GUI
 Esc::
 PlaySound(PlaySound,"close")
-Gosub, 1GuiClose ; for some reason this is needed, 1GuiEscape doesn't seem to work
+Gosub, GuiClose ; for some reason this is needed, 1GuiEscape doesn't seem to work
 IfWinExist, Lintalist bundle editor
 	Gosub, 71GuiClose
 IfWinExist, Lintalist snippet editor
@@ -1220,10 +1242,8 @@ SelItem := LV_GetNext()
 If (SelItem = 0)
 	SelItem = 1
 LV_GetText(Paste, SelItem, 5) ; get bundle_index from 5th column
-;Gui, 71:+Owner1
-; source: https://autohotkey.com/board/topic/21449-how-to-prevent-the-parent-window-from-losing-focus/?p=153870
-Gui, 71:+0x40000000 -0x80000000 +Owner1 ; Add WS_CHILD, remove WS_POPUP, set owner/parent
-Gui, 1:+Disabled
+gui 1:+Disabled
+gui 71:+Owner1
 Gosub, BundleEditor
 Return
 
@@ -1236,8 +1256,8 @@ SelItem := LV_GetNext()
 If (SelItem = 0)
 	SelItem = 1
 LV_GetText(Paste, SelItem, 5) ; get bundle_index from 5th column
-Gui, 71:+Owner1
-Gui, 1:+Disabled
+gui 1:+Disabled
+gui 71:+Owner1
 Gosub, BundleEditor
 Return
 
@@ -1250,16 +1270,16 @@ SelItem := LV_GetNext()
 If (SelItem = 0)
 	SelItem = 1
 LV_GetText(Paste, SelItem, 5) ; get bundle_index from 5th column
-Gui, 71:+Owner1
-Gui, 1:+Disabled
+gui 1:+Disabled
+gui 71:+Owner1
 Gosub, BundleEditor
 Return
 
 F7:: ; create new snippet e.g. append
 EditF7:
 EditMode = AppendSnippet
-Gui, 71:+Owner1
-Gui, 1:+Disabled
+gui 1:+Disabled
+gui 71:+Owner1
 Gosub, BundleEditor
 Return
 
@@ -1596,7 +1616,7 @@ Gui, 71:Destroy
 WinActivate, %AppWindow%
 Return
 
-1GuiClose:
+GuiClose: ; GuiClose for Gui 1 (and not 1GuiClose)
 1GuiEscape:
 WinGetPos, X, Y, , ,  %AppWindow% ; remember position set by user
 XY:=X "|" Y
@@ -1918,6 +1938,7 @@ ProcessText:
 	 If (RegExMatch(Clip, "i)(" ClipCommandRE "|\[\[var)") > 0) ; make sure all "plugins" are processed before proceeding incl. local variables
 		Gosub, ProcessText
 	 Gosub, CheckFormat
+
 Return
 
 CheckFormat:
@@ -1935,16 +1956,14 @@ CheckFormat:
 		}
 Return
 
-CheckCursorPos()
+CheckCursorPos(Clip)
 	{
 	 Global BackLeft, BackUp, PluginMultiCaret, MultiCaret, ActiveWindowProcessName
 	 BackLeft=0
 	 BackUp=0
 	 PluginMultiCaret=0
-
-	 If InStr(Clipboard, "^|") ; Find caret pos after paste
+	 If InStr(Clip, "^|") ; Find caret pos after paste
 		{
-		 Clip:=Clipboard
 		 StringReplace, Clip, Clip, `r, , All ; remove `r as we don't need these for caret pos
 		 StringReplace, Clip, Clip, ^|, ^|, UseErrorLevel
 		 If (ErrorLevel > 1)
@@ -1963,18 +1982,23 @@ CheckCursorPos()
 			BackLeft:=StrLen(UpLines)
 		 If (PluginMultiCaret <> 0) and MultiCaret.HasKey(ActiveWindowProcessName)
 			{
-			 StringReplace, Clipboard, Clipboard, ^|, % MultiCaret[ActiveWindowProcessName].str, All ; TODOMC
+			 StringReplace, Clip, Clip, ^|, % MultiCaret[ActiveWindowProcessName].str, All ; TODOMC
 			}
 		 else
-			StringReplace, Clipboard, Clipboard, ^|, ,All ; TODOMC
+			StringReplace, Clip, Clip, ^|, ,All ; TODOMC
 		 UpLines=
-		 Clip=
 		}
+	 Return Clip	
 	}
 
 CheckTyped(TypedChar,EndKey)
 	{
 	 Global
+	 expandit:=0
+	 
+	 if TypedChar in %TriggerKeysSource%
+		expandit:=1
+	 
 	 If (ShorthandPaused = 1) or (InEditMode = 1) ; Expansion of abbreviations is suspended OR we are in editor mode
 		Return
 	 IfWinActive, %AppWindow% ; if Lintalist GUI is active return e.g. Expansion of abbreviations is suspended
@@ -1987,19 +2011,29 @@ CheckTyped(TypedChar,EndKey)
 		 Return
 		}
 	 HitKeyHistory=
-	 GetActiveWindowStats()
+	 IfWinNotExist, %AppWindow% ; v1.9.3 (will make original window active instead of last found)
+		 GetActiveWindowStats()
 	 WhichBundle()
-	 If (EndKey <> "Max")
+	 
+	 If (EndKey <> "Max") or (expandit = 1)
 		{
-		 If EndKey not in %TriggerKeys%
+		 if !expandit
 			{
-			 Typed=
-			 Return
+			 If EndKey not in %TriggerKeys%
+				{
+				 Typed=
+				 Return
+				}
 			}
+
 		 If EndKey in %TriggerKeys%
+			expandit:=1
+
+		 If expandit
 			{
 			 If (Typed = "")
 				Return
+
 			 HitKeyHistory:=CheckHitList("Shorthand", Typed, Load)
 
 			 If (HitKeyHistory <> "")
@@ -2019,6 +2053,18 @@ CheckTyped(TypedChar,EndKey)
 	 Else
 		typed .= TypedChar
 	}
+
+; https://autohotkey.com/board/topic/6893-guis-displaying-differently-on-other-machines/page-3#entry77893
+DPIFactor()
+{ 
+RegRead, DPI_value, HKEY_CURRENT_USER, Control Panel\Desktop\WindowMetrics, AppliedDPI 
+; the reg key was not found - it means default settings 
+; 96 is the default font size setting 
+if (errorlevel=1) OR (DPI_value=96 )
+	return 1
+else
+	Return  DPI_Value/96
+}
 
 BuildEditMenu:
 Try
@@ -2196,6 +2242,7 @@ IniWrite, %ShorthandPaused%    , %IniFile%, Settings, ShorthandPaused
 IniWrite, %ShortcutPaused%     , %IniFile%, Settings, ShortcutPaused
 IniWrite, %ScriptPaused%       , %IniFile%, Settings, ScriptPaused
 IniWrite, %ShowQuickStartGuide%, %IniFile%, Settings, ShowQuickStartGuide
+IniWrite, %XY%                 , %IniFile%, Settings, XY
 
 Gosub, SaveStartupSettings
 Gosub, SaveSettingsCounters

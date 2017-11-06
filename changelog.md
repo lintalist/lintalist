@@ -1,3 +1,26 @@
+### v1.9.3
+
+  #79 https://github.com/lintalist/lintalist/issues/79
+* Improved: Now there is also a 32x32 size icon button bar accommodating high(er) DPI settings  
+  #71 https://github.com/lintalist/lintalist/issues/71 (see BigIcons in settings)  
+  Entirely new code for GuiSettings.ahk
+* New: added TryClipboard() to see if clipboard is inaccessible, if so "catch" error and do nothing 
+  #73 https://github.com/lintalist/lintalist/issues/73
+* New: Make it possible to include contents of Snippet (part 1 and 2) in script code incl. caret  
+  position per snippet (see "Script" in Documentation)  
+  #76 https://github.com/lintalist/lintalist/issues/76
+* Change: Similar to modal windows for Local variable etc, Snippet editor now modal  
+  - see v1.8 #57 https://github.com/lintalist/lintalist/issues/57
+* Fix: Adding support for UTF-8 characters in Local variabe & Counter Editors  
+  #78 https://github.com/lintalist/lintalist/pull/78 ht @exetico
+* Fix: ReadIni() now writes in UTF-16 to store settings correctly  
+  #77 https://github.com/lintalist/lintalist/issues/77
+* Fix: Closing using X in title bar didn't store Window position for users with Center=2  
+  and now save it to settings.ini as well #75 https://github.com/lintalist/lintalist/issues/75
+* Fix: Closing and Starting Lintalist in Narrow view mode no longer  
+  causes error in GUI with empty 'barx' variable #72 https://github.com/lintalist/lintalist/issues/72  
+  (see also #71 above re GuiSettings.ahk)
+
 ### v1.9.2
 
 * New: replaced check/radio boxes with button bar (using Class_Toolbar by pulover) and  

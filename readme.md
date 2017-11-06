@@ -49,7 +49,7 @@ visit <http://lintalist.github.io/>
 # AutoHotkey
 
 Lintalist is written in AutoHotkey, a free and open-source utility for Windows. You can 
-learn more about AutoHotkey at <http://ahkscript.org/>. The source code for AutoHotkey 
+learn more about AutoHotkey at <http://autohotkey.com/>. The source code for AutoHotkey 
 is available at <https://github.com/Lexikos/AutoHotkey_L>
 
 **Note**: lintalist.exe is simply a renamed autohotkey.exe included for convenience.

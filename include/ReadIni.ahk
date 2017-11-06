@@ -1,7 +1,7 @@
 ﻿; LintaList Include
 ; Purpose: Read INI
-; Version: 1.5
-; Date:    20150328
+; Version: 1.6
+; Date:    20171013
 
 ReadIni()
 	{
@@ -10,6 +10,7 @@ ReadIni()
 	 ini=%A_ScriptDir%\%IniFile%
 	 IfNotExist, %ini%
 	 	{
+		 IniWrite, Lintalist, %ini%, Other, FirstStartUp ; this ensures proper encoding of the INI file in UTF-16
 		 CreateDefaultIni()
 		 Gosub, SetShortcuts ; (#Include from main script)
 		} 
@@ -78,6 +79,8 @@ INISetup:={ AlwaysLoadBundles:     {default:"",find:"bundles\"}
 			, Font:                {default:"Arial"}
             , FontSize:            {default:"10"}
             , PlaySound:           {default:""}
+            , XY:                  {default:"50|50"} 
+            , BigIcons:            {default:"1"} 
             , SnippetEditor:       {default:""} }
 
 	 for k, v in INISetup
@@ -104,6 +107,11 @@ INISetup:={ AlwaysLoadBundles:     {default:"",find:"bundles\"}
 		SplitPath, Icon1, , , , Icon1 ; trim ext
 		SplitPath, Icon2, , , , Icon2 ; trim ext
 
+		if (BigIcons = 2)
+			{
+			 IconSize:=32
+			}
+
 		StringSplit, ColumnWidthPart, ColumnWidth, -
 
 		if (ColumnSort <> "NoSort")
@@ -114,8 +122,8 @@ INISetup:={ AlwaysLoadBundles:     {default:"",find:"bundles\"}
 			 else	
 				ColumnSortOption1:=2
 			}
-			
 
+		TriggerKeysSource:=TriggerKeys
 		Loop, parse, TriggerKeys, CSV
 			{
 			 TmpKey = %A_LoopField%
@@ -131,6 +139,8 @@ INISetup:={ AlwaysLoadBundles:     {default:"",find:"bundles\"}
 		Else
 			ShowGrid = Grid
 
+		If (BigIcons = 1)
+
 	 ReadCountersIni()
 	 ReadPlaySoundIni()
 	}                         
@@ -138,7 +148,7 @@ INISetup:={ AlwaysLoadBundles:     {default:"",find:"bundles\"}
 Append2Ini(Setting,file)
 	{
 	 FileRead, New2IniFile, %A_ScriptDir%\include\settings\%Setting%.ini
-	 FileAppend, `n%New2IniFile%, %file%
+	 FileAppend, `n%New2IniFile%, %file%, UTF-16 ; ensures proper encoding for INI files https://autohotkey.com/docs/commands/IniWrite.htm
 	 Sleep 100
 	}
 
@@ -199,6 +209,9 @@ CreateDefaultIni()
 [Settings]
 
 )
-FileAppend, %NewIni%, %A_ScriptDir%\%IniFile%
+; needs to UTF-16 - https://autohotkey.com/docs/commands/IniWrite.htm
+FileAppend, %NewIni%, %A_ScriptDir%\%IniFile%, UTF-16
+Sleep 500
+IniDelete, %A_ScriptDir%\%IniFile%, Other ; now we can delete this section created at first start up in ReadIni()
 }
 

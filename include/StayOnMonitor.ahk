@@ -44,16 +44,31 @@ StayOnMonXY(GW, GH, Mouse = 0, MouseAlternative = 1, Center = 0)
 		{
 		 X := A_CaretX ; get x & y via caret pos
 		 Y := A_CaretY
-		 If (If_Between(X, -15, 15) AND If_Between(Y, -15, 15) AND (MouseAlternative = 1)) ; if caret fails + use Mouse
+		 If (X = "")
+		 	X:=0
+		 If (Y = "")
+		 	Y:=0
+		 If (If_Between(X, -50, 50) AND If_Between(Y, -50, 50) AND (MouseAlternative = 1)) ; if caret fails + use Mouse
+		 {
+		  CoordMode, Mouse , Screen
 			MouseGetPos, X, Y
+		 X-=100
+		 Y-=10
+		 }
  		 If (If_Between(X, -15, 15) AND If_Between(X, -15, 15) AND (MouseAlternative = 0)) ; if caret fails + don't use mouse find center of first monitor
 			{
 			 X := (A_ScreenWidth - GW) / 2
 			 Y := (A_ScreenHeight - GH) / 2
 			}
 		}
-	 Else If (Mouse = 1) 
+	 Else If (Mouse = 1)
+	 {
+	   CoordMode, Mouse , Screen
 		 MouseGetPos, X, Y
+		 X-=100
+		 Y-=50
+		 ToolTip % X ":" Y
+	 }
 
 	 If ( Y + GH + 60 > A_ScreenHeight ) ; fix Y pos later, not as important, will need monitor bottom vars.
 		Y := A_ScreenHeight - GH - 80
@@ -62,6 +77,8 @@ StayOnMonXY(GW, GH, Mouse = 0, MouseAlternative = 1, Center = 0)
 		{
 		 If ( X + GW > A_ScreenWidth )
 			X := A_ScreenWidth - GW
+		 If (X	< 0) ; single monitor offscreen
+		 	X:=0
 		}
 	 Else
 		{
