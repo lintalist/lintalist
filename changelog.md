@@ -1,5 +1,6 @@
 ### v1.9.3
 
+* Improved: TriggerKeys now accept more keys such as <kbd>½</kbd> or <kbd>+</kbd> for example  
   #79 https://github.com/lintalist/lintalist/issues/79
 * Improved: Now there is also a 32x32 size icon button bar accommodating high(er) DPI settings  
   #71 https://github.com/lintalist/lintalist/issues/71 (see BigIcons in settings)  
