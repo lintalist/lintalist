@@ -1,3 +1,20 @@
+### v1.9.4
+
+* New: Functions in Snippets are now also allowed: [[function()]] - both AHK built-in as  
+  user defined - #86 https://github.com/lintalist/lintalist/issues/86
+* New: support a subset of AutoHotkey built-in variables (A_MyDocuments etc)
+* New: Additional safety check when processing snippet by "removing" faulty plugins  
+  plus a simple error check when saving snippets.
+* New: Editor now has (optional) Syntax highlighting (plugins, html, scripts) by using  
+  the RichCode class by @G33kDude - #88 https://github.com/lintalist/lintalist/issues/88  
+  (when using RichCode you can toggle word wrapping in the edit controls by pressing ctrl+w)
+* Fix: Editor - "Edit in Editor" routine improved, notepad.exe may not show ".txt" in Window title,  
+  and actually delete "__tmplintalistedit.txt" file in tmp folder (didn't do so correctly)
+* Change: User plugins (and now functions) can be added to MyPlugins/MyFunctions so future  
+  updates of Lintalist won't overwrite plugins/functions added by users each time. (see release note)
+* Fix: Closing Input and Choice plugins via close button (x) in Gui now properly cancels snippet
+* New: added icons to Tray menu and some Search menu entries.
+
 ### v1.9.3
 
 * Improved: TriggerKeys now accept more keys such as <kbd>½</kbd> or <kbd>+</kbd> for example  

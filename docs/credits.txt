@@ -28,6 +28,7 @@ http://www.autohotkey.com/forum/post-203280.html#203280
 
 ClipSet() is a mod of virclip by Learning one 
 http://www.autohotkey.com/forum/topic56926.html
+License: public domain
 
 320mph by Rajat
 http://www.autohotkey.com/forum/topic3010.html
@@ -48,12 +49,14 @@ Source: https://github.com/fincs/GenDocs
 AutoHotkey wrapper for Windows native Zip feature by Coco
 http://ahkscript.org/boards/viewtopic.php?f=6&t=3892
 https://github.com/cocobelgica/AutoHotkey-ZipFile
+License: WTFPL
 
 VersionCompare by boiler
 http://ahkscript.org/boards/viewtopic.php?f=6&t=5959
 
 AHK class providing individual colors for ListView items/subitems by Just me
 https://github.com/AHK-just-me/Class_LV_Colors
+License: The Unlicense
 
 Calc plugin: All code belongs to MONSTER by Laszlo
 http://www.autohotkey.com/forum/viewtopic.php?t=17058
@@ -63,3 +66,8 @@ http://ahkscript.org/boards/viewtopic.php?t=1079
 
 Class Toolbar by Pulover [Rodolfo U. Batista] 
 https://github.com/Pulover/Class_Toolbar
+License: The Unlicense
+
+Class RichCode by G33kDude
+https://github.com/G33kDude/RichCode.ahk
+(see include/RichCode)

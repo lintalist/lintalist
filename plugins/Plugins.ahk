@@ -1,27 +1,19 @@
 ﻿/* 
 Purpose       : Main #Include script for all Lintalist plugins.
-Version       : 1.0
+Version       : 1.1
+
+History:
+- 1.1 by introducing MyPlugins and MyFunctions we reserve plugins.ahk for
+      default plugins. Add your personal Plugins and Functions in MyPlugins.ahk
+      or MyFunctions.ahk
+- 1.0 initial version
 
 See "readme-howto.txt" for more information.
 */
 
-;---------------------------------------------------------------
-; do not remove/edit anything between these lines
-
-ReadPluginSettings:
-Loop, %A_ScriptDir%\plugins\*.ahk
-	{
-	 If (A_LoopFileName = "plugins.ahk")
-	 	Continue
-	 ClipCommand .= "[[" SubStr(A_LoopFileName,1,StrLen(A_LoopFileName)-4) "|"
-	}
-StringTrimRight, ClipCommand, ClipCommand, 1
-StringReplace, ClipCommandRE, ClipCommand, [, \[, All ; for RE later in ProcessText routine
-; MsgBox % Clipcommand ":" ClipCommandRE ; debug only
-Return
-
 ;----------------------------------------------------------------
-; Do not change the order of these default includes below:
+; Do not change the order of these default includes below.
+; Do not add your personal plugins/functions here, see v1.1 note above.
 
 #Include %A_ScriptDir%\plugins\snippet.ahk     ; Chaining snippets
 #Include %A_ScriptDir%\plugins\input.ahk       ; Get user input
@@ -38,10 +30,6 @@ Return
 #Include %A_ScriptDir%\plugins\Random.ahk      ; Random plugin
 ;#Include %A_ScriptDir%\plugins\enc.ahk         ; Enc(rypt) plugin (decode)
 #Include %A_ScriptDir%\plugins\ClipSelExFunc.ahk
+#Include *i %A_ScriptDir%\plugins\MyPlugins.ahk
 
 ;----------------------------------------------------------------
-; See readme-howto.txt for further info on how to write a plugin.
-; Simply add the new plugin script as include below and reload Lintalist
-; Don't forget to post on the forum if you do!
-
-; #Include %A_ScriptDir%\plugins\filename.ahk

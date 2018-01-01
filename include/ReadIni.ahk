@@ -13,7 +13,11 @@ ReadIni()
 		 IniWrite, Lintalist, %ini%, Other, FirstStartUp ; this ensures proper encoding of the INI file in UTF-16
 		 CreateDefaultIni()
 		 Gosub, SetShortcuts ; (#Include from main script)
-		} 
+		}
+	 IfNotExist, %A_ScriptDir%\plugins\MyFunctions.ahk
+		CreateDefaultUserIncludes("Functions")
+	 IfNotExist, %A_ScriptDir%\plugins\MyPlugins.ahk
+		CreateDefaultUserIncludes("Plugins")
 
 /*
 			, Keyname {default:"",find:"",replace:"",empty:"",min:"",max:""}
@@ -77,11 +81,13 @@ INISetup:={ AlwaysLoadBundles:     {default:"",find:"bundles\"}
 			, ColumnSort:          {default:"NoSort"}
 			, SearchLetterVariations: {default:"0"}
 			, Font:                {default:"Arial"}
-            , FontSize:            {default:"10"}
-            , PlaySound:           {default:""}
-            , XY:                  {default:"50|50"} 
-            , BigIcons:            {default:"1"} 
-            , SnippetEditor:       {default:""} }
+			, FontSize:            {default:"10"}
+			, PlaySound:           {default:""}
+			, XY:                  {default:"50|50"} 
+			, BigIcons:            {default:"1"} 
+			, AutoHotkeyVariables: {default:""}
+			, EditorSyntaxHL:      {default:"0"} 
+			, SnippetEditor:       {default:""} }
 
 	 for k, v in INISetup
 		{
@@ -214,4 +220,25 @@ FileAppend, %NewIni%, %A_ScriptDir%\%IniFile%, UTF-16
 Sleep 500
 IniDelete, %A_ScriptDir%\%IniFile%, Other ; now we can delete this section created at first start up in ReadIni()
 }
+
+CreateDefaultUserIncludes(file)
+	{
+	 IfExist, %A_ScriptDir%\plugins\My%file%.ahk
+	 	Return
+	 FileAppend,
+(join`r`n
+`/* 
+Purpose       : Main #Include script for user %file%
+Version       : 1.0
+
+See "readme-howto.txt" for more information.
+`*/
+
+`;----------------------------------------------------------------
+`; add or #include your %file% below
+
+`;#Include `%A_ScriptDir`%\plugins\Your%file%File.ahk
+
+), %A_ScriptDir%\plugins\My%file%.ahk
+	}
 

@@ -1,9 +1,10 @@
 ﻿/* 
 Plugin        : Choice [Standard Lintalist]
 Purpose       : Make a selection from a list [part of code also place in lintalist.ahk and used to allow users to select a bundle]
-Version       : 1.5
+Version       : 1.6
 
 History:
+- 1.6 You can now close/cancel it via the close button (x) in Gui
 - 1.5 Added option to provide "question" by using ? in first item - @flyingaliens https://github.com/lintalist/lintalist/issues/68
 - 1.4 Reverted back to Loop as it seems to works better for multiple choice plugins https://github.com/lintalist/lintalist/issues/68 - go figure
 - 1.3 Added Random button (uses Random plugin)
@@ -65,6 +66,7 @@ Gosub, ProcessText ; We changed clip and cleared PluginText and PluginOptions so
 Return
 
 CancelChoice:
+MadeChoice = 1
 PluginText:=""
 PluginOptions:=""
 ChoiceQuestion:=""

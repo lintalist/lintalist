@@ -1,17 +1,66 @@
 ﻿; LintaList Include
 ; Purpose: Bundle & Snippet Editor
-; Version: 1.0.4
-; Date:    20170204
+; Version: 1.1
 ;
 ; Hotkeys used in Search GUI to start Bundle & Snippet Editor
-; F4  = Edit snippet 		
-; F5  = Copy and Edit snippet 		
+; F4  = Edit snippet
+; F5  = Copy and Edit snippet
 ; F6  = Move snippet (from one bundle to another)
-; F7  = Add new snippet		
-; F8  = Delete snippet		
+; F7  = Add new snippet
+; F8  = Delete snippet
+; 
+; History: 
+; v1.1 - Added (optional) Syntax Highlighting for snippets/html/scripts
+; 
+; 
 
 BundleEditor:
-InEditMode = 1
+InEditMode:=1
+WrapPart1:=1
+WrapPart2:=1
+WrapPart3:=1
+
+Codes := { "AHK": { "Highlighter": "HighlightAHK" }
+	, "Snippet": {"Highlighter": "HighlightSnippet"	}
+	, "Plain": { "Highlighter": "" } } 
+
+; Settings array for the RichCode control
+RichCodeSettings:=
+( LTrim Join Comments
+{
+	"TabSize": 4,
+	"Indent": "`t",
+	"FGColor": 0x000000,
+	"BGColor": 0xFFFFFF,
+	"Font": {"Typeface": "Arial", "Size": 10},
+	
+	"UseHighlighter": True,
+	"WordWrap": False,
+	"HighlightDelay": 200,
+	"Colors": {
+		"Comments":     0x7F9F7F,
+		"Functions":    0x7CC8CF,
+		"Keywords":     0xE4EDED,
+		"Multiline":    0x7F9F7F,
+		"Numbers":      0xF79B57,
+		"Punctuation":  0x000088,
+		"Strings":      0xCC9893,
+		
+		; AHK
+		"A_Builtins":   0xF79B57,
+		"Commands":     0x008800,
+		"Directives":   0x7CC8CF,
+;		"Flow":         0xFF9900,
+		"KeyNames":     0xCB8DD9,
+	
+		; Snippets-HTML
+		"Attributes":   0x7CC8CF,
+		"Entities":     0xF79B57,
+		"Tags":         0x008800 ; plugins
+		}
+
+}
+)
 
 ; clear editor vars just to be sure
  Text1=
@@ -157,6 +206,7 @@ Filename:=Filename_%paste1%
 ActionText:=RegExReplace(EditMode,"([A-Z])"," $1")
 
 Gui, 71:+Owner +Resize +MinSize740x520
+Gui, 71:Default
 Gui, 71:Menu, MenuBar2
 Gui, 71:font,s12 bold
 Gui, 71:Add, Text,     x600   y10 vActionText, %ActionText%
@@ -165,27 +215,40 @@ Gui, 71:Add, Picture , x20    y10 w16 h16, %A_ScriptDir%\icons\lintalist_bundle.
 Gui, 71:Add, Text    , x40    y13               , Bundle:`t%A_Space%%A_Space%%A_Space%%Name%
 Gui, 71:Add, Text    , x340   y13               , File:%A_Space%%A_Space%%A_Space%%Filename%
 Gui, 71:Add, Text,     x20    y45 w700 h1 0x10 vTextLine
-Gui, 71:Add, Picture , x20    y65 w16 h16, %A_ScriptDir%\icons\keyboard.png
+Gui, 71:Add, Picture , x20    y65 w16 h16, %A_ScriptDir%\icons\hotkeys.ico
 Gui, 71:Add, Text    , x40    y65                  , Hotkey: 
 Gui, 71:Add, Hotkey  , xp+50  y63  w140 h20 vHKey  , %HKey%
 Gui, 71:Add, Checkbox, xp+150 y65  w70  h20 vWinKey %checked%, Win
 
-Gui, 71:Add, Text    , xp+100 y65  w150 h20           , Shorthand: 
+Gui, 71:Add, Picture , xp+80  y65  w16 h16, %A_ScriptDir%\icons\shorthand.ico
+Gui, 71:Add, Text    , xp+20  y65  w150 h20           , Shorthand: 
 Gui, 71:Add, Edit    , xp+70  y63  w150 h20 vShorthand, %Shorthand%
 
 Gui, 71:Add, Picture , x20    y100 w16 h16 vPicture1, %A_ScriptDir%\icons\text_dropcaps.png
 Gui, 71:Add, Text    , x40    y100  vText1Label       , Part 1 (Enter)
-Gui, 71:Add, Edit    , x20    y120  h120 w700 vText1  , %Text1%
+
+If EditorSyntaxHL
+	RC1 := new RichCode(RichCodeSettings.Clone(), "x20 y120 w700 h120 vText1")
+else
+	Gui, 71:Add, Edit    , x20    y120  h120 w700 vText1  , %Text1%
 
 Gui, 71:Add, Picture , x20    yp+125 w16 h16 vPicture2, %A_ScriptDir%\icons\text_dropcaps.png
 Gui, 71:Add, Text    , x40    yp    vText2Label      , Part 2 (Shift-Enter)
-Gui, 71:Add, Edit    , x20    yp+20 h90 w700 vText2  , %Text2%
+If EditorSyntaxHL
+	RC2 := new RichCode(RichCodeSettings.Clone(), "x20 yp+20 w700 h90 vText2")
+else	
+	Gui, 71:Add, Edit    , x20    yp+20 h90 w700 vText2  , %Text2%
 
-Gui, 71:Add, Picture , x20    yp+95 w16 h16 vPicture3, %A_ScriptDir%\icons\script_code.png
+Gui, 71:Add, Picture , x20    yp+95 w16 h16 vPicture3, %A_ScriptDir%\icons\scripts.ico
 Gui, 71:Add, Text    , x40    yp    vText3Label              , Script
-Gui, 71:Add, Edit    , x20    yp+20 h90 w700 vScript , %Script%
+If EditorSyntaxHL
+	RC3 := new RichCode(RichCodeSettings.Clone(), "x20 yp+20 w700 h90 vScript")
+else
+	Gui, 71:Add, Edit    , x20    yp+20 h90 w700 vScript , %Script%
 
 Gui, 71:font, s8, arial
+If EditorSyntaxHL
+	Gui, 71:Add, Text, x400 y102 h16 w200, Note: press Ctrl+W to toggle Word Wrap
 Gui, 71:Add, Button, x610 y100 h20 w110 0x8000 g71EditPart1  vEditorButton1, 1 - Edit in Editor ; part1
 Gui, 71:Add, Button, x610 y245 h20 w110 0x8000 g71EditPart2  vEditorButton2, 2 - Edit in Editor ; part2
 Gui, 71:Add, Button, x610 y360 h20 w110 0x8000 g71EditScript vEditorButton3, 3 - Edit in Editor ; script
@@ -195,10 +258,41 @@ Gui, 71:Add, Button, x20    y480 h30 w210 g71Save     vActionButton1, &Save
 Gui, 71:Add, Button, xp+245 yp   h30 w210 g71GuiClose vActionButton2, &Cancel
 Gui, 71:Add, Button, xp+245 yp   h30 w210 g71Help     vActionButton3, Help
 
+If EditorSyntaxHL
+	{
+	 Language:="snippet"
+	 RC1.Settings.Highlighter := Codes[language].Highlighter
+	 RC1.Value := Text1
+	 RC2.Settings.Highlighter := Codes[language].Highlighter
+	 RC2.Value := Text2
+	 Language:="ahk"
+	 RC3.Settings.Highlighter := Codes[language].Highlighter
+	 RC3.Value := Script
+	}
+
 Gui, 71:Show, w740 h520, Lintalist snippet editor
 WinActivate, Lintalist snippet editor
-ControlFocus, Edit2, Lintalist snippet editor
+If EditorSyntaxHL
+	GuiControl, Focus, % RC1.hWnd
+else	
+	ControlFocus, Edit2, Lintalist snippet editor
 Return
+
+#IfWinActive, Lintalist snippet editor ahk_class AutoHotkeyGUI
+^w::
+ControlGetFocus, WordWrapControl, A
+WordWrapControl:=SubStr(WordWrapControl,0)
+WordWrap(WrapPart%WordWrapControl%,WordWrapControl)
+WrapPart%WordWrapControl%:=!WrapPart%WordWrapControl%
+Return
+#IfWinActive
+
+
+ WordWrap(On,ID) { ; Turn wordwrapping on/off - HT just me @ https://github.com/AHK-just-me/Class_RichEdit/blob/master/Sources/Class_RichEdit.ahk#L1260
+	 global rc1,rc2,rc3
+	 SendMessage, 0x0448, 0, % (On ? 0 : -1), , % "ahk_id " . RC%ID%.HWND
+	 Return On
+	}
 
 ; Resize editor GUI
 71GuiSize:
@@ -237,6 +331,12 @@ If (EditMode = "EditSnippet")
 	Check:=Paste1
 Else If (EditMode = "AppendSnippet") or (EditMode = "CopySnippet") or (EditMode = "MoveSnippet") 
 	Check:=AppendToBundle
+
+If !SnippetErrorCheck(Text1,"[[") or !SnippetErrorCheck(Text2,"[[")
+	{
+	 MsgBox,48,Warning, Possible Plugin/function error in Snippet.`nMismatch number of square brackets "[[" and "]]".
+	 Return
+	}
 
 ; Checking for duplicate shorthand within same bundle
 HitKeyHistory=
@@ -453,45 +553,77 @@ InEditMode = 0
 Return
 
 71EditPart1:
-EditControlInEditor("Edit2")
+EditControlInEditor("Text1")
 Return
 
 71EditPart2:
-EditControlInEditor("Edit3")
+EditControlInEditor("Text2")
 Return
 
 71EditScript:
-EditControlInEditor("Edit4")
+EditControlInEditor("Script")
 Return
 
 EditControlInEditor(ControlID)
 	{
-	 Global WhichControl,SnippetEditor,TmpDir
-	 WhichControl:=ControlID
-	 GuiControlGet, ToFile, , %ControlID%
-	 FileDelete, __tmplintalistedit.txt
+	 Global WhichControl,SnippetEditor,TmpDir, RC1, RC2, RC3, RCID, EditorSyntaxHL
+	 
+	 If EditorSyntaxHL
+		{
+		 if (ControlID = "Text1")
+			WhichControl:="RICHEDIT50W1"
+		 else if (ControlID = "Text2")
+			WhichControl:="RICHEDIT50W2"
+		 else if (ControlID = "Script")
+			WhichControl:="RICHEDIT50W3"
+
+		 RCID:=SubStr(WhichControl,0)
+		 ToFile:=RC%RCID%.Value
+		}
+	 else
+		{
+		 if (ControlID = "Text1")
+			WhichControl:="Edit2"
+		 else if (ControlID = "Text2")
+			WhichControl:="Edit3"
+		 else if (ControlID = "Script")
+			WhichControl:="Edit4"
+
+		 GuiControlGet, ToFile, , %ControlID%
+		}
+ 
+	 FileDelete, %TmpDir%\__tmplintalistedit.txt
 	 FileAppend, %ToFile%, %TmpDir%\__tmplintalistedit.txt
 	 If (SnippetEditor = "")
 	 	Run, %TmpDir%\__tmplintalistedit.txt
 	 else
 	 	Run, %SnippetEditor% %TmpDir%\__tmplintalistedit.txt
-	 winwait, __tmplintalistedit.txt
+	 WinWait, __tmplintalistedit
 	 SetTimer, CheckEdit, 500, On
 	 Return
 	}
 
 CheckEdit:
-IfWinExist, __tmplintalistedit.txt
+IfWinExist, __tmplintalistedit
 	Return
 SetTimer, CheckEdit, Off
 FileRead, NewText, %TmpDir%\__tmplintalistedit.txt
 FileDelete, %TmpDir%\__tmplintalistedit.txt
 WinActivate, Lintalist bundle editor
 Gui, 71:Default
-GuiControl, ,%WhichControl%, %NewText%
-ControlFocus, %WhichControl%, Lintalist bundle editor
+If EditorSyntaxHL
+	{
+	 RC%RCID%.Value:=NewText
+	 GuiControl, Focus, % RC%RCID%.hWnd
+	}
+else
+	{
+	 GuiControl, ,%WhichControl%, %NewText%
+	 ControlFocus, %WhichControl%, Lintalist bundle editor
+	}
 NewText=
 WhichControl=
+RCID=
 Return
 
 71GuiEscape:
@@ -501,5 +633,19 @@ Gui, 1:-Disabled
 Gui, 71:Destroy
 WinActivate, %AppWindow%
 InEditMode = 0
+ControlFocus, Edit1, %AppWindow%
 Return
 
+SnippetErrorCheck(in,type)
+	{
+	 if (type = "[[")
+		{
+		 if (CountString(in, "[[") = CountString(in, "]]"))
+			Return 1
+		}
+	}
+
+#include %A_ScriptDir%\include\richcode\RichCode.ahk
+#include %A_ScriptDir%\include\richcode\AHK.ahk
+#include %A_ScriptDir%\include\richcode\SnippetHTML.ahk
+#include %A_ScriptDir%\include\richcode\Util.ahk

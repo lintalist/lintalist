@@ -4,11 +4,11 @@ Name            : Lintalist
 Author          : Lintalist
 Purpose         : Searchable interactive lists to copy & paste text, run scripts,
                   using easily exchangeable bundles
-Version         : 1.9.3
+Version         : 1.9.4
 Code            : https://github.com/lintalist/
 Website         : http://lintalist.github.io/
 AutoHotkey Forum: https://autohotkey.com/boards/viewtopic.php?f=6&t=3378
-License         : Copyright (c) 2009-2017 Lintalist
+License         : Copyright (c) 2009-2018 Lintalist
 
 This program is free software; you can redistribute it and/or modify it under the
 terms of the GNU General Public License as published by the Free Software Foundation;
@@ -41,9 +41,9 @@ PluginMultiCaret:=0 ; TODOMC
 
 ; Title + Version are included in Title and used in #IfWinActive hotkeys and WinActivate
 Title=Lintalist
-Version=1.9.3
+Version=1.9.4
 
-Gosub, ReadPluginSettings
+; Gosub, ReadPluginSettings
 
 AppWindow=%title% - %version%   ; Name of Gui
 GroupAdd, AppTitle, %AppWindow% ; we can now use #IfWinActive with the INI value (main scripts hotkeys)
@@ -65,29 +65,45 @@ OnExit, SaveSettings ; store settings (locked state, search mode, gui size etc i
 Menu, Tray, NoStandard
 Menu, Tray, Icon, icons\lintalist_suspended.ico ; while loading show suspended icon
 Menu, tray, Add, %AppWindow%,             GlobalMenuHandler
+Menu, tray, Icon, %AppWindow%,            icons\lintalist.ico
 Menu, tray, Default, %AppWindow%
 Menu, Tray, Add,
 Menu, Tray, Add, &Help,          	      GlobalMenuHandler
+Menu, Tray, Icon,&Help,          	      icons\help.ico
 Menu, Tray, Add, &About,          	      GlobalMenuHandler
+Menu, Tray, Icon,&About,          	      icons\help.ico
 Menu, Tray, Add, &Quick Start Guide,      GlobalMenuHandler
+Menu, Tray, Icon,&Quick Start Guide,      icons\help.ico
 Menu, Tray, Add,
 Menu, Tray, Add, &Configuration,          GlobalMenuHandler
+Menu, Tray, Icon,&Configuration,          icons\gear.ico
 Menu, Tray, Add,
 Menu, Tray, Add, Check for updates,       GlobalMenuHandler
+Menu, Tray, Icon,Check for updates,       icons\download.ico
 Menu, Tray, Add,
 Menu, Tray, Add, &Manage Bundles,         GlobalMenuHandler
+Menu, Tray, Icon,&Manage Bundles,         icons\lintalist_bundle.ico
 Menu, Tray, Add, &Manage Local Variables, GlobalMenuHandler
+Menu, Tray, Icon,&Manage Local Variables, icons\variables.ico
 Menu, Tray, Add, &Manage Counters,        GlobalMenuHandler
+Menu, Tray, Icon,&Manage Counters,        icons\counter.ico
 Menu, Tray, Add,
 Menu, Tray, Add, &Load All Bundles,       MenuHandler ; exception
+Menu, Tray, Icon,&Load All Bundles,       icons\arrow-in.ico
 Menu, Tray, Add, &Reload Bundles,         GlobalMenuHandler
+Menu, Tray, Icon,&Reload Bundles,         icons\arrow-retweet.ico
 Menu, Tray, Add,
 Menu, Tray, Add, &Pause Lintalist,        GlobalMenuHandler
+Menu, Tray, Icon,&Pause Lintalist,        icons\control-pause.ico
 Menu, Tray, Add, Pause &Shortcut,         GlobalMenuHandler
+Menu, Tray, Icon,Pause &Shortcut,         icons\hotkeys.ico
 Menu, Tray, Add, Pause &Shorthand,        GlobalMenuHandler
+Menu, Tray, Icon,Pause &Shorthand,        icons\shorthand.ico
 Menu, Tray, Add, Pause &Scripts,          GlobalMenuHandler
+Menu, Tray, Icon,Pause &Scripts,          icons\scripts.ico
 Menu, Tray, Add,
 Menu, Tray, Add, E&xit,                   GlobalMenuHandler
+Menu, Tray, Icon,E&xit,                   icons\101_exit.ico
 Menu, Tray, Check, &Pause Lintalist ; indicate program is still loading
 Menu, Tray, Tip, %AppWindow% - inactive
 ; Tray Menu continue below
@@ -1471,7 +1487,7 @@ Return
 #IfWinActive Lintalist snippet editor
 $Rbutton::
 ControlGetFocus, Control, Lintalist snippet editor
-If Control not in Edit2,Edit3
+If Control not in Edit2,Edit3,RICHEDIT50W1,RICHEDIT50W2
 	Send {Rbutton}
 Else
 	Menu, Plugins, Show
@@ -1610,6 +1626,7 @@ Return
 MadeChoice = 1
 InEditMode = 0
 EditMode =
+Clip:="" ; in case we cancelled Choice by using the X
 Gui, 10:Destroy
 Gui, 1:-Disabled
 Gui, 71:Destroy
@@ -1838,7 +1855,7 @@ Return
 ; Plugins menu
 PluginMenuHandler:
 ControlGetFocus, Control, Lintalist snippet editor
-If Control not in Edit2,Edit3
+If Control not in Edit2,Edit3,RICHEDIT50W1,RICHEDIT50W2
 	Return
 
 If RegExMatch(A_ThisMenuItem,"i)(clipboard|selected)")
@@ -1913,6 +1930,9 @@ Return
 
 ProcessText:
 
+If InStr(clip,"[[A_") ; check for built-in variables - https://autohotkey.com/docs/Variables.htm#BuiltIn
+	BuiltInVariables()
+
 	Loop ; get local variables first... only exception from the plugins as it is a built-in feature with the local variable editor as well
 		{
 		 ProcessTextString:=""
@@ -1926,17 +1946,37 @@ ProcessText:
 		 StringReplace, clip, clip, %ProcessTextString%, % LocalVar_%LocalVarName%, All ; %
 		}
 	 Gosub, CheckFormat
-	 RegExMatch(clip,"iUs)\[\[[^\[]*\]\]",ProcessTextString)
-	 PluginText:=ProcessTextString
-	 ; PluginName:=Trim(StrSplit(PluginText,"=").1,"[]") ; debug only
-	 PluginName:=Trim(StrSplit(StrSplit(PluginText,"=").1,"_").1,"[]")
-	 ; MsgBox % PluginText "`n" PluginName ; debug only
-	 PluginOptions:=GrabPluginOptions(PluginText)
-	 If IsLabel("GetSnippet" PluginName)
-		Gosub, GetSnippet%PluginName%
 
-	 If (RegExMatch(Clip, "i)(" ClipCommandRE "|\[\[var)") > 0) ; make sure all "plugins" are processed before proceeding incl. local variables
-		Gosub, ProcessText
+	 ; Additional safety, by adding an IF it should prevent crashing Lintalist by getting stuck in an endless loop (for example missing a closing ] of a plugin)
+	 If RegExMatch(clip,"iUs)\[\[[^\[]*\]\]",ProcessTextString)
+		{
+
+		 PluginText:=ProcessTextString
+		 ; PluginName:=Trim(StrSplit(PluginText,"=").1,"[]") ; debug only
+		 ; PluginName:=Trim(StrSplit(StrSplit(PluginText,"=").1,"_").1,"[]") ; plugins only: name=
+		 PluginName:=Trim(StrSplit(StrSplit(PluginText,["=","("]).1,"_").1,"[]") ; v2.0 allow for plugins and functions: name= and name(
+		 PluginOptions:=GrabPluginOptions(PluginText)
+		 ; MsgBox % ">" PluginText "<`n>" PluginName "<`n>" PluginOptions "<`n---------`n" clip ; debug only
+		 If IsLabel("GetSnippet" PluginName)
+			Gosub, GetSnippet%PluginName%
+		 else If IsFunc(PluginName)
+		 	{
+			 clipsave:=clip ; store clip
+			 PluginProcessFunction:=ProcessFunction(PluginName,PluginOptions)
+			 if (clipsave = clip) ; if function hasn't modified the clip, modify clip by replacing the function calls
+				clip:=StrReplace(clip,PluginText,PluginProcessFunction)
+			 if InStr(clip,PluginText) ; safety check, if func HAS modified the clip, but has omitted to remove itself from clip we need to remove it otherwise we're stuk in an endless loop
+				clip:=StrReplace(clip,PluginText)
+			 clipsave:="", PluginProcessFunction:=""
+			}
+		 else ; not a plugin, so remove it otherwise we'll get stuck in an endless loop, we replace [[]] with {{}} to show the "error"
+			clip:=StrReplace(clip,ProcessTextString,"{{" trim(ProcessTextString,"[]")"}}")
+
+		 If (RegExMatch(Clip, "iU)\[\[\w") > 0) ; make sure all "plugins" are processed before proceeding incl. local variables
+			Gosub, ProcessText
+
+		}
+
 	 Gosub, CheckFormat
 
 Return
@@ -2121,6 +2161,7 @@ Catch
 	 ;
 	}
 Menu, File, Add, &Load All Bundles, MenuHandler
+Menu, File, Icon,&Load All Bundles, icons\arrow-in.ico
 If (LoadAll = 1)
 	 Menu, file, Check, &Load All Bundles
 Else If (LoadAll = 0)
@@ -2134,6 +2175,7 @@ Loop, parse, MenuName_HitList, |
 	}
 Menu, File, Add
 Menu, File, Add, &Reload Bundles,     GlobalMenuHandler
+Menu, File, Icon,&Reload Bundles,     icons\arrow-retweet.ico
 Menu, MenuBar, Add, &Bundle, :File
 
 Return
@@ -2201,8 +2243,11 @@ Menu, Tools, Add, Convert Texter bundle    , GlobalMenuHandler
 Menu, Tools, Add, Convert UltraEdit taglist, GlobalMenuHandler
 
 Menu, Help, Add, &Help, GlobalMenuHandler
+Menu, Help, Icon,&Help, icons\help.ico
 Menu, Help, Add, &About, GlobalMenuHandler
+Menu, Help, Icon,&About, icons\help.ico
 Menu, Help, Add, &Quick Start Guide, GlobalMenuHandler
+Menu, Help, Icon,&Quick Start Guide, icons\help.ico
 
 Menu, MenuBar2, Add, &Plugins, :Plugins
 Menu, MenuBar2, Add, &Tools, :Tools ; make it available in Edit gui
@@ -2264,6 +2309,7 @@ Return
 #Include %A_ScriptDir%\include\editor.ahk
 #Include %A_ScriptDir%\include\BundlePropertiesEditor.ahk
 #Include %A_ScriptDir%\plugins\plugins.ahk
+#Include %A_ScriptDir%\plugins\functions.ahk
 #Include %A_ScriptDir%\include\GuiSettings.ahk
 #Include %A_ScriptDir%\include\SetShortcuts.ahk
 #Include %A_ScriptDir%\include\QuickStart.ahk
