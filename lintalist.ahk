@@ -4,7 +4,7 @@ Name            : Lintalist
 Author          : Lintalist
 Purpose         : Searchable interactive lists to copy & paste text, run scripts,
                   using easily exchangeable bundles
-Version         : 1.9.4
+Version         : 1.9.5
 Code            : https://github.com/lintalist/
 Website         : http://lintalist.github.io/
 AutoHotkey Forum: https://autohotkey.com/boards/viewtopic.php?f=6&t=3378
@@ -41,7 +41,7 @@ PluginMultiCaret:=0 ; TODOMC
 
 ; Title + Version are included in Title and used in #IfWinActive hotkeys and WinActivate
 Title=Lintalist
-Version=1.9.4
+Version=1.9.5
 
 ; Gosub, ReadPluginSettings
 
@@ -127,6 +127,11 @@ if 0 > 0  ; check cl parameters
 		 param := %A_Index%  ; Fetch the contents of the variable whose name is contained in A_Index.
 		 if (param = "-Active")
 			cl_Active:=1
+		 if (param = "-ReadOnly") ; possible to expand to various options, see discussion https://github.com/lintalist/lintalist/issues/95 
+		 	{
+			 cl_ReadOnly:=1
+			 AppWindow:="*" AppWindow
+		 	}
 		 if InStr(param,"-Bundle")
 			{
 			 cl_Bundle:=StrSplit(param,"=").2
@@ -186,6 +191,24 @@ Gosub, QuickStartGuide
 
 ; setup hotkey
 
+; check capslock and scrolllock status so we can actually use them as hotkey if defined by user and 
+; they are already in the DOWN (active) state when Lintalist is started
+
+ProgramHotKeyList:="StartSearchHotkey,StartOmniSearchHotkey,QuickSearchHotkey,ExitProgramHotKey"
+Loop, parse, ProgramHotKeyList, CSV
+	{
+	 If (%A_LoopField% = "CAPSLOCK") and (GetKeyState("CAPSLOCK","T") = 1) ; is set as hotkey, so we need to turn it off
+		{
+		 SetCapsLockState, Off
+		 MsgBox, 64, Lintalist, Capslock has been turned off as it is now used by Lintalist.
+	 	}
+	 If (%A_LoopField% = "SCROLLLOCK") and (GetKeyState("SCROLLLOCK","T") = 1)
+		{
+		 SetScrollLockState, Off
+		 MsgBox, 64, Lintalist, ScrollLock has been turned off as it is now used by Lintalist.
+	 	}
+	}
+
 Hotkey, IfWinNotExist, ahk_group BundleHotkeys
 Hotkey, %StartSearchHotkey%, GUIStart
 If (StartOmniSearchHotkey <> "")
@@ -195,6 +218,8 @@ If (QuickSearchHotkey <> "")
 If (ExitProgramHotKey <> "")
 	Hotkey, %ExitProgramHotKey%, SaveSettings
 Hotkey, IfWinNotExist
+
+ProgramHotKeyList:=""
 
 ViaShorthand=0
 
@@ -742,8 +767,12 @@ If (Script = "") or (ScriptPaused = 1) ; script is empty so we need to paste Tex
 		 If PluginMultiCaret
 		 	{
 			 Loop, % PluginMultiCaret
-			 	SendInput, % MultiCaret[ActiveWindowProcessName].key  ; TODOMC
+			 	{
+			 	 SendInput, % MultiCaret[ActiveWindowProcessName].key  ; TODOMC
+			 	 Sleep 10
+			 	}
 			 SendInput, % MultiCaret[ActiveWindowProcessName].clr     ; TODOMC
+			 Sleep 10
 			 PluginMultiCaret=0
 		 	}
 		}
@@ -789,12 +818,13 @@ Else If (Script <> "") and (ScriptPaused = 0) ; we run script by saving it to tm
 			 Clip:=Text%A_Index%
 			 Gosub, ProcessText
 			 Clip:=CheckCursorPos(Clip)
-			 StringReplace,Script,Script,[[llpart%A_Index%]],llpart%A_Index%=`n(join``n`n%clip%`n)`n`nLLBackLeft%A_Index%:=%BackLeft%`nLLBackUp%A_Index%:=%BackUp%`n`n,All
+			 ; we use (join`n % here to avoid the need to escape the % characters which may be included in the clip variable - https://github.com/lintalist/lintalist/issues/92
+			 StringReplace,Script,Script,[[llpart%A_Index%]],llpart%A_Index%=`n(join``n `%`n%clip%`n)`n`nLLBackLeft%A_Index%:=%BackLeft%`nLLBackUp%A_Index%:=%BackUp%`n`n,All
 			 BackLeft:=0
 			 BackUp:=0
 			}
 	 	}
-	 FileAppend, % Script, %TmpDir%\tmpScript.ahk ; %
+	 FileAppend, % Script, %TmpDir%\tmpScript.ahk, UTF-8 ; %
 	 GUI, 1:Destroy
 	 RunWait, %A_AhkPath% "%TmpDir%\tmpScript.ahk"
 	 FileDelete, %TmpDir%\tmpScript.ahk
@@ -1054,6 +1084,8 @@ Return
 
 ResetSearch:
 	 lasttext = fadsfSDFDFasdFdfsadfsadFDSFDf
+	 if !cl_ReadOnly
+		IniWrite, %SearchMethod%       , %IniFile%, Settings, SearchMethod
 	 Gosub, GetText
 Return
 
@@ -1066,6 +1098,8 @@ SearchLetterVariations:
 	 SearchLetterVariations:=MyToolbar.GetButtonState(MyToolbarIDs.ToggleLetterVariations,"Checked")
 	 SearchLetterVariations:=!SearchLetterVariations
 	 MyToolbar.ModifyButton(MyToolbarIDs.ToggleLetterVariations,"Check",SearchLetterVariations)
+	 if !cl_ReadOnly
+		IniWrite, %SearchLetterVariations% , %IniFile%, Settings, SearchLetterVariations
 	 Gosub, ResetSearch
 Return
 
@@ -1246,6 +1280,11 @@ Return
 
 F4:: ; edit snippet
 EditF4:
+If cl_ReadOnly
+	{
+	 MsgBox, 64, Lintalist, Lintalist is in Read Only mode - editing has been disabled.
+	 Return
+	}
 If WinExist("Lintalist snippet editor")
 	{
 	 WinActivate, Lintalist snippet editor
@@ -1265,6 +1304,11 @@ Return
 
 F5:: ; copy snippet
 EditF5:
+If cl_ReadOnly
+	{
+	 MsgBox, 64, Lintalist, Lintalist is in Read Only mode - editing has been disabled.
+	 Return
+	}
 EditMode = CopySnippet
 Gui, 1:Submit, NoHide
 ControlFocus, SysListView321, %AppWindow%
@@ -1279,6 +1323,11 @@ Return
 
 F6:: ; copy snippet
 EditF6:
+If cl_ReadOnly
+	{
+	 MsgBox, 64, Lintalist, Lintalist is in Read Only mode - editing has been disabled.
+	 Return
+	}
 EditMode = MoveSnippet
 Gui, 1:Submit, NoHide
 ControlFocus, SysListView321, %AppWindow%
@@ -1293,6 +1342,11 @@ Return
 
 F7:: ; create new snippet e.g. append
 EditF7:
+If cl_ReadOnly
+	{
+	 MsgBox, 64, Lintalist, Lintalist is in Read Only mode - editing has been disabled.
+	 Return
+	}
 EditMode = AppendSnippet
 gui 1:+Disabled
 gui 71:+Owner1
@@ -1301,6 +1355,11 @@ Return
 
 F8:: ; delete snippet
 EditF8:
+If cl_ReadOnly
+	{
+	 MsgBox, 64, Lintalist, Lintalist is in Read Only mode - editing has been disabled.
+	 Return
+	}
 InEditMode = 1
 Gui, 1:Submit, NoHide
 ControlFocus, SysListView321, %AppWindow%
@@ -1343,6 +1402,11 @@ Return
 
 F10::
 EditF10:
+If cl_ReadOnly
+	{
+	 MsgBox, 64, Lintalist, Lintalist is in Read Only mode - editing has been disabled.
+	 Return
+	}
 EditMode = BundleProperties
 If WinExist("Lintalist bundle editor")
 	{
@@ -1661,6 +1725,11 @@ Else If (A_ThisMenuItem = "Check for updates")
 	Run, %A_AhkPath% %A_ScriptDir%\include\update.ahk
 Else If (A_ThisMenuItem = "&Manage Counters")
 		{
+		 If cl_ReadOnly
+			{
+			 MsgBox, 64, Lintalist, Lintalist is in Read Only mode - editing has been disabled.
+			 Return
+			}
 		 Gosub, SaveSettingsCounters
 		 StoreCounters:=Counters
 		 StoreLocalCounter_0:=LocalCounter_0
@@ -1695,6 +1764,11 @@ Else If (A_ThisMenuItem = "&Pause Lintalist")
 	Gosub, PauseProgram
 Else If (A_ThisMenuItem = "&Configuration")
 	{
+	 If cl_ReadOnly
+		{
+		 MsgBox, 64, Lintalist, Lintalist is in Read Only mode - editing has been disabled.
+		 Return
+		}
 	 Gosub, SaveStartupSettings
 	 IniSettingsEditor("Lintalist",A_ScriptDir "\" IniFile)
 	 MsgBox, 36, Restart?, In order for any changes to take effect you must reload.`nOK to restart? ; 4+32 = 36
@@ -1734,6 +1808,11 @@ Else If (A_ThisMenuItem = "&Help")
 	Run, docs\index.html
 Else If (A_ThisMenuItem = "&Manage Local Variables")
 		{
+		 If cl_ReadOnly
+			{
+			 MsgBox, 64, Lintalist, Lintalist is in Read Only mode - editing has been disabled.
+			 Return
+			}
 		 If WinExist(AppWindow " ahk_class AutoHotkeyGUI")
 			Gui, 1:+Disabled
 		 RunWait, %A_AhkPath% include\localbundleeditor.ahk
@@ -2271,31 +2350,45 @@ LastBundle=
 Loop, parse, Load, CSV ; store loaded bundles
 	LastBundle .= FileName_%A_LoopField% ","
 StringTrimRight, LastBundle, LastBundle, 1
-IniWrite, %LastBundle%  , %IniFile%, Settings, LastBundle
-If (SubStr(DefaultBundle, 0) = ",")
-	StringTrimRight, DefaultBundle, DefaultBundle, 1
-IniWrite, %DefaultBundle%      , %IniFile%, Settings, DefaultBundle
-IniWrite, %SearchMethod%       , %IniFile%, Settings, SearchMethod
-IniWrite, %Load%               , %IniFile%, Settings, Load
-IniWrite, %LoadAll%            , %IniFile%, Settings, LoadAll
-IniWrite, %SearchLetterVariations% , %IniFile%, Settings, SearchLetterVariations
-IniWrite, %Lock%               , %IniFile%, Settings, Lock
-IniWrite, %Case%               , %IniFile%, Settings, Case
-IniWrite, %Width%              , %IniFile%, Settings, Width
-IniWrite, %Height%             , %IniFile%, Settings, Height
-IniWrite, %ShorthandPaused%    , %IniFile%, Settings, ShorthandPaused
-IniWrite, %ShortcutPaused%     , %IniFile%, Settings, ShortcutPaused
-IniWrite, %ScriptPaused%       , %IniFile%, Settings, ScriptPaused
-IniWrite, %ShowQuickStartGuide%, %IniFile%, Settings, ShowQuickStartGuide
-IniWrite, %XY%                 , %IniFile%, Settings, XY
+if !cl_ReadOnly
+	{
+	 IniWrite, %LastBundle%  , %IniFile%, Settings, LastBundle
+	 IniWrite, %Load%               , %IniFile%, Settings, Load
+	 IniWrite, %LoadAll%            , %IniFile%, Settings, LoadAll
+	 IniWrite, %Lock%               , %IniFile%, Settings, Lock
+	 IniWrite, %Case%               , %IniFile%, Settings, Case
+	 IniWrite, %Width%              , %IniFile%, Settings, Width
+	 IniWrite, %Height%             , %IniFile%, Settings, Height
+	 IniWrite, %ShorthandPaused%    , %IniFile%, Settings, ShorthandPaused
+	 IniWrite, %ShortcutPaused%     , %IniFile%, Settings, ShortcutPaused
+	 IniWrite, %ScriptPaused%       , %IniFile%, Settings, ScriptPaused
+	 IniWrite, %XY%                 , %IniFile%, Settings, XY
+	}	
 
-Gosub, SaveStartupSettings
-Gosub, SaveSettingsCounters
+; We no longer save:
+; - DefaultBundle (set via Func_IniSettingsEditor_v6.ahk)
+; - ShowQuickStartGuide (set via QuickStart.ahk) and
+; - SearchMethod,SearchLetterVariations (set by labels in Lintalist.ahk above)
+; related to https://github.com/lintalist/lintalist/issues/94
+;If (SubStr(DefaultBundle, 0) = ",")
+;	StringTrimRight, DefaultBundle, DefaultBundle, 1
+;IniWrite, %DefaultBundle%      , %IniFile%, Settings, DefaultBundle
+;IniWrite, %SearchMethod%       , %IniFile%, Settings, SearchMethod
+;IniWrite, %SearchLetterVariations% , %IniFile%, Settings, SearchLetterVariations
+;IniWrite, %ShowQuickStartGuide%, %IniFile%, Settings, ShowQuickStartGuide
+
+if !cl_ReadOnly
+	{
+	 Gosub, SaveStartupSettings
+	 Gosub, SaveSettingsCounters
+	}	
 ; /INI
 
 ; Bundles
 
 ; If (A_ExitReason <> "Exit") ; to prevent saving bundles twice which would make the backup routine not work correctly
+
+if !cl_ReadOnly ; if readonly do not update bundles.
 	SaveUpdatedBundles()
 
 Gosub, CheckShortcuts ; desktop & startup LNK check (either set or delete after changing ini)

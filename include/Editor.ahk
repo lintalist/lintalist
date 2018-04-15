@@ -435,8 +435,9 @@ Else If (EditMode = "AppendSnippet") or (EditMode = "CopySnippet") or (EditMode 
   LLShorthand: %Shorthand%
   LLScript: %Script%
 )
-	File=
-	File .= A_ScriptDir "\bundles\" FileName_%AppendToBundle%
+ ;  File= 
+ ;  File .= A_ScriptDir "\bundles\" FileName_%AppendToBundle% ; debug 04/04/2018
+    File := A_ScriptDir "\bundles\" Filename ; debug 04/04/2018
 	IfNotInString, File, .txt
 		{
 		 MsgBox, 48, Error, ERROR: Can not append snippet to Bundle (No file name available)`nBundle: %File%`n`nDo you wish to Reload?
@@ -445,7 +446,7 @@ Else If (EditMode = "AppendSnippet") or (EditMode = "CopySnippet") or (EditMode 
 		}
 	Else
 		{	
-		 FileAppend, %Append%, %file%
+		 FileAppend, %Append%, %file%, UTF-8
 		 If (ErrorLevel = 0)
 			MsgBox, 64, Snippet succesfully added to bundle, % File "`n" Append
 		 Else
@@ -487,7 +488,7 @@ TitleMatch: %TitleMatch%
 Patterns:
 %append%
 
-), %file%
+), %file%, UTF-8
 
 	 Gui, 1:-Disabled
 	 Gui, 71:Destroy
@@ -593,7 +594,7 @@ EditControlInEditor(ControlID)
 		}
  
 	 FileDelete, %TmpDir%\__tmplintalistedit.txt
-	 FileAppend, %ToFile%, %TmpDir%\__tmplintalistedit.txt
+	 FileAppend, %ToFile%, %TmpDir%\__tmplintalistedit.txt, UTF-8
 	 If (SnippetEditor = "")
 	 	Run, %TmpDir%\__tmplintalistedit.txt
 	 else

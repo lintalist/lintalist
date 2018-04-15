@@ -64,5 +64,8 @@ lintalist.exe and just start lintalist.ahk directly.
 * [DonationCoder.com](http://www.donationcoder.com/forum/index.php?topic=41475)
 * [Alternativeto.net](http://alternativeto.net/software/lintalist/)
 
+### Credits
+
+Lintalist uses various libraries, icons and more prepared by others - see [credits.txt](https://github.com/lintalist/lintalist/blob/master/docs/credits.txt) for a complete list (if something is missing do let me know)
 
 Copyright 2009-2018 Lintalist. See license.txt

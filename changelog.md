@@ -1,3 +1,15 @@
+### v1.9.5
+
+* New: Command line parameters -ReadOnly: start in ReadOnly mode, no editing of bundles or  
+  updating settings.ini #95 https://github.com/lintalist/lintalist/issues/95
+* New: Check Capslock and ScrollLock state at startup, turn it off if used as hotkeys  
+  and inform user if it is turned off #93 https://github.com/lintalist/lintalist/issues/93
+* Fix: allow to change default bundle #94 https://github.com/lintalist/lintalist/issues/94
+* Fix: Escape % in llpart1 and llpart2 variable when using snippet part1 or part2 in scripts  
+  #92 https://github.com/lintalist/lintalist/issues/92
+* Fix: The error "Can not append snippet to Bundle (No file name available)" should no  
+  longer happen.
+
 ### v1.9.4
 
 * New: Functions in Snippets are now also allowed: [[function()]] - both AHK built-in as  

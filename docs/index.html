@@ -21,7 +21,7 @@
 <span style='font-size:.8em;'>You can <b>extend Lintalist</b> by writing your own <b><a href='#InteractiveBundleText'>plugins</a></b>. Lintalist is open source and developed in <a href='https://autohotkey.com/'>AutoHotkey</a>, an easy to learn scripting language for Windows.
 [WinXP(sp3)/Vista/7/8/10]<br /></span>
 <span style='font-size:.8em;'>As of LintaList v1.1 several types of formatted text are supported in Snippets.</span>
-<span class='date' style='float:right;display:inline;margin-top:0px;'>doc rev. 20171230</span></p>
+<span class='date' style='float:right;display:inline;margin-top:0px;'>doc rev. 20180415</span></p>
 </div>
 
 <div class='column'>
@@ -71,7 +71,7 @@
 </div>
 
 <div class='column'>
-<p><b>Download Lintalist <em>1.9.4</em></b>
+<p><b>Download Lintalist <em>1.9.5</em></b>
 <p>
 <a href='https://github.com/lintalist/lintalist/releases'><img src='img/lintalist65x65.gif' alt='Download Lintalist' width='65' align='left' border='0' style='margin-right: 5px;' /></a>
 Download (incl. source):<br />
@@ -156,7 +156,7 @@ Installing Lintalist is easy, just download the ZIP file and unpack it in a fold
 If you are already an AutoHotkey user and have it installed, it is recommended to run <b>Lintalist.ahk</b>, this will ensure you will be running Lintalist with your preferred version of AutoHotkey. If you don't have AutoHotkey installed you can start <b>Lintalist.exe</b>.
 
 <b>Notes:</b>
-- Lintalist.exe: A renamed AutoHotkey.exe (v1.1.27.02 32-bit Unicode, See https://autohotkey.com/ and/or https://autohotkey.com/download/)
+- Lintalist.exe: A renamed AutoHotkey.exe (v1.1.28.02 32-bit Unicode, See https://autohotkey.com/ and/or https://autohotkey.com/download/)
 - Lintalist.ahk: The actual (main) source code of the program (see https://github.com/lintalist/lintalist)
 
 <h2 id='Searching'>Normal use: Starting Lintalist and searching for a Snippet</h2>
@@ -1137,14 +1137,16 @@ This Script code (in the snippet):
 Will turn into the following Script code when started:
 <blockquote class='boxed'>
 llpart1=
-(join`n
+(join`n % <span class='llcomment'>; note the percent sign here</span>
 ....Text of Part1...
 )
 <span class='llbundle'>MsgBox</span> % llpart1
 
 </blockquote>
-If Part1 or Part2 have the Caret plugin <code>^|</code>, the variables <em>LLBackLeft1, LLBackLeft2, LLBackUp1</em> and <em>LLBackUp2</em> are
+If Part1 or Part2 has the Caret plugin <code>^|</code>, the variables <em>LLBackLeft1, LLBackLeft2, LLBackUp1</em> and <em>LLBackUp2</em> are
 also stored. You can use these to position the caret by sending UP and LEFT keys (do UP first, LEFT second)
+
+Note that % signs in snippets do not need to be escaped as the <code>(join`n %</code> takes care of that automatically (see the <a href='https://autohotkey.com/docs/Scripts.htm#Join'>Join documentation</a> at AutoHotkey)
 
 <blockquote class='boxed'>
 <span class='llcomment'>; send or paste llpart1, for llpart2 use LLBackUp2 and LLBackLeft2</span>
@@ -1514,6 +1516,8 @@ There is also a configuration setting that can do this: ActivateWindow
 
 <b>-Ini=</b><i>filename-for-settings.ini</i>: use a different settings file (default is settings.ini) [v1.8+]
 
+<b>-ReadOnly</b>: start in ReadOnly mode, no editing of bundles, settings.ini, counters and local variables [v1.94+] <a href='https://github.com/lintalist/lintalist/issues/95'>Discussion @ GH</a>
+
 <h2 id='FAQ'>F.A.<em>Q</em> &amp; Known <em>Issues</em></h2>
 
 <h3>Faq</h3>
@@ -1550,6 +1554,7 @@ There is also a configuration setting that can do this: ActivateWindow
 <b>A1:</b> If this happens try "Reload Bundles" or restart Lintalist, for some reason Lintalist can not find 
     or access the bundle or possibly it has lost track of which bundle it should append to.
     This should be fixed in a future update of Lintalist
+    <b>Update v1.9.5+:</b> this should no longer happen, do report it if you notice it, especially if you can reproduce it.
 
 <a name='ki2'></a><b>K2:</b> It doesn't always work with Flash edit controls
 <b>A2:</b> When the Lintalist GUI becomes active the Flash (edit) control looses focus. It is not possible to 

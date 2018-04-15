@@ -25,7 +25,7 @@ InEditMode = 1
 
 If (EditMode = "")
 	Return
-	
+
 Gui, 81:+Owner
 Gui, 81:Font,s10
 Gui, 81:Add, Text, x20 y10, Note: New and modified Bundle properties are only stored when you press SAVE.
@@ -115,7 +115,7 @@ Author:=Author_%SelectedListboxBundle%
 TitleMatch:=TitleMatchList_%SelectedListboxBundle%
 
 If (SelectedListboxBundle = 0)
-	 Name:="",Description:="",Author:="",TitleMatch:=""
+	Name:="",Description:="",Author:="",TitleMatch:=""
 
 GuiControl, , Name        , %Name%
 GuiControl, , Description , %Description%
@@ -134,16 +134,16 @@ Gui, 81:Submit, NoHide
 If (SelectedListboxBundle = "")
 	{
 	 if (Trim(Name," ") = "")
-	 	{
-	 	 MsgBox, Please enter Name
+		{
+		 MsgBox, Please enter Name
 		 ControlFocus, Edit1, A
-	 	 Return
+		 Return
 	 	}
 	 InputBox, NewBundleFileName, Save as, File name of new bundle, , 400, 150
 	 If (NewBundleFileName = "")
 		{
-	 	 MsgBox, Please enter filename
-	 	 Return
+		 MsgBox, Please enter filename
+		 Return
 		}
 	 NewBundleFileName .= ".txt" ; make sure *.txt was added otherwise it won't load at next startup
 	 StringReplace, NewBundleFileName, NewBundleFileName, .txt.txt, .txt, all
@@ -153,8 +153,8 @@ If (SelectedListboxBundle = "")
 		 MsgBox, Warning:`n%File%`n`nis already present in the bundle folder.`nEnter a new name.
 		 Return
 		}
-	 
-FileAppend, 
+
+FileAppend,
 (
 BundleFormat: 1
 Name: %Name%
@@ -168,7 +168,7 @@ Patterns:
   LLShorthand: 
   LLScript: 
 
-), %file%
+), %file%, UTF-8
 
 	 Gui, 1:-Disabled
 	 Gui, 81:Destroy

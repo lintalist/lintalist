@@ -86,7 +86,7 @@ INISetup:={ AlwaysLoadBundles:     {default:"",find:"bundles\"}
 			, XY:                  {default:"50|50"} 
 			, BigIcons:            {default:"1"} 
 			, AutoHotkeyVariables: {default:""}
-			, EditorSyntaxHL:      {default:"0"} 
+            , EditorSyntaxHL:      {default:"0"} 
 			, SnippetEditor:       {default:""} }
 
 	 for k, v in INISetup

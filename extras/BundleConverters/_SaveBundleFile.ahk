@@ -46,7 +46,7 @@ TitleMatch: %TitleMatch%
 Patterns:
 %Output%
 
-), %Filename%
+), %Filename%, UTF-8
 MsgBox, 64, New Bundle saved, Bundle saved as:`n%Filename%
 ExitApp
 Return
