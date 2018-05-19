@@ -189,12 +189,14 @@ If (EditMode = "EditSnippet") or (EditMode = "CopySnippet") ; get snippet vars f
 	 Text2     := Snippet[Paste1,Paste2,2] ; part 2 (shift-enter)
 	 HKey      := Snippet[Paste1,Paste2,3] ; Hotkey
 	 OldKey:=HKey
-	 If (InStr(HKey, "#") > 0)
+	 If !EditorHotkeySyntax	 
 		{
-		 Checked=Checked
-		 StringReplace, HKey, HKey, #, , all
-		} 
-		
+		 If (InStr(HKey, "#") > 0)
+			{
+			 Checked=Checked
+			 StringReplace, HKey, HKey, #, , all
+			} 
+	 	}
 	 Shorthand := Snippet[Paste1,Paste2,4] ; Shorthand
 	 OldShorthand:=Shorthand
 	 Script    := Snippet[Paste1,Paste2,5] ; Script (if there is a script run script instead)
@@ -203,7 +205,7 @@ If (EditMode = "EditSnippet") or (EditMode = "CopySnippet") ; get snippet vars f
 
 Filename:=Filename_%paste1%
 
-ActionText:=RegExReplace(EditMode,"([A-Z])"," $1")
+ActionText:=StrReplace(RegExReplace(EditMode,"([A-Z])"," $1"),"Append","New")
 
 Gui, 71:+Owner +Resize +MinSize740x520
 Gui, 71:Default
@@ -217,8 +219,17 @@ Gui, 71:Add, Text    , x340   y13               , File:%A_Space%%A_Space%%A_Spac
 Gui, 71:Add, Text,     x20    y45 w700 h1 0x10 vTextLine
 Gui, 71:Add, Picture , x20    y65 w16 h16, %A_ScriptDir%\icons\hotkeys.ico
 Gui, 71:Add, Text    , x40    y65                  , Hotkey: 
-Gui, 71:Add, Hotkey  , xp+50  y63  w140 h20 vHKey  , %HKey%
-Gui, 71:Add, Checkbox, xp+150 y65  w70  h20 vWinKey %checked%, Win
+
+If !EditorHotkeySyntax
+	{
+	 Gui, 71:Add, Hotkey  , xp+50  y63  w140 h20 vHKey  , %HKey%
+	 Gui, 71:Add, Checkbox, xp+150 y65  w70  h20 vWinKey %checked%, Win
+	}
+else If EditorHotkeySyntax
+	{
+	 Gui, 71:Add, Edit  , xp+50  y63  w140 h20 vHKey  , %HKey%
+	 Gui, 71:Add, Link, xp+150 y65  w70  h20 , [<a href="https://autohotkey.com/docs/Hotkeys.htm">AHK Docs</a>]
+	}
 
 Gui, 71:Add, Picture , xp+80  y65  w16 h16, %A_ScriptDir%\icons\shorthand.ico
 Gui, 71:Add, Text    , xp+20  y65  w150 h20           , Shorthand: 
@@ -275,7 +286,7 @@ WinActivate, Lintalist snippet editor
 If EditorSyntaxHL
 	GuiControl, Focus, % RC1.hWnd
 else	
-	ControlFocus, Edit2, Lintalist snippet editor
+	ControlFocus, Text1, Lintalist snippet editor
 Return
 
 #IfWinActive, Lintalist snippet editor ahk_class AutoHotkeyGUI
@@ -322,11 +333,14 @@ Return
 71Save:
 If (EditMode <> "MoveSnippet")
 	Gui, 71:Submit, NoHide
-If (HKey = "vk00") ; temp fix for ahk 1.1.02.1-1.1.02.3
-	HKey=	
-If (Winkey = 1)
-	HKey = #%HKey% ; add Win modifier key
-StringLower, HKey, HKey
+If !EditorHotkeySyntax
+	{
+	 If (HKey = "vk00") ; temp fix for ahk 1.1.02.1-1.1.02.3
+		HKey=	
+	 If (Winkey = 1)
+		HKey = #%HKey% ; add Win modifier key
+	 StringLower, HKey, HKey
+	}
 If (EditMode = "EditSnippet")
 	Check:=Paste1
 Else If (EditMode = "AppendSnippet") or (EditMode = "CopySnippet") or (EditMode = "MoveSnippet") 
@@ -336,6 +350,20 @@ If !SnippetErrorCheck(Text1,"[[") or !SnippetErrorCheck(Text2,"[[")
 	{
 	 MsgBox,48,Warning, Possible Plugin/function error in Snippet.`nMismatch number of square brackets "[[" and "]]".
 	 Return
+	}
+
+; EditorHotkeySyntax: check valid hotkey
+If EditorHotkeySyntax
+	{
+	 Hotkey, IfWinNotActive, ahk_group BundleHotkeys
+	 Hotkey, % "$" HKey, EditorHotkeySyntaxDummyLabel, UseErrorLevel
+	 If ErrorLevel
+		{
+		 MsgBox,48,Warning [%ErrorLevel%], %HKey% does not seem to be a valid hotkey.`nOne or more keys are either not recognized or not supported by the current keyboard layout/language.`n`nErrorLevel: %ErrorLevel% - check AHK Hotkey documentation for reference.
+		 Hotkey, IfWinNotActive
+		 Return
+		}
+	 Hotkey, IfWinNotActive
 	}
 
 ; Checking for duplicate shorthand within same bundle
@@ -352,7 +380,7 @@ If HitKeyHistory
 		{
 		 MsgBox,48,Warning, Shorthand collision`nThis abbreviation is already in use in this Bundle.`nBundleName added to Shorthand, so be sure to edit.
 		 Shorthand:= MenuText1 ":" Shorthand
-		 GuiControl,71:, Edit1, %Shorthand%
+		 GuiControl,71:, Shorthand, %Shorthand%
 		 If (EditMode <> "MoveSnippet")
 			Return
 		}
@@ -373,7 +401,10 @@ If HitKeyHistory
 		 MsgBox,48,Warning, Hotkey collision.`nThis keyboard shortcut is already in use in this Bundle.`nHotkey reset for this snippet.
 		 If (EditMode <> "MoveSnippet")
 			{
-			 GuiControl,71:, msctls_hotkey321,  
+			 If !EditorHotkeySyntax
+			 	GuiControl,71:, msctls_hotkey321, 
+			 Else If EditorHotkeySyntax
+			 	GuiControl,71:, HKey,
 			 Return
 			}	
 		 HKey=
@@ -390,7 +421,7 @@ If (EditMode = "EditSnippet")
 
 	 Snippet[Paste1,Paste2,"1v"]:=FixPreview(Text1)
 	 Snippet[Paste1,Paste2,"2v"]:=FixPreview(Text2)
-	 
+
 	 List_ToSave_%Paste1%=1
 	 Snippet[Paste1,"Save"]:=1
      Counter:=Paste1
@@ -504,15 +535,15 @@ ShortHandHitList_%Counter%:=Chr(5) ; clear
 ; MsgBox % Counter
 If (OldKey <> "") ; and (OldKey <> HKey)
 	{
-	 Hotkey, IfWinNotActive, ahk_group BundleHotkeys	
+	 Hotkey, IfWinNotActive, ahk_group BundleHotkeys
 	 Hotkey, % "$" . OldKey, Off ; set old hotkey off ...
 	 Hotkey, IfWinNotActive
 	}
 Loop, % Snippet[Counter].MaxIndex() ; LoopIt
-	{ 
+	{
 	 If (Snippet[Counter,A_Index,3] <> "") ; if no hotkey defined: skip
 		{
-		 Hotkey, IfWinNotActive, ahk_group BundleHotkeys	
+		 Hotkey, IfWinNotActive, ahk_group BundleHotkeys
 		 Hotkey, % "$" . Snippet[Counter,A_Index,3], ShortCut ; set hotkeys
 		 If (ShortcutPaused = 1)
 			{
@@ -525,7 +556,7 @@ Loop, % Snippet[Counter].MaxIndex() ; LoopIt
 	 If (Snippet[Counter,A_Index,4] <> "") ; if no shorthand defined: skip
 		{
 		 ShortHandHitList_%Counter% .= Snippet[Counter,A_Index,4] Chr(5)
-		} 
+		}
 	}
 
 
@@ -545,7 +576,7 @@ WinActivate, %AppWindow%
 WinWaitActive, %AppWindow%
 LoadBundle(Load)
 UpdateLVColWidth()
-ControlFocus, Edit1, %AppWindow%
+ControlFocus, Shorthand, %AppWindow%
 Gosub, SetStatusBar	
 lasttext = fadsfSDFDFasdFdfsadfsadFDSFDf
 Gosub, GetText
@@ -568,7 +599,7 @@ Return
 EditControlInEditor(ControlID)
 	{
 	 Global WhichControl,SnippetEditor,TmpDir, RC1, RC2, RC3, RCID, EditorSyntaxHL
-	 
+
 	 If EditorSyntaxHL
 		{
 		 if (ControlID = "Text1")
@@ -584,11 +615,11 @@ EditControlInEditor(ControlID)
 	 else
 		{
 		 if (ControlID = "Text1")
-			WhichControl:="Edit2"
+			WhichControl:="Text1"
 		 else if (ControlID = "Text2")
-			WhichControl:="Edit3"
+			WhichControl:="Text2"
 		 else if (ControlID = "Script")
-			WhichControl:="Edit4"
+			WhichControl:="Script"
 
 		 GuiControlGet, ToFile, , %ControlID%
 		}
@@ -596,9 +627,9 @@ EditControlInEditor(ControlID)
 	 FileDelete, %TmpDir%\__tmplintalistedit.txt
 	 FileAppend, %ToFile%, %TmpDir%\__tmplintalistedit.txt, UTF-8
 	 If (SnippetEditor = "")
-	 	Run, %TmpDir%\__tmplintalistedit.txt
+		Run, %TmpDir%\__tmplintalistedit.txt
 	 else
-	 	Run, %SnippetEditor% %TmpDir%\__tmplintalistedit.txt
+		Run, %SnippetEditor% %TmpDir%\__tmplintalistedit.txt
 	 WinWait, __tmplintalistedit
 	 SetTimer, CheckEdit, 500, On
 	 Return
@@ -634,7 +665,7 @@ Gui, 1:-Disabled
 Gui, 71:Destroy
 WinActivate, %AppWindow%
 InEditMode = 0
-ControlFocus, Edit1, %AppWindow%
+ControlFocus, Shorthand, %AppWindow%
 Return
 
 SnippetErrorCheck(in,type)
@@ -650,3 +681,6 @@ SnippetErrorCheck(in,type)
 #include %A_ScriptDir%\include\richcode\AHK.ahk
 #include %A_ScriptDir%\include\richcode\SnippetHTML.ahk
 #include %A_ScriptDir%\include\richcode\Util.ahk
+
+EditorHotkeySyntaxDummyLabel:
+Return

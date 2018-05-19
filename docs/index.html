@@ -21,7 +21,7 @@
 <span style='font-size:.8em;'>You can <b>extend Lintalist</b> by writing your own <b><a href='#InteractiveBundleText'>plugins</a></b>. Lintalist is open source and developed in <a href='https://autohotkey.com/'>AutoHotkey</a>, an easy to learn scripting language for Windows.
 [WinXP(sp3)/Vista/7/8/10]<br /></span>
 <span style='font-size:.8em;'>As of LintaList v1.1 several types of formatted text are supported in Snippets.</span>
-<span class='date' style='float:right;display:inline;margin-top:0px;'>doc rev. 20180415</span></p>
+<span class='date' style='float:right;display:inline;margin-top:0px;'>doc rev. 20180519</span></p>
 </div>
 
 <div class='column'>
@@ -653,10 +653,13 @@ Neat trick: using a local variable or User input
 
 <tr id='calc-plugin'><td><code>[[Calc=]]</code> *2</td><td>Evaluation of the math expressions - see <a href='#Calc'>documentation below</a>.</td></tr>
 
-<tr id='calendar-plugin'><td><code>[[Calendar=Format|LCID]]</code></td><td>Displays a calendar window to allow you to select a date in a specific format (see DateTime below).
+<tr id='calendar-plugin'><td><code>[[Calendar=Format|LCID|to]]</code></td><td>Displays a calendar window to allow you to select a date in a specific format (see DateTime below).
 Basic example <code>[[Calendar=dd-MMM-yyyy]]</code> --> Select a date and it will be inserted like so: 25-Jan-2011
 
 [v1.8+] You can now specify an LCID. If you do not define one, the current user's locale is used to format the Date string. To use the system's locale instead, specify LSys. To use a specific locale, specify the letter L followed by a hexadecimal or decimal locale identifier (LCID). You can find a list of Locale IDs Assigned by Microsoft here <a href='https://msdn.microsoft.com/goglobal/bb964664.aspx' target='_blank'>msdn.microsoft.com/goglobal/bb964664.aspx</a>
+
+If you use a date range (e.g. start/end date) the wordt " to " is automatically inserted between the two dates, if you want something else such as another language or character " - " simply specificy this as the third paramater:
+<code>[[Calendar=dd-MMM-yyyy|| - ]]</code>
 
 </td></tr>
 

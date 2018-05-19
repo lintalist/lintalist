@@ -83,11 +83,13 @@ INISetup:={ AlwaysLoadBundles:     {default:"",find:"bundles\"}
 			, Font:                {default:"Arial"}
 			, FontSize:            {default:"10"}
 			, PlaySound:           {default:""}
-			, XY:                  {default:"50|50"} 
-			, BigIcons:            {default:"1"} 
+			, XY:                  {default:"50|50"}
+			, BigIcons:            {default:"1"}
 			, AutoHotkeyVariables: {default:""}
-            , EditorSyntaxHL:      {default:"0"} 
-			, SnippetEditor:       {default:""} }
+            , EditorSyntaxHL:      {default:"0"}
+			, SnippetEditor:       {default:""} } ; becomes too long 
+
+			IniSetup["EditorHotkeySyntax"]:={default:"0"}
 
 	 for k, v in INISetup
 		{

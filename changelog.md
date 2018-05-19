@@ -1,3 +1,10 @@
+### v1.9.6
+
+* New: Setting EditorHotkeySyntax to allow users to enter AHK syntax hotkeys in Snippet Editor  
+  #98 https://github.com/lintalist/lintalist/issues/98
+* Fix: Actually add support for LCID to Calendar plugin - see v1.8 - and introduced third  
+  option to replace hardcoded " to " with user defined string. #97
+
 ### v1.9.5
 
 * New: Command line parameters -ReadOnly: start in ReadOnly mode, no editing of bundles or  
@@ -9,6 +16,8 @@
   #92 https://github.com/lintalist/lintalist/issues/92
 * Fix: The error "Can not append snippet to Bundle (No file name available)" should no  
   longer happen.
+* New: adding UTF-8 to all FileAppend commands as potential fix for Text-encoding issues #96  
+  https://github.com/lintalist/lintalist/issues/96
 
 ### v1.9.4
 
@@ -123,7 +132,7 @@
   Windows media or user files)  
   ht @starstuff - https://github.com/lintalist/lintalist/issues/45  
 * New: SearchLetterVariations setting -  Allow for variations of letters in search query
-  Searching for 'e' is translated to searching for 'eéèë...' etc  
+  Searching for 'e' is translated to searching for 'eï¿½ï¿½ï¿½...' etc  
   You can toggle this setting via the Search GUI - https://github.com/lintalist/lintalist/issues/33  
   Note: Consequence for Fuzzy search is that this now always using a RegEx which could be slower.
 * New: added help menu with Help and About options and added About to tray menu - https://github.com/lintalist/lintalist/issues/47  

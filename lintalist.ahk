@@ -1551,8 +1551,12 @@ Return
 #IfWinActive Lintalist snippet editor
 $Rbutton::
 ControlGetFocus, Control, Lintalist snippet editor
-If Control not in Edit2,Edit3,RICHEDIT50W1,RICHEDIT50W2
-	Send {Rbutton}
+If !EditorHotkeySyntax
+	MatchListPlugins:="Edit2,Edit3,RICHEDIT50W1,RICHEDIT50W2"
+else If EditorHotkeySyntax
+	MatchListPlugins:="Edit3,Edit4,RICHEDIT50W1,RICHEDIT50W2"
+If Control not in %MatchListPlugins%
+	 Send {Rbutton}
 Else
 	Menu, Plugins, Show
 Return
@@ -1934,7 +1938,11 @@ Return
 ; Plugins menu
 PluginMenuHandler:
 ControlGetFocus, Control, Lintalist snippet editor
-If Control not in Edit2,Edit3,RICHEDIT50W1,RICHEDIT50W2
+If !EditorHotkeySyntax
+	MatchListPlugins:="Edit2,Edit3,RICHEDIT50W1,RICHEDIT50W2"
+else If EditorHotkeySyntax
+	MatchListPlugins:="Edit3,Edit4,RICHEDIT50W1,RICHEDIT50W2"
+If Control not in %MatchListPlugins%
 	Return
 
 If RegExMatch(A_ThisMenuItem,"i)(clipboard|selected)")
