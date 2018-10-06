@@ -2408,10 +2408,10 @@ Return
 
 ; Giv tekstmarkeringen en rød farve i Maple
 MathSetTextColorToRed:
-SendEvent !r{Right}c
+SendEvent, !r{Right}c
 WinWaitActive, Select a Color, , 3
-SendEvent {TAB 16}{Space}
-SendEvent {ALT DOWN}o{ALT UP}
+SendEvent, {TAB 16}{Space}
+SendEvent, {ALT DOWN}o{ALT UP}
 Return
 
 
@@ -2460,8 +2460,11 @@ FoundY := FoundY + 3
 Click, %FoundX%, %FoundY%
 SendEvent {Sleep 30}{TAB}{Enter}
 WinWaitActive, Style Management, , 3
-SendEvent {TAB}{Enter}{ALT DOWN}vee{ALT UP}{CTRL DOWN}2{CTRL UP}
+SendEvent {TAB}{Enter}{ALT DOWN}
+Sleep, 40
+SendEvent, vie{ALT UP}{CTRL DOWN}2{CTRL UP}
 Return	
+
 
 ; Få bredde (w) og højde (h) af det givne vindue (hwnd)
 GetClientSize(hwnd, ByRef w, ByRef h)
