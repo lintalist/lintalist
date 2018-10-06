@@ -2427,18 +2427,6 @@ If ErrorLevel
 }
 MathHelperSnippet := ClipSet("g",1,SendMethod)
 GoSub, EditF7
-;Sleep, 200
-;IfWinActive, Lintalist snippet editor
-;{
-;	ClipSet("vt",1,SendMethod)
-;	SendInput, +{Tab}
-;	ClipSet("ea",1,SendMethod)
-;	WinWaitActive, %AppWindow%, , 60
-;	if ErrorLevel
-;		Return
-;	Reload
-;}
-ClipSet("ea",1,SendMethod)
 Return
 
 
