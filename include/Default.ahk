@@ -55,9 +55,34 @@ SendKey(Method = 1, Keys = "")
 	 ; Method: 3 = SendPlay
 	 ; Method: 4 = ControlSend
  
- global PasteDelay, ActiveWindowID, ActiveControl
+ global PasteDelay, ActiveWindowID, ActiveControl, ActiveWindowProcessName, AltPaste, ShortcutCopy, ShortcutPaste, ShortcutCut, ShortcutQuickSearch
  Sleep, % PasteDelay
- 
+
+; replace default keys with application specific keys defined in AltPaste.ini - see docs\AltPaste.md
+ If ActiveWindowProcessName in % AltPaste.programs
+	{
+	 if (keys = ShortcutPaste)
+		{
+		 if AltPaste[ActiveWindowProcessName].HasKey("paste")
+		 	keys:=AltPaste[ActiveWindowProcessName].paste
+		}
+	 else if (keys = ShortcutCopy)
+		{
+		 if AltPaste[ActiveWindowProcessName].HasKey("copy")
+			keys:=AltPaste[ActiveWindowProcessName].copy
+		}
+	 else if (keys = ShortcutCut)
+		{
+		 if AltPaste[ActiveWindowProcessName].HasKey("cut")
+			keys:=AltPaste[ActiveWindowProcessName].cut
+		}
+	 else if (keys = ShortcutQuickSearch)
+		{
+		 if AltPaste[ActiveWindowProcessName].HasKey("QuickSearch")
+			keys:=AltPaste[ActiveWindowProcessName].QuickSearch
+		}
+	}
+
 ;	 If ((Save = 1) or (Save = ""))
 ;		ClipSet("s",1) ; safe current content and clear clipboard
 ;		ClearClipboard()
@@ -241,19 +266,19 @@ ClipSet(Task,ClipNum=1,SendMethod=1,Value="") ; by Learning one http://www.autoh
 
 ClearClipboard()
 	{
-	   While !(Clipboard = "")
-	    {
-	     Clipboard =
-	     Sleep, 10
-	    }
-	   Return
+	 While !(Clipboard = "")
+		{
+		 Clipboard =
+		 Sleep, 10
+		}
+	 Return
 	}
 	
 TryClipboard()
 	{
 	 Try
-	 	v:=Clipboard
+		v:=Clipboard
 	 catch ; can't read/access clipboard to return false
-	 	Return 0
+		Return 0
 	 Return 1
 	}

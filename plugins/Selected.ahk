@@ -36,7 +36,7 @@ could result in:
 
 		 ClipSet("s",1,SendMethod) ; safe current content and clear clipboard
 		 ClearClipboard()
-		 SendKey(SendMethod, "^c")
+		 SendKey(SendMethod, ShortcutCopy)
 		 SelectedText:=Clipboard
 
 		 If (PluginOptions <> "") 

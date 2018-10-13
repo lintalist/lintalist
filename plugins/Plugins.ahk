@@ -28,6 +28,7 @@ See "readme-howto.txt" for more information.
 #Include %A_ScriptDir%\plugins\split.ahk       ; Split plugin
 #Include %A_ScriptDir%\plugins\SplitRepeat.ahk ; Split plugin
 #Include %A_ScriptDir%\plugins\Random.ahk      ; Random plugin
+#Include %A_ScriptDir%\plugins\PasteMethod.ahk ; Set PasteMethod per snippet
 ;#Include %A_ScriptDir%\plugins\enc.ahk         ; Enc(rypt) plugin (decode)
 #Include %A_ScriptDir%\plugins\ClipSelExFunc.ahk
 #Include *i %A_ScriptDir%\plugins\MyPlugins.ahk

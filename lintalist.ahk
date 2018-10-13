@@ -4,7 +4,7 @@ Name            : Lintalist
 Author          : Lintalist
 Purpose         : Searchable interactive lists to copy & paste text, run scripts,
                   using easily exchangeable bundles
-Version         : 1.9.6
+Version         : 1.9.7
 Code            : https://github.com/lintalist/
 Website         : http://lintalist.github.io/
 AutoHotkey Forum: https://autohotkey.com/boards/viewtopic.php?f=6&t=3378
@@ -41,11 +41,15 @@ PluginMultiCaret:=0 ; TODOMC
 
 ; Title + Version are included in Title and used in #IfWinActive hotkeys and WinActivate
 Title=Lintalist
-Version=1.9.6
+Version=1.9.7
 
 ; Gosub, ReadPluginSettings
 
 AppWindow=%title% - %version%   ; Name of Gui
+
+If A_IsAdmin
+	AppWindow:=A_UserName "^ " AppWindow
+
 GroupAdd, AppTitle, %AppWindow% ; we can now use #IfWinActive with the INI value (main scripts hotkeys)
 
 GroupAdd, BundleHotkeys, Select bundle ahk_class AutoHotkeyGUI
@@ -62,6 +66,7 @@ OnExit, SaveSettings ; store settings (locked state, search mode, gui size etc i
 ; /Default settings
 
 ; Tray Menu
+
 Menu, Tray, NoStandard
 Menu, Tray, Icon, icons\lintalist_suspended.ico ; while loading show suspended icon
 Menu, tray, Add, %AppWindow%,             GlobalMenuHandler
@@ -77,6 +82,8 @@ Menu, Tray, Icon,&Quick Start Guide,      icons\help.ico
 Menu, Tray, Add,
 Menu, Tray, Add, &Configuration,          GlobalMenuHandler
 Menu, Tray, Icon,&Configuration,          icons\gear.ico
+Menu, Tray, Add, &Open Lintalist folder,  GlobalMenuHandler
+Menu, Tray, Icon,&Open Lintalist folder,  icons\folder-horizontal-open.ico
 Menu, Tray, Add,
 Menu, Tray, Add, Check for updates,       GlobalMenuHandler
 Menu, Tray, Icon,Check for updates,       icons\download.ico
@@ -90,8 +97,12 @@ Menu, Tray, Icon,&Manage Counters,        icons\counter.ico
 Menu, Tray, Add,
 Menu, Tray, Add, &Load All Bundles,       MenuHandler ; exception
 Menu, Tray, Icon,&Load All Bundles,       icons\arrow-in.ico
-Menu, Tray, Add, &Reload Bundles,         GlobalMenuHandler
-Menu, Tray, Icon,&Reload Bundles,         icons\arrow-retweet.ico
+Menu, Tray, Add, &Reload Bundles (restarts Lintalist),         GlobalMenuHandler
+Menu, Tray, Icon,&Reload Bundles (restarts Lintalist),         icons\arrow-retweet.ico
+Menu, Tray, Add, &Restart as Administrator, GlobalMenuHandler
+Menu, Tray, Icon,&Restart as Administrator, icons\restart-admin.ico
+If A_IsAdmin
+	 Menu, Tray, Disable, &Restart as Administrator
 Menu, Tray, Add,
 Menu, Tray, Add, &Pause Lintalist,        GlobalMenuHandler
 Menu, Tray, Icon,&Pause Lintalist,        icons\control-pause.ico
@@ -107,6 +118,9 @@ Menu, Tray, Icon,E&xit,                   icons\101_exit.ico
 Menu, Tray, Check, &Pause Lintalist ; indicate program is still loading
 Menu, Tray, Tip, %AppWindow% - inactive
 ; Tray Menu continue below
+
+; Tray Menu left click handler
+OnMessage(0x404, "AHK_NOTIFYICON")
 
 ; Includes
 ; [Note: bundle editor + plugins + GuiSettings included at the end of the script]
@@ -128,10 +142,15 @@ if 0 > 0  ; check cl parameters
 		 if (param = "-Active")
 			cl_Active:=1
 		 if (param = "-ReadOnly") ; possible to expand to various options, see discussion https://github.com/lintalist/lintalist/issues/95 
-		 	{
+			{
 			 cl_ReadOnly:=1
 			 AppWindow:="*" AppWindow
-		 	}
+			}
+		 if (param = "-Administrator") 
+			{
+			 cl_Administrator:=1
+			 AppWindow:=A_UserName "^ " AppWindow
+			}
 		 if InStr(param,"-Bundle")
 			{
 			 cl_Bundle:=StrSplit(param,"=").2
@@ -148,7 +167,17 @@ if 0 > 0  ; check cl parameters
 
 ; INI ---------------------------------------
 ReadIni()
+
+If (Administrator = 1) or (cl_Administrator = 1)
+	{
+	 Administrator:=1
+	 If !A_IsAdmin
+		Gosub, RunAdmin
+	}
+
 ReadMultiCaretIni()
+ReadAltPasteIni()
+ReadLineFeedIni()
 
 if cl_Bundle
 	{
@@ -715,10 +744,17 @@ If (Script = "") or (ScriptPaused = 1) ; script is empty so we need to paste Tex
 		 else if InStr(Clip,"[[image=")
 			{
 			 RegExMatch(Clip, "iU)\[\[Image=([^[]*)\]\]", ClipQ, 1)
+			 If (ClipQ1 = "clipboard")
+				ClipQ1:=StrReplace(ClipQ1,"clipboard",trim(ClipSet("g",1,SendMethod)," `r`n"))
 			 ClipQ1:=FixURI(ClipQ1,"image",A_ScriptDir)
 			 WinClip.SetBitmap(ClipQ1)
+			 ; check if we need to leave image on clipboard after pasting (exception as ProcessText isn't called here)
+			 If InStr(Clip,"[[PasteMethod=1]]")
+				SnippetPasteMethod:=1
+			 If InStr(Clip,"[[PasteMethod=2]]")
+				SnippetPasteMethod:=2
 			}
-		 Clip:="", ClipQ1:=""
+		 Clip:="", ClipQ1:="", ClipQ1_ClipboardPath:=""
 		}
 	 Else
 	 	{
@@ -732,6 +768,7 @@ If (Script = "") or (ScriptPaused = 1) ; script is empty so we need to paste Tex
 			 Clip:=FixURI(Clip,"html",A_ScriptDir)
 			 WinClip.SetHTML(Clip)
 			 Clip:=RegExReplace(clip,"iU)</*[^>]*>") ; strip HTML tags so we can paste normal text if need be
+			 Gosub, CheckLineFeed
 			 WinClip.SetText(Clip)
 			}
 		else
@@ -745,18 +782,29 @@ If (Script = "") or (ScriptPaused = 1) ; script is empty so we need to paste Tex
 	 	Clipboard:=CheckCursorPos(Clipboard)
 	 formatted:=0
 	 GUI, 1:Destroy
-	 If (PasteMethod = 0) ; paste it and clear formatted clipboard
+	 If (SnippetPasteMethod = 0) or (SnippetPasteMethod = "") ; there was no PasteMethod plugin in the snippet
 		{
-		 SendKey(SendMethod, "^v")
-		 PlaySound(PlaySound,"paste")
-		 WinClip.Clear()
+		
+		 If (PasteMethod = 0) ; paste it and clear formatted clipboard
+			{
+			 SendKey(SendMethod, ShortcutPaste)
+			 PlaySound(PlaySound,"paste")
+			 WinClip.Clear()
+			}
+		 else If (PasteMethod = 1) ; paste it, keep formatted clipboard
+			{
+			 SendKey(SendMethod, ShortcutPaste)
+			 PlaySound(PlaySound,"paste")
+			}
 		}
-	 else If (PasteMethod = 1) ; paste it, keep formatted clipboard
-		{
-		 SendKey(SendMethod, "^v")
-		 PlaySound(PlaySound,"paste")
-		}
-
+	 else ; PasteMethod was set in the snippet
+		If (SnippetPasteMethod = 1) ; 1 Paste snippet and keep it as the current clipboard content (so you can manually paste it again)
+			{
+			 SendKey(SendMethod, ShortcutPaste)
+			 PlaySound(PlaySound,"paste")
+			}
+		; else PasteMethod was set in the snippet, so it must be: 2 Don't paste snippet content but copy it to the clipboard so you can manually paste it.
+	
 	 If (((BackLeft > 0) or (BackUp > 0)) and (PasteMethod <> 2)) ; place caret at postion defined in snippet text via ^|
 		{
 		 If (BackUp > 0)
@@ -785,19 +833,27 @@ If (Script = "") or (ScriptPaused = 1) ; script is empty so we need to paste Tex
 	 Text1=
 	 Text2=
 	 Clip=
-	 If (PasteMethod = 0) ; it was pasted, restore original clipboard
+
+	 If (SnippetPasteMethod = 0) or (SnippetPasteMethod = "") ; there was no PasteMethod plugin in the snippet
 		{
-		 If TryClipboard()
-			Clipboard:=ClipSet("g",1,SendMethod)
+		 If (PasteMethod = 0) ; it was pasted, restore original clipboard
+			{
+			 If TryClipboard()
+				Clipboard:=ClipSet("g",1,SendMethod)
+			}
+		 else If (PasteMethod = 1) ; it was pasted, clear the original stored clipboard (free memory)
+			{
+			 ClipSet("ea",1,SendMethod)
+			}
+		 else If (PasteMethod = 2) ; it wasn't pasted, clear the original stored clipboard (free memory)
+			{
+			 ClipSet("ea",1,SendMethod)
+			}
 		}
-	 else If (PasteMethod = 1) ; it was pasted, clear the original stored clipboard (free memory)
-		{
-		 ClipSet("ea",1,SendMethod)
-		}
-	 else If (PasteMethod = 2) ; it wasn't pasted, clear the original stored clipboard (free memory)
-		{
-		 ClipSet("ea",1,SendMethod)
-		}
+	 else ; PasteMethod was set in the snippet with setting 1 or 2 so don't restore previous clipboard contents but just erase the stored content to save memory
+			{
+			 ClipSet("ea",1,SendMethod)
+			}
 
 	}
 Else If (Script <> "") and (ScriptPaused = 0) ; we run script by saving it to tmp file and running it
@@ -834,6 +890,7 @@ If (OnPaste = 1)
 	Gosub, SaveSettings
 OmniSearch:=0
 Typed:=""
+SnippetPasteMethod:=""
 Return
 
 CheckHitList(CheckHitList, CheckFor, Bundle, RE = 0) ; RE no longer needed?
@@ -1232,6 +1289,7 @@ Return
 ; Endless scrolling in a listbox
 ; https://autohotkey.com/board/topic/28879-example-endless-scrolling-in-a-listbox/
 #IfWinActive, Select and press enter ahk_class AutoHotkeyGUI
+NumpadUp::
 Up::
 SendMessage, 0x188, 0, 0, ListBox1, Select and press enter  ; 0x188 is LB_GETCURSEL (for a ListBox).
 PreviousPos:=ErrorLevel+1
@@ -1247,6 +1305,7 @@ If (ChoicePos = PreviousPos)
 	}
 Return
 
+NumpadDown::
 Down::
 SendMessage, 0x188, 0, 0, ListBox1, Select and press enter  ; 0x188 is LB_GETCURSEL (for a ListBox).
 PreviousPos:=ErrorLevel+1
@@ -1458,6 +1517,18 @@ If (ScriptPaused = 1) and (StoreScriptPaused = 0)
 	ScriptPaused = 0
 Return
 
+!Enter::
+SnippetPasteMethod:=2
+Gosub, Paste
+Return
+
+!+Enter::
+SnippetPasteMethod:=2
+PastText1=0
+Gosub, Paste
+Return
+
+NumpadUp::
 ~Up::
 If (DisplayBundle > 1)
 	GuiControl, -Redraw, SelItem
@@ -1484,6 +1555,7 @@ If (DisplayBundle > 1)
 	GuiControl, +Redraw, SelItem
 Return
 
+NumpadDown::
 ~Down::
 If (DisplayBundle > 1)
 	GuiControl, -Redraw, SelItem
@@ -1534,11 +1606,11 @@ If (DisplayBundle > 1)
 	GuiControl, +Redraw, SelItem
 Return
 
-^1:: ; sort part1
-^2:: ; part part2
-^3:: ; sort key
-^4:: ; sort shorthand
-^5:: ; sort bundle
+$^1:: ; sort part1
+$^2:: ; part part2
+$^3:: ; sort key
+$^4:: ; sort shorthand
+$^5:: ; sort bundle
 If (SubStr(A_ThisHotkey,0) = LastSort)
 	SortDirection:=SortDirection = "Sort" ? "SortDesc" : "Sort"
 LastSort:=SubStr(A_ThisHotkey,0)
@@ -1577,9 +1649,9 @@ WhichBundle()
 ClipSet("s",1) ; safe current content and clear clipboard
 ClearClipboard()
 Clipboard=
-SendKey(SendMethod, "^c") ; this is where it goes wrong for some editors - see DOC, not a problem of lintalist or ahk but certain editors behave differently. (when nothing is selected they will copy an entire line)
+SendKey(SendMethod, ShortcutCopy) ; this is where it goes wrong for some editors - see DOC, not a problem of lintalist or ahk but certain editors behave differently. (when nothing is selected they will copy an entire line)
 If (Clipboard = "")
-	SendKey(SendMethod, "^+{Left}^x")
+	SendKey(SendMethod, ShortcutQuickSearch)
 ViaText=1
 Typed:=Clipboard ; ??
 ; You pressed hotkey defined in the active bundle
@@ -1666,6 +1738,7 @@ If (A_GuiEvent <> "DoubleClick")
 ChoiceOK: ; selected via Enter
 Gui, 10:Submit
 Gui, 10:Destroy
+
 MadeChoice=1
 If (MultipleHotkey=1) ; via hotkey
 	{
@@ -1684,7 +1757,7 @@ Else If (MultipleHotkey=0) ; choice gui (see ProcessText label)
 	 StringReplace, Clip, Clip, %PluginText%, %Item%, All
 	 Item=
 	 MultipleHotkey=0
-	 Gosub, ProcessText
+	 PluginText:="", PluginOptions:="", ChoiceQuestion:="", ChoiceHeight:=""
 	}
 AppendToBundle:=HkHm%Item% ; for use Editor
 Return
@@ -1719,6 +1792,8 @@ GlobalMenuHandler:
 ControlGetFocus, Control, Lintalist snippet editor
 
 ; tray menu
+If (A_ThisMenuItem = AppWindow)
+	Gosub, GUIStart
 If (A_ThisMenuItem = "&Help")
 	Run, docs\index.html
 Else If (A_ThisMenuItem = "&About")
@@ -1755,15 +1830,31 @@ Else If (A_ThisMenuItem = "&Manage Counters")
 				{
 				 Gui, 1:Destroy
 				 ReadCountersIni()
-				 Run % DllCall( "GetCommandLineW", "Str" ) ; reload with command line parameters
+				 If (Administrator = 1)
+					Gosub, RunAdmin
+				 else
+					Run % DllCall( "GetCommandLineW", "Str" ) ; reload with command line parameters
 				}
 			}
 		}
 Else If (A_ThisMenuItem = "E&xit")
 	ExitApp
-Else If (A_ThisMenuItem = "&Reload Bundles")
+Else If (A_ThisMenuItem = "&Reload Bundles (restarts Lintalist)")
 	; Reload
-	Run % DllCall( "GetCommandLineW", "Str" ) ; reload with command line parameters
+	 If (Administrator = 1)
+		Gosub, RunAdmin
+	 else
+		Run % DllCall( "GetCommandLineW", "Str" ) ; reload with command line parameters
+Else If (A_ThisMenuItem = "&Restart as Administrator")
+	{
+	 If !A_IsAdmin
+		{
+		 Administrator:=1
+		 Gosub, RunAdmin
+		}
+	 MsgBox, 64, Lintalist, Lintalist is already started as Administrator.
+	 Return
+	}
 Else If (A_ThisMenuItem = "&Pause Lintalist")
 	Gosub, PauseProgram
 Else If (A_ThisMenuItem = "&Configuration")
@@ -1779,8 +1870,20 @@ Else If (A_ThisMenuItem = "&Configuration")
 	 IfMsgBox, Yes
 		{
 		 Gui, 1:Destroy
-		 Run % DllCall( "GetCommandLineW", "Str" ) ; reload with command line parameters
+		 If (Administrator = 1)
+			Gosub, RunAdmin
+		 else
+			Run % DllCall( "GetCommandLineW", "Str" ) ; reload with command line parameters
 		}
+	}
+Else If (A_ThisMenuItem = "&Open Lintalist folder")
+	{
+	 IfWinActive, %AppWindow%
+		Gosub, GuiClose
+	 IfWinExist, ahk_exe TOTALCMD.EXE
+		Run, c:\totalcmd\TOTALCMD.EXE /O /T %A_ScriptDir% ; open folder in Total Commander
+	 Else
+		Run, %A_ScriptDir% ; open folder in Explorer
 	}
 Else If (A_ThisMenuItem = "Pause &Shorthand")
 	Gosub, PauseShorthandButton
@@ -1829,7 +1932,10 @@ Else If (A_ThisMenuItem = "&Manage Local Variables")
 		 IfMsgBox, Yes
 			{
 			 Gui, 1:Destroy
-			 Run % DllCall( "GetCommandLineW", "Str" ) ; reload with command line parameters
+			 If (Administrator = 1)
+				Gosub, RunAdmin
+			 else
+				Run % DllCall( "GetCommandLineW", "Str" ) ; reload with command line parameters
 			}
 		}
 ; Tools menu
@@ -1870,6 +1976,7 @@ If (A_ThisMenuItem <> "&Load All Bundles")
 				{
 				 ;
 				}
+
 			 Loop, parse, MenuName_HitList, |
 				{
 				 StringSplit, MenuText, A_LoopField, % Chr(5) ; %
@@ -1879,6 +1986,7 @@ If (A_ThisMenuItem <> "&Load All Bundles")
 			 Break
 			}
 		}
+
 	 Lock:=1
 	}
 else
@@ -1905,7 +2013,6 @@ else
 			 StringSplit, MenuText, A_LoopField, % Chr(5) ; %
 			 Menu, file, UnCheck, &%MenuText1%
 			}
-
 		}
 	 Else If (LoadAll = 0)
 		{
@@ -1920,6 +2027,7 @@ else
 			{
 			 ;
 			}
+			
 		}
 	 ; /checkmarks
 	 Lock:=LoadAll
@@ -2043,7 +2151,6 @@ If InStr(clip,"[[A_") ; check for built-in variables - https://autohotkey.com/do
 		 ; PluginName:=Trim(StrSplit(StrSplit(PluginText,"=").1,"_").1,"[]") ; plugins only: name=
 		 PluginName:=Trim(StrSplit(StrSplit(PluginText,["=","("]).1,"_").1,"[]") ; v2.0 allow for plugins and functions: name= and name(
 		 PluginOptions:=GrabPluginOptions(PluginText)
-		 ; MsgBox % ">" PluginText "<`n>" PluginName "<`n>" PluginOptions "<`n---------`n" clip ; debug only
 		 If IsLabel("GetSnippet" PluginName)
 			Gosub, GetSnippet%PluginName%
 		 else If IsFunc(PluginName)
@@ -2066,6 +2173,18 @@ If InStr(clip,"[[A_") ; check for built-in variables - https://autohotkey.com/do
 
 	 Gosub, CheckFormat
 
+	 Gosub, CheckLineFeed
+Return
+
+CheckLineFeed:
+If ActiveWindowProcessName in % LineFeed.programs
+	{
+	 LineFeedReplace:=""
+	 Loop, parse, % LineFeed[ActiveWindowProcessName].char, CSV
+	 	LineFeedReplace .= Chr(A_LoopField)
+	 clip:=StrReplace(clip,"`r`n",LineFeedReplace)
+	 LineFeedReplace:=""
+	}
 Return
 
 CheckFormat:
@@ -2234,6 +2353,8 @@ Menu, Edit, Add,
 
 Menu, Edit, Add, &Configuration,          GlobalMenuHandler
 Menu, Edit, Icon,&Configuration,          icons\gear.ico
+Menu, Edit, Add, &Open Lintalist folder,  GlobalMenuHandler
+Menu, Edit, Icon,&Open Lintalist folder,  icons\folder-horizontal-open.ico
 Menu, MenuBar, Add, &Edit, :Edit
 
 Return
@@ -2248,11 +2369,16 @@ Catch
 	 ;
 	}
 Menu, File, Add, &Load All Bundles, MenuHandler
-Menu, File, Icon,&Load All Bundles, icons\arrow-in.ico
+;Menu, File, Icon,&Load All Bundles, icons\arrow-in.ico
 If (LoadAll = 1)
+	{
 	 Menu, file, Check, &Load All Bundles
+	}
 Else If (LoadAll = 0)
+	{
 	 Menu, file, UnCheck, &Load All Bundles
+	}
+
 Menu, File, Add ; add line
 
 Loop, parse, MenuName_HitList, |
@@ -2261,8 +2387,8 @@ Loop, parse, MenuName_HitList, |
 	 Menu, File, Add, % "&"MenuText1, MenuHandler
 	}
 Menu, File, Add
-Menu, File, Add, &Reload Bundles,     GlobalMenuHandler
-Menu, File, Icon,&Reload Bundles,     icons\arrow-retweet.ico
+Menu, File, Add, &Reload Bundles (restarts Lintalist),     GlobalMenuHandler
+Menu, File, Icon,&Reload Bundles (restarts Lintalist),     icons\arrow-retweet.ico
 Menu, MenuBar, Add, &Bundle, :File
 
 Return
@@ -2306,6 +2432,7 @@ Menu, Plugins, Add, Insert [[DateTime=]] , PluginMenuHandler
 ;Menu, Plugins, Add, Insert [[Enc=]]      , PluginMenuHandler
 Menu, Plugins, Add, Insert [[File=]]     , PluginMenuHandler
 Menu, Plugins, Add, Insert [[Input=]]    , PluginMenuHandler
+Menu, Plugins, Add, Insert [[PasteMethod=]], PluginMenuHandler
 Menu, Plugins, Add, Insert [[Random=]]  , PluginMenuHandler
 Menu, Plugins, Add, Insert [[Snippet=]]  , PluginMenuHandler
 Menu, Split, Add, Insert [[Split=]]      , PluginMenuHandler
@@ -2360,6 +2487,15 @@ Loop, parse, Load, CSV ; store loaded bundles
 StringTrimRight, LastBundle, LastBundle, 1
 if !cl_ReadOnly
 	{
+
+	 ; this same code is also in ReadIni.ahk 
+	 ; just make sure these specific settings have a value so reloading/restarting works better 
+	 ; (when updateing AHK via the official installer script it seems some settings are lost)
+	 IniListFinalCheck:="Lock,Case,ShorthandPaused,ShortcutPaused,ScriptPaused"
+	 Loop, parse, IniListFinalCheck, CSV
+		If %A_LoopField% is not number
+			%A_LoopField%:=0
+
 	 IniWrite, %LastBundle%  , %IniFile%, Settings, LastBundle
 	 IniWrite, %Load%               , %IniFile%, Settings, Load
 	 IniWrite, %LoadAll%            , %IniFile%, Settings, LoadAll
@@ -2421,6 +2557,8 @@ Return
 #Include %A_ScriptDir%\include\PlaySound.ahk
 #Include %A_ScriptDir%\include\LetterVariations.ahk
 #Include %A_ScriptDir%\include\ReadMultiCaretIni.ahk
+#Include %A_ScriptDir%\include\ReadAltPasteIni.ahk
+#Include %A_ScriptDir%\include\ReadLineFeedIni.ahk
 #Include %A_ScriptDir%\include\WinClip.ahk         ; by Deo
 #Include %A_ScriptDir%\include\WinClipAPI.ahk      ; by Deo
 #Include %A_ScriptDir%\include\Markdown2HTML.ahk   ; by fincs + additions
@@ -2451,5 +2589,38 @@ SetStartup_Start:=""
 SetDesktop_Start:=""
 Return
 ; -------------------------------------------------------------------------------
+
+; Show the Tray Menu if the Tray Icon is clicked by the left mouse button
+AHK_NOTIFYICON(wParam, lParam)
+	{
+	 ; WM_LBUTTONUP
+	 if (lParam = 0x202)
+		{
+		 Menu, Tray, Show
+		 return 0
+		}
+	}
+
+; Run as admin
+RunAdmin:
+If Administrator and !A_IsAdmin
+	{
+	 if A_OSVersion not in WIN_2003,WIN_XP,WIN_2000
+		{
+		 Run % "*RunAs " DllCall( "GetCommandLineW", "Str" ),, UseErrorLevel
+		 if !ErrorLevel
+			ExitApp
+		}
+	 MsgBox 0x31, Lintalist,
+	 (LTrim Join`s
+		Lintalist is running as a limited user. If you continue, Lintalist
+		will not be able to interact with programs that run as Administrator.
+		`n
+		To continue anyway, click OK. Otherwise click Cancel.
+		)
+	 IfMsgBox Cancel
+		ExitApp
+	}
+Return
 
 #Include *i %A_ScriptDir%\autocorrect.ahk

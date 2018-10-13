@@ -21,7 +21,7 @@
 <span style='font-size:.8em;'>You can <b>extend Lintalist</b> by writing your own <b><a href='#InteractiveBundleText'>plugins</a></b>. Lintalist is open source and developed in <a href='https://autohotkey.com/'>AutoHotkey</a>, an easy to learn scripting language for Windows.
 [WinXP(sp3)/Vista/7/8/10]<br /></span>
 <span style='font-size:.8em;'>As of LintaList v1.1 several types of formatted text are supported in Snippets.</span>
-<span class='date' style='float:right;display:inline;margin-top:0px;'>doc rev. 20180519</span></p>
+<span class='date' style='float:right;display:inline;margin-top:0px;'>doc rev. 20181013</span></p>
 </div>
 
 <div class='column'>
@@ -34,7 +34,11 @@
 <li><a href='#Shorthand'>Using Shorthand</a> (Abbrev.)</li>
 <li><a href='#KeyboardShortcuts'>Lintalist Keyboard Shortcuts</a></li>
 <li><a href='#TrayMenu'>Tray Menu</a></li>
-<li><a href='#Configuration'>Configuration</a></li>
+<li><a href='#Configuration'>Configuration</a><ul>
+<li><a href='#Configuration-MultiCaret'>MultiCaret</a></li>
+<li><a href='#Configuration-AltPaste'>AltPaste</a></li>
+<li><a href='#Configuration-Linefeed'>Linefeed</a></li>
+</ul></li>
 <li><a href='#cmdline'>Command line parameters</a></li>
 <li><a href='#FAQ'>FAQ &amp; Known Issues</a></li>
 <li><a href='#History'>History</a> (changelog)</li>
@@ -50,7 +54,7 @@
 <li><a href='#InteractiveBundleText'>plugins</a> (how to)</li>
 <li><a href='#Script'>scripts</a></li>
 <li><a href='#Functions'>functions</a></li>
-</li></ul>
+</ul></li>
 <li><a href='#FormattedText'>Formatted Text Snippets</a></li>
 <li><a href='#Editing'>Editing Bundles and Snippets</a></li>
 <li><a href='#ManagingBundles'>Managing Bundles</a></li>
@@ -71,11 +75,11 @@
 </div>
 
 <div class='column'>
-<p><b>Download Lintalist <em>1.9.6</em></b>
+<p><b>Download Lintalist <em>1.9.7</em></b>
 <p>
 <a href='https://github.com/lintalist/lintalist/releases'><img src='img/lintalist65x65.gif' alt='Download Lintalist' width='65' align='left' border='0' style='margin-right: 5px;' /></a>
 Download (incl. source):<br />
-<a href='https://github.com/lintalist/lintalist/releases'><b>Latest release</b></a> (780 kb)<br />Simply unpack and run lintalist.ahk or lintalist.exe<br />
+<a href='https://github.com/lintalist/lintalist/releases'><b>Latest release</b></a> (807 kb)<br />Simply unpack and run lintalist.ahk or lintalist.exe<br />
 </p>
 
 <span class='tip' style="margin-bottom:10px;"><img src="img/usb.png" width=50 align=right title="USB image by Alessandro Rei (GNU/GPL) - http://findicons.com/icon/255067/usb?id=256158">Lintalist is a <b>portable application</b>. It stores all settings and bundles in the folder the program resides in. <a href="#portable">More...</a>
@@ -156,7 +160,7 @@ Installing Lintalist is easy, just download the ZIP file and unpack it in a fold
 If you are already an AutoHotkey user and have it installed, it is recommended to run <b>Lintalist.ahk</b>, this will ensure you will be running Lintalist with your preferred version of AutoHotkey. If you don't have AutoHotkey installed you can start <b>Lintalist.exe</b>.
 
 <b>Notes:</b>
-- Lintalist.exe: A renamed AutoHotkey.exe (v1.1.28.02 32-bit Unicode, See https://autohotkey.com/ and/or https://autohotkey.com/download/)
+- Lintalist.exe: A renamed AutoHotkey.exe (v1.1.30 32-bit Unicode, See https://autohotkey.com/ and/or https://autohotkey.com/download/)
 - Lintalist.ahk: The actual (main) source code of the program (see https://github.com/lintalist/lintalist)
 
 <h2 id='Searching'>Normal use: Starting Lintalist and searching for a Snippet</h2>
@@ -176,7 +180,8 @@ Based on the active program title, one or more bundles will be loaded into the s
 
 While you type, the number of results will decrease (called incremental search or quick filter). A small icon indicates if it is purely a text snippet <img src='img/texticon.gif' alt='Lintalist text snippet' style='display:inline;margin-bottom:-3px;' /> or if it actually will run a script <img src='img/scripticon.gif' alt='Lintalist script snippet' style='display:inline;margin-bottom:-2px;' />.  You can turn the icons on and off via the configuration menu (ShowIcons setting), you can also influence the order of the results by setting various sorting options (see SortByUsage and ColumnSort settings).
 
-After pressing <kbd>ENTER</kbd> on a selected entry from the results list, by default the text (Part1) is pasted in the active program (note the explanation above). <kbd>SHIFT</kbd>+<kbd>ENTER</kbd> and <kbd>ENTER</kbd> will use the first item in the results list unless you have selected another item with the arrow keys. Depending on the snippet either a text is pasted OR a script is run (note explanation above). 
+After pressing <kbd>ENTER</kbd> on a selected entry from the results list, by default the text (Part1) is pasted in the active program (note the explanation above). <kbd>SHIFT</kbd>+<kbd>ENTER</kbd> and <kbd>ENTER</kbd> will use the first item in the results list unless you have selected another item with the arrow keys. Depending on the snippet either a text is pasted OR a script is run (note explanation above).
+[v1.9.7+] If you just want to copy the snippet to the clipboard and not paste it press <kbd>Alt</kbd>+<kbd>ENTER</kbd> for Part 1 and <kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>ENTER</kbd> for Part 2.
 
 You can also use the <kbd>Up</kbd>, <kbd>Down</kbd>, <kbd>Page Up</kbd> and <kbd>Page Down</kbd> keys to navigate through the list. You can select a different bundle or load all bundles via the Bundle menu. If you choose a bundle from the bundle menu (<kbd>Alt</kbd>+<kbd>b</kbd>), that bundle will be locked and always remain active until you unlock it (<kbd>Alt</kbd>+<kbd>l</kbd>).
 
@@ -323,6 +328,8 @@ Shortcuts while search window is not active
 <tr><td><b><kbd>Shift</kbd>+<kbd>Enter</kbd></b></td><td>Paste Found Text (Part 2) or Run Script *1      </td></tr>
 <tr><td><b><kbd>Ctrl</kbd>+<kbd>Enter</kbd></b></td><td>Paste Found Text (Part 1) and DO NOT run script </td></tr>
 <tr><td><b><kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>Enter</kbd></b></td><td>Paste Found Text (Part 2) and DO NOT run script </td></tr>
+<tr><td><b><kbd>Alt</kbd>+<kbd>Enter</kbd></b></td><td>Copy Text (Part 1) to clipboard </td></tr>
+<tr><td><b><kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>Enter</kbd></b></td><td>Copy Text (Part 2) to clipboard </td></tr>
 <tr><td><b><kbd> F2 </kbd></b></td><td>Omnisearch (toggle) <a href="#Omni">search in all bundles</a></td></tr>
 <tr><td><b><kbd> F4 </kbd></b></td><td>Edit Snippet                                    </td></tr>
 <tr><td><b><kbd> F5 </kbd></b></td><td>Copy Snippet and Edit (current bundle)          </td></tr>
@@ -436,7 +443,9 @@ More options may be added in future versions such as special hotkeys.</td></tr>
 <tr id='PasteMethod'><td><b>PasteMethod</b></td><td>Retain current clipboard or set it as current clipboard content
   0 = Paste snippet and retain current clipboard content (=default behaviour)
   1 = Paste snippet and keep it as the current clipboard content (so you can manually paste it again)
-  2 = Don't paste snippet content but copy it to the clipboard so you can manually paste it.</td></tr>
+  2 = Don't paste snippet content but copy it to the clipboard so you can manually paste it.
+  [v1.9.7+] Plugin <a href='#pastemethod-plugin'>[[PasteMethod]]</a> similar to global setting but now acts on snippet basis.
+  </td></tr>
 <tr id='OnPaste'><td><b>OnPaste</b></td><td>Exit Lintalist after pasting snippet?
   0 = No
   1 = Yes</td></tr>
@@ -446,6 +455,27 @@ Edit settings.ini or choose configuration in the tray menu for more options.
 
 <span class='small'>Settings</span>
 <img src='img/lintalist-config.png' alt='Lintalist settings' border='0'  style='max-width:100%;' />
+
+<h3 id='Configuration-MultiCaret'>MultiCaret</h3>
+
+You can define multiple caret locations in your snippet, see <a href='#caret-plugin'>the caret plugin</a> for a brief introduction.
+Detailed information on how to setup <b>MultiCaret.ini</b> in <a href='MultiCaret.md'>docs/MultiCaret.md</a>.
+
+<h3 id='Configuration-AltPaste'>AltPaste</h3>
+
+By default Lintalist uses <kbd>ctrl</kbd>+<kbd>c</kbd>, <kbd>ctrl</kbd>+<kbd>v</kbd> to copy and paste.
+If you need to use other shortcuts in specific programs (console or graphics applications for example) you can define these in <b>AltPaste.ini</b>, see <a href='AltPaste.md'>docs/AltPaste.md</a> for more information.
+
+<h3 id='Configuration-Linefeed'>Linefeed</h3>
+
+Some programs require CRLF to be used for pasting a new line into the document/control (notepad.exe for example) - otherwise pasting a snippet will have its new lines (enters, returns) 'removed' or so it seems:
+<blockquote class='boxed'>line1line2line3</blockquote> <i>vs</i>
+<blockquote class='boxed'>line1
+line2
+line3
+</blockquote>
+For specific programs you can define the character that needs to be used instead of the default "new line" character. This can either be one single character or multiple characters - see the linefeed.ini for more information. As an example two programs are already included, [notepad.exe] and [wordpad.exe].
+This can also be useful in for applications where pasting (CR)LF may be seen as "enter" which would (accidentally) execute / start process (command line applications for example) - replacing linefeed(s) with a space would prevent this. <a href='https://github.com/lintalist/lintalist/issues/65'>Discussion @ GH - #65</a>
 
 <h2 id='LintalistBundles'>Lintalist <em>Bundles</em></h2>
 
@@ -658,7 +688,7 @@ Basic example <code>[[Calendar=dd-MMM-yyyy]]</code> --> Select a date and it wil
 
 [v1.8+] You can now specify an LCID. If you do not define one, the current user's locale is used to format the Date string. To use the system's locale instead, specify LSys. To use a specific locale, specify the letter L followed by a hexadecimal or decimal locale identifier (LCID). You can find a list of Locale IDs Assigned by Microsoft here <a href='https://msdn.microsoft.com/goglobal/bb964664.aspx' target='_blank'>msdn.microsoft.com/goglobal/bb964664.aspx</a>
 
-If you use a date range (e.g. start/end date) the wordt " to " is automatically inserted between the two dates, if you want something else such as another language or character " - " simply specificy this as the third paramater:
+If you use a date range (e.g. start/end date) the word " to " is automatically inserted between the two dates, if you want something else such as another language or character " - " simply specify this as the third parameter:
 <code>[[Calendar=dd-MMM-yyyy|| - ]]</code>
 
 </td></tr>
@@ -674,7 +704,7 @@ Example: <code>[[Choice=?Favourite colour|Red|Green|Blue]]</code>. Same as above
 <tr id='clipboard-plugin'><td><code>[[Clipboard]]</code> *1</td><td>Insert current Clipboard content.
 * Additional parameters are available, see <a href='#ClipEx'>Extending Clipboard &amp; Selected text</a>.</td></tr>
 
-<tr id='counter-plugin'><td><code>[[Counter=Name|Value]]</code></td><td>You can use multiple counters <b>across bundles</b>.
+<tr id='counter-plugin'><td><code>[[Counter=Name|Value|Reset]]</code></td><td>You can use multiple counters <b>across bundles</b>.
 Basic example <code>[[Counter=InvoiceNumber]]</code> --> increment by one and insert value of InvoiceNumber.
 By default it will increment the counter by one, you can change that by specifying the Value.
 <code>[[Counter=InvoiceNumber|5]]</code> Add 5 and insert.
@@ -687,6 +717,8 @@ You can manage these counters (add, edit, delete) via the tray menu option: Mana
 <b>Tips</b>:
 1. if you want to use the same counter multiple times in a snippet without incrementation simply "Add zero" (<b>|0</b>) for the second and subsequent instances. 
 2. if a counter is not created/managed using the "Manage counters" tool the unknown counter will be automatically created. This way you can create counters 'on the fly' using for example the <code>[[Input=]]</code> plugin.
+3. [v1.9.7+] You can (re)set a counter each time you start a snippet by using the <b>|reset</b> option:
+<code>[[Counter=CounterName|2|0]]</code> would restart the counter at 0 and +2. This can be useful in a SplitRepeat for example so you can create a numbered list. (see the <a href='https://github.com/lintalist/lintalist-bundles/blob/master/markdown.txt'>MarkDown bundle, Ordered list snippet</a>)
 </td></tr>
 
 <tr id='datetime-plugin'><td><code>[[DateTime=Format|Value|TimeUnits|LCID]]</code></td><td>Insert current Date and/or Time using the FormatTime options,
@@ -722,6 +754,15 @@ You can provide a default response after the question by using the pipe char (|)
 example <code>[[Input=My favourite color|Green]]</code>
 </td></tr>
 
+<tr id='pastemethod-plugin'><td><code>[[PasteMethod=0|1|2]]</code></td><td>
+Similar to the Global PasteMethod setting you can use this plugin to define it per snippet:
+0: Paste snippet and retain current clipboard content (=default behaviour)
+1: Paste snippet and keep it as the current clipboard content (so you can manually paste it again)
+2: Don't paste snippet content but copy it to the clipboard so you can manually paste it.
+
+[v1.9.7+]
+</td></tr>
+
 <tr id='random-plugin'><td><code>[[Random=1|10]]</code>
 or
 <code>[[Random=a|b|c]]</code></td><td>There are two methods to use Random. 1: Return a random number, 2: Return a random item from a pipe delimited list.
@@ -744,7 +785,10 @@ Basic example <code>[[Snippet=shorthandcode]]</code></td></tr>
 
 <tr id='localvar-plugin'><td><code>[[Var=Name]]</code> *4</td><td>Insert local variables. These variables are available <b>across bundles</b>. See <a href='#LocalBundle'>Local bundle variables</a> below. As of v1.0.3 local variables are also available in scripts (making it the only plugin available in scripts for the time being)</td></tr>
 
-<tr><td><code>[[html]]</code>, <code>[[md]]</code>, <code>[[rtf=]]</code>, <code>[[image=]]</code> </td><td>Use these for <a href='#FormattedText'>Formatted Text Snippets</a>.</td></tr>
+<tr><td><code>[[html]]</code>, <code>[[md]]</code>, <code>[[rtf=]]</code>, <code>[[image=]]</code> </td><td>Use these for <a href='#FormattedText'>Formatted Text Snippets</a>.
+	
+<b>Tip:</b> Image plugin accepts 'clipboard' as a valid path to an image <code>[[image=[[clipboard]]]]</code>.
+You can combine this with <code>[[PasteMethod=2]]</code> to leave an image on the clipboard (for example to paste it as new layer in an image in a graphics program)</td></tr>
 
 <tr><td><code>[[llpart1]]</code>, <code>[[llpart1]]</code> </td><td>Use these for as placeholders for Snippet Part1 and Part2 in your <a href='#Script'>Script</a>.
 
@@ -1471,7 +1515,7 @@ There are two methods of adding a new Bundle to Lintalist.
 2. Use Lintalist to create a bundle and start adding snippets.
 
 To add a new bundle (a collection of snippets) open the Lintalist search window and use the Edit, Bundle properties menu (or press F10). The Lintalist bundle editor will be opened where you can enter the name and other information. When you click save you will be asked for a file name of your bundle. 
-<a name='TitleMatch'>
+<a name='TitleMatch'></a>
 The most important fields are <b>Name</b> and <b>TitleMatch</b>. The <b>Name</b> is used in the Bundle menu and can be displayed in the search results (see configuration) and the <b>TitleMatch</b> field will allow you to make a Bundle context sensitive which means the search, abbreviations and shortcuts will only be available in Windows which match the title you enter in the <b>TitleMatch</b> field.
 
 The <b>TitleMatch</b> field can be a comma separated list of partial window title matches. You can <b>not</b> use Wildcards.
@@ -1519,7 +1563,11 @@ There is also a configuration setting that can do this: ActivateWindow
 
 <b>-Ini=</b><i>filename-for-settings.ini</i>: use a different settings file (default is settings.ini) [v1.8+]
 
-<b>-ReadOnly</b>: start in ReadOnly mode, no editing of bundles, settings.ini, counters and local variables [v1.94+] <a href='https://github.com/lintalist/lintalist/issues/95'>Discussion @ GH</a>
+<b>-ReadOnly</b>: start in ReadOnly mode, no editing of bundles, settings.ini, counters and local variables [v1.9.4+] <a href='https://github.com/lintalist/lintalist/issues/95'>Discussion @ GH - #95</a>
+(A * is added to the Lintalist Search GUI title and Tray Menu tooltip)
+
+<b>-Administrator</b>: (re)start Lintalist as Administrator - also available as a Setting via Configuration (Administrator) or via the Tray menu [v1.9.7+] <a href='https://github.com/lintalist/lintalist/issues/99'>Discussion @ GH - #99</a>
+(<em>username</em>^ is added to the Lintalist Search GUI title and Tray Menu tooltip)
 
 <h2 id='FAQ'>F.A.<em>Q</em> &amp; Known <em>Issues</em></h2>
 

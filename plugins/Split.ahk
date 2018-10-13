@@ -27,7 +27,7 @@ GetSnippetSplit:
 			{
 			 ClipSet("s",1,SendMethod) ; safe current content and clear clipboard
 			 ClearClipboard()
-			 SendKey(SendMethod, "^c")
+			 SendKey(SendMethod, ShortcutCopy)
 			 spwhat:=clipboard
 			 ClearClipboard()
 			 Clipboard:=ClipSet("g",1,SendMethod) ; restore

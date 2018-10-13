@@ -1,3 +1,25 @@
+### v1.9.7
+
+* New: AltPaste method via INI config - for example to paste in putty via shift+insert vs ctrl+v - #66  
+  https://github.com/lintalist/lintalist/issues/66 and docs\AltPaste.md
+* New: You can replace linefeed(s)/newline(s) per application via INI config in Linefeed.ini - #65 https://github.com/lintalist/lintalist/issues/65
+* New: You can now define the Copy, Cut, Paste and QuickSearch shortcuts (see settings)
+* New: Run as Administrator command line, Settings, and Tray menu options - #99 https://github.com/lintalist/lintalist/issues/99
+* New: Plugin [[PasteMethod]] similar to global setting but now acts on snippet basis #9 https://github.com/lintalist/lintalist/issues/9
+* New: Alt+Enter and Alt+Shift+Enter in Search GUI just copies snippet to the clipboard (=PasteMethod=2) - #9
+* New: Plugin [[image]] now accepts clipboard as a valid path to an image: [[image=clipboard]]
+* New: Added reset/set option to [[Counter]] plugin
+* New: Open Tray Menu on left mouse click - #101 https://github.com/lintalist/lintalist/issues/101
+* New: Esc closes Lintalist Quick Start Guide - #100 https://github.com/lintalist/lintalist/issues/100
+* New: Tray and Edit menu item "Open Lintalist folder" - #102 https://github.com/lintalist/lintalist/issues/102
+* New: Tray menu click on first item (Program name) opens Search GUI - #102
+* New: Added NumpadUp / NumpadDown for navigation in addition to Up/Down keys - #103 https://github.com/lintalist/lintalist/issues/103
+* New: FixURI() - added A HREF for HTML to check/correct local file uri (file://) as well not just for IMG SRC
+* Fix: removed stray "If (BigIcons..." from ReadIni.ahk
+* Fix: Plugin [[Choice]] resolved crash when having over 9 Choice entries in a snippet - #108 https://github.com/lintalist/lintalist/issues/108
+* Fix: added IniListFinalCheck to ensure all button states are saved with a 0 or 1 value (e.g. not empty)
+* Fix: corrected some typos in Changelog.md and doc\index.html
+
 ### v1.9.6
 
 * New: Setting EditorHotkeySyntax to allow users to enter AHK syntax hotkeys in Snippet Editor  
@@ -50,7 +72,7 @@
   #76 https://github.com/lintalist/lintalist/issues/76
 * Change: Similar to modal windows for Local variable etc, Snippet editor now modal  
   - see v1.8 #57 https://github.com/lintalist/lintalist/issues/57
-* Fix: Adding support for UTF-8 characters in Local variabe & Counter Editors  
+* Fix: Adding support for UTF-8 characters in Local variable & Counter Editors  
   #78 https://github.com/lintalist/lintalist/pull/78 ht @exetico
 * Fix: ReadIni() now writes in UTF-16 to store settings correctly  
   #77 https://github.com/lintalist/lintalist/issues/77
@@ -73,7 +95,7 @@
 ### v1.9.1
 
 * Fix: At very first startup SetDesktop and SetStartup default settings wouldn't be  
-  properly stored for them to be useable with Func_IniSettingsEditor()
+  properly stored for them to be usable with Func_IniSettingsEditor()
 
 ### v1.9
 
@@ -82,7 +104,7 @@
   (see DOC)
 * Fix: Choice plugin - Reverted back to Loop, works better for multiple  
   Choice plugins https://github.com/lintalist/lintalist/issues/68
-* Fix: Lintalist - Added "Select and press enter" Choice gui to  
+* Fix: Lintalist - Added "Select and press enter" Choice GUI to  
   BundleHotkeys group to disable the possibility of activating Lintalist again
 * Fix: Random plugin - Count correct number of RandomItems (+ 1)
 * New: Introduce "Not Titlematch" for bundles by using an exclamation mark  
@@ -115,7 +137,7 @@
   https://github.com/lintalist/lintalist/issues/57
 * Added: Choice plugin GUI now has "Endless scrolling in a listbox" similar to  
   Search GUI listview + New Random button
-* Fix: Cancelling a snippet with Choice plugin no longer makes Shorthand stop working  
+* Fix: Canceling a snippet with Choice plugin no longer makes Shorthand stop working  
   https://github.com/lintalist/lintalist/issues/52
 * Fix: After using quick search with one result e.g. automatic pasting of the only  
   snippet, pressing space or tab executed the snippet again. Cleared the typing history  
@@ -221,7 +243,7 @@
 
 ### Changelog v1.4.1
 
-* Fix: ShowPreview no longer worked reliabley due to "SetKeyDelay, -1" - removed it
+* Fix: ShowPreview no longer worked reliably due to "SetKeyDelay, -1" - removed it
 * Fix: Somehow Changelog was only partially included.
 
 ### Changelog v1.4
@@ -232,7 +254,7 @@
   https://github.com/lintalist/lintalist/issues/15
 * New: Plugins & Tools menu in Bundle Editor including dynamic submenus for clipboard,
   selected, counter & local variables plugins
-* New: Settting for Single click in listview to act as double click
+* New: Setting for Single click in listview to act as double click
   ht: **dsewq1LYJ** https://github.com/lintalist/lintalist/issues/16
 * New: Command line parameters -Bundle: load specific bundle and lock
   https://github.com/lintalist/lintalist/issues/8
@@ -245,7 +267,7 @@
 
 ### Changelog v1.3.1
 
-* Fix: url fix update version check
+* Fix: URL fix update version check
 
 ### Changelog v1.3
 

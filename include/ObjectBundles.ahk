@@ -358,6 +358,7 @@ ParseBundle(Patterns, Counter)
 		 %ArrayName%%A_Index%= ; free mem	
 		}
 	 ;MsgBox % Snippet[Counter,1,1] ; debug
+	 patterns= ; free mem
 	 Return	
 	}
 

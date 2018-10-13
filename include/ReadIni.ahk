@@ -9,7 +9,7 @@ ReadIni()
 	 local ini
 	 ini=%A_ScriptDir%\%IniFile%
 	 IfNotExist, %ini%
-	 	{
+		{
 		 IniWrite, Lintalist, %ini%, Other, FirstStartUp ; this ensures proper encoding of the INI file in UTF-16
 		 CreateDefaultIni()
 		 Gosub, SetShortcuts ; (#Include from main script)
@@ -86,10 +86,15 @@ INISetup:={ AlwaysLoadBundles:     {default:"",find:"bundles\"}
 			, XY:                  {default:"50|50"}
 			, BigIcons:            {default:"1"}
 			, AutoHotkeyVariables: {default:""}
-            , EditorSyntaxHL:      {default:"0"}
+			, EditorSyntaxHL:      {default:"0"}
 			, SnippetEditor:       {default:""} } ; becomes too long 
 
 			IniSetup["EditorHotkeySyntax"]:={default:"0"}
+			IniSetup["Administrator"]:={default:"0"}
+			IniSetup["ShortcutPaste"]:={default:"^v"}
+			IniSetup["ShortcutCopy"]:={default:"^c"}
+			IniSetup["ShortcutCut"]:={default:"^x"}
+			IniSetup["ShortcutQuickSearch"]:={default:"^+{Left}^x"}
 
 	 for k, v in INISetup
 		{
@@ -104,7 +109,7 @@ INISetup:={ AlwaysLoadBundles:     {default:"",find:"bundles\"}
 		 if (%k% = "")
 			%k%:=v.empty
 		 if v.min
-		 	if (%k% < v.min)	
+			if (%k% < v.min)	
 				%k%:=v.min
 		 if v.max
 			if (%k% > v.max)	
@@ -127,7 +132,7 @@ INISetup:={ AlwaysLoadBundles:     {default:"",find:"bundles\"}
 			 StringSplit, ColumnSortOption, ColumnSort, -
 			 if (ColumnSortOption1 = "Part1")
 				ColumnSortOption1:=1
-			 else	
+			 else
 				ColumnSortOption1:=2
 			}
 
@@ -147,11 +152,18 @@ INISetup:={ AlwaysLoadBundles:     {default:"",find:"bundles\"}
 		Else
 			ShowGrid = Grid
 
-		If (BigIcons = 1)
-
 	 ReadCountersIni()
 	 ReadPlaySoundIni()
-	}                         
+
+	 ; this same code is also in lintalist.ahk - SaveSettings: 
+	 ; just make sure these specific settings have a value so reloading/restarting works better 
+	 ; (when updateing AHK via the official installer script it seems some settings are lost)
+	 IniListFinalCheck:="Lock,Case,ShorthandPaused,ShortcutPaused,ScriptPaused"
+	 Loop, parse, IniListFinalCheck, CSV
+		If %A_LoopField% is not number
+			%A_LoopField%:=0
+
+	}
 
 Append2Ini(Setting,file)
 	{
@@ -164,19 +176,19 @@ ReadCountersIni()
 	{
 	 Global
 	 If (Counters <> 0) or (Counters <> "")
-	 	{
-	 	 LocalCounter_0=
-	 	 Loop, parse, counters, |
-	 	 	{
-	 	 	 If (A_LoopField = "")
-	 	 	 	Continue
-	 	 	 StringSplit, _ctemp, A_LoopField, `,
-	 	 	 LocalCounter_%_ctemp1% := _ctemp2
-	 	 	 LocalCounter_0 .= _ctemp1 ","
-	 	 	 _ctemp1=
-	 	 	 _ctemp2=
-	 	 	}
-	 	}  
+		{
+		 LocalCounter_0=
+		 Loop, parse, counters, |
+			{
+			 If (A_LoopField = "")
+				Continue
+			 StringSplit, _ctemp, A_LoopField, `,
+			 LocalCounter_%_ctemp1% := _ctemp2
+			 LocalCounter_0 .= _ctemp1 ","
+			 _ctemp1=
+			 _ctemp2=
+			}
+		}
 	}
 
 ReadPlaySoundIni()
@@ -185,7 +197,7 @@ ReadPlaySoundIni()
 	 local ini
 	 ini=%A_ScriptDir%\Sound.ini
 	 IfNotExist, %ini%
-	 	FileCopy, %A_ScriptDir%\Extras\sounds\Sound.ini.txt, %ini%
+		FileCopy, %A_ScriptDir%\Extras\sounds\Sound.ini.txt, %ini%
 	 IniRead, playsound_1_open , %ini%, 1, open,  %A_Space%
 	 IniRead, playsound_1_paste, %ini%, 1, paste, %A_Space%
 	 IniRead, playsound_1_close, %ini%, 1, close, %A_Space%
@@ -196,7 +208,7 @@ ReadPlaySoundIni()
 	 IniRead, playsound_3_paste, %ini%, 3, paste, %A_Space%
 	 IniRead, playsound_3_close, %ini%, 3, close, %A_Space%
 	}
-	
+
 CreateDefaultIni()
 	{
 	 Global IniFile
@@ -226,7 +238,7 @@ IniDelete, %A_ScriptDir%\%IniFile%, Other ; now we can delete this section creat
 CreateDefaultUserIncludes(file)
 	{
 	 IfExist, %A_ScriptDir%\plugins\My%file%.ahk
-	 	Return
+		Return
 	 FileAppend,
 (join`r`n
 `/* 
@@ -243,4 +255,3 @@ See "readme-howto.txt" for more information.
 
 ), %A_ScriptDir%\plugins\My%file%.ahk
 	}
-

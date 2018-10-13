@@ -18,7 +18,7 @@ GetSnippetChoice:
 MakeChoice:
 	  ChoiceQuestion:=""
 	  ChoiceHeight:=240
-	  If (InStr(Clip, "[[Choice=") > 0) or (A_Index > 100)
+	  If (InStr(Clip, "[[Choice=") > 0) ; or (A_Index > 100)
 		{
 		 if RegExMatch(PluginOptions,"^\s*\?")
 			{
@@ -38,7 +38,7 @@ MakeChoice:
 		 }
 		 Gui, 10:Add, button, gCancelChoice w100, Cancel
 		 Gui, 10:Add, button, xp+110 yp w100 gChoiceRandom, &Random
-		 Gui, 10:Add, button, default gChoiceOK hidden, OK
+		 Gui, 10:Add, button, xp+110 yp default gChoiceOK hidden, OK
 		 Gui, 10:Show, w410 h%ChoiceHeight%, Select and press enter
 		 ControlSend, ListBox1, {Down}, Select and press enter
 		 Loop ; ugly hack: can't use return here because, well it returns and would thus skip the gui and proceed to paste
@@ -62,7 +62,6 @@ PluginOptions:=""
 ChoiceQuestion:=""
 ChoiceHeight:=""
 Gui, 10:Destroy
-Gosub, ProcessText ; We changed clip and cleared PluginText and PluginOptions so need to process Random first (ProcessText)
 Return
 
 CancelChoice:
