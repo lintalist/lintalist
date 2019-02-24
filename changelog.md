@@ -1,3 +1,20 @@
+## v1.9.8
+
+* New: [[FileList]] plugin returns list of file names from folder - see DOC for all available options
+* New: [[Choice]] Search (filter as you type) option for Choice by adding ! similar to ? Question help/text;  
+       Allow user to resize Choice GUI; Use FontSize for Choice GUI (in the listbox) incl. Auto Center checkbox
+* New: Editor save size and position (resize by dragging window border)
+* New: Optional Statistics (see Configuration) https://github.com/lintalist/lintalist/issues/112
+* New: added :hover 'permalink' helpers for most headings etc using visible pilcrow (¶) in DOC
+* Fixed: ClipSet("s") call in Lintalist and Seleted, Split* plugins - https://github.com/lintalist/lintalist/issues/116
+* Update: ClipSet() now also use ShortcutCopy, ShortcutPaste, ShortcutCut settings.
+* Update: Title case for selected/clipboard plugins now uses TitleCase() for more flexibility  
+  https://github.com/lintalist/lintalist/issues/113 also available as seperate function (for AHK) https://github.com/lintalist/TitleCase
+* Update: Incorporate CancelPlugin (avoids SoundPlay and return nicely) in plugins: Calendar, Choice, File and Input
+* Change: Revert change https://github.com/lintalist/lintalist/issues/52 (v1.8)
+* Change: Choice and Editor now use WinWaitClose vs "ugly Loop"
+* Change: LCID values for Calendar and DateTime can now be Hexidecimal values as well (L1036 and L0x040C = French)
+
 ### v1.9.7
 
 * New: AltPaste method via INI config - for example to paste in putty via shift+insert vs ctrl+v - #66  

@@ -1,9 +1,11 @@
 ﻿/* 
 Plugin     : Calendar [Standard Lintalist]
 Purpose    : Select a date from a Calendar
-Version    : 1.3
+Version    : 1.4
 
 History:
+- 1.4 Allow Hex values for Locale Identifiers (LCID) (convert to decimal using format)
+      Incorporate CancelPlugin (avoids SoundPlay and return nicely)
 - 1.3 Actually implement LCID (should have been included in Lintalist v1.8, but only added in v1.9.6)
 - 1.2 Removed Goto
 - 1.1 Calendar now uses Multi-select (shows two months side by side) - Lintalist v1.6
@@ -19,7 +21,7 @@ Gui, 10:Add, Button, default gCalendarOK, Select Date
 Gui, 10:Add, Button, xp+100 yp gCalendarCancel, Cancel
 Gui, 10:Add, Text, xp+100 yp+5, (hold shift to select start-end date)
 Gui, 10:Show, , Calendar
-		 Loop
+		Loop
 			{
 			 If (MadeChoice = 1) or (InStr(Clip, "[[Calendar") = 0)
 				{
@@ -40,6 +42,9 @@ If (CountString(PluginOptions, "|") = 2)
 If (InStr(PluginOptions,"|"))
 	DTLocale:=StrSplit(PluginOptions,"|").2
 
+If InStr(DTLocale,"0x") ; convert hex - https://www.autohotkey.com/boards/viewtopic.php?p=38463#p38463
+	DTLocale:="L" Format("{:i}", "0x" StrReplace(DTLocale,"L0x"))
+
 If !InStr(MyCalendar,"-") ; just in case we remove MULTI option 
 	FormatTime, PluginGetCalendar, %MyCalendar% %DTLocale%, %PluginOptions%
 Else
@@ -51,7 +56,7 @@ Else
 	 else
 		PluginGetCalendar := PluginGetCalendarM1 PluginGetCalendarTo PluginGetCalendarM2
 	 PluginGetCalendarM1:="", PluginGetCalendarM2:=""
-	}	
+	}
 
 StringReplace, clip, clip, %PluginText%, %PluginGetCalendar%
 
@@ -68,4 +73,5 @@ MadeChoice = 0
 Sleep 50
 Gui, 10:Destroy
 clip:=""
+CancelPlugin:=1
 Return

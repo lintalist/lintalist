@@ -1,10 +1,11 @@
 ﻿/* 
 Plugin        : Selected [Standard Lintalist]
 Purpose       : Cut currently selected text (if any) to clipboard and place it in the text at the desired location
-Updated       : 20150215
-Version       : 1.1
+Updated       : 20181117
+Version       : 1.2
 
 History:
+- 1.2 Fix https://github.com/lintalist/lintalist/issues/116
 - 1.1 Modified to accept parameters in Lintalist v1.4
 - 1.0 first version
 
@@ -34,23 +35,23 @@ could result in:
 
 */
 
-		 ClipSet("s",1,SendMethod) ; safe current content and clear clipboard
+		 ClipSet("s",1,SendMethod,Clipboard) ; safe current content and clear clipboard
 		 ClearClipboard()
 		 SendKey(SendMethod, ShortcutCopy)
 		 SelectedText:=Clipboard
 
-		 If (PluginOptions <> "") 
+		 If (PluginOptions <> "")
 			{
 			 SelectedText:=ClipSelEx(SelectedText,PluginOptions)
 			 StringReplace, clip, clip, %PluginText%, %SelectedText%, All
 			}
 		 else
-		 	{
+			{
 			 StringReplace, clip, clip, [[Selected]], %SelectedText%, All
-		 	}
+			}
 		 ClearClipboard()
 		 Clipboard:=ClipSet("g",1,SendMethod) ; restore
-		 
+
 		 SelectedText:=""
 		 ReplaceClipSelEx:=""
 		 PluginOptions:=""
@@ -58,8 +59,6 @@ could result in:
 		 ProcessTextString:=""
 		}
 Return
-
-
 
 GetSnippetClipboard:
 	 If (InStr(Clip, "[[Clipboard") > 0) ; insert selected text if any
@@ -73,9 +72,9 @@ GetSnippetClipboard:
 			 StringReplace, clip, clip, %PluginText%, %SelectedText%, All
 			}
 		 else
-		 	{
+			{
 			 StringReplace, clip, clip, [[Selected]], %SelectedText%, All
-		 	}
+			}
 ;		 ClearClipboard()
 		 Clipboard:=clip
 		 

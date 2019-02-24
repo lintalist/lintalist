@@ -2,10 +2,12 @@
 Plugin func   : Used in Selected & Clipboard plugins
 Purpose       : Process text for upper, lower, title, sentence and wrap options
 Credit        : Sentence case by Laszlo & None
-Updated       : 20150215
-Version       : 1.0
+Updated       : 20181130
+Version       : 1.1
 
 History:
+- 1.1 Now using TitleCase() - https://github.com/lintalist/lintalist/issues/113#issuecomment-437522435
+      and https://github.com/lintalist/TitleCase
 - 1.0 first version added to Lintalist v1.4
 
 */
@@ -20,9 +22,15 @@ ClipSelEx(SelectedText,Options)
 		{
 		 StringLower, SelectedText, SelectedText
 		}
-	 Else If Options in title,t
+	 Else If RegExMatch(Options,"i)^\s*t")
 		{
-		 StringUpper, SelectedText, SelectedText, T
+		 StringSplit, Options, Options, |
+		 ; Options1 will be t or title
+		 If (Options2 = "")
+			Options2:="en"
+		 If (Options3 = "")
+			Options3:="TitleCase.ini"
+		 SelectedText:=TitleCase(SelectedText,Options2,Options3)
 		}
 	 Else If Options in sentence,s
 		{
@@ -50,24 +58,8 @@ ClipSelEx(SelectedText,Options)
 			ReplaceClipSelEx := Options2 SelectedText Options3 "`n"
 		 ReplaceClipSelEx:=Trim(ReplaceClipSelEx,"`n")	
 		 SelectedText:=ReplaceClipSelEx
-		} 
+		}
 	 Return SelectedText
 	}
 
-/*
-ProcessClipboard(ClipText)
-	{
-	 global clip, ProcessTextString, PluginText, PluginOptions
-	 clip:=ClipText
-	 plName:="Clipboard"
-	 #IncludeAgain %A_ScriptDir%\plugins\resolvenested.ahk ; ProcessTextString + PluginText
-	 PluginOptions:=GrabPluginOptions(PluginText)
-
-	 Text:=Clipboard
-	 MsgBox % Text "`n--------------`n" PluginOptions
-
-	 Text:=ClipSelEx(Text,PluginOptions)
-	 StringReplace, clip, clip, %PluginText%, %Text%, All
-	 Return clip
-	}
-*/
+#include %A_ScriptDir%\include\TitleCase.ahk

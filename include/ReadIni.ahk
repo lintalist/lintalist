@@ -95,6 +95,7 @@ INISetup:={ AlwaysLoadBundles:     {default:"",find:"bundles\"}
 			IniSetup["ShortcutCopy"]:={default:"^c"}
 			IniSetup["ShortcutCut"]:={default:"^x"}
 			IniSetup["ShortcutQuickSearch"]:={default:"^+{Left}^x"}
+			IniSetup["Statistics"]:={default:"0"}
 
 	 for k, v in INISetup
 		{

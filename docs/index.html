@@ -7,8 +7,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="SHORTCUT ICON" href="favicon.ico" />
 <link href="style.css" rel="stylesheet" type="text/css" media="screen" />
-<meta name="descriptions" content="Lintalist manages searchable interactive texts to copy &amp; paste text, run scripts, using easily exchangeable bundles - text-expander with hotkeys, full text search, plugins and scripts" />
-<meta name="keywords" content="bundle, bundles, snippet, snippets, paste text, textpow, clipboard, searchable, search, autotext, auto-replace, template, clipboard, phrases, text, text substitution, text expander, text replacement, expand abbreviations, typing utility, trigger hotstrings, open source" />
+<meta name="description" content="Lintalist manages searchable interactive texts to copy &amp; paste text, run scripts, using easily exchangeable bundles - text-expander with hotkeys, full text search, plugins and scripts, gestionnaire des extraits de texte" />
+<meta name="keywords" content="bundle, bundles, snippet, snippets, paste text, textpow, clipboard, searchable, search, autotext, auto-replace, template, clipboard, phrases, text, text substitution, text expander, text replacement, expand abbreviations, typing utility, trigger hotstrings, open source gestionnaire des extraits de texte" />
 </head>
 <body id='top'>
 <div id='container'>
@@ -21,7 +21,7 @@
 <span style='font-size:.8em;'>You can <b>extend Lintalist</b> by writing your own <b><a href='#InteractiveBundleText'>plugins</a></b>. Lintalist is open source and developed in <a href='https://autohotkey.com/'>AutoHotkey</a>, an easy to learn scripting language for Windows.
 [WinXP(sp3)/Vista/7/8/10]<br /></span>
 <span style='font-size:.8em;'>As of LintaList v1.1 several types of formatted text are supported in Snippets.</span>
-<span class='date' style='float:right;display:inline;margin-top:0px;'>doc rev. 20181013</span></p>
+<span class='date' style='float:right;display:inline;margin-top:0px;'>doc rev. 20190224</span></p>
 </div>
 
 <div class='column'>
@@ -43,6 +43,15 @@
 <li><a href='#FAQ'>FAQ &amp; Known Issues</a></li>
 <li><a href='#History'>History</a> (changelog)</li>
 </ul>
+
+<p><br />Lintalist <b>Bundles</b>:<br />
+<a href='https://github.com/lintalist/lintalist-bundles/'>github.com/lintalist/lintalist-bundles/</a></p>
+
+<p><b>Videos:</b><br />
+<a href="http://youtu.be/XfjZPAhHB8c">General</a>; 
+<a href="http://youtu.be/Q6SFkttjUQk">HTML/MD</a>; 
+<a href="http://youtu.be/J1StUarGHmI">Formatted</a>; and
+<a href="http://youtu.be/Rtd_ChyRVkM">Plugins</a></p>
 
 </div>
 
@@ -75,11 +84,11 @@
 </div>
 
 <div class='column'>
-<p><b>Download Lintalist <em>1.9.7</em></b>
+<p><b>Download Lintalist <em>1.9.8</em></b>
 <p>
 <a href='https://github.com/lintalist/lintalist/releases'><img src='img/lintalist65x65.gif' alt='Download Lintalist' width='65' align='left' border='0' style='margin-right: 5px;' /></a>
 Download (incl. source):<br />
-<a href='https://github.com/lintalist/lintalist/releases'><b>Latest release</b></a> (807 kb)<br />Simply unpack and run lintalist.ahk or lintalist.exe<br />
+<a href='https://github.com/lintalist/lintalist/releases'><b>Latest release</b></a> (817 kb)<br />Simply unpack and run lintalist.ahk or lintalist.exe<br />
 </p>
 
 <span class='tip' style="margin-bottom:10px;"><img src="img/usb.png" width=50 align=right title="USB image by Alessandro Rei (GNU/GPL) - http://findicons.com/icon/255067/usb?id=256158">Lintalist is a <b>portable application</b>. It stores all settings and bundles in the folder the program resides in. <a href="#portable">More...</a>
@@ -88,20 +97,19 @@ Download (incl. source):<br />
 <p><b>Lintalist</b> Source code:<br />
 <a href='https://github.com/lintalist/lintalist/'>github.com/lintalist/lintalist</a></p>
 
-<p>Lintalist <b>Bundles</b>:<br />
-<a href='https://github.com/lintalist/lintalist-bundles/'>github.com/lintalist/lintalist-bundles/</a></p>
-
-<p><b>Videos:</b><br />
-<a href="http://youtu.be/XfjZPAhHB8c">General</a>; 
-<a href="http://youtu.be/Q6SFkttjUQk">HTML/MD</a>; 
-<a href="http://youtu.be/J1StUarGHmI">Formatted</a>; and
-<a href="http://youtu.be/Rtd_ChyRVkM">Plugins</a></p>
+<p><b>Reviews</b></p>
+<ul>
+<li><a href='https://www.softpedia.com/get/Office-tools/Other-Office-Tools/Lintalist.shtml'>Softpedia.com</a> ↗</li>
+<li><a href='https://www.freewarefiles.com/Lintalist_program_109453.html'>Freewarefiles.com</a> ↗</li>
+<li><a href='http://www.ilovefreesoftware.com/25/windows/free-text-expander-tool-enter-snippets-according-to-active-program.html'>ilovefreesoftware.com</a> ↗</li>
+<li><a href='https://www.libellules.ch/dotclear/index.php?post/2018/10/31/Lintalist-gestionnaire-des-extraits-de-texte'>libellules.ch</a> ↗</li>
+</ul>
 </div>
 
 <div class='brk'></div>
 
 <pre id='content'>
-<h2 id='Introduction'>Introduction</h2>
+<h2 id='Introduction'><a href='#Introduction' class='headline'>Introduction</a></h2>
 
 As noted above Lintalist allows you to store and (incrementally) <b>search</b> and <b>edit texts</b> in bundles and <b>paste</b> a selected text in your active program.
 
@@ -130,7 +138,7 @@ When you run it for the very first time it does ask if you want a shortcut on yo
 
 If you want to take your copy of Lintalist with you all you have to do is copy the Lintalist folder. Same goes for making a backup.
 </span>
-<h3 id='FeatureList'>Full Feature List:</h3>
+<h3 id='FeatureList'><a href='#FeatureList' class='headline'>Full Feature List:</a></h3>
 
 - Full text snippet search using four different search modes
 - Context sensitive bundles
@@ -151,19 +159,22 @@ If you want to take your copy of Lintalist with you all you have to do is copy t
   - counters (can be created on the fly)
   - chain snippets (insert the text of one snippet into another)
   - insert text from file
+  - math (calc)
+  - random selection
+  - split and reuse text
   - formatted text and images using HTML, Markdown, RTF and Image
 
-<h2 id='Installing'>Installing <em>Lintalist</em></h2>
+<h2 id='Installing'><a href='#Installing' class='headline'>Installing <em>Lintalist</em></a></h2>
 
 Installing Lintalist is easy, just download the ZIP file and unpack it in a folder of your preference. Make sure you have write permissions for the destination folder (i.e. don't unpack into a folder like "C:\Program Files"). It is probably easiest to work with if you place it in your "My Documents" folder as this will make it easier for Lintalist to update your bundles while you are using them. Lintalist is fully portable and doesn't write any settings to the registry, so you can run it directly from a USB flash drive or DropBox folder for example.
 
 If you are already an AutoHotkey user and have it installed, it is recommended to run <b>Lintalist.ahk</b>, this will ensure you will be running Lintalist with your preferred version of AutoHotkey. If you don't have AutoHotkey installed you can start <b>Lintalist.exe</b>.
 
 <b>Notes:</b>
-- Lintalist.exe: A renamed AutoHotkey.exe (v1.1.30 32-bit Unicode, See https://autohotkey.com/ and/or https://autohotkey.com/download/)
+- Lintalist.exe: A renamed AutoHotkey.exe (v1.1.30.01 32-bit Unicode, See https://autohotkey.com/ and/or https://autohotkey.com/download/)
 - Lintalist.ahk: The actual (main) source code of the program (see https://github.com/lintalist/lintalist)
 
-<h2 id='Searching'>Normal use: Starting Lintalist and searching for a Snippet</h2>
+<h2 id='Searching'><a href='#Searching' class='headline'>Normal use: Starting Lintalist and searching for a Snippet</a></h2>
 
 If Lintalist is running you can activate the search window by pressing <kbd>CAPSLOCK</kbd>, the default hotkey. You can change this hotkey via the configuration menu accessible via the tray menu by right clicking on the Lintalist icon <img src="img/lintalist65x65.gif" width="14" height="14" border="0" alt="lintalist icon" style="margin-top:-5px;padding-top:0;">).
 
@@ -191,7 +202,7 @@ You can also use the <kbd>Up</kbd>, <kbd>Down</kbd>, <kbd>Page Up</kbd> and <kbd
 
 <span class='tip'>If you have no need for context sensitive bundles, simply make use of the default bundle and put in all your snippets. In such a case you could also lock the default bundle although there should be no need to do so.</span>
 
-<h3 id='SearchOptions'>Search options:</h3>
+<h3 id='SearchOptions'><a href='#SearchOptions' class='headline'>Search options:</a></h3>
 
 You can search for text in your bundles using four different methods:
 
@@ -225,7 +236,7 @@ You can search for text in your bundles using four different methods:
 </tbody>
 </table>
 
-<b>Case (in)sensitive search</b>
+<b id='case-sensitive'><a href='#case-sensitive' class='headline'>Case (in)sensitive search</a></b>
   
 Use Case <kbd>Alt</kbd>+<kbd>c</kbd> to make your searches case sensitive.
 
@@ -235,26 +246,26 @@ The statusbar shows which bundles are loaded and how many items were found out o
 
 You can control the maximum number of search results and the maximum number of snippets that you can see in the results list.
 
-<h3 id='SearchSnippets'>Which sections of the snippets are searched?</h3>
+<h3 id='SearchSnippets'><a href='#SearchSnippets' class='headline'>Which sections of the snippets are searched?</a></h3>
 
 It will search for a match in <b>Part1</b>, <b>Part2</b> and <b>Shorthand</b> (so not in the Shortcut and not in the Script code). Note that in order to show a more legible text in the results list, Part1 and Part2 are shown differently if they are multi-line texts:
 
 A new line is replaced by <b>\n</b> and a tab by <b>\t</b> and it will search <b>these texts</b> and not the original multi-line (but the original ones will be used when the texts are pasted, once you see it in action couple of times you will get used to it pretty quickly)
 
-<h3 id='RegExCase'>RegEx &amp; Case sensitive search</h3>
+<h3 id='RegExCase'><a href='#RegExCase' class='headline'>RegEx &amp; Case sensitive search</a></h3>
 
 <span style='color:#c00;'>&lt;techtalk&gt;</span> If the <b>Case check-box</b> is not checked your searches will be case-insensitive. When using the RegEx search method the "i)" option for the regular expression will automatically be inserted before each snippet is searched. This may lead to unexpected results if you pass on other options for your RegEx search. 
 
 Example: The case-insensitive RegEx 'se\w*g' it is actually using the following regular expression 'i)se\w*g' while searching. This is done for convenience (otherwise you would have to type i) every time you wanted to do a case-insensitive search (RegEx is by default case sensitive). If you want to pass on extra options it is best to turn Case sensitive ON and add the options you need as described here <a href='https://autohotkey.com/docs/commands/RegExMatch.htm#Options'>autohotkey.com/docs/commands/RegExMatch.htm#Options</a>. This behaviour may change in future version of Lintalist. <span style='color:#c00;'>&lt;/techtalk&gt;</span>
 
-<b>Search letter variations [v1.7+]</b> 
+<b id='searchlv'><a href='#searchlv' class='headline'>Search letter variations [v1.7+]</a></b>
 
-Sometimes accented letters are part of the text you are searching for. These can be difficult or slow to type. By adding the variations of these letters to the search string you can search for cafe but still find caf&eacute;. So the 'e' in the query will be translated to searching for 'e&#xE9;&#xE8;&#xEA;&#x1E19;&#x11B;&#x115;&#x1EBD;&#x1E1B;&#x1EBB;&#x117;&#xEB;&#x113;&#x229;&#x119;&#x1D92;&#x247;&#x205;&#x1EBF;&#x1EC1;&#x1EC5;&#x1EC3;&#x1E1D;&#x1E17;&#x1E15;&#x207;&#x1EB9;&#x1EC7;&#xE6;&#x1FD;&#x1E3;&#x153;&#x1D6B;'.
+Sometimes accented letters are part of the text you are searching for. These can be difficult or slow to type. By adding the variations of these letters to the search string you can search for 'cafe' but still find 'caf&eacute;'. So the 'e' in the query will be translated to searching for 'e&#xE9;&#xE8;&#xEA;&#x1E19;&#x11B;&#x115;&#x1EBD;&#x1E1B;&#x1EBB;&#x117;&#xEB;&#x113;&#x229;&#x119;&#x1D92;&#x247;&#x205;&#x1EBF;&#x1EC1;&#x1EC5;&#x1EC3;&#x1E1D;&#x1E17;&#x1E15;&#x207;&#x1EB9;&#x1EC7;&#xE6;&#x1FD;&#x1E3;&#x153;&#x1D6B;'.
 When active all search modes will use a Regular Expression (Regular and Fuzzy)
 (De)Activate the setting via the <i>L<u>v</u>?</i> checkbox in the Search GUI (<kbd>Alt</kbd>+<kbd>v</kbd>) or the SearchLetterVariations setting in the Configuration menu.
 More information in the comments of 'include\LetterVariations.ahk'
 
-<h3 id='Omni'><em>Omni</em>search (search all bundles)</h3>
+<h3 id='Omni'><a href='#Omni' class='headline'><em>Omni</em>search (search all bundles)</a></h3>
 
 By default you are only searching in the loaded bundles, you can however search in all bundles using the following methods:
 
@@ -281,19 +292,19 @@ Query: @state -> will find "state" in all bundles
 
 Note: while using option 2 &amp; 3 the text "(All)" will be added to the statusbar (bottom right) to indicate you are using Omnisearch when the results are updated.
   
-<h2 id='Shortcuts'>Using <em>Shortcuts</em> (Hotkeys)</h2>
+<h2 id='Shortcuts'><a href='#Shortcuts' class='headline'>Using <em>Shortcuts</em> (Hotkeys)</a></h2>
 
 If the snippet definition includes a shortcut and is part of a currently active bundle you can insert <b>the text from Part 1</b> OR <b>run the script</b> by pressing the hotkey WITHOUT activating the Lintalist search window. Shortcuts are disabled while the Lintalist search window is active. 
 
 <span class='tip'>You can enable / disable the use of Shortcuts via the Tray menu</span>
 
-<h2 id='Shorthand'>Using <em>Shorthand</em> (Abbreviations)</h2>
+<h2 id='Shorthand'><a href='#Shorthand' class='headline'>Using <em>Shorthand</em> (Abbreviations)</a></h2>
 
 If the snippet definition includes a shorthand and is part of a currently active bundle you can insert <b>the text from Part 1</b> OR <b>run the script</b> by typing the abbreviation (= the shorthand) followed by a <b>Space</b> or <b>Tab</b> WITHOUT activating the Lintalist search window. Shorthand is disabled while the Lintalist search window is active.
 
 <span class='tip'>You can enable / disable the use of Shorthands via the Tray menu</span>
 
-<h2 id='KeyboardShortcuts'>Lintalist Keyboard <em>Shortcuts</em></h2>
+<h2 id='KeyboardShortcuts'><a href='#KeyboardShortcuts' class='headline'>Lintalist Keyboard <em>Shortcuts</em></a></h2>
 
 Apart from the hotkeys defined in bundles, Lintalist has two general sets of hotkeys, one while Lintalist waits in the background and one while the search window is active. Bring up the search window just press <kbd>CAPSLOCK</kbd> (default setting)
 
@@ -351,7 +362,7 @@ The sort will work even the column is not visible - for example if you do not sh
    - The action for a single- or doubleclick with the left mouse button can be defined in the Configuration menu
      (SingleClickSends and DoubleClickSends)
 
-<h2 id='TrayMenu'>Tray <em>Menu</em></h2>
+<h2 id='TrayMenu'><a href='#TrayMenu' class='headline'>Tray <em>Menu</em></a></h2>
 
 - <a href='#LoadAllBundles'>Load All Bundles</a>
 - <a href='#Configuration'>Configuration</a>
@@ -363,23 +374,23 @@ The sort will work even the column is not visible - for example if you do not sh
 - <a href='index.html'>Help</a>
 - Exit
 
-<h3 id='LoadAllBundles'>Load All <em>Bundles</em></h3>
+<h3 id='LoadAllBundles'><a href='#LoadAllBundles' class='headline'>Load All <em>Bundles</em></a></h3>
 
 You can tell Lintalist to simply load all bundles via the Tray menu or Bundle menu (<kbd>Alt</kbd>+<kbd>b</kbd>), these will automatically be locked until you either choose a specific bundle from the Bundle menu OR unlock it (<kbd>Alt</kbd>+<kbd>l</kbd>) in search window).
 
-<h3 id='ReloadBundles'>Reload <em>Bundles</em></h3>
+<h3 id='ReloadBundles'><a href='#ReloadBundles' class='headline'>Reload <em>Bundles</em></a></h3>
 
 If you have added or removed a new bundle you must reload them all to ensure they are read in memory so they can be searched and new or changed shortcuts and shorthands are correctly updated. 
 
-<h3 id='Pause'>Pause</h3>
+<h3 id='Pause'><a href='#Pause' class='headline'>Pause</a></h3>
 
 You can pause Lintalist entirely or pause Shortcuts, Shorthand and Scripts separately. Note: you can also bypass a script with Ctrl-Enter and Ctrl-Shift-Enter, see <a href='#KeyboardShortcuts'>Lintalist Keyboard Shortcuts</a> if you select a snippet in the search window.
 
-<h2 id='Configuration'>Configuration</h2>
+<h2 id='Configuration'><a href='#Configuration' class='headline'>Configuration</a></h2>
 
 You can either edit the settings.ini file directly with a text editor (like notepad) or use the more user friendly configuration window which is available via the tray-menu. In order for the changes to take effect you must reload the application after changing any settings. If you <b>edit settings.ini manually be sure to exit Lintalist first</b> otherwise any changes you make might be overwritten by reloading Lintalist.
 
-A description of all settings can also be found in settings.ini or in <a href="https://github.com/lintalist/lintalist/wiki/Settings">the Wiki</a>.
+A description of all settings can also be found in settings.ini <!-- or in <a href="https://github.com/lintalist/lintalist/wiki/Settings">the Wiki</a>. -->
 
 Some important options:
 <table>
@@ -389,22 +400,22 @@ Some important options:
 	<th>Description</th>
 </tr>
 </thead>
-<tr id='SendMethod'><td><b>SendMethod</b></td><td>If you experience any problems with the way text is sent to the various applications you use,
+<tr id='SendMethod'><td><b><a href='#SendMethod' class='headline'>SendMethod</a></b></td><td>If you experience any problems with the way text is sent to the various applications you use,
   you should try various methods to see if it resolves the issue:
   1 = SendInput
   2 = SendEvent
   3 = SendPlay
   4 = ControlSend</td></tr>
-<tr id='PasteDelay'><td><b>PasteDelay</b></td><td>If the text of the snippet is not pasted in to your application after a search, shortcut
+<tr id='PasteDelay'><td><b><a href='#PasteDelay' class='headline'>PasteDelay</a></b></td><td>If the text of the snippet is not pasted in to your application after a search, shortcut
   or shorthand you could try to increase the number of Milliseconds before the text is 
   pasted.</td></tr>
-<tr id='TriggerKeys'><td><b>TriggerKeys</b></td><td>If Shorthand is activate by default pressing a TAB and SPACE key will expand abbreviations. You can limit this to just the TAB or SPACE by editing this setting. You can also use other keys such as F1-F12 for example.
+<tr id='TriggerKeys'><td><b><a href='#TriggerKeys' class='headline'>TriggerKeys</a></b></td><td>If Shorthand is activate by default pressing a TAB and SPACE key will expand abbreviations. You can limit this to just the TAB or SPACE by editing this setting. You can also use other keys such as F1-F12 for example.
 <!--
  Alt, LWin, RWin, Shift, Home, End, PgUp, PgDn, Up, Down, Left, Right
  .,¿?¡!'"()[]{, }, {}~$&*-+=\/><^|@#:`%;
 -->
 More options may be added in future versions such as special hotkeys.</td></tr>
-<tr id='DoubleClickSends'><td><b>DoubleClickSends</b></td><td>You can change what happens if you double click on an entry in the search results:
+<tr id='DoubleClickSends'><td><b><a href='#DoubleClickSends' class='headline'>DoubleClickSends</a></b></td><td>You can change what happens if you double click on an entry in the search results:
   1 = Paste Part1, as enter e.g. run script if present
   2 = Paste Part2, as shift-enter e.g. run script if present 
   3 = Paste Part1, as ctrl-enter e.g. always paste part1 even if script present
@@ -414,20 +425,22 @@ More options may be added in future versions such as special hotkeys.</td></tr>
 
   <b>SingleClickSends</b> as of v1.4 you can also use a single click for the same actions above.
   </td></tr>
-<tr id='DefaultBundle'><td><b>DefaultBundle</b></td><td>File name e.g. default.txt
+<tr id='DefaultBundle'><td><b><a href='#DefaultBundle' class='headline'>DefaultBundle</a></b></td><td>File name e.g. default.txt
   If no matching bundle can be found based on the window title load this bundle.</td></tr>
-<tr id='AlwaysLoadBundles'><td><b><b>AlwaysLoadBundles</b></td><td>File name(s) e.g. default.txt,bbcode.txt,css.txt
+<tr id='AlwaysLoadBundles'><td><b><a href='#AlwaysLoadBundles' class='headline'>AlwaysLoadBundles</a></b></td><td>File name(s) e.g. default.txt,bbcode.txt,css.txt
   Bundles you always want to be loaded as comma separated list.
   So Lintalist will try to load one or more specific bundles based on the currently
   active application AND will always add the bundles listed here as well.</td></tr>
-<tr id='MaxRes'><td><b><b>MaxRes</b></td><td>The number of maximum results while searching (loaded bundle(s) may be very large, 
+<tr id='MaxRes'><td><b><a href='#MaxRes' class='headline'>MaxRes</b></a></td><td>The number of maximum results while searching (loaded bundle(s) may be very large, 
   this will make the program more responsive)</td></tr>
-<tr id='StartSearchHotkey'><td><b>StartSearchHotkey</b></td><td>The Shortcut (Hotkey) used to launch the <a href='#Searching'>Lintalist search window</a>
+<tr id='StartSearchHotkey'><td><b><a href='#StartSearchHotkey' class='headline'>StartSearchHotkey</a></b></td><td>The Shortcut (Hotkey) used to launch the <a href='#Searching'>Lintalist search window</a>
   (Capslock by default)
   If you press this Shortcut while the Lintalist search window is active it will toggle
   between Wide &amp; Narrow view (you can set the width and height of both views via the
-  configuration menu)</td></tr>
-<tr id='QuickSearchHotkey'><td><b><b>QuickSearchHotkey</b></td><td>Hotkey used to start quick search: It will cut (ctrl-x) the word to the left, open
+  configuration menu)
+
+  Note about TeamViewer: the "send key combinations" option must be enabled (checked) and you may need to experiment with a short/key combination that works for you (the default QuickSearchHotkey shortcut does seem to work out of the box for example, while Capslock may not). <a href='https://github.com/lintalist/lintalist/issues/104'>Discussion @ GH - #104</a></td></tr>
+<tr id='QuickSearchHotkey'><td><b><a href='#QuickSearchHotkey' class='headline'>QuickSearchHotkey</a></b></td><td>Hotkey used to start quick search: It will cut (ctrl-x) the word to the left, open
   Lintalist and starts a search. If only one match is found it simply pastes or runs 
   the result directly.
   Note that some editors cut or copy an entire line if no selection is made (UltraEdit, 
@@ -436,19 +449,23 @@ More options may be added in future versions such as special hotkeys.</td></tr>
   you start this. Some editors will allow you to change this behaviour (UE).
   If you want to disable QuickSearchHotkey simply delete the hotkey in the configuration (make it empty)
   </td></tr>
-<tr id='PreviewSection'><td><b>PreviewSection</b></td><td>What to show in the preview area:
+<tr id='PreviewSection'><td><b><a href='#PreviewSection' class='headline'>PreviewSection</a></b></td><td>What to show in the preview area:
   1 = Text of part one of snippet (recommended)
   2 = Text of part two of snippet (fall back on Part 1 if Part 2 is empty)
   3 = Script code of snippet (fall back to Part 1 if 3 is empty)</td></tr>
-<tr id='PasteMethod'><td><b>PasteMethod</b></td><td>Retain current clipboard or set it as current clipboard content
+<tr id='PasteMethod'><td><b><a href='#PasteMethod' class='headline'>PasteMethod</a></b></td><td>Retain current clipboard or set it as current clipboard content
   0 = Paste snippet and retain current clipboard content (=default behaviour)
   1 = Paste snippet and keep it as the current clipboard content (so you can manually paste it again)
   2 = Don't paste snippet content but copy it to the clipboard so you can manually paste it.
   [v1.9.7+] Plugin <a href='#pastemethod-plugin'>[[PasteMethod]]</a> similar to global setting but now acts on snippet basis.
   </td></tr>
-<tr id='OnPaste'><td><b>OnPaste</b></td><td>Exit Lintalist after pasting snippet?
+<tr id='OnPaste'><td><b><a href='#OnPaste' class='headline'>OnPaste</a></b></td><td>Exit Lintalist after pasting snippet?
   0 = No
   1 = Yes</td></tr>
+<tr id='Statistics'><td><b><a href='#Statistics' class='headline'>Statistics</a></b></td><td>Default setting: turned off.
+You can keep track of bundle and snippet usage by activating the Statistics. View the Stats via the Tray- or Edit menu options (Search GUI).
+The Statistics are saved to statistics.ini every two hours while Lintalist is running, viewing the Statistics, and closing the program.
+Note that not all the Statistics may be a 100% accurate. <a href='https://github.com/lintalist/lintalist/issues/112'>Discussion @ GH - #112</a></td></tr>
 </tbody>
 </table>
 Edit settings.ini or choose configuration in the tray menu for more options.
@@ -456,17 +473,17 @@ Edit settings.ini or choose configuration in the tray menu for more options.
 <span class='small'>Settings</span>
 <img src='img/lintalist-config.png' alt='Lintalist settings' border='0'  style='max-width:100%;' />
 
-<h3 id='Configuration-MultiCaret'>MultiCaret</h3>
+<h3 id='Configuration-MultiCaret'><a href='#Configuration-MultiCaret' class='headline'>MultiCaret</a></h3>
 
 You can define multiple caret locations in your snippet, see <a href='#caret-plugin'>the caret plugin</a> for a brief introduction.
 Detailed information on how to setup <b>MultiCaret.ini</b> in <a href='MultiCaret.md'>docs/MultiCaret.md</a>.
 
-<h3 id='Configuration-AltPaste'>AltPaste</h3>
+<h3 id='Configuration-AltPaste'><a href='#Configuration-AltPaste' class='headline'>AltPaste</a></h3>
 
 By default Lintalist uses <kbd>ctrl</kbd>+<kbd>c</kbd>, <kbd>ctrl</kbd>+<kbd>v</kbd> to copy and paste.
 If you need to use other shortcuts in specific programs (console or graphics applications for example) you can define these in <b>AltPaste.ini</b>, see <a href='AltPaste.md'>docs/AltPaste.md</a> for more information.
 
-<h3 id='Configuration-Linefeed'>Linefeed</h3>
+<h3 id='Configuration-Linefeed'><a href='#Configuration-Linefeed' class='headline'>Linefeed</a></h3>
 
 Some programs require CRLF to be used for pasting a new line into the document/control (notepad.exe for example) - otherwise pasting a snippet will have its new lines (enters, returns) 'removed' or so it seems:
 <blockquote class='boxed'>line1line2line3</blockquote> <i>vs</i>
@@ -477,7 +494,7 @@ line3
 For specific programs you can define the character that needs to be used instead of the default "new line" character. This can either be one single character or multiple characters - see the linefeed.ini for more information. As an example two programs are already included, [notepad.exe] and [wordpad.exe].
 This can also be useful in for applications where pasting (CR)LF may be seen as "enter" which would (accidentally) execute / start process (command line applications for example) - replacing linefeed(s) with a space would prevent this. <a href='https://github.com/lintalist/lintalist/issues/65'>Discussion @ GH - #65</a>
 
-<h2 id='LintalistBundles'>Lintalist <em>Bundles</em></h2>
+<h2 id='LintalistBundles'><a href='#LintalistBundles' class='headline'>Lintalist <em>Bundles</em></a></h2>
 
 <b>Basic structure of a Lintalist bundle</b>
 
@@ -489,7 +506,7 @@ A Lintalist bundle has some resemblance to YAML. [ For those interested in YAML 
 
 The bundles (text-)files are stored in the <b>bundles\</b> directory. Once you start editing bundles, a backup will be made and copied to <b>bundles\backup\</b>.
 
-<h2 id='SnippetsBundles'>Snippets <em>&amp;</em> Bundles</h2>
+<h2 id='SnippetsBundles'><a href='#SnippetsBundles' class='headline'>Snippets <em>&amp;</em> Bundles</a></h2>
 
 A bundle consists of one or more snippets. A snippet consists of five sections:
 
@@ -535,7 +552,7 @@ Example of a Bundle with one Snippet: <span class='llcomment'>(Light blue texts 
 <tr valign='top'><td width='15%'><span class='llbundle'>&nbsp;&nbsp;LLScript:</span></td>   <td width='40%'><span class='flex'></span></td><td><span class='llcomment'>; If present, this AHK code will be run if the snippet is selected via Enter, shortcut or shorthand</span></td></tr>
 </table>
 
-<h3 id='Part1-2'>Part<em>1</em> &amp; Part<em>2</em></h3>
+<h3 id='Part1-2'><a href='#Part1-2' class='headline'>Part<em>1</em> &amp; Part<em>2</em></a></h3>
 
 As described above, a snippet consists of two parts which are both shown in the search results (if both are present).
 
@@ -625,7 +642,7 @@ Another example would be time-sheet management. Often certain types of jobs or c
 </tr>
 </table>
 
-<h2 id='InteractiveBundleText'>Interactive bundle text (<em>or Plugins</em>)</h2>
+<h2 id='InteractiveBundleText'><a href='#InteractiveBundleText' class='headline'>Interactive bundle text (<em>or Plugins</em>)</a></h2>
 
 Part1 and/or Part2 of a snippet can have special codes to insert specific data.
 The following <code>Snippet Codes</code> (or plugins) are available. 
@@ -663,7 +680,7 @@ The plugins are processed in the following order:
 	<th>Description</th>
 </tr>
 </thead>
-<tr id='caret-plugin'><td><code>^|</code></td><td>Caret position after pasting.
+<tr id='caret-plugin'><td><a href='#caret-plugin' class='headline'><code>^|</code></a></td><td>Caret position after pasting.
 Basic example: "Hello, this is a sample <code>^|</code>text"
 The ^| code will be removed from the text and the caret will 
 be placed before the word text.
@@ -672,7 +689,7 @@ be placed before the word text.
 Supported editors: Atom, Brackets, EverEdit, Komodo Edit, Sublime Text, TextAdept, UltraEdit 23+, Visual Studio Code editor. See <a href='MultiCaret.md'>docs/MultiCaret.md</a> for details.
 </td></tr>
 
-<tr id='c-plugin'><td><code>[[C=Char|Repeat]]</code></td><td>By default pasted texts are trimmed which means spaces and tabs will be trimmed from the snippet. You can use this plugin to insert one or more spaces and/or tabs at the beginning or end of a snippet. Or you can use it as a shorthand-code to insert a repeating text or character.
+<tr id='c-plugin'><td><a href='#c-plugin' class='headline'><code>[[C=Char|Repeat]]</code></a></td><td>By default pasted texts are trimmed which means spaces and tabs will be trimmed from the snippet. You can use this plugin to insert one or more spaces and/or tabs at the beginning or end of a snippet. Or you can use it as a shorthand-code to insert a repeating text or character.
 Basic example <code>[[C=-|30]]</code> insert 30 -'s
 Use [[C=space]] or [[C=\s]] for a space, [[C=tab]] or [[C=\t]] for a tab, and [[C=enter]] or [[C=\n]] for a new line.
 
@@ -681,30 +698,37 @@ Neat trick: using a local variable or User input
 <code>[[C=[[Input=Repeat which character|-]]|[[Input=How many times?|10]]]]</code> Repeat the entered character(s) 10 times.
 </td></tr> 
 
-<tr id='calc-plugin'><td><code>[[Calc=]]</code> *2</td><td>Evaluation of the math expressions - see <a href='#Calc'>documentation below</a>.</td></tr>
+<tr id='calc-plugin'><td><a href='#calc-plugin' class='headline'><code>[[Calc=]]</code></a> *2</td><td>Evaluation of the math expressions - see <a href='#Calc'>documentation below</a>.</td></tr>
 
-<tr id='calendar-plugin'><td><code>[[Calendar=Format|LCID|to]]</code></td><td>Displays a calendar window to allow you to select a date in a specific format (see DateTime below).
+<tr id='calendar-plugin'><td><a href='#calendar-plugin' class='headline'><code>[[Calendar=Format|LCID|to]]</code></a></td><td>Displays a calendar window to allow you to select a date in a specific format (see DateTime below).
 Basic example <code>[[Calendar=dd-MMM-yyyy]]</code> --> Select a date and it will be inserted like so: 25-Jan-2011
 
-[v1.8+] You can now specify an LCID. If you do not define one, the current user's locale is used to format the Date string. To use the system's locale instead, specify LSys. To use a specific locale, specify the letter L followed by a hexadecimal or decimal locale identifier (LCID). You can find a list of Locale IDs Assigned by Microsoft here <a href='https://msdn.microsoft.com/goglobal/bb964664.aspx' target='_blank'>msdn.microsoft.com/goglobal/bb964664.aspx</a>
+[v1.8+] You can now specify an LCID. If you do not define one, the current user's locale is used to format the Date string. To use the system's locale instead, specify LSys. To use a specific locale, specify the letter L followed by a hexadecimal or decimal locale identifier (LCID). You can find a list of Locale IDs Assigned by Microsoft here <a href='https://msdn.microsoft.com/goglobal/bb964664.aspx'>msdn.microsoft.com/goglobal/bb964664.aspx</a>
 
 If you use a date range (e.g. start/end date) the word " to " is automatically inserted between the two dates, if you want something else such as another language or character " - " simply specify this as the third parameter:
 <code>[[Calendar=dd-MMM-yyyy|| - ]]</code>
 
 </td></tr>
 
-<tr id='choice-plugin'><td><code>[[Choice=item1|item2|..]]</code></td><td>Selected an item from a list. 
-The options are delimited by a | character .
+<tr id='choice-plugin'><td><a href='#choice-plugin' class='headline'><code>[[Choice=item1|item2|..]]</code></a></td><td>Selected an item from a list. 
+The options are delimited by a | character.
+
 Basic example <code>[[Choice=Red|Green|Blue]]</code> inserts the selected colour in the text.
 
 [v1.9+] If the first option starts with a question mark (?), the first option will be removed from the list and shown as text in the Choice GUI. This can serve as a hint or reminder what the Choice is about. 
-Example: <code>[[Choice=?Favourite colour|Red|Green|Blue]]</code>. Same as above only the GUI will show "Favourite colour" in the GUI above the options.
+Example: <code>[[Choice=<b class='highlight'>?</b>Favourite colour|Red|Green|Blue]]</code>. Same as above only the GUI will show "Favourite colour" in the GUI above the options.
+
+[v1.9.8+] If the first option starts with a exclamation mark (!), you can filter the options as you type (similar to Lintalist main search). 
+Example: <code>[[Choice=<b class='highlight'>?!</b>Favourite colour|Red|Green|Blue]]</code>. Same as above only the GUI will show "Favourite colour" in the GUI above the options and a search box so you can filter the options to choose from. You can ommit the question option, so this is also valid:
+<code>[[Choice=<b class='highlight'>!</b>|Red|Green|Blue]]</code>
+
+The order of <b>?!</b> doesn't matter.
 </td></tr>
 
-<tr id='clipboard-plugin'><td><code>[[Clipboard]]</code> *1</td><td>Insert current Clipboard content.
+<tr id='clipboard-plugin'><td><a href='#clipboard-plugin' class='headline'><code>[[Clipboard]]</code></a> *1</td><td>Insert current Clipboard content.
 * Additional parameters are available, see <a href='#ClipEx'>Extending Clipboard &amp; Selected text</a>.</td></tr>
 
-<tr id='counter-plugin'><td><code>[[Counter=Name|Value|Reset]]</code></td><td>You can use multiple counters <b>across bundles</b>.
+<tr id='counter-plugin'><td><a href='#counter-plugin' class='headline'><code>[[Counter=Name|Value|Reset]]</code></a></td><td>You can use multiple counters <b>across bundles</b>.
 Basic example <code>[[Counter=InvoiceNumber]]</code> --> increment by one and insert value of InvoiceNumber.
 By default it will increment the counter by one, you can change that by specifying the Value.
 <code>[[Counter=InvoiceNumber|5]]</code> Add 5 and insert.
@@ -721,7 +745,7 @@ You can manage these counters (add, edit, delete) via the tray menu option: Mana
 <code>[[Counter=CounterName|2|0]]</code> would restart the counter at 0 and +2. This can be useful in a SplitRepeat for example so you can create a numbered list. (see the <a href='https://github.com/lintalist/lintalist-bundles/blob/master/markdown.txt'>MarkDown bundle, Ordered list snippet</a>)
 </td></tr>
 
-<tr id='datetime-plugin'><td><code>[[DateTime=Format|Value|TimeUnits|LCID]]</code></td><td>Insert current Date and/or Time using the FormatTime options,
+<tr id='datetime-plugin'><td><a href='#datetime-plugin' class='headline'><code>[[DateTime=Format|Value|TimeUnits|LCID]]</code></a></td><td>Insert current Date and/or Time using the FormatTime options,
 <a href='https://autohotkey.com/docs/commands/FormatTime.htm'>autohotkey.com/docs/commands/FormatTime.htm</a>
 (Date & Time formats, may be dependent on your user locale).
 Basic example <code>[[DateTime=dd-MMM-yyyy]]</code> --> 25-Jan-2011 (Todays date)
@@ -731,9 +755,10 @@ You can also perform some calculations, example:
 TimeUnits can be either Seconds, Minutes, Hours, or Days.
 
 [v1.8+] You can now specify an LCID, see Calendar above. Example: <code>[[DateTime=dd MMMM yyyy|||L1036]]</code> --> show month in French.
+The LCID can be decimal or hexadecimal e.g. L1036 and L0x040C are the same: French.
 </td></tr>
 
-<tr id='file-plugin'><td><code>[[File=Filename|select|clean]]</code></td><td>Will insert text from specified file into the text, 
+<tr id='file-plugin'><td><a href='#file-plugin' class='headline'><code>[[File=Filename|select|clean]]</code></a></td><td>Will insert text from specified file into the text, 
 either full path or relative to Lintalist directory.
 Basic example <code>[[File=c:\file.txt]]</code> inserts content from that file into the text.
 
@@ -746,7 +771,41 @@ Basic example: <code>[[File=..|select]]</code> --> select a text file in the par
 The order of Select and Clean doesn't matter, you can use one or both at the same time.
 </td></tr>
 
-<tr id='input-plugin'><td><code>[[Input=Text|Default]]</code></td>
+<tr id='filelist-plugin'><td><a href='#filelist-plugin' class='headline'><code>[[FileList=?Options|path]]</code></a></td><td>Return a delimited list of files from one or more folders. A useful companion to <code>[[Choice]]</code> if you want to select a specific file.
+
+Both asterisks and question marks are supported as wildcards, if you want to use multiple wildcards you can do so using a ; (semicolon) like so:
+
+folder\*.jpg;*.png
+
+will return a list of all JPG and PNG files in a folder.
+
+Options:
+
+D : Include directories (folders).
+F : Include files. If both F and D are omitted, files are included but not folders.
+R : Recurse into subdirectories (subfolders). If R is omitted, files and folders in subfolders are not included.
+
+P : Use full file path, if omitted only the filenames are returned
+
+Delimiter to use, default is a pipe (|) character, alternatively use:
+
+SC: c comma
+SN: n newline
+ST: t tab
+
+T : use path from active panel in Total Commander (assuming only one instance is active)
+E : use path from current folder in Explorer (assuming only one instance is active)
+W : current window title path (some programs show full path in Title, we can use this)
+
+U : Uri paths use / not \
+X : Relative paths, strip root folder path e.g.
+    "?RXUP|<span style='color:blue'>c:\server\mywebsite\</span>*.css" &rarr; selected file: <span style='color:blue'>c:\server\mywebsite\</span>css<span style='color:magenta'>\</span>style.css &rarr; result: css<span style='color:magenta'>/</span>style.css
+
+! : Assume FileList was called using [[Choice=!]] "filter as you type" so
+    <code>[[FileList=!wp|*.txt]]</code> becomes <code>[[Choice=!Filter|[[FileList=!wp|*.txt]]]]</code> automatically. Default delimiter assumed (pipe character)
+</td></tr>
+
+<tr id='input-plugin'><td><a href='#input-plugin' class='headline'><code>[[Input=Text|Default]]</code></a></td>
 <td>Ask for user input (simple inputbox)
 Basic example <code>[[Input=Customer's name?]]</code>
 Note: If you want to use the same user input more than once you can do so by simply repeating the [[Input=Question]] code.
@@ -754,7 +813,7 @@ You can provide a default response after the question by using the pipe char (|)
 example <code>[[Input=My favourite color|Green]]</code>
 </td></tr>
 
-<tr id='pastemethod-plugin'><td><code>[[PasteMethod=0|1|2]]</code></td><td>
+<tr id='pastemethod-plugin'><td><a href='#pastemethod-plugin' class='headline'><code>[[PasteMethod=0|1|2]]</code></a></td><td>
 Similar to the Global PasteMethod setting you can use this plugin to define it per snippet:
 0: Paste snippet and retain current clipboard content (=default behaviour)
 1: Paste snippet and keep it as the current clipboard content (so you can manually paste it again)
@@ -763,7 +822,7 @@ Similar to the Global PasteMethod setting you can use this plugin to define it p
 [v1.9.7+]
 </td></tr>
 
-<tr id='random-plugin'><td><code>[[Random=1|10]]</code>
+<tr id='random-plugin'><td><a href='#random-plugin' class='headline'><code>[[Random=1|10]]</code></a>
 or
 <code>[[Random=a|b|c]]</code></td><td>There are two methods to use Random. 1: Return a random number, 2: Return a random item from a pipe delimited list.
 <code>[[Random=1|10]]</code> -> return value between 1 and 10
@@ -772,25 +831,25 @@ or
 [v1.8+]
 </td></tr>
 
-<tr id='selected-plugin'><td><code>[[Selected]]</code> *1</td><td>Replace by selected text if any. This will allow you to insert any 
+<tr id='selected-plugin'><td><a href='#selected-plugin' class='headline'><code>[[Selected]]</code></a> *1</td><td>Replace by selected text if any. This will allow you to insert any 
 selected text, for example to wrap selected text in a HTML tag.
 * Additional parameters are available, see <a href='#ClipEx'>Extending Clipboard &amp; Selected text</a>.</td></tr>
 
-<tr id='snippet-plugin'><td><code>[[Snippet=Shorthand]]</code></td><td>Will insert text from another snippet at the specified location.
+<tr id='snippet-plugin'><td><a href='#snippet-plugin' class='headline'><code>[[Snippet=Shorthand]]</code></a></td><td>Will insert text from another snippet at the specified location.
 Use the Shorthand code of another snippet <b>from the same bundle</b>. This way you can chain snippets together.
 Basic example <code>[[Snippet=shorthandcode]]</code></td></tr> 
 
-<tr id='snippet-split'><td><code>[[Split=input|?1|?2]]</code> *3         </td><td>Split input into variables - see <a href='#Split'>Split and SplitRepeat</a> below.</td></tr> 
-<tr id='snippet-split'><td><code>[[SplitRepeat=input|?1|?2|?3]]</code> *3</td><td>Split input into variables - see <a href='#Split'>Split and SplitRepeat</a> below.</td></tr> 
+<tr id='snippet-split'><td><a href='#snippet-split' class='headline'><code>[[Split=input|?1|?2]]</code></a> *3         </td><td>Split input into variables - see <a href='#Split'>Split and SplitRepeat</a> below.</td></tr> 
+<tr id='snippet-split'><td><a href='#snippet-split' class='headline'><code>[[SplitRepeat=input|?1|?2|?3]]</code></a> *3</td><td>Split input into variables - see <a href='#Split'>Split and SplitRepeat</a> below.</td></tr> 
 
-<tr id='localvar-plugin'><td><code>[[Var=Name]]</code> *4</td><td>Insert local variables. These variables are available <b>across bundles</b>. See <a href='#LocalBundle'>Local bundle variables</a> below. As of v1.0.3 local variables are also available in scripts (making it the only plugin available in scripts for the time being)</td></tr>
+<tr id='localvar-plugin'><td><a href='#localvar-plugin' class='headline'><code>[[Var=Name]]</code></a> *4</td><td>Insert local variables. These variables are available <b>across bundles</b>. See <a href='#LocalBundle'>Local bundle variables</a> below. As of v1.0.3 local variables are also available in scripts (making it the only plugin available in scripts for the time being)</td></tr>
 
-<tr><td><code>[[html]]</code>, <code>[[md]]</code>, <code>[[rtf=]]</code>, <code>[[image=]]</code> </td><td>Use these for <a href='#FormattedText'>Formatted Text Snippets</a>.
+<tr id='snippet-richformat'><td><a href='#snippet-richtformat' class='headline'><code>[[html]]</code>, <code>[[md]]</code>, <code>[[rtf=]]</code>, <code>[[image=]]</code></a> </td><td>Use these for <a href='#FormattedText'>Formatted Text Snippets</a>.
 	
 <b>Tip:</b> Image plugin accepts 'clipboard' as a valid path to an image <code>[[image=[[clipboard]]]]</code>.
 You can combine this with <code>[[PasteMethod=2]]</code> to leave an image on the clipboard (for example to paste it as new layer in an image in a graphics program)</td></tr>
 
-<tr><td><code>[[llpart1]]</code>, <code>[[llpart1]]</code> </td><td>Use these for as placeholders for Snippet Part1 and Part2 in your <a href='#Script'>Script</a>.
+<tr><td id='snippet-llpart'><a href='#snippet-llpart' class='headline'><code>[[llpart1]]</code>, <code>[[llpart1]]</code></a> </td><td>Use these for as placeholders for Snippet Part1 and Part2 in your <a href='#Script'>Script</a>.
 
 [v1.9.3+]
 </td></tr>
@@ -798,7 +857,7 @@ You can combine this with <code>[[PasteMethod=2]]</code> to leave an image on th
 </tbody>
 </table>
 
-<h3 id='ClipEx'>*1 <em>Extending Clipboard &amp; Selected text</em></h3>
+<h3 id='ClipEx'><a href='#ClipEx' class='headline'>*1 <em>Extending Clipboard &amp; Selected text</em></a></h3>
 
 Additional parameters are available for the <code>[[Clipboard]]</code> and <code>[[Selected]]</code> plugins.
 
@@ -814,7 +873,28 @@ Parameters are defined as followed:
 </tr>
 <tr><td>Upper 	</td><td align=middle>U</td><td width=100%>Transforms selected text or clipboard to: UPPERCASE.</td></tr>
 <tr><td>Lower	</td><td align=middle>L</td><td width=100%>Transforms selected text or clipboard to: lowercase.</td></tr>
-<tr><td>Title	</td><td align=middle>T</td><td width=100%>Transforms selected text or clipboard to: Title Case.</td></tr>
+<tr><td>Title	</td><td align=middle>T</td><td width=100%>Transforms selected text or clipboard to: Title Case. 
+Additional options are available via the <a href='https://github.com/lintalist/TitleCase/blob/master/TitleCase.ahk'>TitleCase()</a> function:
+
+<code>[[Selected=T|language|ini-file]]</code>
+
+<em>language</em> and <em>ini-file</em> are optional. If you omit both, a TitleCase.ini file will be created in your Lintalist folder.
+
+The "language" is the Section title you can use to define various rules on how the Title Case should process the text.
+So you can use one ini (TitleCase.ini) for multiple "languages". Default is "en" (for English). 
+If you wish you can also create multiple ini files and you can pass on the name of the ini file you would like to use.
+Path to the ini can be relative to the Lintalist folder or a fixed path.
+Please refer to the <a href='https://github.com/lintalist/TitleCase/blob/master/TitleCase.ahk'>TitleCase()</a> documentation for more information on how to setup your ini file(s).
+
+Examples:
+
+<code>[[Selected=T|fr]]</code> &rarr; use the FR Section of TitleCase.ini.
+
+<code>[[Selected=T||MyTitleCase.ini]]</code> &rarr; use the EN Section of MyTitleCase.ini 
+
+Note: If you prepare your own ini files be sure to use UTF-16 encoded files to ensure proper processing of unicode / extended Ascii characters. See the AutoHotkey <a href='https://www.autohotkey.com/docs/commands/IniRead.htm#Remarks'>IniRead</a> documentation.
+
+</td></tr>
 <tr><td>Sentence</td><td align=middle>S</td><td width=100%>Transforms selected text or clipboard to: Sentence case.</td></tr>
 <tr><td>Wrap|before|after</td><td align=middle>W</td><td>Wraps selected text or clipboard with the defined before and after texts.
 If the selection of clipboard has multiple lines each line is wrapped in these texts individually. Example: <code>[[Selected=Wrap|&lt;li&gt;|&lt;/li&gt;]]</code> will wrap each line in li html tags.
@@ -825,7 +905,7 @@ line2		&lt;li&gt;line2&lt;/li&gt;
 line3		&lt;li&gt;line3&lt;/li&gt;</td></tr>
 </table>
 
-<h3 id='Calc'>*2 <em>Calc plugin</em></h3>
+<h3 id='Calc'><a href='#Calc' class='headline'>*2 <em>Calc plugin</em></a></h3>
 
 The evaluations of the math expressions in the Calc plugin are done by the Monster/Eval function by Laszlo.
 It is capable of basic and advanced math operations including standard AutoHotkey and predefined functions.
@@ -877,7 +957,7 @@ In <b>calc</b> you can use this as follows:
 
 <b>Advanced math:</b> examples of the more advanced options are available in the <a href='https://autohotkey.com/board/topic/15675-monster-evaluate-math-expressions-in-strings/'>forum thread</a> (or study the code in plugins\calc.ahk). Should you have a requirement for such advanced operations you are encouraged to experiment with a standalone Eval script before applying this to the Calc plugin.
 
-<h3 id='Split'>*3 <em>Split and SplitRepeat</em></h3>
+<h3 id='Split'><a href='#Split' class='headline'>*3 <em>Split and SplitRepeat</a></em></h3>
 
 <code>[[Split=input|?1|?2]]</code> and <code>[[SplitRepeat=input|?1|?2|?3]]</code>
 
@@ -1057,7 +1137,7 @@ The third line of the text file is: <span style='color:blue'>[...]</span>
 
 </blockquote>
 
-<b id='combiningsplit'>Combining Split and Choice to create a Snippet with Logic</b>.
+<b id='combiningsplit'><a href='#combiningsplit' class='headline'>Combining Split and Choice to create a Snippet with Logic</a></b>.
 
 You select an option using the Choice plugin and use the result to insert specific information later on.
 The chosen item (output of Choice) is used as input for a named Split. As the SP will always be the first (e.g. 1), you can use that as a "variable" to select an option in a second named Split.
@@ -1088,7 +1168,7 @@ And the sub-selection that goes with it is:
 </blockquote>
 
 
-<h3 id='LocalBundle'>*4 <em>Local bundle (Variables) [[Var=...]]</em></h3>
+<h3 id='LocalBundle'><a href='#LocalBundle' class='headline'>*4 <em>Local bundle (Variables) [[Var=...]]</em></a></h3>
 
 By using the <code>[[Var=]]</code> code in your texts you can insert variables which are defined in a special bundle and are stored in <b>local\local.txt</b>. This file has a similar setup to a regular bundle but only has two parts: a name and the content. You can use this to store (personal) information which you can reuse so you do not have to update it multiple times or share it with someone else. This could be your name or address for example:
 
@@ -1112,7 +1192,7 @@ You can edit your local variables using the Local bundle editor. You can access 
 <img src='img/lintalist-local-bundle-editor.png' alt='Local bundle editor' border='0'  style='max-width:100%;' />
 <span class='small'>You can use the Scan button to scan your bundles for new local variables and add them.</span>
 
-<h3 id='TextExample'>Example Text Snippet (Part1 or Part2):</h3>
+<h3 id='TextExample'><a href='#TextExample' class='headline'>Example Text Snippet (Part1 or Part2):</a></h3>
 
 <blockquote class='boxed'>
 Dear <code>[[Input=Enter Name of Customer]]</code>,
@@ -1126,7 +1206,7 @@ Your sincerely,
 
 </blockquote>
 
-<h2 id='Script'>Script(s)</h2>
+<h2 id='Script'><a href='#Script' class='headline'>Script(s)</a></h2>
 
 You can include any valid AutoHotkey script into a snippet. The code is saved to a temporary file and run with AutoHotkey. The temporary script is written to <b>tmpscrpts\</b> in your Lintalist directory. After the script has finished it is deleted.
 
@@ -1204,7 +1284,7 @@ Note that % signs in snippets do not need to be escaped as the <code>(join`n %</
 
 </blockquote>
 
-<a name='script_template'><b>Script template if you are going to use the clipboard and paste the result:</b>
+<a name='script_template'></a><b>Script template if you are going to use the clipboard and paste the result:</b>
 <blockquote class='boxed'>
 <span class='llbundle'>#NoEnv</span>
 <span class='llbundle'>#SingleInstance, force</span>
@@ -1222,7 +1302,7 @@ Note that % signs in snippets do not need to be escaped as the <code>(join`n %</
 
 </blockquote>
 
-<h2 id='Functions'>Func<em>tions</em></h2>
+<h2 id='Functions'><a href='#Functions' class='headline'>Func<em>tions</em></a></h2>
 
 This is for the more experienced AutoHotkey users.
 
@@ -1259,7 +1339,7 @@ MyFunc(parameters)
 
 The maximum number of parameters is 20.
 
-<h2 id='Variables'>Built-in <em>Variables</em></h2>
+<h2 id='Variables'><a href='#Variables' class='headline'>Built-in <em>Variables</em></a></h2>
 
 As of v1.9.4 Lintalist supports a subset of AutoHotkeys' built-in variables, simply use them anywhere in your snippet (text, plugins, functions) and they will be replaced by the proper value. Just wrap them in [[..]].
 
@@ -1287,7 +1367,7 @@ Use <code>[[EnvGet(EnvVarName)]]</code> to read Environment variables.
 
 
 
-<h2 id='FormattedText'>Formatted Text <em>Snippets</em></h2>
+<h2 id='FormattedText'><a href='#FormattedText' class='headline'>Formatted Text <em>Snippets</em></a></h2>
 
 As of LintaList v1.1 several types of formatted text are supported in Snippets.
 
@@ -1299,7 +1379,7 @@ Formatted text, styled text, or rich text, as opposed to plain text, has styling
 3. The Caret position after pasting - <code>^|</code> - does not work with any of these Formatted Text Snippets.
 4. In the Listview these formatted snippets are indicated by HTML/Markdown, RTF and Image icons (if Icons are shown)
 
-<h3 id='html-FormattedText'><em>HTML</em></h3>
+<h3 id='html-FormattedText'><a href='#html-FormattedText' class='headline'><em>HTML</em></a></h3>
 
 To paste HTML code as formatted text you have to include <code>[[html]]</code> in your snippet, usually at the start of the snippet but it can be anywhere.
 You are allowed to omit the html, head and body tags.
@@ -1344,7 +1424,7 @@ An image two folders "up" from the Lintalist folder:
 
 	&lt;img src='../../anotherimage.png'&gt;
 
-<h3 id='markdown-FormattedText'><em>Markdown</em></h3>
+<h3 id='markdown-FormattedText'><a href='#markdown-FormattedText' class='headline'><em>Markdown</em></a></h3>
 
 To paste Markdown code as formatted text you have to include <code>[[md]]</code> in your snippet.
 Note that only basic Markdown code is properly converted, nested lists are not supported (yet) for example and table formatting is rudimentary - see remarks below.
@@ -1426,7 +1506,7 @@ Example, a 3x3 table:
 Cell       | Cell        | Cell
 Cell       | Cell        | Cell
 
-<h3 id='rtf-FormattedText'><em>RTF</em></h3>
+<h3 id='rtf-FormattedText'><a href='#rtf-FormattedText' class='headline'><em>RTF</em></a></h3>
 
 Using RTF is similar to the <a href="#file-plugin">File</a> plugin, it will insert the formatted text including images from the specified file. Either use the full path to the RTF file or a path relative to Lintalist directory.
 All other text in the snippet will be discarded.
@@ -1438,7 +1518,7 @@ All other text in the snippet will be discarded.
 
 You can find an example RTF file including a plugin in the Extras\formatted\ folder.
 
-<h3 id='image-FormattedText'><em>Image</em></h3>
+<h3 id='image-FormattedText'><a href='#image-FormattedText' class='headline'><em>Image</em></a></h3>
 
 Using Image is similar to the <a href="#file-plugin">File</a> plugin, it will insert the image from the specified file. Either use the full path to the image or a path relative to Lintalist directory.
 All other text in the snippet will be discarded.
@@ -1450,9 +1530,9 @@ All other text in the snippet will be discarded.
 
 You can find an example image file in the Extras\formatted\ folder.
 
-<h2 id='Editing'>Editing Snippets <em>and Bundles</em></h2>
+<h2 id='Editing'><a href='#Editing' class='headline'>Editing Snippets <em>and Bundles</em></a></h2>
 
-<h3 id='F4'><span class='key'>F4</span> (Edit Snippet)</h3>
+<h3 id='F4'><a href='#F4' class='headline'><span class='key'>F4</span> (Edit Snippet)</a></h3>
 
 Start searching your bundle and select the snippet you want to edit (highlight with cursor or mouse) and use F4 to edit it. The Lintalist Bundle Editor will be shown so you can now edit the shortcut, shorthand, both text parts and the script. If you prefer to edit the texts or scripts in your default text editor* click the corresponding 'Edit in Editor' button. It will open the text or script in a new editor window. Save the temporary file and close the editor to automatically copy any changes back to the Lintalist Bundle Editor. You can use the plugins menu to insert plugins including the available local variables and counters.
 
@@ -1465,7 +1545,7 @@ To store the modified snippet click the save button, the changes are immediately
 
 To modify the bundle properties such as the name, titlematch etc use <a href="#F10">Lintalist Bundle Editor</a>.
 
-<h3 id='F5'><span class='key'>F5</span> (Copy Snippet and Edit)</h3>
+<h3 id='F5'><a href='#F5' class='headline'><span class='key'>F5</span> (Copy Snippet and Edit)</a></h3>
 
 Start searching your bundle and select the snippet you want to copy (highlight with cursor or mouse) and use F5 to edit it. The Lintalist Bundle Editor will be shown so you can now edit the shortcut, shorthand, both text parts and the script. If you prefer to edit the texts or scripts in your default text editor click corresponding 'Edit in Editor' button. It will open the text or script in a new editor window. Save the temporary file and close the editor to automatically copy any changes back to the Lintalist Bundle Editor. 
 
@@ -1475,25 +1555,25 @@ You can also modify the bundle properties such as the name, titlematch etc on th
 
 <i>Note: this action (F5) is not thoroughly tested.</i>
 
-<h3 id='F6'><span class='key'>F6</span> (Move Snippet to another Bundle)</h3>
+<h3 id='F6'><a href='#F6' class='headline'><span class='key'>F6</span> (Move Snippet to another Bundle)</a></h3>
 
 Start searching your bundle and select the snippet you want to move (highlight with cursor or mouse) and use F6 to move it. A popup menu will allow you to select the bundle you wish the snippet to move to.
 
 <i>Note: this action (F6) is not thoroughly tested.</i>
 
-<h3 id='F7'><span class='key'>F7</span> (Add new Snippet)</h3>		
+<h3 id='F7'><a href='#F7' class='headline'><span class='key'>F7</span> (Add new Snippet)</a></h3>
 
 To add a new snippet to bundle make sure the bundle you wish to add the snippet to is loaded in the search window. If multiple bundles are loaded you are asked to select the bundle to which you want to add the new snippet first.
 
 To add the new snippet to the selected bundle click the save button, the changes are immediately available.
 
-<h3 id='F8'><span class='key'>F8</span> (Delete Snippet)</h3>		
+<h3 id='F8'><a href='#F8' class='headline'><span class='key'>F8</span> (Delete Snippet)</3></h3>
 
 Start searching your bundle and select the snippet you want to edit (highlight with cursor or mouse) and use F8 to delete it. After confirmation the snippet is removed from the bundle.
 
 <span class='tip'>Backup: Whenever a snippet is edited (F4) or a deleted (F8) a backup of the bundle will be made in a backup folder when Lintalist is re-started or the program is closed. These can be found in the bundles directory: <b>bundles\backup\</b>. If you are not happy with the changes you have made you can copy back the prior version of the bundle. You may have to re-add any new snippets you have added after the last backup was made.</span>
 
-<h2 id='ManagingBundles'>Managing <em>Bundles</em></h2>
+<h2 id='ManagingBundles'><a href='#ManagingBundles' class='headline'>Managing <em>Bundles</em></a></h2>
 
 - If you have a new bundle you can add it to Lintalist by simply copying the file into the Bundles directory and (re)starting Lintalist
 
@@ -1503,7 +1583,7 @@ Start searching your bundle and select the snippet you want to edit (highlight w
 
 - You can also use a <a href='#BundleConvertors'>bundle converter</a> to convert files from a variety of formats to the Lintalist format.
 
-<h3 id='F10'><span class='key leftpad'>F10</span> (Bundle properties)</h3>			
+<h3 id='F10'><a href='#F10' class='headline'><span class='key leftpad'>F10</span> (Bundle properties)</a></h3>
 
 If you want to change the properties of an existing bundle such as the name (appears in the Menu) or the TitleMatch you can use the bundle properties editor. Press F10 or use the menu to open it while the Search window is active. Select the bundle in the list and change the properties and click SAVE.
 
@@ -1535,7 +1615,7 @@ An illustrated guide is available in the <a href="https://github.com/lintalist/l
 <span class='small'>Bundle editor</span>
 <img src='img/lintalist-bundle-editor.png' alt='Bundle editor' border='0'  style='max-width:100%;' />
 
-<h3 id='BundleConvertors'>Bundle Converters</h3>
+<h3 id='BundleConvertors'><a href='#BundleConvertors' class='headline'>Bundle Converters</a></h3>
 
 The following converters are available via <b>Extras\BundleConverters\</b> (requires AutoHotkey) or available via the Tools menu in the Search window and the Bundle editor.
 
@@ -1550,7 +1630,7 @@ If you have made a converter let me know so I can add a link to it or possible i
 
 Also, if you know of taglists, bundles, etc of other editors and programs you would like to see converted drop a line at the AutoHotkey forum or <a href='https://github.com/lintalist/lintalist/issues'>GH</a> and include a link to some examples if possible.
 
-<h2 id='cmdline'>Command line <em>parameters</em>  <span class='small'>[v1.2+]</span></h2>
+<h2 id='cmdline'><a href='#cmdline' class='headline'>Command line <em>parameters</em> <span class='small'>[v1.2+]</span></a></h2>
 
 <b>-Active</b>: starting Lintalist and open the search window
 
@@ -1569,7 +1649,7 @@ There is also a configuration setting that can do this: ActivateWindow
 <b>-Administrator</b>: (re)start Lintalist as Administrator - also available as a Setting via Configuration (Administrator) or via the Tray menu [v1.9.7+] <a href='https://github.com/lintalist/lintalist/issues/99'>Discussion @ GH - #99</a>
 (<em>username</em>^ is added to the Lintalist Search GUI title and Tray Menu tooltip)
 
-<h2 id='FAQ'>F.A.<em>Q</em> &amp; Known <em>Issues</em></h2>
+<h2 id='FAQ'><a href='#FAQ' class='headline'>F.A.<em>Q</em> &amp; Known <em>Issues</em></a></h2>
 
 <h3>Faq</h3>
 
@@ -1617,7 +1697,7 @@ There is also a configuration setting that can do this: ActivateWindow
 <b>A:</b> 
  -->
 
-<h2 id='History'>History</h2>
+<h2 id='History'><a href='#History' class='headline'>History</a></h2>
 
 <b>History</b>
 
@@ -1633,7 +1713,7 @@ There is also a configuration setting that can do this: ActivateWindow
 <img src='img/lintalist-title-footer.gif' alt='lintalist' align='left' style='margin-top:6px;padding-right:5px;' /><b>Disclaimer:</b> Use at your own risk. If you find a new bundle take a look at the script sections of each snippet. As Lintalist can run any AutoHotkey script it can also run faulty or insecure code. Be sensible, if you simply want to try a bundle selecting 'Pause scripts' via the tray menu might be a useful idea.
 </span> 
 
-<span style='float:right;'>&copy; Copyright 2009-2018 Lintalist. See license.txt</span>
+<span style='float:right;'>&copy; Copyright 2009-2019 Lintalist. See license.txt</span>
 </pre>
 
 <a href="https://github.com/lintalist"><img style="position: absolute; top: 0; right: 0; border: 0;" src="img/forkme_right_red_aa0000.png" alt="Fork me on GitHub"></a>

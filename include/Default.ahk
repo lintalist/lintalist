@@ -141,6 +141,7 @@ SendKey(Method = 1, Keys = "")
 
 ClipSet(Task,ClipNum=1,SendMethod=1,Value="") ; by Learning one http://www.autohotkey.com/forum/topic56926.html
   { 
+   global ShortcutCopy, ShortcutPaste, ShortcutCut
    Static Clip1, Clip2, Clip3, Clip4
    if ClipNum not between 1 and 30
    Return
@@ -155,9 +156,9 @@ ClipSet(Task,ClipNum=1,SendMethod=1,Value="") ; by Learning one http://www.autoh
          Sleep, 10
       }
       if (task = "c" or task = "ca" or task = "Copy" or task = "CopyAll")
-      	SendKey(SendMethod, "^c")
+      	SendKey(SendMethod, ShortcutCopy)
       Else
-      	SendKey(SendMethod, "^x")
+      	SendKey(SendMethod, ShortcutCut)
       if (task = "c" or task = "x" or task = "Copy" or task = "Cut") {
          ClipWait, 0.5
          if !(Clipboard = "")
@@ -189,7 +190,7 @@ ClipSet(Task,ClipNum=1,SendMethod=1,Value="") ; by Learning one http://www.autoh
          ClipWait, 0.5
          Sleep, 30
       }
-      	SendKey(SendMethod, "^v")
+      	SendKey(SendMethod, ShortcutPaste)
       Sleep, 20
       While !(Clipboard = "") {
          Clipboard =
@@ -229,7 +230,7 @@ ClipSet(Task,ClipNum=1,SendMethod=1,Value="") ; by Learning one http://www.autoh
          Clipboard =
          Sleep, 10
       }
-      SendKey(SendMethod, "^c")
+      SendKey(SendMethod, ShortcutCopy)
       ClipWait, 0.5
       if !(Clipboard = "") {
          if (Clip%ClipNum% = "")

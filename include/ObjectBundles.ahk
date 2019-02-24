@@ -38,9 +38,10 @@ WhichBundle() ; determine which bundle to use based on active window (titlematch
 	 If (Load = "") ; Load default bundle if no match found, default is set in ini DefaultBundleIndex is defined in LoadAllBundles() 
 		Load .= DefaultBundleIndex ","
 	 Load .= AlwaysLoadBundles ","	
-	 StringTrimRight, Load, Load, 1
-	 If (SubStr(Load, 0) = ",") ; if trailing , remove
-		StringTrimRight, Load, Load, 1
+;	 StringTrimRight, Load, Load, 1
+;	 If (SubStr(Load, 0) = ",") ; if trailing , remove
+;		StringTrimRight, Load, Load, 1
+	 Load:=Trim(Load,",")
 	 Sort, Load, U D, ; remove duplicates if any (might be added via AlwaysLoadBundles)
 	 Return Load	
 	}
@@ -365,6 +366,7 @@ ParseBundle(Patterns, Counter)
 CreateFirstBundle()
 	{
 Global IniFile		
+FileCreateDir, %A_ScriptDir%\bundles
 FileAppend, 
 (
 BundleFormat: 1

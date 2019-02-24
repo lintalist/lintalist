@@ -31,7 +31,7 @@ Restart Lintalist after modifying `AltPaste.ini`
 
 ## Included (console) applications (see ReadAltPasteIni.ahk and AltPaste.ini)
 
-* cmd.exe
+* cmd.exe [2]
 * ConEmu.exe
 * ConEmu64.exe
 * kitty.exe
@@ -41,3 +41,19 @@ Restart Lintalist after modifying `AltPaste.ini`
 * powershell.exe
 
 Suggestions welcome at https://github.com/lintalist/lintalist/issues/66
+
+[2] Various Windows versions handle cmd.exe differently:
+
+**Windows 10**
+
+If you use Windows 10 you might consider activating `^v` to paste in which case you could remove the cmd.exe entry.
+Instructions: https://www.howtogeek.com/howto/25590/how-to-enable-ctrlv-for-pasting-in-the-windows-command-prompt/
+
+**Before Windows 10**
+
+1) `+{Ins}` to paste might not work but you could try the following (for English language OS):
+
+    Paste=!{space}ep
+    Copy=!{space}ey
+    
+2) If you do want to use `^v` to paste in your cmd.exe you could consider installing **Clink** which enables this - among many other useful features - more information and download at https://mridgers.github.io/clink/

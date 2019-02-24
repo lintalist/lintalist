@@ -55,7 +55,7 @@ FileAppend,
 ;   https://autohotkey.com/docs/commands/Chr.htm
 ;
 ; Discussion: https://github.com/lintalist/lintalist/issues/65
-; ------------------------------------------------------------------------------------------
+; -------------------------------------------------------------------------------------------
 
 [notepad.exe]
 char=13,10

@@ -2,11 +2,11 @@
 ; Purpose: Return RegEx string to allow search for letter variations 
 ; 'e' will search for [eéèêěĕẽẻėëēęếềễểẹệæǣǽœᵫ]
 ; Version: 1.7
-; Date:    20151003
-
+; Date:    20190130 - added ẹ
+;
 ; Includes Diacritics and Ligatures (not all) - see link below
 ; https://en.wiktionary.org/wiki/Appendix:Variations_of_%22a%22 ... ; etc
-; see also http://ahkscript.org/boards/viewtopic.php?p=47793#p47793 for OP
+; see also https://www.autohotkey.com/boards/viewtopic.php?p=47793#p47793 for OP
 ;
 ; For discussion and suggestions:
 ; https://github.com/lintalist/lintalist/issues/33
@@ -20,7 +20,7 @@ LetterVariations(text,c=0)
 	 , "b" : "ȸ"
 	 , "c" : "ćĉčċç"
 	 , "d" : "ďđðȸǳǲǆǅ"
-	 , "e" : "éèêěĕẽẻėëēęếềễểẹệæǣǽœᵫ"
+	 , "e" : "éèêěĕẽẻėëēęếềễểẹệæǣǽœᵫẹ"
 	 , "g" : "ğĝġģǵǧǥ₲"
 	 , "h" : "ȟĥħḩḫẖḣḥḧƕⱨⱶ"
 	 , "i" : "íìĭîǐïĩįīỉịĵﬁĳ"

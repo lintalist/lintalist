@@ -50,7 +50,7 @@ RichCodeSettings:=
 		"A_Builtins":   0xF79B57,
 		"Commands":     0x008800,
 		"Directives":   0x7CC8CF,
-;		"Flow":         0xFF9900,
+		"Flow":         0x008800,
 		"KeyNames":     0xCB8DD9,
 	
 		; Snippets-HTML
@@ -89,6 +89,7 @@ If (EditMode = "AppendSnippet")
 			 StringSplit, MenuN, A_LoopField, _
 			 ClipQ1 .= MenuName_%MenuN1% "|"
 			} 
+		 Gui10NoResize:=1
 		 Gui, 10:Destroy
 		 Gui, 10:+Owner +AlwaysOnTop
 		 Gui, 10:Add, ListBox, w400 h100 x5 y5 vItem gChoiceMouseOK AltSubmit, 
@@ -97,6 +98,11 @@ If (EditMode = "AppendSnippet")
 		 GuiControl, 10: , ListBox1, %ClipQ1%
 		 Gui, 10:Show, w410 h110, Append snippet to bundle:
 		 ControlSend, ListBox1, {Down}, Append snippet to bundle:
+		 Gui10NoResize:=0
+		 WinWaitClose, Append snippet to bundle:
+		 MadeChoice = 1
+
+/*
 		 Loop ; ugly hack: can't use return here because, well it returns and would thus skip the gui and proceed to paste
 			{
 			 If (MadeChoice = 1)
@@ -106,6 +112,7 @@ If (EditMode = "AppendSnippet")
 				}
 			 Sleep 20 ; needed for a specific (old) ahk_l version, if no sleep CPU usages jumps to 50%, no responding to hotkeys and no tray menu
 			}
+*/			
 		}
 	 paste:=AppendToBundle
 	}
@@ -128,6 +135,7 @@ If (EditMode = "MoveSnippet")
 			Break
 		}		
 	 StringSplit, HkHm, ClipQ1, |	
+	 Gui10NoResize:=1
 	 Gui, 10:Destroy
 	 Gui, 10:+Owner +AlwaysOnTop
 	 Gui, 10:Add, ListBox, w400 h100 x5 y5 vItem gChoiceMouseOK AltSubmit, 
@@ -136,6 +144,11 @@ If (EditMode = "MoveSnippet")
 	 GuiControl, 10: , ListBox1, %ClipQ1%
 	 Gui, 10:Show, w410 h110, Move snippet to bundle:
 	 ControlSend, ListBox1, {Down}, Move snippet to bundle:
+	 Gui10NoResize:=0
+	 WinWaitClose, Move snippet to bundle:
+	 MadeChoice = 1
+
+/*
 	 Loop ; ugly hack: can't use return here because, well it returns and would thus skip the gui and proceed to paste
 		{
 		 If (MadeChoice = 1)
@@ -145,6 +158,7 @@ If (EditMode = "MoveSnippet")
 			}
 		 Sleep 20 ; needed for (old) ahk_l, if no sleep CPU usages jumps to 50%, no responding to hotkeys and no tray menu
 		}	 
+*/		
 	 If (EditMode = "")
 		Return
 	 Text1:=     Snippet[Paste1,Paste2,1] ; part 1 (enter, or shortcut, or shorthand)
@@ -207,6 +221,7 @@ Filename:=Filename_%paste1%
 
 ActionText:=StrReplace(RegExReplace(EditMode,"([A-Z])"," $1"),"Append","New")
 
+Gui, 71:Destroy
 Gui, 71:+Owner +Resize +MinSize740x520
 Gui, 71:Default
 Gui, 71:Menu, MenuBar2
@@ -281,7 +296,12 @@ If EditorSyntaxHL
 	 RC3.Value := Script
 	}
 
-Gui, 71:Show, w740 h520, Lintalist snippet editor
+Gui, 71:Show, Hide w740 h520 x%EditorX% y%EditorY%, Lintalist snippet editor
+DetectHiddenWindows, On
+WinMove, Lintalist snippet editor, , %EditorX%, %EditorY%, %EditorWidth%, %EditorHeight%
+DetectHiddenWindows, Off
+Gui, 71:Show
+
 WinActivate, Lintalist snippet editor
 If EditorSyntaxHL
 	GuiControl, Focus, % RC1.hWnd
@@ -433,6 +453,7 @@ Else If (EditMode = "AppendSnippet") or (EditMode = "CopySnippet") or (EditMode 
 
 	 ;Snippet[AppendToBundle].Push({1:Text1,2:Text2,3:HKey,4:Shorthand,5:Script,"1v":FixPreview(Text1),"2v":FixPreview(Text2)})
 	 Snippet[AppendToBundle].InsertAt(1,{1:Text1,2:Text2,3:HKey,4:Shorthand,5:Script,"1v":FixPreview(Text1),"2v":FixPreview(Text2)})
+	 Snippet[AppendToBundle,"Save"]:=1  ; added 11/12/2018 fix movesnippet
 
 /*
 	 Snippet[AppendToBundle,"Save"]:=1
@@ -469,6 +490,10 @@ Else If (EditMode = "AppendSnippet") or (EditMode = "CopySnippet") or (EditMode 
  ;  File= 
  ;  File .= A_ScriptDir "\bundles\" FileName_%AppendToBundle% ; debug 04/04/2018
     File := A_ScriptDir "\bundles\" Filename ; debug 04/04/2018
+    If (FileName = "")
+    	File:=A_ScriptDir "\bundles\" FileName_%AppendToBundle%
+If !(EditMode = "MoveSnippet") ; added 11/12/2018 fix movesnippet
+	{
 	IfNotInString, File, .txt
 		{
 		 MsgBox, 48, Error, ERROR: Can not append snippet to Bundle (No file name available)`nBundle: %File%`n`nDo you wish to Reload?
@@ -484,6 +509,7 @@ Else If (EditMode = "AppendSnippet") or (EditMode = "CopySnippet") or (EditMode 
 		 	MsgBox, 48, Error, % "ERROR: Could not append snippet to Bundle`n`n" File "`n" Append
 		} 
 		Counter:=AppendToBundle
+	}
 	}
 Else If (EditMode = "NewBundle")
 	{
@@ -521,6 +547,7 @@ Patterns:
 
 ), %file%, UTF-8
 
+	 Gosub, 71GuiSavePos
 	 Gui, 1:-Disabled
 	 Gui, 71:Destroy
 	 Gui, 1:Destroy
@@ -560,6 +587,7 @@ Loop, % Snippet[Counter].MaxIndex() ; LoopIt
 	}
 
 
+Gosub, 71GuiSavePos
 Gui, 1:-Disabled
 Gui, 71:Destroy
 if (AlwaysUpdateBundles = 1)
@@ -580,6 +608,10 @@ ControlFocus, Shorthand, %AppWindow%
 Gosub, SetStatusBar	
 lasttext = fadsfSDFDFasdFdfsadfsadFDSFDf
 Gosub, GetText
+;LV_Modify(SelItem, "Select") ; set focus on snippet we edited in listview
+;LV_Modify(SelItem, "Vis")    ; doesn't work yet as DOWN starts at row 1 again
+;Sleep 10
+;ControlFocus, Edit1, %AppWindow%
 ShowPreview(PreviewSection)
 InEditMode = 0
 Return
@@ -660,7 +692,7 @@ Return
 
 71GuiEscape:
 71GuiClose:
-
+Gosub, 71GuiSavePos
 Gui, 1:-Disabled
 Gui, 71:Destroy
 WinActivate, %AppWindow%
@@ -681,6 +713,24 @@ SnippetErrorCheck(in,type)
 #include %A_ScriptDir%\include\richcode\AHK.ahk
 #include %A_ScriptDir%\include\richcode\SnippetHTML.ahk
 #include %A_ScriptDir%\include\richcode\Util.ahk
+
+EditorWindowPosition:
+IniRead, EditorX     , %A_ScriptDir%\session.ini, editor, EditorX, 100
+IniRead, EditorY     , %A_ScriptDir%\session.ini, editor, EditorY, 100
+IniRead, EditorWidth , %A_ScriptDir%\session.ini, editor, EditorWidth, 740
+IniRead, EditorHeight, %A_ScriptDir%\session.ini, editor, EditorHeight, 520
+Return
+
+71GuiSavePos:
+WinGetPos, EditorX, EditorY, EditorWidth, EditorHeight, Lintalist snippet editor
+Return
+
+EditorWindowPositionSave:
+IniWrite, %EditorX%     , %A_ScriptDir%\session.ini, editor, EditorX
+IniWrite, %EditorY%     , %A_ScriptDir%\session.ini, editor, EditorY
+IniWrite, %EditorWidth% , %A_ScriptDir%\session.ini, editor, EditorWidth
+IniWrite, %EditorHeight%, %A_ScriptDir%\session.ini, editor, EditorHeight
+Return
 
 EditorHotkeySyntaxDummyLabel:
 Return

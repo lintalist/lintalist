@@ -1,9 +1,10 @@
 ﻿/* 
 Plugin        : SplitRepeat [Standard Lintalist]
 Purpose       : Split input into variables and repeat snippet
-Version       : 1.1
+Version       : 1.2
 
 History:
+- 1.2 Fix https://github.com/lintalist/lintalist/issues/116
 - 1.1 Adding named split - Lintalist v1.7
 - 1.0 first version
 */
@@ -26,7 +27,7 @@ GetSnippetSplitRepeat:
 			spwhat:=ClipSet("g",1,SendMethod) ; restore
 		 else If (spwhat = "selected")
 			{
-			 ClipSet("s",1,SendMethod) ; safe current content and clear clipboard
+			 ClipSet("s",1,SendMethod,Clipboard) ; safe current content and clear clipboard
 			 ClearClipboard()
 			 SendKey(SendMethod, "^c")
 			 spwhat:=clipboard
