@@ -4,7 +4,7 @@ Name            : Lintalist
 Author          : Lintalist
 Purpose         : Searchable interactive lists to copy & paste text, run scripts,
                   using easily exchangeable bundles
-Version         : 1.9.8
+Version         : 1.9.8.1
 Code            : https://github.com/lintalist/
 Website         : http://lintalist.github.io/
 AutoHotkey Forum: https://autohotkey.com/boards/viewtopic.php?f=6&t=3378
@@ -41,7 +41,7 @@ PluginMultiCaret:=0 ; TODOMC
 
 ; Title + Version are included in Title and used in #IfWinActive hotkeys and WinActivate
 Title=Lintalist
-Version=1.9.8
+Version=1.9.8.1
 
 ; Gosub, ReadPluginSettings
 
@@ -444,7 +444,10 @@ Gosub, TB_SetButtonStates
 
 XY:=StayOnMonXY(Width*DPIFactor()+20, Height*DPIFactor()+80, Mouse, MouseAlternative, Center) ; was XY:=StayOnMonXY(Width, Height, 0, 1, 0)
 StringSplit, Pos, XY, |
-Gui, Show, w%Width% h%Height% x%Pos1% y%Pos2%, %AppWindow%
+Try
+	Gui, Show, w%Width% h%Height% x%Pos1% y%Pos2%, %AppWindow%
+Catch
+	Gui, Show, w760 h400, %AppWindow%	
 If (DisplayBundle > 1)
 	 CLV := New LV_Colors(HLV)
 
@@ -2705,6 +2708,7 @@ Return
 #Include %A_ScriptDir%\include\ReadAltPasteIni.ahk
 #Include %A_ScriptDir%\include\ReadLineFeedIni.ahk
 #Include %A_ScriptDir%\include\Statistics.ahk
+#Include %A_ScriptDir%\include\GuiCheckXYPos.ahk
 #Include %A_ScriptDir%\include\WinClip.ahk         ; by Deo
 #Include %A_ScriptDir%\include\WinClipAPI.ahk      ; by Deo
 #Include %A_ScriptDir%\include\Markdown2HTML.ahk   ; by fincs + additions

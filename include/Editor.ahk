@@ -296,16 +296,22 @@ If EditorSyntaxHL
 	 RC3.Value := Script
 	}
 
-Gui, 71:Show, Hide w740 h520 x%EditorX% y%EditorY%, Lintalist snippet editor
+GuiCheckXYPos()
 DetectHiddenWindows, On
-WinMove, Lintalist snippet editor, , %EditorX%, %EditorY%, %EditorWidth%, %EditorHeight%
+Try
+	{
+	 Gui, 71:Show, Hide w740 h520 x%EditorX% y%EditorY%, Lintalist snippet editor
+	 WinMove, Lintalist snippet editor, , %EditorX%, %EditorY%, %EditorWidth%, %EditorHeight%
+	}
+Catch
+	Gui, 71:Show, Hide w740 h520, Lintalist snippet editor
 DetectHiddenWindows, Off
 Gui, 71:Show
 
 WinActivate, Lintalist snippet editor
 If EditorSyntaxHL
 	GuiControl, Focus, % RC1.hWnd
-else	
+else
 	ControlFocus, Text1, Lintalist snippet editor
 Return
 

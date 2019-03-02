@@ -57,11 +57,17 @@ MakeChoice:
 			 Gui, 10:Add, Text,  x5 y10 w400, %ChoiceQuestion%
 			}
 		 Gui, 10:Font,
+		 GuiCheckXYPos()
 		 If !ChoiceAutoCenter
 			{
-			 Gui, 10:Show, hide w410 x%ChoiceX% y%ChoiceY%, Select and press enter
-			 WinMove, Select and press enter, , %ChoiceX%, %ChoiceY%, %ChoiceWidth%, %ChoiceHeight%
-			 Gui, 10:Show
+			 Try
+				{
+				 Gui, 10:Show, hide w410 x%ChoiceX% y%ChoiceY%, Select and press enter
+				 WinMove, Select and press enter, , %ChoiceX%, %ChoiceY%, %ChoiceWidth%, %ChoiceHeight%
+				 Gui, 10:Show
+				}
+			 Catch
+				Gui, 10:Show, w410 Center, Select and press enter
 			}
 		 else
 			Gui, 10:Show, w410 Center, Select and press enter	

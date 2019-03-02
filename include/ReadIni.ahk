@@ -164,6 +164,17 @@ INISetup:={ AlwaysLoadBundles:     {default:"",find:"bundles\"}
 		If %A_LoopField% is not number
 			%A_LoopField%:=0
 
+	 ; See GuiCheckXYPos.ahk
+	 ; for Choice and Editor position so we can always SET a value #121
+	 GuiCheckXYPos:={ EditorX:100
+		, EditorY:100
+		, EditorWidth:740
+		, EditorHeight:520
+		, ChoiceX:300
+		, ChoiceY:300
+		, ChoiceWidth:410
+		, ChoiceHeight:300 }
+
 	}
 
 Append2Ini(Setting,file)

@@ -21,7 +21,7 @@
 <span style='font-size:.8em;'>You can <b>extend Lintalist</b> by writing your own <b><a href='#InteractiveBundleText'>plugins</a></b>. Lintalist is open source and developed in <a href='https://autohotkey.com/'>AutoHotkey</a>, an easy to learn scripting language for Windows.
 [WinXP(sp3)/Vista/7/8/10]<br /></span>
 <span style='font-size:.8em;'>As of LintaList v1.1 several types of formatted text are supported in Snippets.</span>
-<span class='date' style='float:right;display:inline;margin-top:0px;'>doc rev. 20190224</span></p>
+<span class='date' style='float:right;display:inline;margin-top:0px;'>doc rev. 20190302</span></p>
 </div>
 
 <div class='column'>
@@ -79,16 +79,17 @@
 <li><a href='http://www.portablefreeware.com/index.php?id=2686'>Portablefreeware.com</a></li>
 <li><a href='http://www.donationcoder.com/forum/index.php?topic=41475.0'>Donationcoder.com</a></li>
 <li><a href='http://alternativeto.net/software/lintalist/'>AlternativeTo</a></li>
+<li><a href='https://twitter.com/lintalist'>@lintalist</a></li>
 </ul>
 
 </div>
 
 <div class='column'>
-<p><b>Download Lintalist <em>1.9.8</em></b>
+<p><b>Download Lintalist <em>1.9.8.1</em></b>
 <p>
 <a href='https://github.com/lintalist/lintalist/releases'><img src='img/lintalist65x65.gif' alt='Download Lintalist' width='65' align='left' border='0' style='margin-right: 5px;' /></a>
 Download (incl. source):<br />
-<a href='https://github.com/lintalist/lintalist/releases'><b>Latest release</b></a> (817 kb)<br />Simply unpack and run lintalist.ahk or lintalist.exe<br />
+<a href='https://github.com/lintalist/lintalist/releases'><b>Latest release</b></a> (832 kb)<br />Simply unpack and run lintalist.ahk or lintalist.exe<br />
 </p>
 
 <span class='tip' style="margin-bottom:10px;"><img src="img/usb.png" width=50 align=right title="USB image by Alessandro Rei (GNU/GPL) - http://findicons.com/icon/255067/usb?id=256158">Lintalist is a <b>portable application</b>. It stores all settings and bundles in the folder the program resides in. <a href="#portable">More...</a>
@@ -99,10 +100,11 @@ Download (incl. source):<br />
 
 <p><b>Reviews</b></p>
 <ul>
-<li><a href='https://www.softpedia.com/get/Office-tools/Other-Office-Tools/Lintalist.shtml'>Softpedia.com</a> ↗</li>
-<li><a href='https://www.freewarefiles.com/Lintalist_program_109453.html'>Freewarefiles.com</a> ↗</li>
-<li><a href='http://www.ilovefreesoftware.com/25/windows/free-text-expander-tool-enter-snippets-according-to-active-program.html'>ilovefreesoftware.com</a> ↗</li>
-<li><a href='https://www.libellules.ch/dotclear/index.php?post/2018/10/31/Lintalist-gestionnaire-des-extraits-de-texte'>libellules.ch</a> ↗</li>
+<li><a href='https://www.softpedia.com/get/Office-tools/Other-Office-Tools/Lintalist.shtml'>Softpedia.com</a> &#x2197;</li>
+<li><a href='https://www.majorgeeks.com/files/details/lintalist.html'>MajorGeeks.com</a> &#x2197;</li>
+<li><a href='https://www.freewarefiles.com/Lintalist_program_109453.html'>Freewarefiles.com</a> &#x2197;</li>
+<li><a href='http://www.ilovefreesoftware.com/25/windows/free-text-expander-tool-enter-snippets-according-to-active-program.html'>ilovefreesoftware.com</a> &#x2197;</li>
+<li><a href='https://www.libellules.ch/dotclear/index.php?post/2018/10/31/Lintalist-gestionnaire-des-extraits-de-texte'>libellules.ch</a> &#x2197;</li>
 </ul>
 </div>
 
@@ -198,7 +200,7 @@ You can also use the <kbd>Up</kbd>, <kbd>Down</kbd>, <kbd>Page Up</kbd> and <kbd
 
 <span class='tip'>What happens when you (double) click on an entry in the list is determined by a setting in the configuration menu. (SingleClickSends and DoubleClickSends setting)</span>
 
-<b>Default bundle</b>: there is also a default bundle which is always loaded - unless you lock a specific bundle - that way you always have your generic snippets available in every program. 
+<b id='default-bundle'><a href='#SearchOptions' class='headline'>Default bundle</a></b>: there is also a default bundle which is always loaded - unless you lock a specific bundle - that way you always have your generic snippets available in every program. 
 
 <span class='tip'>If you have no need for context sensitive bundles, simply make use of the default bundle and put in all your snippets. In such a case you could also lock the default bundle although there should be no need to do so.</span>
 
@@ -687,6 +689,8 @@ be placed before the word text.
 
 [v1.8+] If you paste a snippet into an editor which supports Multi-caret/edit you can use those in Lintalist snippets by placing multiple caret locations in your snippet. If you don't want to use MultiCaret simply avoid using multiple ^| in a Lintalist snippet.
 Supported editors: Atom, Brackets, EverEdit, Komodo Edit, Sublime Text, TextAdept, UltraEdit 23+, Visual Studio Code editor. See <a href='MultiCaret.md'>docs/MultiCaret.md</a> for details.
+
+<b>Note:</b> The caret position may be incorrect for snippets with Unicode characters, complex scripts, glyphs etc. (trial and error may work)
 </td></tr>
 
 <tr id='c-plugin'><td><a href='#c-plugin' class='headline'><code>[[C=Char|Repeat]]</code></a></td><td>By default pasted texts are trimmed which means spaces and tabs will be trimmed from the snippet. You can use this plugin to insert one or more spaces and/or tabs at the beginning or end of a snippet. Or you can use it as a shorthand-code to insert a repeating text or character.
@@ -1212,12 +1216,12 @@ You can include any valid AutoHotkey script into a snippet. The code is saved to
 
 <span class='tip'>You can enable / disable the use of Scripts via the Tray menu</span>
 
-<b>Special Script Function: LLInit()</b>
+<b id='script-llinit'><a href='#script-llinit' class='headline'>Special Script Function: LLInit()</a></b>
 
 If you include <code>LLInit()</code> in your script (at the start) the following variables and functions will be
 available:
 
-Variables:
+<a name='script-variables'></a><a href='#script-variables' class='headline'>Variables:</a>
 
 - ActiveWindowID (use with ahk_id)
 - ActiveWindowProcessName (use with ahk_exe)
@@ -1231,7 +1235,7 @@ These Active* variables contain the information about the application that was a
 You can use these variables in your "Snippet" script to ensure your script operates on the correct window if need be.
 See <a href='#Configuration'>Configuration</a> for information about SendMethod, PasteDelay.
 
-Functions:
+<a name='script-functions'></a><a href='#script-functions' class='headline'>Functions:</a>
 
 - GetActiveWindowStats()
   Get Active Window & Control information
@@ -1249,7 +1253,7 @@ Functions:
   See <b>include\default.ahk</b> for full details as ClipSet has a number of
   other functions which may be of interest for more advanced use(r)s.
 
-<b>Special Script plugins</b> [v1.9.3+]
+<b id='script-plugins'><a href='#script-plugins' class='headline'>Special Script plugins</a></b> [v1.9.3+]
 
 Use <code>[[llpart1]]</code> and <code>[[llpart2]]</code> in your script to include the contents of Part1 and/or Part2 in your scripts.
 It will process any plugins before setting the result as a variable in a (multiline) variable in your script.
@@ -1284,7 +1288,7 @@ Note that % signs in snippets do not need to be escaped as the <code>(join`n %</
 
 </blockquote>
 
-<a name='script_template'></a><b>Script template if you are going to use the clipboard and paste the result:</b>
+<a name='script_template'></a><b><a href="#script_template" class='headline'>Script template</a> if you are going to use the clipboard and paste the result:</b>
 <blockquote class='boxed'>
 <span class='llbundle'>#NoEnv</span>
 <span class='llbundle'>#SingleInstance, force</span>
@@ -1691,6 +1695,10 @@ There is also a configuration setting that can do this: ActivateWindow
 <b>A2:</b> When the Lintalist GUI becomes active the Flash (edit) control looses focus. It is not possible to 
     reliably detect and (re)focus these types of controls. If you experience this often you could resort to
     manual pasting after you've changed the <b>PasteMethod</b> setting to 1 or 2 - See <a href='https://github.com/lintalist/lintalist/issues/68#issuecomment-256087094'>#68</a>
+
+<a name='ki3'></a><b>K3:</b> It doesn't work with programs installed via the Windows Store
+<b>A3:</b> That seems to be correct and there is no solution for such applications at the moment.
+    Manual pasting might work here for you as well, see <b>PasteMethod</b> setting or use the <b>PasteMethod</b> hotkey.
 
 <!-- 
 <a name='ki'></a><b>K:</b> 
