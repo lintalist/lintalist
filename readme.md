@@ -1,4 +1,5 @@
 ﻿Lintalist: Searchable interactive lists to copy & paste text, run scripts, using easily exchangeable bundles - http://lintalist.github.io/
+(snippet manager, text expander)
 
 # Introduction
 

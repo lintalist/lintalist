@@ -1,3 +1,7 @@
+### v1.9.8.2
+
+* Fix: Improve CheckLineFeed by using RegEx to catch all CR, LF, and CRLF
+
 ### v1.9.8.1
 
 * Fix: additional safety check for positioning Editor and Choice plugin windows to prevent error  

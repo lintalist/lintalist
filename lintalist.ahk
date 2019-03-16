@@ -4,7 +4,7 @@ Name            : Lintalist
 Author          : Lintalist
 Purpose         : Searchable interactive lists to copy & paste text, run scripts,
                   using easily exchangeable bundles
-Version         : 1.9.8.1
+Version         : 1.9.8.2
 Code            : https://github.com/lintalist/
 Website         : http://lintalist.github.io/
 AutoHotkey Forum: https://autohotkey.com/boards/viewtopic.php?f=6&t=3378
@@ -41,7 +41,7 @@ PluginMultiCaret:=0 ; TODOMC
 
 ; Title + Version are included in Title and used in #IfWinActive hotkeys and WinActivate
 Title=Lintalist
-Version=1.9.8.1
+Version=1.9.8.2
 
 ; Gosub, ReadPluginSettings
 
@@ -767,6 +767,7 @@ If (Script = "") or (ScriptPaused = 1) ; script is empty so we need to paste Tex
 			 RegExMatch(Clip, "iU)\[\[rtf=([^[]*)\]\]", ClipQ, 1)
 			 FileRead,Clip,%ClipQ1%
 			 Gosub, ProcessText
+			 Gosub, CheckLineFeed
 			 If CancelPlugin
 				{
 				 If TryClipboard()
@@ -795,6 +796,7 @@ If (Script = "") or (ScriptPaused = 1) ; script is empty so we need to paste Tex
 	 Else
 		{
 		 Gosub, ProcessText
+		 Gosub, CheckLineFeed
 		 If CancelPlugin
 			{
 			 If TryClipboard()
@@ -811,7 +813,6 @@ If (Script = "") or (ScriptPaused = 1) ; script is empty so we need to paste Tex
 			 Clip:=FixURI(Clip,"html",A_ScriptDir)
 			 WinClip.SetHTML(Clip)
 			 Clip:=RegExReplace(clip,"iU)</*[^>]*>") ; strip HTML tags so we can paste normal text if need be
-			 Gosub, CheckLineFeed
 			 WinClip.SetText(Clip)
 			}
 		else
@@ -921,6 +922,7 @@ Else If (Script <> "") and (ScriptPaused = 0) ; we run script by saving it to tm
 			{
 			 Clip:=Text%A_Index%
 			 Gosub, ProcessText
+			 Gosub, CheckLineFeed
 			 If CancelPlugin
 				{
 				 If TryClipboard()
@@ -2290,7 +2292,6 @@ If InStr(clip,"[[A_") ; check for built-in variables - https://autohotkey.com/do
 
 	 Gosub, CheckFormat
 
-	 Gosub, CheckLineFeed
 Return
 
 CheckLineFeed:
@@ -2299,9 +2300,10 @@ If ActiveWindowProcessName in % LineFeed.programs
 	 LineFeedReplace:=""
 	 Loop, parse, % LineFeed[ActiveWindowProcessName].char, CSV
 		LineFeedReplace .= Chr(A_LoopField)
-	 clip:=StrReplace(clip,"`r`n",LineFeedReplace)
+ 	 clip:=RegExReplace(clip,"im)(*BSR_ANYCRLF)\R",LineFeedReplace)
 	 LineFeedReplace:=""
 	}
+
 Return
 
 CheckFormat:
