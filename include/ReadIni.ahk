@@ -1,7 +1,7 @@
 ﻿; LintaList Include
 ; Purpose: Read INI
-; Version: 1.5
-; Date:    20150328
+; Version: 1.6
+; Date:    20171013
 
 ReadIni()
 	{
@@ -10,9 +10,14 @@ ReadIni()
 	 ini=%A_ScriptDir%\%IniFile%
 	 IfNotExist, %ini%
 	 	{
+		 IniWrite, Lintalist, %ini%, Other, FirstStartUp ; this ensures proper encoding of the INI file in UTF-16
 		 CreateDefaultIni()
 		 Gosub, SetShortcuts ; (#Include from main script)
-		} 
+		}
+	 IfNotExist, %A_ScriptDir%\plugins\MyFunctions.ahk
+		CreateDefaultUserIncludes("Functions")
+	 IfNotExist, %A_ScriptDir%\plugins\MyPlugins.ahk
+		CreateDefaultUserIncludes("Plugins")
 
 /*
 			, Keyname {default:"",find:"",replace:"",empty:"",min:"",max:""}
@@ -63,7 +68,6 @@ INISetup:={ AlwaysLoadBundles:     {default:"",find:"bundles\"}
 			, Counters:            {default:"0"}
 			, SetStartup:          {default:"0"}
 			, SetDesktop:          {default:"0"}
-			, SetStartmenu:        {default:"0"}
 			, ShowQuickStartGuide: {default:"1"}
 			, ActivateWindow:      {default:"0"}
 			, OnPaste:             {default:"0"}
@@ -77,12 +81,19 @@ INISetup:={ AlwaysLoadBundles:     {default:"",find:"bundles\"}
 			, ColumnSort:          {default:"NoSort"}
 			, SearchLetterVariations: {default:"0"}
 			, Font:                {default:"Arial"}
-            , FontSize:            {default:"10"}
-            , PlaySound:           {default:""}
-            , SnippetEditor:       {default:""} }
+			, FontSize:            {default:"10"}
+			, PlaySound:           {default:""}
+			, XY:                  {default:"50|50"}
+			, BigIcons:            {default:"1"}
+			, AutoHotkeyVariables: {default:""}
+            , EditorSyntaxHL:      {default:"0"}
+			, SnippetEditor:       {default:""} } ; becomes too long 
+
+			IniSetup["EditorHotkeySyntax"]:={default:"0"}
 
 ; JJ ADD BEGIN
 ; Added separately to not get "Expression too long" error
+INISetup["SetStartmenu"]            := {default:"0"}
 INISetup["MathYellowBGHotkey"]      := {default:"#a"}
 INISetup["MathOrangeTextHotkey"]    := {default:"#z"}
 INISetup["MathRedTextHotkey"]       := {default:"#c"}
@@ -116,6 +127,11 @@ INISetup["MathReloadAllHotkey"]     := {default:"#q"}
 		SplitPath, Icon1, , , , Icon1 ; trim ext
 		SplitPath, Icon2, , , , Icon2 ; trim ext
 
+		if (BigIcons = 2)
+			{
+			 IconSize:=32
+			}
+
 		StringSplit, ColumnWidthPart, ColumnWidth, -
 
 		if (ColumnSort <> "NoSort")
@@ -126,8 +142,8 @@ INISetup["MathReloadAllHotkey"]     := {default:"#q"}
 			 else	
 				ColumnSortOption1:=2
 			}
-			
 
+		TriggerKeysSource:=TriggerKeys
 		Loop, parse, TriggerKeys, CSV
 			{
 			 TmpKey = %A_LoopField%
@@ -143,6 +159,8 @@ INISetup["MathReloadAllHotkey"]     := {default:"#q"}
 		Else
 			ShowGrid = Grid
 
+		If (BigIcons = 1)
+
 	 ReadCountersIni()
 	 ReadPlaySoundIni()
 	}                         
@@ -150,7 +168,7 @@ INISetup["MathReloadAllHotkey"]     := {default:"#q"}
 Append2Ini(Setting,file)
 	{
 	 FileRead, New2IniFile, %A_ScriptDir%\include\settings\%Setting%.ini
-	 FileAppend, `n%New2IniFile%, %file%
+	 FileAppend, `n%New2IniFile%, %file%, UTF-16 ; ensures proper encoding for INI files https://autohotkey.com/docs/commands/IniWrite.htm
 	 Sleep 100
 	}
 
@@ -211,6 +229,30 @@ CreateDefaultIni()
 [Settings]
 
 )
-FileAppend, %NewIni%, %A_ScriptDir%\%IniFile%
+; needs to UTF-16 - https://autohotkey.com/docs/commands/IniWrite.htm
+FileAppend, %NewIni%, %A_ScriptDir%\%IniFile%, UTF-16
+Sleep 500
+IniDelete, %A_ScriptDir%\%IniFile%, Other ; now we can delete this section created at first start up in ReadIni()
 }
+
+CreateDefaultUserIncludes(file)
+	{
+	 IfExist, %A_ScriptDir%\plugins\My%file%.ahk
+	 	Return
+	 FileAppend,
+(join`r`n
+`/* 
+Purpose       : Main #Include script for user %file%
+Version       : 1.0
+
+See "readme-howto.txt" for more information.
+`*/
+
+`;----------------------------------------------------------------
+`; add or #include your %file% below
+
+`;#Include `%A_ScriptDir`%\plugins\Your%file%File.ahk
+
+), %A_ScriptDir%\plugins\My%file%.ahk
+	}
 

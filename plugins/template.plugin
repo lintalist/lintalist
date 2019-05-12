@@ -21,6 +21,8 @@ Author        : ..
 
 ; replace PLUGINNAME with the actual name of the plugin, this is used here as 
 ; filename of the plugin AND in the [[PLUGINNAME=...]] so choose wisely
+; See als the very basic example in readme-howto.txt (3 - Example)
+
 GetSnippetPLUGINNAME: ; save as PLUGINNAME.ahk
 PLUGINNAME=
 Loop 

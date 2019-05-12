@@ -4,11 +4,11 @@ Name            : Lintalist for Math
 Author          : Lintalist & jensjacobt
 Purpose         : Searchable interactive lists to copy & paste text, run scripts,
                   using easily exchangeable bundles
-Version         : 1.9.2a
+Version         : 1.9.6a
 Code            : https://github.com/jensjacobt/lintalist-for-math
 Website         :
 AHKscript Forum :
-License         : Copyright (c) 2009-2017 Lintalist
+License         : Copyright (c) 2009-2018 Lintalist
 
 This program is free software; you can redistribute it and/or modify it under the
 terms of the GNU General Public License as published by the Free Software Foundation;
@@ -46,14 +46,13 @@ PluginMultiCaret:=0 ; TODOMC
 
 ; Title + Version are included in Title and used in #IfWinActive hotkeys and WinActivate
 Title=Lintalist for Math
-Version=1.9.2a
+Version=1.9.6a
 
 ; JJ EDIT BEGIN
 MathHelperSnippet := ""
 ; JJ EDIT END
 
-
-Gosub, ReadPluginSettings
+; Gosub, ReadPluginSettings
 
 AppWindow=%title% - %version%   ; Name of Gui
 GroupAdd, AppTitle, %AppWindow% ; we can now use #IfWinActive with the INI value (main scripts hotkeys)
@@ -75,29 +74,45 @@ OnExit, SaveSettings ; store settings (locked state, search mode, gui size etc i
 Menu, Tray, NoStandard
 Menu, Tray, Icon, icons\lintalist_suspended.ico ; while loading show suspended icon
 Menu, tray, Add, %AppWindow%,             GlobalMenuHandler
+Menu, tray, Icon, %AppWindow%,            icons\lintalist.ico
 Menu, tray, Default, %AppWindow%
 Menu, Tray, Add,
 Menu, Tray, Add, &Help,          	      GlobalMenuHandler
+Menu, Tray, Icon,&Help,          	      icons\help.ico
 Menu, Tray, Add, &About,          	      GlobalMenuHandler
+Menu, Tray, Icon,&About,          	      icons\help.ico
 Menu, Tray, Add, &Quick Start Guide,      GlobalMenuHandler
+Menu, Tray, Icon,&Quick Start Guide,      icons\help.ico
 Menu, Tray, Add,
 Menu, Tray, Add, &Configuration,          GlobalMenuHandler
+Menu, Tray, Icon,&Configuration,          icons\gear.ico
 Menu, Tray, Add,
 Menu, Tray, Add, Check for updates,       GlobalMenuHandler
+Menu, Tray, Icon,Check for updates,       icons\download.ico
 Menu, Tray, Add,
 Menu, Tray, Add, &Manage Bundles,         GlobalMenuHandler
+Menu, Tray, Icon,&Manage Bundles,         icons\lintalist_bundle.ico
 Menu, Tray, Add, &Manage Local Variables, GlobalMenuHandler
+Menu, Tray, Icon,&Manage Local Variables, icons\variables.ico
 Menu, Tray, Add, &Manage Counters,        GlobalMenuHandler
+Menu, Tray, Icon,&Manage Counters,        icons\counter.ico
 Menu, Tray, Add,
 Menu, Tray, Add, &Load All Bundles,       MenuHandler ; exception
+Menu, Tray, Icon,&Load All Bundles,       icons\arrow-in.ico
 Menu, Tray, Add, &Reload Bundles,         GlobalMenuHandler
+Menu, Tray, Icon,&Reload Bundles,         icons\arrow-retweet.ico
 Menu, Tray, Add,
 Menu, Tray, Add, &Pause Lintalist,        GlobalMenuHandler
+Menu, Tray, Icon,&Pause Lintalist,        icons\control-pause.ico
 Menu, Tray, Add, Pause &Shortcut,         GlobalMenuHandler
+Menu, Tray, Icon,Pause &Shortcut,         icons\hotkeys.ico
 Menu, Tray, Add, Pause &Shorthand,        GlobalMenuHandler
+Menu, Tray, Icon,Pause &Shorthand,        icons\shorthand.ico
 Menu, Tray, Add, Pause &Scripts,          GlobalMenuHandler
+Menu, Tray, Icon,Pause &Scripts,          icons\scripts.ico
 Menu, Tray, Add,
 Menu, Tray, Add, E&xit,                   GlobalMenuHandler
+Menu, Tray, Icon,E&xit,                   icons\101_exit.ico
 Menu, Tray, Check, &Pause Lintalist ; indicate program is still loading
 Menu, Tray, Tip, %AppWindow% - inactive
 ; Tray Menu continue below
@@ -121,6 +136,11 @@ if 0 > 0  ; check cl parameters
 		 param := %A_Index%  ; Fetch the contents of the variable whose name is contained in A_Index.
 		 if (param = "-Active")
 			cl_Active:=1
+		 if (param = "-ReadOnly") ; possible to expand to various options, see discussion https://github.com/lintalist/lintalist/issues/95 
+		 	{
+			 cl_ReadOnly:=1
+			 AppWindow:="*" AppWindow
+		 	}
 		 if InStr(param,"-Bundle")
 			{
 			 cl_Bundle:=StrSplit(param,"=").2
@@ -180,6 +200,24 @@ Gosub, QuickStartGuide
 
 ; setup hotkey
 
+; check capslock and scrolllock status so we can actually use them as hotkey if defined by user and 
+; they are already in the DOWN (active) state when Lintalist is started
+
+ProgramHotKeyList:="StartSearchHotkey,StartOmniSearchHotkey,QuickSearchHotkey,ExitProgramHotKey"
+Loop, parse, ProgramHotKeyList, CSV
+	{
+	 If (%A_LoopField% = "CAPSLOCK") and (GetKeyState("CAPSLOCK","T") = 1) ; is set as hotkey, so we need to turn it off
+		{
+		 SetCapsLockState, Off
+		 MsgBox, 64, Lintalist, Capslock has been turned off as it is now used by Lintalist.
+	 	}
+	 If (%A_LoopField% = "SCROLLLOCK") and (GetKeyState("SCROLLLOCK","T") = 1)
+		{
+		 SetScrollLockState, Off
+		 MsgBox, 64, Lintalist, ScrollLock has been turned off as it is now used by Lintalist.
+	 	}
+	}
+
 Hotkey, IfWinNotExist, ahk_group BundleHotkeys
 Hotkey, %StartSearchHotkey%, GUIStart
 ; JJ ADD BEGIN
@@ -214,11 +252,13 @@ If (MathSetUpHotkey <> "")
 Hotkey, IfWinActive
 ; JJ ADD END
 
+ProgramHotKeyList:=""
+
 ViaShorthand=0
 
 ; Toolbar setup
 ; Create an ImageList.
-ILA := IL_CreateCustom(17, 5, 16)
+ILA := IL_CreateCustom(17, 5, IconSize) ; TODO BIGICONS
 IL_Add(ILA, "icons\snippet_new.ico")
 IL_Add(ILA, "icons\snippet_edit.ico")
 IL_Add(ILA, "icons\snippet_copy.ico")
@@ -261,6 +301,9 @@ IL_CreateCustom(InitialCount=17, GrowCount=5, IconSize=16)
 			, "Int", GrowCount)
 	}
 ; /Toolbar setup
+
+; Listview ColorList
+lvc:={1: "0xF5F5E2", 2: "0xF9F5EC", 3: "0xF9F3EC", 4: "0xF9EFEC", 5: "0xF5E8E2", 6: "0xFAF2EF", 7: "0xF8F1F1", 8: "0xFFEAEA", 9: "0xFAE7EC", 10: "0xFFE3FF", 11: "0xF8E9FC", 12: "0xEEEEFF", 13: "0xEFF9FC", 14: "0xF2F9F8", 15: "0xFFECEC", 16: "0xFFEEFB", 17: "0xFFECF5", 18: "0xFFEEFD", 19: "0xFDF2FF", 20: "0xFAECFF", 21: "0xF1ECFF", 22: "0xFFECFF", 23: "0xF4D2F4", 24: "0xF9EEFF", 25: "0xF5EEFD", 26: "0xEFEDFC", 27: "0xEAF1FB", 28: "0xDBF0F7", 29: "0xEEEEFF", 30: "0xECF4FF", 31: "0xF9FDFF", 32: "0xE6FCFF", 33: "0xF2FFFE", 34: "0xCFFEF0", 35: "0xEAFFEF", 36: "0xE3FBE9", 37: "0xF3F8F4", 38: "0xF1FEED", 39: "0xE7FFDF", 40: "0xF2FFEA", 41: "0xFFFFE3", 42: "0xFCFCE9"}
 
 ; /INI --------------------------------------
 
@@ -311,21 +354,23 @@ Else
 	Gosub, ToggleView
 
 Gui, 1:Destroy ; just to be sure
-Gui, 1:+Border -DPIScale -Resize +MinSize%Width%x%Height%
+Gui, 1:+Border +Resize +MinSize%Width%x%Height%
 Gui, 1:Menu, MenuBar
-Gui, 1:Add, Picture, x4 y4 w16 h16, icons\search.png
-Gui, 1:Add, Edit, 0x8000 x25 y2 w%SearchBoxWidth% h20 gGetText vCurrText, %CurrText%
+Gui, 1:Add, Picture, x4 y4 w%SearchIconSize% h-1, icons\search.ico ; TODO BIGICONS
+Gui, 1:Font, s%SearchFontSize% ; TODO BIGICONS
+Gui, 1:Add, Edit, 0x8000 x%SearchBoxX% y%SearchBoxY% w%SearchBoxWidth% h%SearchBoxHeight% -VScroll -HScroll gGetText vCurrText, %CurrText% ; TODO BIGICONS
 Gui, 1:Add, Button, x300 y2 w30 h20 0x8000 Default hidden gPaste, OK
+Gui, 1:Font ; TODO BIGICONS
 
 ; TBSTYLE_FLAT     := 0x0800 Required to show separators as bars.
 ; TBSTYLE_TOOLTIPS := 0x0100 Required to show Tooltips.
-Gui, 1:Add, Custom, ClassToolbarWindow32 hwndhToolbar 0x0800 0x0100 0x0008 0x0040 x%barx% y%Yctrl% w325 h20
+Gui, 1:Add, Custom, ClassToolbarWindow32 hwndhToolbar 0x0800 0x0100 0x0008 0x0040 x%barx% y%Yctrl% w550 ; TODO BIGICONS
 
 Gui, 1:Font,s%fontsize%,%font%
 
-Gui, 1:Add, Listview, %ShowGrid% count1000 x2 y%YLView% xLV0x100 hwndHLV vSelItem AltSubmit gClicked h%LVHeight% w%LVWidth% , Paste (Enter)|Paste (Shift+Enter)|Key|Short|Index|Bundle
+Gui, 1:Add, Listview, %ShowGrid% count1000 x2 y%YLView% xLV0x100 hwndHLV vSelItem AltSubmit gClicked h%LVHeight% w%LVWidth% , Paste (Enter)|Paste (Shift+Enter)|Key|Short|Index|Bundle ; TODO BIGICONS
 
-Gui, 1:Add, edit, x0 y%YPosPreview% -VScroll w%LVWidth% h%PreviewHeight%, preview
+Gui, 1:Add, edit, x0 yp+%LVHeight%+2 -VScroll w%LVWidth% h%PreviewHeight%, preview
 
 Gui, 1:Font, s8, Arial
 Gui, 1:Add, StatusBar,,
@@ -334,7 +379,7 @@ SB2:=Width-SB1
 SB_SetParts(SB1,SB2)
 SB_SetIcon("icons\lintalist_bundle.ico",,1)
 SB_SetIcon("icons\search.ico",,2)
-Gosub, GetText
+; Gosub, GetText ; commented v1.9.3
 
 ; Initialize Toolbars.
 ; The variable you choose will be your handle to access the class for your toolbar.
@@ -390,12 +435,12 @@ OnMessage(WM_NOTIFY, "TB_Notify")
 
 Gosub, TB_SetButtonStates
 
-XY:=StayOnMonXY(Width, Height, Mouse, MouseAlternative, Center) ; was XY:=StayOnMonXY(Width, Height, 0, 1, 0)
+XY:=StayOnMonXY(Width*DPIFactor()+20, Height*DPIFactor()+80, Mouse, MouseAlternative, Center) ; was XY:=StayOnMonXY(Width, Height, 0, 1, 0)
 StringSplit, Pos, XY, |
 Gui, Show, w%Width% h%Height% x%Pos1% y%Pos2%, %AppWindow%
 If (DisplayBundle > 1)
-	CLV := New LV_Colors(HLV)
-; GuiJustShown:=1 ; not used? commented in v1.7
+	 CLV := New LV_Colors(HLV)
+
 If (JumpSearch=1) ; Send clipboard text to search control
 	{
 	 JumpSearch=0
@@ -403,10 +448,10 @@ If (JumpSearch=1) ; Send clipboard text to search control
 	 ControlSend, Edit1, {End}, %AppWindow%
 	 Sleep 100     ; added as a fix to avoid duplicate search results, not sure if it helps
 	 Gosub, GetText
+	 UpdateLVColWidth()
 	}
-ShowPreview(PreviewSection)
 ControlSend, Edit1, {End}, %AppWindow%  ; 20110623
-;Gosub, GetText                         ; 20110623 commented 20170209 - avoids duplicate loading of LV
+Gosub, GetText                          ; 20110623
 PlaySound(PlaySound,"open")
 Return
 
@@ -431,6 +476,7 @@ If (CurrLen = 0) or (CurrLen =< MinLen)
 	 LastText = fadsfSDFDFasdFdfsadfsadFDSFDf
 	 Gosub, SetStatusBar
 	 Critical, off ; experimental-v1.7
+	 ShowPreview(PreviewSection)
 	 Return
 	}
 Gui, 1:Default
@@ -586,17 +632,14 @@ Search(mode=1)
 ColorList:
 If (LV_GetCount() = 0)
 	Return
-If (DisplayBundle > 1)
-	GuiControl, -Redraw, SelItem
-lvc:={1: "0xF5F5E2", 2: "0xF9F5EC", 3: "0xF9F3EC", 4: "0xF9EFEC", 5: "0xF5E8E2", 6: "0xFAF2EF", 7: "0xF8F1F1", 8: "0xFFEAEA", 9: "0xFAE7EC", 10: "0xFFE3FF", 11: "0xF8E9FC", 12: "0xEEEEFF", 13: "0xEFF9FC", 14: "0xF2F9F8", 15: "0xFFECEC", 16: "0xFFEEFB", 17: "0xFFECF5", 18: "0xFFEEFD", 19: "0xFDF2FF", 20: "0xFAECFF", 21: "0xF1ECFF", 22: "0xFFECFF", 23: "0xF4D2F4", 24: "0xF9EEFF", 25: "0xF5EEFD", 26: "0xEFEDFC", 27: "0xEAF1FB", 28: "0xDBF0F7", 29: "0xEEEEFF", 30: "0xECF4FF", 31: "0xF9FDFF", 32: "0xE6FCFF", 33: "0xF2FFFE", 34: "0xCFFEF0", 35: "0xEAFFEF", 36: "0xE3FBE9", 37: "0xF3F8F4", 38: "0xF1FEED", 39: "0xE7FFDF", 40: "0xF2FFEA", 41: "0xFFFFE3", 42: "0xFCFCE9"}
+GuiControl, -Redraw, SelItem
 Loop, % LV_GetCount()
 	{
 	 LV_GetText(Paste, A_Index, 5) ; get bundle_index from 5th column which is always hidden
 	 StringSplit, paste, paste, _
 	 CLV.Row(A_Index, lvc[paste1], 0x000000)
 	}
-If (DisplayBundle > 1)
-	GuiControl, +Redraw, SelItem
+GuiControl, +Redraw, SelItem
 Return
 
 ; (Double)click in listview, action defined in INI
@@ -680,7 +723,16 @@ If (Script = "") or (ScriptPaused = 1) ; script is empty so we need to paste Tex
 		 StringReplace, Text2, Text2, [[Clipboard]], %Clipboard%, All
 		}
 	; JJ ADD BEGIN
-	Gosub, MathPaste
+  Gosub, PastingToMaple
+  If isMaple
+  {
+    Gosub, MathPaste
+    OmniSearch:=0
+    Typed:=""
+    Return
+  }
+  Else
+    Gosub, NotMathPaste
 	; JJ ADD END
 
 	 If (PastText1 = 1) OR (Text2 = "")
@@ -733,11 +785,14 @@ If (Script = "") or (ScriptPaused = 1) ; script is empty so we need to paste Tex
 			 WinClip.SetText(Clip)
 			}
 		else
-		 	Clipboard:=ClipSet("s",2,SendMethod,Clip) ; set clip2
+			{
+			 If TryClipboard()
+				Clipboard:=ClipSet("s",2,SendMethod,Clip) ; set clip2
+			}
 	 	}
 
 	 If !(formatted > 0)  ; only check for ^| post if it is a plain text snippet
-	 	CheckCursorPos()
+	 	Clipboard:=CheckCursorPos(Clipboard)
 	 formatted:=0
 	 GUI, 1:Destroy
 	 If (PasteMethod = 0) ; paste it and clear formatted clipboard
@@ -762,8 +817,12 @@ If (Script = "") or (ScriptPaused = 1) ; script is empty so we need to paste Tex
 		 If PluginMultiCaret
 		 	{
 			 Loop, % PluginMultiCaret
-			 	SendInput, % MultiCaret[ActiveWindowProcessName].key  ; TODOMC
+			 	{
+			 	 SendInput, % MultiCaret[ActiveWindowProcessName].key  ; TODOMC
+			 	 Sleep 10
+			 	}
 			 SendInput, % MultiCaret[ActiveWindowProcessName].clr     ; TODOMC
+			 Sleep 10
 			 PluginMultiCaret=0
 		 	}
 		}
@@ -778,7 +837,8 @@ If (Script = "") or (ScriptPaused = 1) ; script is empty so we need to paste Tex
 	 Clip=
 	 If (PasteMethod = 0) ; it was pasted, restore original clipboard
 		{
-		 Clipboard:=ClipSet("g",1,SendMethod)
+		 If TryClipboard()
+			Clipboard:=ClipSet("g",1,SendMethod)
 		}
 	 else If (PasteMethod = 1) ; it was pasted, clear the original stored clipboard (free memory)
 		{
@@ -801,7 +861,20 @@ Else If (Script <> "") and (ScriptPaused = 0) ; we run script by saving it to tm
 		 RegExMatch(Script, "iU)\[\[Var=([^[]*)\]\]", ClipQ, 1)
 		 StringReplace, Script, Script, [[Var=%ClipQ1%]], % LocalVar_%ClipQ1%, All ; %
 		}
-	 FileAppend, % Script, %TmpDir%\tmpScript.ahk ; %
+	 Loop, 2 ; check for plugins llpart1 and llpart2
+	 	{
+		 If InStr(Script,"[[llpart" A_Index "]]")
+			{
+			 Clip:=Text%A_Index%
+			 Gosub, ProcessText
+			 Clip:=CheckCursorPos(Clip)
+			 ; we use (join`n % here to avoid the need to escape the % characters which may be included in the clip variable - https://github.com/lintalist/lintalist/issues/92
+			 StringReplace,Script,Script,[[llpart%A_Index%]],llpart%A_Index%=`n(join``n `%`n%clip%`n)`n`nLLBackLeft%A_Index%:=%BackLeft%`nLLBackUp%A_Index%:=%BackUp%`n`n,All
+			 BackLeft:=0
+			 BackUp:=0
+			}
+	 	}
+	 FileAppend, % Script, %TmpDir%\tmpScript.ahk, UTF-8 ; %
 	 GUI, 1:Destroy
 	 RunWait, %A_AhkPath% "%TmpDir%\tmpScript.ahk"
 	 FileDelete, %TmpDir%\tmpScript.ahk
@@ -854,6 +927,7 @@ UpdateLVColWidth()
 	 global
 	 local c4w
 	 factor:=225
+	 Col4Correction:=Abs(FontSize-10)*10+10 ; if we set a bigger font size shorthand becomes to narrow very quickly ; TODO BIGICONS/fonts
 	 If DisplayBundle in 0,2 ; Bundle name, 6th column setting 0 & 2 hide column
 		{
 		 LV_ModifyCol(6,0)
@@ -865,9 +939,11 @@ UpdateLVColWidth()
 	 WinGetPos , , , AvailableWidth, , %AppWindow%
 	 If (AvailableWidth = "")
 		AvailableWidth:=Width
-	 ColumnWidth:=Round((AvailableWidth - factor) / 10)
-	 c1w:=Round((ColumnWidth) * (ColumnWidthPart1/10))
-	 c2w:=Round((ColumnWidth) * (ColumnWidthPart2/10))
+	 AvailableWidth:=Round(AvailableWidth/DPIFactor())
+
+	 ColumnWidth:=Round(((AvailableWidth - factor) / 10))
+	 c1w:=Round((ColumnWidth) * (ColumnWidthPart1/10) - (Col4Correction/4) - 15)
+	 c2w:=Round((ColumnWidth) * (ColumnWidthPart2/10) - (Col4Correction/4) - 10)
 
 	 If (Col3 = 0)     ; shortcut column
 		{
@@ -878,14 +954,14 @@ UpdateLVColWidth()
 	 Else
 		LV_ModifyCol(3,50)
 
-	 If (Col4 = 0)     ; abbreviation/shorthand column
+	 If (Col4 = 0)     ; abbreviation/shorthand column ; TODO BIGICONS/fonts
 		{
 		 LV_ModifyCol(4,0)
 		 c1w += 30
 		 c2w += 25
 		}
 	 Else
-		LV_ModifyCol(4,60)
+		 LV_ModifyCol(4,50+Col4Correction)
 
 	 If (Col2 = 0)           ; paste2 column is empty so no need to show
 		{
@@ -1058,6 +1134,8 @@ Return
 
 ResetSearch:
 	 lasttext = fadsfSDFDFasdFdfsadfsadFDSFDf
+	 if !cl_ReadOnly
+		IniWrite, %SearchMethod%       , %IniFile%, Settings, SearchMethod
 	 Gosub, GetText
 Return
 
@@ -1070,6 +1148,8 @@ SearchLetterVariations:
 	 SearchLetterVariations:=MyToolbar.GetButtonState(MyToolbarIDs.ToggleLetterVariations,"Checked")
 	 SearchLetterVariations:=!SearchLetterVariations
 	 MyToolbar.ModifyButton(MyToolbarIDs.ToggleLetterVariations,"Check",SearchLetterVariations)
+	 if !cl_ReadOnly
+		IniWrite, %SearchLetterVariations% , %IniFile%, Settings, SearchLetterVariations
 	 Gosub, ResetSearch
 Return
 
@@ -1149,10 +1229,12 @@ Return
 #IfWinActive
 
 ; GUI related hotkeys
-
+; JJ EDIT BEGIN
+; The original didn't work with the newest AutoHotkey on a Danish keyboard.
 #IfWinActive Lintalist snippet editor
-:*:[::[[]]{left 2}
+:*:[::{Blind}{LControl DOWN}{RControl DOWN}{LAlt DOWN}{RAlt DOWN}{LShift DOWN}{RShift DOWN}{LControl UP}{RControl UP}{LAlt UP}{RAlt UP}{LShift UP}{RShift UP}[[]]{left 2}
 #IfWinActive
+; JJ EDIT END
 
 ; Not the best of methods, but it works best for some reason
 ; Hotkeys active in Gui, 10:
@@ -1236,7 +1318,7 @@ Return
 #IfWinActive, ahk_group AppTitle   ; Hotkeys only work in the just created GUI
 Esc::
 PlaySound(PlaySound,"close")
-Gosub, 1GuiClose ; for some reason this is needed, 1GuiEscape doesn't seem to work
+Gosub, GuiClose ; for some reason this is needed, 1GuiEscape doesn't seem to work
 IfWinExist, Lintalist bundle editor
 	Gosub, 71GuiClose
 IfWinExist, Lintalist snippet editor
@@ -1253,6 +1335,11 @@ Return
 ; JJ ADD END
 F4:: ; edit snippet
 EditF4:
+If cl_ReadOnly
+	{
+	 MsgBox, 64, Lintalist, Lintalist is in Read Only mode - editing has been disabled.
+	 Return
+	}
 If WinExist("Lintalist snippet editor")
 	{
 	 WinActivate, Lintalist snippet editor
@@ -1265,15 +1352,18 @@ SelItem := LV_GetNext()
 If (SelItem = 0)
 	SelItem = 1
 LV_GetText(Paste, SelItem, 5) ; get bundle_index from 5th column
-;Gui, 71:+Owner1
-; source: https://autohotkey.com/board/topic/21449-how-to-prevent-the-parent-window-from-losing-focus/?p=153870
-Gui, 71:+0x40000000 -0x80000000 +Owner1 ; Add WS_CHILD, remove WS_POPUP, set owner/parent
-Gui, 1:+Disabled
+gui 1:+Disabled
+gui 71:+Owner1
 Gosub, BundleEditor
 Return
 
 F5:: ; copy snippet
 EditF5:
+If cl_ReadOnly
+	{
+	 MsgBox, 64, Lintalist, Lintalist is in Read Only mode - editing has been disabled.
+	 Return
+	}
 EditMode = CopySnippet
 Gui, 1:Submit, NoHide
 ControlFocus, SysListView321, %AppWindow%
@@ -1281,13 +1371,18 @@ SelItem := LV_GetNext()
 If (SelItem = 0)
 	SelItem = 1
 LV_GetText(Paste, SelItem, 5) ; get bundle_index from 5th column
-Gui, 71:+Owner1
-Gui, 1:+Disabled
+gui 1:+Disabled
+gui 71:+Owner1
 Gosub, BundleEditor
 Return
 
 F6:: ; copy snippet
 EditF6:
+If cl_ReadOnly
+	{
+	 MsgBox, 64, Lintalist, Lintalist is in Read Only mode - editing has been disabled.
+	 Return
+	}
 EditMode = MoveSnippet
 Gui, 1:Submit, NoHide
 ControlFocus, SysListView321, %AppWindow%
@@ -1295,8 +1390,8 @@ SelItem := LV_GetNext()
 If (SelItem = 0)
 	SelItem = 1
 LV_GetText(Paste, SelItem, 5) ; get bundle_index from 5th column
-Gui, 71:+Owner1
-Gui, 1:+Disabled
+gui 1:+Disabled
+gui 71:+Owner1
 Gosub, BundleEditor
 Return
 
@@ -1305,9 +1400,14 @@ Return
 ; JJ ADD END
 F7:: ; create new snippet e.g. append
 EditF7:
+If cl_ReadOnly
+	{
+	 MsgBox, 64, Lintalist, Lintalist is in Read Only mode - editing has been disabled.
+	 Return
+	}
 EditMode = AppendSnippet
-Gui, 71:+Owner1
-Gui, 1:+Disabled
+gui 1:+Disabled
+gui 71:+Owner1
 Gosub, BundleEditor
 Return
 
@@ -1325,6 +1425,11 @@ ControlInFocus=
 ; JJ ADD END
 F8:: ; delete snippet
 EditF8:
+If cl_ReadOnly
+	{
+	 MsgBox, 64, Lintalist, Lintalist is in Read Only mode - editing has been disabled.
+	 Return
+	}
 InEditMode = 1
 Gui, 1:Submit, NoHide
 ControlFocus, SysListView321, %AppWindow%
@@ -1367,6 +1472,11 @@ Return
 
 F10::
 EditF10:
+If cl_ReadOnly
+	{
+	 MsgBox, 64, Lintalist, Lintalist is in Read Only mode - editing has been disabled.
+	 Return
+	}
 EditMode = BundleProperties
 If WinExist("Lintalist bundle editor")
 	{
@@ -1511,8 +1621,12 @@ Return
 #IfWinActive Lintalist snippet editor
 $Rbutton::
 ControlGetFocus, Control, Lintalist snippet editor
-If Control not in Edit2,Edit3
-	Send {Rbutton}
+If !EditorHotkeySyntax
+	MatchListPlugins:="Edit2,Edit3,RICHEDIT50W1,RICHEDIT50W2"
+else If EditorHotkeySyntax
+	MatchListPlugins:="Edit3,Edit4,RICHEDIT50W1,RICHEDIT50W2"
+If Control not in %MatchListPlugins%
+	 Send {Rbutton}
 Else
 	Menu, Plugins, Show
 Return
@@ -1650,13 +1764,14 @@ Return
 MadeChoice = 1
 InEditMode = 0
 EditMode =
+Clip:="" ; in case we cancelled Choice by using the X
 Gui, 10:Destroy
 Gui, 1:-Disabled
 Gui, 71:Destroy
 WinActivate, %AppWindow%
 Return
 
-1GuiClose:
+GuiClose: ; GuiClose for Gui 1 (and not 1GuiClose)
 1GuiEscape:
 WinGetPos, X, Y, , ,  %AppWindow% ; remember position set by user
 XY:=X "|" Y
@@ -1684,6 +1799,11 @@ Else If (A_ThisMenuItem = "Check for updates")
 	Run, %A_AhkPath% %A_ScriptDir%\include\update.ahk
 Else If (A_ThisMenuItem = "&Manage Counters")
 		{
+		 If cl_ReadOnly
+			{
+			 MsgBox, 64, Lintalist, Lintalist is in Read Only mode - editing has been disabled.
+			 Return
+			}
 		 Gosub, SaveSettingsCounters
 		 StoreCounters:=Counters
 		 StoreLocalCounter_0:=LocalCounter_0
@@ -1718,6 +1838,11 @@ Else If (A_ThisMenuItem = "&Pause Lintalist")
 	Gosub, PauseProgram
 Else If (A_ThisMenuItem = "&Configuration")
 	{
+	 If cl_ReadOnly
+		{
+		 MsgBox, 64, Lintalist, Lintalist is in Read Only mode - editing has been disabled.
+		 Return
+		}
 	 Gosub, SaveStartupSettings
 	 IniSettingsEditor("Lintalist",A_ScriptDir "\" IniFile)
 	 MsgBox, 36, Restart?, In order for any changes to take effect you must reload.`nOK to restart? ; 4+32 = 36
@@ -1757,6 +1882,11 @@ Else If (A_ThisMenuItem = "&Help")
 	Run, docs\index.html
 Else If (A_ThisMenuItem = "&Manage Local Variables")
 		{
+		 If cl_ReadOnly
+			{
+			 MsgBox, 64, Lintalist, Lintalist is in Read Only mode - editing has been disabled.
+			 Return
+			}
 		 If WinExist(AppWindow " ahk_class AutoHotkeyGUI")
 			Gui, 1:+Disabled
 		 RunWait, %A_AhkPath% include\localbundleeditor.ahk
@@ -1878,7 +2008,11 @@ Return
 ; Plugins menu
 PluginMenuHandler:
 ControlGetFocus, Control, Lintalist snippet editor
-If Control not in Edit2,Edit3
+If !EditorHotkeySyntax
+	MatchListPlugins:="Edit2,Edit3,RICHEDIT50W1,RICHEDIT50W2"
+else If EditorHotkeySyntax
+	MatchListPlugins:="Edit3,Edit4,RICHEDIT50W1,RICHEDIT50W2"
+If Control not in %MatchListPlugins%
 	Return
 
 If RegExMatch(A_ThisMenuItem,"i)(clipboard|selected)")
@@ -1953,6 +2087,9 @@ Return
 
 ProcessText:
 
+If InStr(clip,"[[A_") ; check for built-in variables - https://autohotkey.com/docs/Variables.htm#BuiltIn
+	BuiltInVariables()
+
 	Loop ; get local variables first... only exception from the plugins as it is a built-in feature with the local variable editor as well
 		{
 		 ProcessTextString:=""
@@ -1966,18 +2103,39 @@ ProcessText:
 		 StringReplace, clip, clip, %ProcessTextString%, % LocalVar_%LocalVarName%, All ; %
 		}
 	 Gosub, CheckFormat
-	 RegExMatch(clip,"iUs)\[\[[^\[]*\]\]",ProcessTextString)
-	 PluginText:=ProcessTextString
-	 ; PluginName:=Trim(StrSplit(PluginText,"=").1,"[]") ; debug only
-	 PluginName:=Trim(StrSplit(StrSplit(PluginText,"=").1,"_").1,"[]")
-	 ; MsgBox % PluginText "`n" PluginName ; debug only
-	 PluginOptions:=GrabPluginOptions(PluginText)
-	 If IsLabel("GetSnippet" PluginName)
-		Gosub, GetSnippet%PluginName%
 
-	 If (RegExMatch(Clip, "i)(" ClipCommandRE "|\[\[var)") > 0) ; make sure all "plugins" are processed before proceeding incl. local variables
-		Gosub, ProcessText
+	 ; Additional safety, by adding an IF it should prevent crashing Lintalist by getting stuck in an endless loop (for example missing a closing ] of a plugin)
+	 If RegExMatch(clip,"iUs)\[\[[^\[]*\]\]",ProcessTextString)
+		{
+
+		 PluginText:=ProcessTextString
+		 ; PluginName:=Trim(StrSplit(PluginText,"=").1,"[]") ; debug only
+		 ; PluginName:=Trim(StrSplit(StrSplit(PluginText,"=").1,"_").1,"[]") ; plugins only: name=
+		 PluginName:=Trim(StrSplit(StrSplit(PluginText,["=","("]).1,"_").1,"[]") ; v2.0 allow for plugins and functions: name= and name(
+		 PluginOptions:=GrabPluginOptions(PluginText)
+		 ; MsgBox % ">" PluginText "<`n>" PluginName "<`n>" PluginOptions "<`n---------`n" clip ; debug only
+		 If IsLabel("GetSnippet" PluginName)
+			Gosub, GetSnippet%PluginName%
+		 else If IsFunc(PluginName)
+		 	{
+			 clipsave:=clip ; store clip
+			 PluginProcessFunction:=ProcessFunction(PluginName,PluginOptions)
+			 if (clipsave = clip) ; if function hasn't modified the clip, modify clip by replacing the function calls
+				clip:=StrReplace(clip,PluginText,PluginProcessFunction)
+			 if InStr(clip,PluginText) ; safety check, if func HAS modified the clip, but has omitted to remove itself from clip we need to remove it otherwise we're stuk in an endless loop
+				clip:=StrReplace(clip,PluginText)
+			 clipsave:="", PluginProcessFunction:=""
+			}
+		 else ; not a plugin, so remove it otherwise we'll get stuck in an endless loop, we replace [[]] with {{}} to show the "error"
+			clip:=StrReplace(clip,ProcessTextString,"{{" trim(ProcessTextString,"[]")"}}")
+
+		 If (RegExMatch(Clip, "iU)\[\[\w") > 0) ; make sure all "plugins" are processed before proceeding incl. local variables
+			Gosub, ProcessText
+
+		}
+
 	 Gosub, CheckFormat
+
 Return
 
 CheckFormat:
@@ -1995,16 +2153,14 @@ CheckFormat:
 		}
 Return
 
-CheckCursorPos()
+CheckCursorPos(Clip)
 	{
 	 Global BackLeft, BackUp, PluginMultiCaret, MultiCaret, ActiveWindowProcessName
 	 BackLeft=0
 	 BackUp=0
 	 PluginMultiCaret=0
-
-	 If InStr(Clipboard, "^|") ; Find caret pos after paste
+	 If InStr(Clip, "^|") ; Find caret pos after paste
 		{
-		 Clip:=Clipboard
 		 StringReplace, Clip, Clip, `r, , All ; remove `r as we don't need these for caret pos
 		 StringReplace, Clip, Clip, ^|, ^|, UseErrorLevel
 		 If (ErrorLevel > 1)
@@ -2023,18 +2179,23 @@ CheckCursorPos()
 			BackLeft:=StrLen(UpLines)
 		 If (PluginMultiCaret <> 0) and MultiCaret.HasKey(ActiveWindowProcessName)
 			{
-			 StringReplace, Clipboard, Clipboard, ^|, % MultiCaret[ActiveWindowProcessName].str, All ; TODOMC
+			 StringReplace, Clip, Clip, ^|, % MultiCaret[ActiveWindowProcessName].str, All ; TODOMC
 			}
 		 else
-			StringReplace, Clipboard, Clipboard, ^|, ,All ; TODOMC
+			StringReplace, Clip, Clip, ^|, ,All ; TODOMC
 		 UpLines=
-		 Clip=
 		}
+	 Return Clip	
 	}
 
 CheckTyped(TypedChar,EndKey)
 	{
 	 Global
+	 expandit:=0
+	 
+	 if TypedChar in %TriggerKeysSource%
+		expandit:=1
+	 
 	 If (ShorthandPaused = 1) or (InEditMode = 1) ; Expansion of abbreviations is suspended OR we are in editor mode
 		Return
 	 IfWinActive, %AppWindow% ; if Lintalist GUI is active return e.g. Expansion of abbreviations is suspended
@@ -2047,19 +2208,29 @@ CheckTyped(TypedChar,EndKey)
 		 Return
 		}
 	 HitKeyHistory=
-	 GetActiveWindowStats()
+	 IfWinNotExist, %AppWindow% ; v1.9.3 (will make original window active instead of last found)
+		 GetActiveWindowStats()
 	 WhichBundle()
-	 If (EndKey <> "Max")
+	 
+	 If (EndKey <> "Max") or (expandit = 1)
 		{
-		 If EndKey not in %TriggerKeys%
+		 if !expandit
 			{
-			 Typed=
-			 Return
+			 If EndKey not in %TriggerKeys%
+				{
+				 Typed=
+				 Return
+				}
 			}
+
 		 If EndKey in %TriggerKeys%
+			expandit:=1
+
+		 If expandit
 			{
 			 If (Typed = "")
 				Return
+
 			 HitKeyHistory:=CheckHitList("Shorthand", Typed, Load)
 
 			 If (HitKeyHistory <> "")
@@ -2079,6 +2250,18 @@ CheckTyped(TypedChar,EndKey)
 	 Else
 		typed .= TypedChar
 	}
+
+; https://autohotkey.com/board/topic/6893-guis-displaying-differently-on-other-machines/page-3#entry77893
+DPIFactor()
+{ 
+RegRead, DPI_value, HKEY_CURRENT_USER, Control Panel\Desktop\WindowMetrics, AppliedDPI 
+; the reg key was not found - it means default settings 
+; 96 is the default font size setting 
+if (errorlevel=1) OR (DPI_value=96 )
+	return 1
+else
+	Return  DPI_Value/96
+}
 
 BuildEditMenu:
 Try
@@ -2135,6 +2318,7 @@ Catch
 	 ;
 	}
 Menu, File, Add, &Load All Bundles, MenuHandler
+Menu, File, Icon,&Load All Bundles, icons\arrow-in.ico
 If (LoadAll = 1)
 	 Menu, file, Check, &Load All Bundles
 Else If (LoadAll = 0)
@@ -2148,6 +2332,7 @@ Loop, parse, MenuName_HitList, |
 	}
 Menu, File, Add
 Menu, File, Add, &Reload Bundles,     GlobalMenuHandler
+Menu, File, Icon,&Reload Bundles,     icons\arrow-retweet.ico
 Menu, MenuBar, Add, &Bundle, :File
 
 Return
@@ -2221,8 +2406,11 @@ Menu, Tools, Add, Convert Texter bundle    , GlobalMenuHandler
 Menu, Tools, Add, Convert UltraEdit taglist, GlobalMenuHandler
 
 Menu, Help, Add, &Help, GlobalMenuHandler
+Menu, Help, Icon,&Help, icons\help.ico
 Menu, Help, Add, &About, GlobalMenuHandler
+Menu, Help, Icon,&About, icons\help.ico
 Menu, Help, Add, &Quick Start Guide, GlobalMenuHandler
+Menu, Help, Icon,&Quick Start Guide, icons\help.ico
 
 Menu, MenuBar2, Add, &Plugins, :Plugins
 Menu, MenuBar2, Add, &Tools, :Tools ; make it available in Edit gui
@@ -2246,30 +2434,45 @@ LastBundle=
 Loop, parse, Load, CSV ; store loaded bundles
 	LastBundle .= FileName_%A_LoopField% ","
 StringTrimRight, LastBundle, LastBundle, 1
-IniWrite, %LastBundle%  , %IniFile%, Settings, LastBundle
-If (SubStr(DefaultBundle, 0) = ",")
-	StringTrimRight, DefaultBundle, DefaultBundle, 1
-IniWrite, %DefaultBundle%      , %IniFile%, Settings, DefaultBundle
-IniWrite, %SearchMethod%       , %IniFile%, Settings, SearchMethod
-IniWrite, %Load%               , %IniFile%, Settings, Load
-IniWrite, %LoadAll%            , %IniFile%, Settings, LoadAll
-IniWrite, %SearchLetterVariations% , %IniFile%, Settings, SearchLetterVariations
-IniWrite, %Lock%               , %IniFile%, Settings, Lock
-IniWrite, %Case%               , %IniFile%, Settings, Case
-IniWrite, %Width%              , %IniFile%, Settings, Width
-IniWrite, %Height%             , %IniFile%, Settings, Height
-IniWrite, %ShorthandPaused%    , %IniFile%, Settings, ShorthandPaused
-IniWrite, %ShortcutPaused%     , %IniFile%, Settings, ShortcutPaused
-IniWrite, %ScriptPaused%       , %IniFile%, Settings, ScriptPaused
-IniWrite, %ShowQuickStartGuide%, %IniFile%, Settings, ShowQuickStartGuide
+if !cl_ReadOnly
+	{
+	 IniWrite, %LastBundle%  , %IniFile%, Settings, LastBundle
+	 IniWrite, %Load%               , %IniFile%, Settings, Load
+	 IniWrite, %LoadAll%            , %IniFile%, Settings, LoadAll
+	 IniWrite, %Lock%               , %IniFile%, Settings, Lock
+	 IniWrite, %Case%               , %IniFile%, Settings, Case
+	 IniWrite, %Width%              , %IniFile%, Settings, Width
+	 IniWrite, %Height%             , %IniFile%, Settings, Height
+	 IniWrite, %ShorthandPaused%    , %IniFile%, Settings, ShorthandPaused
+	 IniWrite, %ShortcutPaused%     , %IniFile%, Settings, ShortcutPaused
+	 IniWrite, %ScriptPaused%       , %IniFile%, Settings, ScriptPaused
+	 IniWrite, %XY%                 , %IniFile%, Settings, XY
+	}	
 
-Gosub, SaveStartupSettings
-Gosub, SaveSettingsCounters
+; We no longer save:
+; - DefaultBundle (set via Func_IniSettingsEditor_v6.ahk)
+; - ShowQuickStartGuide (set via QuickStart.ahk) and
+; - SearchMethod,SearchLetterVariations (set by labels in Lintalist.ahk above)
+; related to https://github.com/lintalist/lintalist/issues/94
+;If (SubStr(DefaultBundle, 0) = ",")
+;	StringTrimRight, DefaultBundle, DefaultBundle, 1
+;IniWrite, %DefaultBundle%      , %IniFile%, Settings, DefaultBundle
+;IniWrite, %SearchMethod%       , %IniFile%, Settings, SearchMethod
+;IniWrite, %SearchLetterVariations% , %IniFile%, Settings, SearchLetterVariations
+;IniWrite, %ShowQuickStartGuide%, %IniFile%, Settings, ShowQuickStartGuide
+
+if !cl_ReadOnly
+	{
+	 Gosub, SaveStartupSettings
+	 Gosub, SaveSettingsCounters
+	}	
 ; /INI
 
 ; Bundles
 
 ; If (A_ExitReason <> "Exit") ; to prevent saving bundles twice which would make the backup routine not work correctly
+
+if !cl_ReadOnly ; if readonly do not update bundles.
 	SaveUpdatedBundles()
 
 Gosub, CheckShortcuts ; desktop & startup LNK check (either set or delete after changing ini)
@@ -2283,6 +2486,7 @@ Return
 #Include %A_ScriptDir%\include\editor.ahk
 #Include %A_ScriptDir%\include\BundlePropertiesEditor.ahk
 #Include %A_ScriptDir%\plugins\plugins.ahk
+#Include %A_ScriptDir%\plugins\functions.ahk
 #Include %A_ScriptDir%\include\GuiSettings.ahk
 #Include %A_ScriptDir%\include\SetShortcuts.ahk
 #Include %A_ScriptDir%\include\QuickStart.ahk
@@ -2340,7 +2544,8 @@ ClipSaved := ClipboardAll
 Clipboard:=0
 Send, ^x
 Sleep 150
-Send, [[Underline=^v]]
+Clipboard = [[Underline=%Clipboard%]]
+Send, ^v
 Clipboard := ClipSaved
 ClipSaved =
 Return
@@ -2432,7 +2637,7 @@ Return
 
 ; Giv Maple Input rød farve, zoom til 100 % og udfold alle sektioner.
 MathSetUpCommenting:
-SendEvent {Alt}rs
+SendEvent {ALT DOWN}rs{ALT UP}
 WinWaitActive, Style Management, , 3
 SendEvent {TAB}Maple Input{TAB 3}{Enter}
 WinWaitActive, Character Style, , 3
@@ -2448,25 +2653,24 @@ FoundY := FoundY + 3
 Click, %FoundX%, %FoundY%
 SendEvent {Sleep 30}{TAB}{Enter}
 WinWaitActive, Style Management, , 3
-SendEvent {TAB}{Enter}{ALT DOWN}
-Sleep, 40
-SendEvent, vie{ALT UP}{CTRL DOWN}2{CTRL UP}
+SendEvent {TAB}{Enter}
+Sleep, 150
+SendEvent, {ALT DOWN}vie{ALT UP}{CTRL DOWN}2{CTRL UP}
 Return	
 
 
 ; Få bredde (w) og højde (h) af det givne vindue (hwnd)
 GetClientSize(hwnd, ByRef w, ByRef h)
-
 {
-    VarSetCapacity(rc, 16)
-    DllCall("GetClientRect", "uint", hwnd, "uint", &rc)
-    w := NumGet(rc, 8, "int")
-    h := NumGet(rc, 12, "int")
+  VarSetCapacity(rc, 16)
+  DllCall("GetClientRect", "uint", hwnd, "uint", &rc)
+  w := NumGet(rc, 8, "int")
+  h := NumGet(rc, 12, "int")
 }
 
 
-; Lintalist for Math-specfik paste procedure
-MathPaste:
+; Tjek om der pastes til Maple
+PastingToMaple:
 ;WinGetClass, ActiveWindowClass1, A
 ;WinGetActiveTitle, ActiveWindowTitle1
 isMaple:=1
@@ -2477,71 +2681,73 @@ if (ActiveWindowClass <> "SunAwtFrame")
 IfInString, Text1, [[image= ; don't use Maple handling for images
   isMaple:=0
   ; Burde også tjekkes for Text2
-If (isMaple = 1) ; If pasting to Maple - will paste Text 1 by default (and fall back to Text 2)
-{
-  If (Text1 = "")
-    Text1:=Text2
-  ; Lav udskiftninger fra plugins (vigtigt at det sker inden "Gosub, ProcessText")
-  StringReplace, Text1, Text1, `^, {hatchar}, All
-  Text1 := RegExReplace(Text1, "iU)\[\[Underline=([^[]*)\]\]",  "^u$1^u")
-  Text1 := RegExReplace(Text1, "iU)\[\[Math=([^[]*)\]\]",  "^r$1^m")
-  ; Foretag udskiftninger af specielle tegn, så send-kommandoen fungerer som forventet
-  StringReplace, Text1, Text1, ``, ````, All  ; Do this replacement first to avoid interfering with the others below.
-  StringReplace, Text1, Text1, `r`n, ``r, All  ; Using `r works better than `n in MS Word, etc.
-  StringReplace, Text1, Text1, `n, ``r, All
-  ;StringReplace, Text1, Text1, `^, {ASC 0094}, All  ; {ASC 0094}, All ; handled below instead
-  StringReplace, Text1, Text1, {right}, {right}, All  ; {ASC 0094}, All
-  StringReplace, Text1, Text1, `!, {!}, All
-  StringReplace, Text1, Text1, `+, {+}, All
-  StringReplace, Text1, Text1, `#, {#}, All
-  StringReplace, Text1, Text1, ``r, `^`+j`^m, All
-  ;~ While(SubStr(Text1, StrLen(Text1)-4) = "^+j^m")
-    ;~ StringTrimRight, Text1, Text1, 5
-  ;~ MsgBox, %Text1% ; for debugging
-  Clip0 = %ClipBoardAll% ; store clipboard
-  Clip := "^m" . Text1
-  Gosub, ProcessText ; to support all plugins except for rtf, md, image, html, and clipboard with formatting/case change
-  ;~ MsgBox, %Clip% ; for debugging
-  If (InStr(Clip, "{hatchar}"))
-  {
-    ClipArray := StrSplit(Clip, "{hatchar}")
-    LastClip := ClipArray.Pop()
-    for index, element in ClipArray
-    {
-      SendInput, %element%
-      Sleep, 200
-      SendInput, {ASC 0094}
-      Sleep, 10
-    }
-    SendInput, %LastClip%
-    LastClip=
-    ClipArray=
-  }
-  Else
-    SendInput, ^m%Clip%
-    ;SendKey(SendMethod, Clip)
-  ClipBoard = %Clip0% ; restore clipboard
-  Text1=
-  Text2=
-  Clip=
-  VarSetCapacity(Clip0, 0)
-  Return
-}
-Else
-{
-  ; Fjern symboler som kun giver mening i Maple
-  StringReplace, Text1, Text1, `^`^, `^, All
-  StringReplace, Text1, Text1, `{right`}, , All
-  StringReplace, Text1, Text1, %A_Tab%, ``t, All
-  StringReplace, Text1, Text1, `;, ```;, All
-
-  StringReplace, Text2, Text2, `^`^, `^, All
-  StringReplace, Text2, Text2, `{right`}, , All
-  StringReplace, Text2, Text2, %A_Tab%, ``t, All
-  StringReplace, Text2, Text2, `;, ```;, All
-}
 Return
 
+
+; Lintalist for Math-specfik paste procedure
+MathPaste:
+; Pasting to Maple - will paste Text 1 by default (and fall back to Text 2)
+If (Text1 = "")
+  Text1:=Text2
+; Lav udskiftninger fra plugins (vigtigt at det sker inden "Gosub, ProcessText")
+StringReplace, Text1, Text1, `^, {hatchar}, All
+Text1 := RegExReplace(Text1, "iU)\[\[Underline=([^[]*)\]\]",  "^u$1^u")
+Text1 := RegExReplace(Text1, "iU)\[\[Math=([^[]*)\]\]",  "^r$1^m")
+; Foretag udskiftninger af specielle tegn, så send-kommandoen fungerer som forventet
+StringReplace, Text1, Text1, ``, ````, All  ; Do this replacement first to avoid interfering with the others below.
+StringReplace, Text1, Text1, `r`n, ``r, All  ; Using `r works better than `n in MS Word, etc.
+StringReplace, Text1, Text1, `n, ``r, All
+;StringReplace, Text1, Text1, `^, {ASC 0094}, All  ; {ASC 0094}, All ; handled below instead
+StringReplace, Text1, Text1, {right}, {right}, All  ; {ASC 0094}, All
+StringReplace, Text1, Text1, `!, {!}, All
+StringReplace, Text1, Text1, `+, {+}, All
+StringReplace, Text1, Text1, `#, {#}, All
+StringReplace, Text1, Text1, ``r, `^`+j`^m, All
+;~ While(SubStr(Text1, StrLen(Text1)-4) = "^+j^m")
+  ;~ StringTrimRight, Text1, Text1, 5
+;~ MsgBox, %Text1% ; for debugging
+Clip0 = %ClipBoardAll% ; store clipboard
+Clip := "^m" . Text1
+Gosub, ProcessText ; to support all plugins except for rtf, md, image, html, and clipboard with formatting/case change
+;~ MsgBox, %Clip% ; for debugging
+If (InStr(Clip, "{hatchar}"))
+{
+  ClipArray := StrSplit(Clip, "{hatchar}")
+  LastClip := ClipArray.Pop()
+  for index, element in ClipArray
+  {
+    SendInput, %element%
+    Sleep, 250
+    SendInput, {ASC 0094}
+    Sleep, 250
+  }
+  SendInput, %LastClip%
+  LastClip=
+  ClipArray=
+}
+Else
+  SendInput, ^m%Clip%
+  ;SendKey(SendMethod, Clip)
+ClipBoard = %Clip0% ; restore clipboard
+Text1=
+Text2=
+Clip=
+VarSetCapacity(Clip0, 0)
+Return
+
+
+NotMathPaste:
+; Fjern symboler som kun giver mening i Maple
+StringReplace, Text1, Text1, `^`^, `^, All
+StringReplace, Text1, Text1, `{right`}, , All
+StringReplace, Text1, Text1, %A_Tab%, ``t, All
+StringReplace, Text1, Text1, `;, ```;, All
+
+StringReplace, Text2, Text2, `^`^, `^, All
+StringReplace, Text2, Text2, `{right`}, , All
+StringReplace, Text2, Text2, %A_Tab%, ``t, All
+StringReplace, Text2, Text2, `;, ```;, All
+Return
 
 
 ; JJ ADD END

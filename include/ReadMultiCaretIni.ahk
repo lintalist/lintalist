@@ -27,7 +27,7 @@ ReadMultiCaretIni()
 		 Loop, parse, keys, CSV
 			IniRead, %A_LoopField%, %ini%, %section%, %A_LoopField%, %A_Space%
 		 if str
-		 	MultiCaret[section,"str"]:=str
+			MultiCaret[section,"str"]:=str
 		 if key
 			MultiCaret[section,"key"]:=key
 		 if clr
@@ -63,6 +63,10 @@ clr={del}
 str=___
 key=^d
 clr={del}
+[cudatext.exe]
+str=___
+key=^+d
+clr={del}
 [everedit.exe]
 str=___
 key=^d
@@ -88,5 +92,5 @@ str=___
 key=^;
 clr={del}
 )
-, %ini%
+, %ini%, UTF-16
 	}

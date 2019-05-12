@@ -1,3 +1,71 @@
+### v.1.9.6a (Second release of Lintalist for Math based on 1.9.6 of master)
+
+* Updated to support Maple 2018 (it only fully supports this version of Maple)
+* Added support for Maple in the C plugin of Lintalist.
+* Updated: Now based on v1.9.6 of master (see changes below).
+
+### v1.9.6
+
+* New: Setting EditorHotkeySyntax to allow users to enter AHK syntax hotkeys in Snippet Editor  
+  #98 https://github.com/lintalist/lintalist/issues/98
+* Fix: Actually add support for LCID to Calendar plugin - see v1.8 - and introduced third  
+  option to replace hardcoded " to " with user defined string. #97
+
+### v1.9.5
+
+* New: Command line parameters -ReadOnly: start in ReadOnly mode, no editing of bundles or  
+  updating settings.ini #95 https://github.com/lintalist/lintalist/issues/95
+* New: Check Capslock and ScrollLock state at startup, turn it off if used as hotkeys  
+  and inform user if it is turned off #93 https://github.com/lintalist/lintalist/issues/93
+* Fix: allow to change default bundle #94 https://github.com/lintalist/lintalist/issues/94
+* Fix: Escape % in llpart1 and llpart2 variable when using snippet part1 or part2 in scripts  
+  #92 https://github.com/lintalist/lintalist/issues/92
+* Fix: The error "Can not append snippet to Bundle (No file name available)" should no  
+  longer happen.
+* New: adding UTF-8 to all FileAppend commands as potential fix for Text-encoding issues #96  
+  https://github.com/lintalist/lintalist/issues/96
+
+### v1.9.4
+
+* New: Functions in Snippets are now also allowed: [[function()]] - both AHK built-in as  
+  user defined - #86 https://github.com/lintalist/lintalist/issues/86
+* New: support a subset of AutoHotkey built-in variables (A_MyDocuments etc)
+* New: Additional safety check when processing snippet by "removing" faulty plugins  
+  plus a simple error check when saving snippets.
+* New: Editor now has (optional) Syntax highlighting (plugins, html, scripts) by using  
+  the RichCode class by @G33kDude - #88 https://github.com/lintalist/lintalist/issues/88  
+  (when using RichCode you can toggle word wrapping in the edit controls by pressing ctrl+w)
+* Fix: Editor - "Edit in Editor" routine improved, notepad.exe may not show ".txt" in Window title,  
+  and actually delete "__tmplintalistedit.txt" file in tmp folder (didn't do so correctly)
+* Change: User plugins (and now functions) can be added to MyPlugins/MyFunctions so future  
+  updates of Lintalist won't overwrite plugins/functions added by users each time. (see release note)
+* Fix: Closing Input and Choice plugins via close button (x) in Gui now properly cancels snippet
+* New: added icons to Tray menu and some Search menu entries.
+
+### v1.9.3
+
+* Improved: TriggerKeys now accept more keys such as <kbd>½</kbd> or <kbd>+</kbd> for example  
+  #79 https://github.com/lintalist/lintalist/issues/79
+* Improved: Now there is also a 32x32 size icon button bar accommodating high(er) DPI settings  
+  #71 https://github.com/lintalist/lintalist/issues/71 (see BigIcons in settings)  
+  Entirely new code for GuiSettings.ahk
+* New: added TryClipboard() to see if clipboard is inaccessible, if so "catch" error and do nothing 
+  #73 https://github.com/lintalist/lintalist/issues/73
+* New: Make it possible to include contents of Snippet (part 1 and 2) in script code incl. caret  
+  position per snippet (see "Script" in Documentation)  
+  #76 https://github.com/lintalist/lintalist/issues/76
+* Change: Similar to modal windows for Local variable etc, Snippet editor now modal  
+  - see v1.8 #57 https://github.com/lintalist/lintalist/issues/57
+* Fix: Adding support for UTF-8 characters in Local variabe & Counter Editors  
+  #78 https://github.com/lintalist/lintalist/pull/78 ht @exetico
+* Fix: ReadIni() now writes in UTF-16 to store settings correctly  
+  #77 https://github.com/lintalist/lintalist/issues/77
+* Fix: Closing using X in title bar didn't store Window position for users with Center=2  
+  and now save it to settings.ini as well #75 https://github.com/lintalist/lintalist/issues/75
+* Fix: Closing and Starting Lintalist in Narrow view mode no longer  
+  causes error in GUI with empty 'barx' variable #72 https://github.com/lintalist/lintalist/issues/72  
+  (see also #71 above re GuiSettings.ahk)
+
 ### v.1.9.2a (First release of Lintalist for Math based on 1.9.2 of master)
 
 * Updated: Now based on v1.9.2 of master (see changes below).

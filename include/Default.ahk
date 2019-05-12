@@ -1,12 +1,17 @@
 ﻿/*
 Name          : Standard functions, can also be shared by bundle scripts by including LLInit() in your bundle script
-Version       : 1.0
-Date          : 20101010
+Version       : 1.1
+Date          : 20170616
 Functions     :
 	- LLInit()
 	- GetActiveWindowStats()
 	- Sendkey()
 	- ClipSet() mod of virclip by Learning one http://www.autohotkey.com/forum/topic56926.html
+
+History:
+1.1 PasteDelay, ActiveWindowID, ActiveControl now global as they should in SendKey()
+1.0 Initial version 20101010
+
 */
 
 GetActiveWindowStats() ; Get Active Window & Control
@@ -50,7 +55,7 @@ SendKey(Method = 1, Keys = "")
 	 ; Method: 3 = SendPlay
 	 ; Method: 4 = ControlSend
  
- global PasteDelay
+ global PasteDelay, ActiveWindowID, ActiveControl
  Sleep, % PasteDelay
  
 ;	 If ((Save = 1) or (Save = ""))
@@ -114,6 +119,8 @@ ClipSet(Task,ClipNum=1,SendMethod=1,Value="") ; by Learning one http://www.autoh
    Static Clip1, Clip2, Clip3, Clip4
    if ClipNum not between 1 and 30
    Return
+   If !TryClipboard() ; v1.9.3
+		Return ; if we can't read clipboard do nothing as to avoid the program to stall  
    IsClipEmpty := (Clipboard = "") ? 1 : 0
    if (task = "c" or task = "ca" or task = "x" or task = "xa" or task = "Copy" or task = "CopyAll" or task = "Cut" or task = "CutAll")
    {
@@ -240,4 +247,13 @@ ClearClipboard()
 	     Sleep, 10
 	    }
 	   Return
+	}
+	
+TryClipboard()
+	{
+	 Try
+	 	v:=Clipboard
+	 catch ; can't read/access clipboard to return false
+	 	Return 0
+	 Return 1
 	}

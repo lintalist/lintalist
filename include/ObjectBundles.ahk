@@ -292,7 +292,7 @@ Author: %BundleAuthor%
 TitleMatch: %BundleTitleMatch%
 Patterns:
 %Append%
-), %file%
+), %file%, UTF-8
 			}
 		}
 
@@ -377,7 +377,7 @@ Patterns:
   LLKey: 
   LLShorthand:
   LLScript:
-), %A_ScriptDir%\bundles\default.txt
+), %A_ScriptDir%\bundles\default.txt, UTF-8
 DefaultBundle:="default.txt"
 IniWrite, default.txt, %A_ScriptDir%\%IniFile%, Settings, AlwaysLoadBundles
 IniWrite, default.txt, %A_ScriptDir%\%IniFile%, Settings, DefaultBundle

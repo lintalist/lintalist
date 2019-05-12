@@ -8,7 +8,7 @@
 <link rel="SHORTCUT ICON" href="favicon.ico" />
 <link href="style.css" rel="stylesheet" type="text/css" media="screen" />
 <meta name="descriptions" content="Lintalist manages searchable interactive texts to copy &amp; paste text, run scripts, using easily exchangeable bundles - text-expander with hotkeys, full text search, plugins and scripts" />
-<meta name="keywords" content="bundle, bundles, snippet, snippets, paste text, textpow, clipboard, searchable, search, autotext, auto-replace, template, clipboard, phrases, text, text substitution, text expander, text replacement, texter, expand abbreviations, typing utility, trigger hotstrings, open source" />
+<meta name="keywords" content="bundle, bundles, snippet, snippets, paste text, textpow, clipboard, searchable, search, autotext, auto-replace, template, clipboard, phrases, text, text substitution, text expander, text replacement, expand abbreviations, typing utility, trigger hotstrings, open source" />
 </head>
 <body id='top'>
 <div id='container'>
@@ -19,9 +19,9 @@
 <b>Lintalist</b> allows you to store and (incrementally) <b>search</b> and <b>edit texts</b> in bundles and <b>paste</b> a selected text in your active program. The text <b>can</b> be interactive, for example you can automatically insert the current time and date, ask for (basic) user input or make a selection from a list etc and finally it can also <b>run a script</b>. You can use <b>keyboard shortcuts</b> or <b>abbreviations</b> to paste the text (or run the script) without opening the search window.<br />
 <br />
 <span style='font-size:.8em;'>You can <b>extend Lintalist</b> by writing your own <b><a href='#InteractiveBundleText'>plugins</a></b>. Lintalist is open source and developed in <a href='https://autohotkey.com/'>AutoHotkey</a>, an easy to learn scripting language for Windows.
-[WinXP(sp3)/Vista/7/8]<br /></span>
+[WinXP(sp3)/Vista/7/8/10]<br /></span>
 <span style='font-size:.8em;'>As of LintaList v1.1 several types of formatted text are supported in Snippets.</span>
-<span class='date' style='float:right;display:inline;margin-top:0px;'>doc rev. 20170218</span></p>
+<span class='date' style='float:right;display:inline;margin-top:0px;'>doc rev. 20180519</span></p>
 </div>
 
 <div class='column'>
@@ -48,6 +48,8 @@
 <li><a href='#LintalistBundles'>Lintalist Bundles Introduction</a></li>
 <li><a href='#SnippetsBundles'>Snippets &amp; Bundles</a><ul>
 <li><a href='#InteractiveBundleText'>plugins</a> (how to)</li>
+<li><a href='#Script'>scripts</a></li>
+<li><a href='#Functions'>functions</a></li>
 </li></ul>
 <li><a href='#FormattedText'>Formatted Text Snippets</a></li>
 <li><a href='#Editing'>Editing Bundles and Snippets</a></li>
@@ -69,11 +71,11 @@
 </div>
 
 <div class='column'>
-<p><b>Download Lintalist <em>1.9.2</em></b>
+<p><b>Download Lintalist <em>1.9.6</em></b>
 <p>
 <a href='https://github.com/lintalist/lintalist/releases'><img src='img/lintalist65x65.gif' alt='Download Lintalist' width='65' align='left' border='0' style='margin-right: 5px;' /></a>
 Download (incl. source):<br />
-<a href='https://github.com/lintalist/lintalist/releases'><b>Latest release</b></a> (720 kb)<br />Simply unpack and run lintalist.ahk or lintalist.exe<br />
+<a href='https://github.com/lintalist/lintalist/releases'><b>Latest release</b></a> (780 kb)<br />Simply unpack and run lintalist.ahk or lintalist.exe<br />
 </p>
 
 <span class='tip' style="margin-bottom:10px;"><img src="img/usb.png" width=50 align=right title="USB image by Alessandro Rei (GNU/GPL) - http://findicons.com/icon/255067/usb?id=256158">Lintalist is a <b>portable application</b>. It stores all settings and bundles in the folder the program resides in. <a href="#portable">More...</a>
@@ -154,7 +156,7 @@ Installing Lintalist is easy, just download the ZIP file and unpack it in a fold
 If you are already an AutoHotkey user and have it installed, it is recommended to run <b>Lintalist.ahk</b>, this will ensure you will be running Lintalist with your preferred version of AutoHotkey. If you don't have AutoHotkey installed you can start <b>Lintalist.exe</b>.
 
 <b>Notes:</b>
-- Lintalist.exe: A renamed AutoHotkey.exe (v1.1.24.05 32-bit Unicode, See https://autohotkey.com/ and/or https://autohotkey.com/download/)
+- Lintalist.exe: A renamed AutoHotkey.exe (v1.1.28.02 32-bit Unicode, See https://autohotkey.com/ and/or https://autohotkey.com/download/)
 - Lintalist.ahk: The actual (main) source code of the program (see https://github.com/lintalist/lintalist)
 
 <h2 id='Searching'>Normal use: Starting Lintalist and searching for a Snippet</h2>
@@ -651,10 +653,13 @@ Neat trick: using a local variable or User input
 
 <tr id='calc-plugin'><td><code>[[Calc=]]</code> *2</td><td>Evaluation of the math expressions - see <a href='#Calc'>documentation below</a>.</td></tr>
 
-<tr id='calendar-plugin'><td><code>[[Calendar=Format|LCID]]</code></td><td>Displays a calendar window to allow you to select a date in a specific format (see DateTime below).
+<tr id='calendar-plugin'><td><code>[[Calendar=Format|LCID|to]]</code></td><td>Displays a calendar window to allow you to select a date in a specific format (see DateTime below).
 Basic example <code>[[Calendar=dd-MMM-yyyy]]</code> --> Select a date and it will be inserted like so: 25-Jan-2011
 
 [v1.8+] You can now specify an LCID. If you do not define one, the current user's locale is used to format the Date string. To use the system's locale instead, specify LSys. To use a specific locale, specify the letter L followed by a hexadecimal or decimal locale identifier (LCID). You can find a list of Locale IDs Assigned by Microsoft here <a href='https://msdn.microsoft.com/goglobal/bb964664.aspx' target='_blank'>msdn.microsoft.com/goglobal/bb964664.aspx</a>
+
+If you use a date range (e.g. start/end date) the wordt " to " is automatically inserted between the two dates, if you want something else such as another language or character " - " simply specificy this as the third paramater:
+<code>[[Calendar=dd-MMM-yyyy|| - ]]</code>
 
 </td></tr>
 
@@ -681,7 +686,7 @@ You can manage these counters (add, edit, delete) via the tray menu option: Mana
 
 <b>Tips</b>:
 1. if you want to use the same counter multiple times in a snippet without incrementation simply "Add zero" (<b>|0</b>) for the second and subsequent instances. 
-2. if a counter is not created/managed using the "Mange counters" tool the unknown counter will be automatically created. This way you can create counters 'on the fly' using for example the <code>[[Input=]]</code> plugin.
+2. if a counter is not created/managed using the "Manage counters" tool the unknown counter will be automatically created. This way you can create counters 'on the fly' using for example the <code>[[Input=]]</code> plugin.
 </td></tr>
 
 <tr id='datetime-plugin'><td><code>[[DateTime=Format|Value|TimeUnits|LCID]]</code></td><td>Insert current Date and/or Time using the FormatTime options,
@@ -739,7 +744,12 @@ Basic example <code>[[Snippet=shorthandcode]]</code></td></tr>
 
 <tr id='localvar-plugin'><td><code>[[Var=Name]]</code> *4</td><td>Insert local variables. These variables are available <b>across bundles</b>. See <a href='#LocalBundle'>Local bundle variables</a> below. As of v1.0.3 local variables are also available in scripts (making it the only plugin available in scripts for the time being)</td></tr>
 
-<tr><td><code>[[html]], [[md]], [[rtf=]], [[image=]]</code> </td><td>Use these for <a href='#FormattedText'>Formatted Text Snippets</a>.</td></tr>
+<tr><td><code>[[html]]</code>, <code>[[md]]</code>, <code>[[rtf=]]</code>, <code>[[image=]]</code> </td><td>Use these for <a href='#FormattedText'>Formatted Text Snippets</a>.</td></tr>
+
+<tr><td><code>[[llpart1]]</code>, <code>[[llpart1]]</code> </td><td>Use these for as placeholders for Snippet Part1 and Part2 in your <a href='#Script'>Script</a>.
+
+[v1.9.3+]
+</td></tr>
 
 </tbody>
 </table>
@@ -840,7 +850,7 @@ This can for example be useful if you copy multiple columns and / or rows from a
 </td></tr>
 <tr><td>?1</td><td>the character to split the input at.
 There are a number of reserved options <em>\s</em> = space, <em>\t</em> = tab, <em>\n</em> = new line - but you should be able to use any character apart from these: []|
-If only use <em>?1</em> it will create a simple array of variables you can use like so <code>[[sp=1]]</code> <code>[[sp=2]]</code> <code>[[sp=3]]</code> etc
+If only <em>?1</em> is used it will create a simple array of variables you can use like so <code>[[sp=1]]</code> <code>[[sp=2]]</code> <code>[[sp=3]]</code> etc
 Think of it as a <b>column</b> marker.</td></tr>
 <tr><td>?2</td><td>You can omit this, but if you do use a second parameter it will create a two-dimensional array of variables you can use like so <code>[[sp=1,1]]</code> <code>[[sp=1,2]]</code> <code>[[sp=3,2]]</code> etc.
 If you use both <em>?1</em> and <em>?2</em> - <em>?1</em> is the <b>row</b> marker, and <em>?2</em> the <b>column</b> marker.</td></tr>
@@ -1072,7 +1082,7 @@ Your sincerely,
 
 </blockquote>
 
-<h3 id='Script'>Script</h3>
+<h2 id='Script'>Script(s)</h2>
 
 You can include any valid AutoHotkey script into a snippet. The code is saved to a temporary file and run with AutoHotkey. The temporary script is written to <b>tmpscrpts\</b> in your Lintalist directory. After the script has finished it is deleted.
 
@@ -1103,7 +1113,7 @@ Functions:
   Get Active Window & Control information
   
 - SendKey(Method = 1, Keys = "")
-  Send text of keystrokes using the defined method (SendMethod)
+  Send text or keystrokes using the defined method (SendMethod)
   Method: 1, 2, 3 or 4. 
   1 = SendInput, 2 = SendEvent, 3 = SendPlay, 4 = ControlSend
   For more background info see the AutoHotkey Send documentation
@@ -1114,6 +1124,124 @@ Functions:
   SendMethod as above with SendKey, set by configuration.
   See <b>include\default.ahk</b> for full details as ClipSet has a number of
   other functions which may be of interest for more advanced use(r)s.
+
+<b>Special Script plugins</b> [v1.9.3+]
+
+Use <code>[[llpart1]]</code> and <code>[[llpart2]]</code> in your script to include the contents of Part1 and/or Part2 in your scripts.
+It will process any plugins before setting the result as a variable in a (multiline) variable in your script.
+
+This Script code (in the snippet):
+<blockquote class='boxed'>
+[[llpart1]]
+<span class='llbundle'>MsgBox</span> % llpart1
+
+</blockquote>
+
+Will turn into the following Script code when started:
+<blockquote class='boxed'>
+llpart1=
+(join`n % <span class='llcomment'>; note the percent sign here</span>
+....Text of Part1...
+)
+<span class='llbundle'>MsgBox</span> % llpart1
+
+</blockquote>
+If Part1 or Part2 has the Caret plugin <code>^|</code>, the variables <em>LLBackLeft1, LLBackLeft2, LLBackUp1</em> and <em>LLBackUp2</em> are
+also stored. You can use these to position the caret by sending UP and LEFT keys (do UP first, LEFT second)
+
+Note that % signs in snippets do not need to be escaped as the <code>(join`n %</code> takes care of that automatically (see the <a href='https://autohotkey.com/docs/Scripts.htm#Join'>Join documentation</a> at AutoHotkey)
+
+<blockquote class='boxed'>
+<span class='llcomment'>; send or paste llpart1, for llpart2 use LLBackUp2 and LLBackLeft2</span>
+<span class='llbundle'>If</span> LLBackUp1
+	<span class='llbundle'>Send</span> {Up %LLBackUp1%}
+<span class='llbundle'>If</span> LLBackLeft1
+	<span class='llbundle'>Send</span> {Left %LLBackLeft1%}
+
+</blockquote>
+
+<a name='script_template'><b>Script template if you are going to use the clipboard and paste the result:</b>
+<blockquote class='boxed'>
+<span class='llbundle'>#NoEnv</span>
+<span class='llbundle'>#SingleInstance, force</span>
+<span class='llbundle'>SetBatchLines, -1</span>
+<span class='llbundle'>ListLines, off</span>
+<span class='llbundle'>LLInit()</span>                            <span class='llcomment'>; fake call to load global variables from Lintalist main script - see Docs</span>
+<span class='llbundle'>ClipSet("s",1,SendMethod,Clipboard)</span> <span class='llcomment'>; store current clipboard contents</span>
+<span class='llbundle'>ClearClipboard()</span>                    <span class='llcomment'>; clear it</span>
+
+; ... your code ... may include <code>[[llpart1]]</code> and/or <code>[[llpart2]]</code> 
+
+<span class='llbundle'>SendKey(SendMethod, "^v")</span>           <span class='llcomment'>; paste changed clipboard using SendMethod defined by Lintalist settings</span>
+<span class='llbundle'>Clipboard:=ClipSet("g",1)</span>           <span class='llcomment'>; restore original clipboard contents</span>
+<span class='llbundle'>ExitApp</span>
+
+</blockquote>
+
+<h2 id='Functions'>Func<em>tions</em></h2>
+
+This is for the more experienced AutoHotkey users.
+
+As of v1.9.4+ Lintalist supports <a href='https://autohotkey.com/docs/Functions.htm#BuiltIn'>built-in AutoHotkey functions</a> (Asc, SubStr, Floor, Mod, etc) or user defined functions. 
+
+<b>Calling a function</b>
+
+<code>[[function(optional parameters)]]</code> Do not use = as in "function=()", omit the = after the function name.
+
+Example <code>[[SubStr("AutoHotkey",5,3)]]</code> -> Result: Hot
+
+<b>User functions</b>
+
+In order to be able to use your own functions they need to be included.
+You can do so in <em>plugins\MyFunctions.ahk</em>
+Either #include functions or write them there, MyFunctions.ahk will not be overwritten when updating Lintalist.
+Be sure to restart Lintalist after modifying MyFunctions.ahk to ensure functions become available.
+
+One standard function is included: <code>[[EnvGet(EnvVarName)]]</code> - see Built-in Variables below for an example.
+(see <a href='https://ss64.com/nt/syntax-variables.html'>Windows Environment Variables</a> on SS64.com)
+
+If you want to update the entire snippet and not simply process the returned value from a function you need to make clip a global variable in your function.
+
+<blockquote class='boxed'>
+MyFunc(parameters)
+   {
+    <span class='llbundle'>global</span> clip <span class='llcomment'>; make clip global</span>
+    <span class='llcomment'>; ... your code</span>
+    <span class='llcomment'>; ... changing clip </span>
+    <span class='llbundle'>Return</span>
+   }
+
+</blockquote>
+
+The maximum number of parameters is 20.
+
+<h2 id='Variables'>Built-in <em>Variables</em></h2>
+
+As of v1.9.4 Lintalist supports a subset of AutoHotkeys' built-in variables, simply use them anywhere in your snippet (text, plugins, functions) and they will be replaced by the proper value. Just wrap them in [[..]].
+
+<blockquote class='boxed'>
+My documents folder is [[A_MyDocuments]] and my IP is [[A_IPAddress1]]
+My temp folder is <code>[[EnvGet(temp)]]</code>
+
+</blockquote>
+
+If you want to change which AutoHotkey built-in variables are supported simply edit the <b>AutoHotkeyVariables</b> key in settings.ini (exit Lintalist first before doing so)
+
+Use <code>[[EnvGet(EnvVarName)]]</code> to read Environment variables.
+
+<a href='https://autohotkey.com/docs/Variables.htm#Special_Characters'>Special Characters</a>:
+	A_Space, A_Tab
+
+<a href='https://autohotkey.com/docs/Variables.htm#prop'>Script Properties</a>:
+	A_WorkingDir, A_ScriptDir, A_ScriptName, A_ScriptFullPath, A_ScriptHwnd, A_AhkVersion, A_AhkPath, A_IsUnicode, A_IsCompiled
+
+<a href='https://autohotkey.com/docs/Variables.htm#date'>Date and Time</a>:
+	A_YYYY, A_MM, A_DD, A_MMMM, A_MMM, A_DDDD, A_DDD, A_WDay, A_YDay, A_YWeek, A_Hour, A_Min, A_Sec, A_MSec, A_Now, A_NowUTC, A_TickCount
+
+<a href='https://autohotkey.com/docs/Variables.htm#os'>Operating System and User Info</a>:
+	A_Temp, A_OSType, A_OSVersion, A_Is64bitOS, A_PtrSize, A_Language, A_ComputerName, A_UserName, A_WinDir, A_ProgramFiles, A_AppData, A_AppDataCommon, A_Desktop, A_DesktopCommon, A_StartMenu, A_StartMenuCommon, A_Programs, A_ProgramsCommon, A_Startup, A_StartupCommon, A_MyDocuments, A_IsAdmin, A_ScreenWidth, A_ScreenHeight, A_ScreenDPI, A_IPAddress1, A_IPAddress2, A_IPAddress3, A_IPAddress4
+
+
 
 <h2 id='FormattedText'>Formatted Text <em>Snippets</em></h2>
 
@@ -1391,6 +1519,8 @@ There is also a configuration setting that can do this: ActivateWindow
 
 <b>-Ini=</b><i>filename-for-settings.ini</i>: use a different settings file (default is settings.ini) [v1.8+]
 
+<b>-ReadOnly</b>: start in ReadOnly mode, no editing of bundles, settings.ini, counters and local variables [v1.94+] <a href='https://github.com/lintalist/lintalist/issues/95'>Discussion @ GH</a>
+
 <h2 id='FAQ'>F.A.<em>Q</em> &amp; Known <em>Issues</em></h2>
 
 <h3>Faq</h3>
@@ -1417,7 +1547,7 @@ There is also a configuration setting that can do this: ActivateWindow
     will find find snippets with either THIS or THAT as part of the text (part1, part2, shorthand)
 
 <a name='faq5'></a><b>Q5:</b> I type the shorthand (abbreviation) or press the shortcut but nothing happens!
-<b>A4:</b> - Make sure shortcuts and shorthand are not disabled (tray menu). Perhaps Lintalist is paused.
+<b>A5:</b> - Make sure shortcuts and shorthand are not disabled (tray menu). Perhaps Lintalist is paused.
     - Another bundle may be locked so the bundle you think should be active isn't, unlock it.
     - Make sure the title match of the bundle is set correctly if it is not the default bundle.
 
@@ -1427,6 +1557,7 @@ There is also a configuration setting that can do this: ActivateWindow
 <b>A1:</b> If this happens try "Reload Bundles" or restart Lintalist, for some reason Lintalist can not find 
     or access the bundle or possibly it has lost track of which bundle it should append to.
     This should be fixed in a future update of Lintalist
+    <b>Update v1.9.5+:</b> this should no longer happen, do report it if you notice it, especially if you can reproduce it.
 
 <a name='ki2'></a><b>K2:</b> It doesn't always work with Flash edit controls
 <b>A2:</b> When the Lintalist GUI becomes active the Flash (edit) control looses focus. It is not possible to 
@@ -1454,7 +1585,7 @@ There is also a configuration setting that can do this: ActivateWindow
 <img src='img/lintalist-title-footer.gif' alt='lintalist' align='left' style='margin-top:6px;padding-right:5px;' /><b>Disclaimer:</b> Use at your own risk. If you find a new bundle take a look at the script sections of each snippet. As Lintalist can run any AutoHotkey script it can also run faulty or insecure code. Be sensible, if you simply want to try a bundle selecting 'Pause scripts' via the tray menu might be a useful idea.
 </span> 
 
-<span style='float:right;'>&copy; Copyright 2009-2017 Lintalist. See license.txt</span>
+<span style='float:right;'>&copy; Copyright 2009-2018 Lintalist. See license.txt</span>
 </pre>
 
 <a href="https://github.com/lintalist"><img style="position: absolute; top: 0; right: 0; border: 0;" src="img/forkme_right_red_aa0000.png" alt="Fork me on GitHub"></a>
