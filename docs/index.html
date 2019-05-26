@@ -2,7 +2,7 @@
 "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<title>Lintalist - Searchable interactive texts to copy &amp; paste text, run scripts, using easily exchangeable bundles</title>
+<title>Lintalist - Text Expander, Snippet manager, supporting searchable interactive texts to copy &amp; paste text, run scripts, using easily exchangeable bundles</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="SHORTCUT ICON" href="favicon.ico" />
@@ -85,7 +85,7 @@
 </div>
 
 <div class='column'>
-<p><b>Download Lintalist <em>1.9.8.2</em></b>
+<p><b>Download Lintalist <em>1.9.8.3</em></b>
 <p>
 <a href='https://github.com/lintalist/lintalist/releases'><img src='img/lintalist65x65.gif' alt='Download Lintalist' width='65' align='left' border='0' style='margin-right: 5px;' /></a>
 Download (incl. source):<br />
@@ -173,7 +173,7 @@ Installing Lintalist is easy, just download the ZIP file and unpack it in a fold
 If you are already an AutoHotkey user and have it installed, it is recommended to run <b>Lintalist.ahk</b>, this will ensure you will be running Lintalist with your preferred version of AutoHotkey. If you don't have AutoHotkey installed you can start <b>Lintalist.exe</b>.
 
 <b>Notes:</b>
-- Lintalist.exe: A renamed AutoHotkey.exe (v1.1.30.01 32-bit Unicode, See https://autohotkey.com/ and/or https://autohotkey.com/download/)
+- Lintalist.exe: A renamed AutoHotkey.exe (v1.1.30.03 32-bit Unicode, See https://autohotkey.com/ and/or https://autohotkey.com/download/)
 - Lintalist.ahk: The actual (main) source code of the program (see https://github.com/lintalist/lintalist)
 
 <h2 id='Searching'><a href='#Searching' class='headline'>Normal use: Starting Lintalist and searching for a Snippet</a></h2>
@@ -682,15 +682,17 @@ The plugins are processed in the following order:
 	<th>Description</th>
 </tr>
 </thead>
-<tr id='caret-plugin'><td><a href='#caret-plugin' class='headline'><code>^|</code></a></td><td>Caret position after pasting.
+<tr id='caret-plugin'><td><a href='#caret-plugin' class='headline'><code>^|</code></a> or <code>^$</code></td><td>Caret position after pasting.
 Basic example: "Hello, this is a sample <code>^|</code>text"
-The ^| code will be removed from the text and the caret will 
-be placed before the word text.
+The ^| (or ^$) code will be removed from the text and the caret will 
+be placed before the word `text`.
 
-[v1.8+] If you paste a snippet into an editor which supports Multi-caret/edit you can use those in Lintalist snippets by placing multiple caret locations in your snippet. If you don't want to use MultiCaret simply avoid using multiple ^| in a Lintalist snippet.
+Alternative notation: <code>^$</code> useful when you want to use this in combination with the Choice plugin where the | character would cause a problem -  <a href='https://github.com/lintalist/lintalist/issues/124'>Discussion @ GH - #124</a>
+
+If you paste a snippet into an editor which supports Multi-caret/edit you can use those in Lintalist snippets by placing multiple caret locations in your snippet. If you don't want to use MultiCaret simply avoid using multiple ^| in a Lintalist snippet.
 Supported editors: Atom, Brackets, EverEdit, Komodo Edit, Sublime Text, TextAdept, UltraEdit 23+, Visual Studio Code editor. See <a href='MultiCaret.md'>docs/MultiCaret.md</a> for details.
 
-<b>Note:</b> The caret position may be incorrect for snippets with Unicode characters, complex scripts, glyphs etc. (trial and error may work)
+<b>Note:</b> The caret position may be incorrect for snippets with Unicode characters, complex scripts, glyphs etc. (trial and error may work).
 </td></tr>
 
 <tr id='c-plugin'><td><a href='#c-plugin' class='headline'><code>[[C=Char|Repeat]]</code></a></td><td>By default pasted texts are trimmed which means spaces and tabs will be trimmed from the snippet. You can use this plugin to insert one or more spaces and/or tabs at the beginning or end of a snippet. Or you can use it as a shorthand-code to insert a repeating text or character.

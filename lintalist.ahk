@@ -4,7 +4,7 @@ Name            : Lintalist
 Author          : Lintalist
 Purpose         : Searchable interactive lists to copy & paste text, run scripts,
                   using easily exchangeable bundles
-Version         : 1.9.8.2
+Version         : 1.9.8.3
 Code            : https://github.com/lintalist/
 Website         : http://lintalist.github.io/
 AutoHotkey Forum: https://autohotkey.com/boards/viewtopic.php?f=6&t=3378
@@ -41,7 +41,7 @@ PluginMultiCaret:=0 ; TODOMC
 
 ; Title + Version are included in Title and used in #IfWinActive hotkeys and WinActivate
 Title=Lintalist
-Version=1.9.8.2
+Version=1.9.8.3
 
 ; Gosub, ReadPluginSettings
 
@@ -600,7 +600,7 @@ Search(mode=1)
 		 SearchRe:="iUmsS)" SearchRe
 		 If (Case = 1)     ; case sensitive, remove i) option
 			SearchRe := LTrim(SearchRe,"i")
-		 ;;ToolTip, % "Case: " case " : SearchRe: " SearchRe ; debug only
+		 ;;;ToolTip, % "Case: " case " : SearchRe: " SearchRe ; debug only
 		 If (RegExMatch(SearchThis1, SearchRe) > 0) or (RegExMatch(SearchThis2, SearchRe) > 0) or (RegExMatch(SearchThis3, SearchRe) > 0)
 			{
 			 Match++
@@ -630,7 +630,7 @@ Search(mode=1)
 		 If (Case = 1)     ; case sensitive, remove i) option
 			SearchRe := LTrim(SearchRe,"i")
 
-		 ;;ToolTip, % "Case: " case " : SearchRe: " SearchRe ; debug only
+		 ;;;ToolTip, % "Case: " case " : SearchRe: " SearchRe ; debug only
 		 If (RegExMatch(SearchThis1, SearchRe) > 0) or (RegExMatch(SearchThis2, SearchRe) > 0) or (RegExMatch(SearchThis3, SearchRe) > 0)
 			{
 			 Match++
@@ -654,7 +654,7 @@ Return
 
 ; (Double)click in listview, action defined in INI
 Clicked:
-    ;  user has right-clicked within the listview control. The variable A_EventInfo contains the focused row number.
+	;  user has right-clicked within the listview control. The variable A_EventInfo contains the focused row number.
 	If (A_GuiEvent = "RightClick")
 		{
 		 Menu, edit, show ; this is the same menu as used in the Editor, Menubar (edit)
@@ -2327,6 +2327,7 @@ CheckCursorPos(Clip)
 	 BackLeft=0
 	 BackUp=0
 	 PluginMultiCaret=0
+	 clip:=StrReplace(clip,"^$","^|")
 	 If InStr(Clip, "^|") ; Find caret pos after paste
 		{
 		 StringReplace, Clip, Clip, `r, , All ; remove `r as we don't need these for caret pos

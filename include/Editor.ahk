@@ -1,6 +1,6 @@
 ﻿; LintaList Include
 ; Purpose: Bundle & Snippet Editor
-; Version: 1.1
+; Version: 1.2
 ;
 ; Hotkeys used in Search GUI to start Bundle & Snippet Editor
 ; F4  = Edit snippet
@@ -10,6 +10,7 @@
 ; F8  = Delete snippet
 ; 
 ; History: 
+; v1.1 - Use font/fontsize settings in Editor as well (as in the Search GUI)
 ; v1.1 - Added (optional) Syntax Highlighting for snippets/html/scripts
 ; 
 ; 
@@ -32,7 +33,7 @@ RichCodeSettings:=
 	"Indent": "`t",
 	"FGColor": 0x000000,
 	"BGColor": 0xFFFFFF,
-	"Font": {"Typeface": "Arial", "Size": 10},
+	"Font": {"Typeface": font, "Size": fontsize},
 	
 	"UseHighlighter": True,
 	"WordWrap": False,
@@ -253,24 +254,30 @@ Gui, 71:Add, Edit    , xp+70  y63  w150 h20 vShorthand, %Shorthand%
 Gui, 71:Add, Picture , x20    y100 w16 h16 vPicture1, %A_ScriptDir%\icons\text_dropcaps.png
 Gui, 71:Add, Text    , x40    y100  vText1Label       , Part 1 (Enter)
 
+Gui, 71:Font,s%fontsize%,%font%
 If EditorSyntaxHL
 	RC1 := new RichCode(RichCodeSettings.Clone(), "x20 y120 w700 h120 vText1")
 else
 	Gui, 71:Add, Edit    , x20    y120  h120 w700 vText1  , %Text1%
+Gui, 71:Font,
 
 Gui, 71:Add, Picture , x20    yp+125 w16 h16 vPicture2, %A_ScriptDir%\icons\text_dropcaps.png
 Gui, 71:Add, Text    , x40    yp    vText2Label      , Part 2 (Shift-Enter)
+Gui, 71:Font,s%fontsize%,%font%
 If EditorSyntaxHL
 	RC2 := new RichCode(RichCodeSettings.Clone(), "x20 yp+20 w700 h90 vText2")
 else	
 	Gui, 71:Add, Edit    , x20    yp+20 h90 w700 vText2  , %Text2%
+Gui, 71:Font,
 
 Gui, 71:Add, Picture , x20    yp+95 w16 h16 vPicture3, %A_ScriptDir%\icons\scripts.ico
 Gui, 71:Add, Text    , x40    yp    vText3Label              , Script
+Gui, 71:Font,s%fontsize%,%font%
 If EditorSyntaxHL
 	RC3 := new RichCode(RichCodeSettings.Clone(), "x20 yp+20 w700 h90 vScript")
 else
 	Gui, 71:Add, Edit    , x20    yp+20 h90 w700 vScript , %Script%
+Gui, 71:Font,
 
 Gui, 71:font, s8, arial
 If EditorSyntaxHL

@@ -1,13 +1,14 @@
 ; LintaList Include
 ; Purpose: Parse (nested) plugins properly and assisting functions
-; Version: 1.7
-; Date:    20171114
-
+; Version: 1.2
+;
 ; See the ProcessText label in Lintalist.ahk
 ; GrabPlugin() v1
-
+;
 ; History:
-; - v1.7 added ProcessFunction() and modified GrabPluginOptions() to accommodate functions in snippets
+; - 1.2 Fix GrabPluginOptions to prevent removing closing ) - https://github.com/lintalist/lintalist/issues/125
+; - 1.1 Lintalist v1.9.4 added ProcessFunction() and modified GrabPluginOptions() to accommodate functions in snippets
+; - 1.0 Lintalist v1.6 - improved plugin parser
 
 ; GrabPlugin is used for local variables only at the moment
 GrabPlugin(data,tag="",level="1")
@@ -42,8 +43,11 @@ GrabPlugin(data,tag="",level="1")
 
 GrabPluginOptions(data)
 	{
-	 ; Return Trim(SubStr(data,InStr(data,"=")+1),"[]")
-	 Return Trim(SubStr(trim(data,"[]"),RegExMatch(trim(data,"[]"),"\=|\(")+1),"[]()") ; modified to extract parameters from functions
+	 ; Return Trim(SubStr(data,InStr(data,"=")+1),"[]") ; before supporting functions
+	 if RegExMatch(data,"^\[\[\w+=")
+		Return Trim(SubStr(trim(data,"[]"),RegExMatch(trim(data,"[]"),"\=|\(")+1),"[]") ; make sure we don't strip closing ")"" from non function plugin code https://github.com/lintalist/lintalist/issues/124
+	 else
+		Return Trim(SubStr(trim(data,"[]"),RegExMatch(trim(data,"[]"),"\=|\(")+1),"[]()") ; modified to extract parameters from functions
 	}
 
 CountString(String, Char)

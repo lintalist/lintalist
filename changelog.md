@@ -1,3 +1,12 @@
+### v1.9.8.3
+
+* Fix: unexpected () characters deletion for plugin content ending with ()]] not being a function  
+  https://github.com/lintalist/lintalist/issues/125
+* New: Allow ^$ to be used as alternative notation for Caret plugin (^|)  
+  https://github.com/lintalist/lintalist/issues/124
+* New: Use Font and FontSize setting in Editor as well (Part1, Part2, Script)  
+  https://github.com/lintalist/lintalist/issues/122
+
 ### v1.9.8.2
 
 * Fix: Improve CheckLineFeed by using RegEx to catch all CR, LF, and CRLF

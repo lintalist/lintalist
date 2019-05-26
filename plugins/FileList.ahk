@@ -166,7 +166,7 @@ FileListGetActiveWindowPath(title)
 FileListGetExplorerPath()
 	{
 	 IfWinNotExist, ahk_exe explorer.exe ahk_class CabinetWClass
-	 	return "<FileList-ERROR-Explorer-NotFound>"
+		return "<FileList-ERROR-Explorer-NotFound>"
 	 for w in ComObjCreate("Shell.Application").Windows
 		return w.Document.Folder.Self.Path
 	}
@@ -174,7 +174,7 @@ FileListGetExplorerPath()
 FileListGetTCPath()
 	{
 	 IfWinNotExist, ahk_class TTOTAL_CMD
-	 	return "<FileList-ERROR-TotalCommander-NotFound>"
+		return "<FileList-ERROR-TotalCommander-NotFound>"
 	 ClearClipBoard()
 	 PostMessage 1075, 2029, 0, , ahk_class TTOTAL_CMD ; 2029 Copy source path to clipboard cm_CopySrcPathToClip
 	 Sleep 100
