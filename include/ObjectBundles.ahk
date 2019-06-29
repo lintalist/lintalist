@@ -50,6 +50,7 @@ LoadBundle(Reload="")
 	{
 	 Global
 	 ;MsgBox % "x" Snippet[1,1,1] ; debug
+	 TotalMax:=0
 	 Gui, 1:Default
 	 LV_Delete()
 	 If (ReLoad = "")
@@ -75,14 +76,15 @@ LoadBundle(Reload="")
 	  If (MenuItem <> "") ; just to be sure
 			Menu, file, Check, &%MenuItem%
 
-	  Max:=Snippet[Bundle].MaxIndex()
-	  Max:=MaxRes
+;	  Max:=Snippet[Bundle].MaxIndex() 
+	  Max:=MaxRes ; + TotalMax: no point in showing all entries from the bundle https://github.com/lintalist/lintalist/issues/127#issuecomment-496279719
 	  Loop, % max
 		{
+		 IconVal:=""
 		 If (Snippet[Bundle,A_Index,"1v"] = "" AND Snippet[Bundle,A_Index,"2v"] = "" AND Snippet[Bundle,A_Index,3] = "" AND Snippet[Bundle,A_Index,4] = "" AND Snippet[Bundle,A_Index,5] = "")
 			Continue
-
-		 IconVal:=""
+		 If (++TotalMax > Max)
+			Break
 		 IfEqual, ShowIcons, 1
 			{
 			 IconVal:=SetIcon(Snippet[Bundle,A_Index],Snippet[Bundle,A_Index,5])
@@ -98,8 +100,8 @@ LoadBundle(Reload="")
 		}
 	 }	
 	 If (DisplayBundle > 1)
-	 	Gosub, ColorList
-	 Return	
+		Gosub, ColorList
+	 Return
 	}
 
 LoadAllBundles()
@@ -147,7 +149,7 @@ LoadAllBundles()
 		 If (SubStr(LastBundle, 1, 1) = ",") ; if it has changed write to ini so it will be faster at next startup. The Bundle isn't there so no need to try and load it again next time around.
 			StringTrimLeft, LastBundle, LastBundle, 1
 		 IniWrite, %LastBundle%, %IniFile%, Settings, LastBundle
-	}		 	 
+	}
 	 If (LastBundle	= "") and (Lock = 1)
 		Lock=0 ; unlock as it won't be able to load the bundle that was last locked anyway
 	 Changed:=DefaultBundle
@@ -165,7 +167,7 @@ LoadAllBundles()
 		 If (SubStr(DefaultBundle, 1, 1) = ",") ; if it has changed write to ini so it will be faster at next startup. The Bundle isn't there so no need to try and load it again next time around.
 			StringTrimLeft, DefaultBundle, DefaultBundle, 1
 		 IniWrite, %DefaultBundle%, %IniFile%, Settings, DefaultBundle
-	}		
+	}
 	 Loop, parse, AvailableBundles, CSV
 		{
 		 If (A_LoopField = DefaultBundle)
@@ -180,7 +182,7 @@ LoadAllBundles()
 	 StringTrimRight, Group, Group, 1 ; remove trailing ,
 	 StringTrimRight, MenuName_HitList, MenuName_HitList, 1 ; remove trailing |
 	 Sort, MenuName_HitList, D|
-	 Return		
+	 Return
 	}
 
 ReadBundle(File, Counter)
@@ -202,7 +204,7 @@ ReadBundle(File, Counter)
 				MenuName_%Counter%:=File ; safety check, fall back to filename if no name was found
 			 MenuName_HitList .= MenuName_%Counter% Chr(5) Counter "|"
 			 MenuName_0++
-			} 
+			}
 		 IfInString, A_LoopField, Description:
 			 Description_%Counter%:=RegExReplace(A_LoopField, "i)^Description:\s*(.*)\s*$", "$1")
 		 IfInString, A_LoopField, Author:
@@ -236,7 +238,7 @@ LoadPersonalBundle()
 		}
 	 Patterns= ; free mem
 	 LocalVarMenu:=Rtrim(LocalVarMenu,",")
-	 Return	
+	 Return
 	}
 	
 SaveUpdatedBundles(tosave="") ; Save any updated Bundles on Exit of Application OR specific bundle (AlwaysUpdateBundles setting)
@@ -269,7 +271,7 @@ SaveUpdatedBundles(tosave="") ; Save any updated Bundles on Exit of Application 
 			 If (ErrorLevel > 0)                           ; move not successful, backup dir may be missing
 				{
 				 IfNotExist, %A_ScriptDir%\bundles\backup\ ; check
-				 	FileCreateDir %A_ScriptDir%\bundles\backup\ 
+					FileCreateDir %A_ScriptDir%\bundles\backup\ 
 				 FileMove, %file%, %BakFile%, 1            ; create backup (try again)
 				 If (ErrorLevel > 0)                       ; still no success, so no backup just delete
 					FileDelete, %file%
@@ -278,7 +280,7 @@ SaveUpdatedBundles(tosave="") ; Save any updated Bundles on Exit of Application 
 					 MsgBox, 48, Not saved, Could not save Bundle`n%file%`n`nWill try to save as %file%.BAK
 					 File := A_ScriptDir "\bundles\" FileName_%Bundle% ".BAK"
 					 FileDelete, %File%
-					}	
+					}
 				}
 			 BundleName:=MenuName_%Bundle%
 			 BundleDescription:=Description_%Bundle%
@@ -360,7 +362,7 @@ ParseBundle(Patterns, Counter)
 		}
 	 ;MsgBox % Snippet[Counter,1,1] ; debug
 	 patterns= ; free mem
-	 Return	
+	 Return
 	}
 
 CreateFirstBundle()

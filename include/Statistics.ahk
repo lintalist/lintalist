@@ -1,9 +1,10 @@
 ﻿/*
 LintaList Include
 Purpose: Statistics
-Version: 1.0
+Version: 1.1
 
 History:
+1.1 A_UserName-Statistics.ini (Statistics = 3) - https://github.com/lintalist/lintalist/issues/112#issuecomment-494350363
 1.0 Initial version 20181210
 
 */
@@ -15,6 +16,8 @@ Statistics()
 	 ini=%A_ScriptDir%\Statistics.ini
 	 If (Statistics = 2)
 		Stats["StatsUser"]:="-" A_UserName
+	 If (Statistics = 3)
+		ini=%A_ScriptDir%\%A_UserName%-Statistics.ini
 	 IfNotExist, %ini%
 		StatisticsIni(ini)
 	 globalkeys:="SearchGui,SearchGuiCancel,QuickSearch,OmniSearch,SnippetShortcut,SnippetShorthand,Scripts,TotalBytes"

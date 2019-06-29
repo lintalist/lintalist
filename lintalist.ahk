@@ -4,7 +4,7 @@ Name            : Lintalist
 Author          : Lintalist
 Purpose         : Searchable interactive lists to copy & paste text, run scripts,
                   using easily exchangeable bundles
-Version         : 1.9.8.3
+Version         : 1.9.8.4
 Code            : https://github.com/lintalist/
 Website         : http://lintalist.github.io/
 AutoHotkey Forum: https://autohotkey.com/boards/viewtopic.php?f=6&t=3378
@@ -41,7 +41,7 @@ PluginMultiCaret:=0 ; TODOMC
 
 ; Title + Version are included in Title and used in #IfWinActive hotkeys and WinActivate
 Title=Lintalist
-Version=1.9.8.3
+Version=1.9.8.4
 
 ; Gosub, ReadPluginSettings
 
@@ -527,9 +527,11 @@ Loop, parse, SearchBundles, CSV
 			SearchText:=LetterVariations(SearchText,Case)
 
 		 match=0
-		 SearchThis1:=Snippet[Bundle,A_Index,1] ; part '1' (enter)
-		 SearchThis2:=Snippet[Bundle,A_Index,2] ; part '2' (shift-enter)
-		 SearchThis3:=Snippet[Bundle,A_Index,4] ; shorthand
+;		 SearchThis1:=Snippet[Bundle,A_Index,1] ; part '1' (enter)
+;		 SearchThis2:=Snippet[Bundle,A_Index,2] ; part '2' (shift-enter)
+;		 SearchThis3:=Snippet[Bundle,A_Index,4] ; shorthand
+		 SearchThis:=Snippet[Bundle,A_Index,1] " " Snippet[Bundle,A_Index,2] " " Snippet[Bundle,A_Index,4] ; part1, part2, shorthand
+	
 
 		 If (SearchMethod = 1) ; normal
 			{
@@ -586,7 +588,8 @@ Search(mode=1)
 	 global
 	 if (Mode = 1) ; normal
 		{
-		 If (InStr(SearchThis1,SearchText,Case) > 0) or (InStr(SearchThis2,SearchText,Case) > 0) or (InStr(SearchThis3,SearchText,Case) > 0)
+		 ;If (InStr(SearchThis1,SearchText,Case) > 0) or (InStr(SearchThis2,SearchText,Case) > 0) or (InStr(SearchThis3,SearchText,Case) > 0)
+		 If (InStr(SearchThis,SearchText,Case) > 0)
 			{
 			 Match++
 			}
@@ -600,8 +603,9 @@ Search(mode=1)
 		 SearchRe:="iUmsS)" SearchRe
 		 If (Case = 1)     ; case sensitive, remove i) option
 			SearchRe := LTrim(SearchRe,"i")
-		 ;;;ToolTip, % "Case: " case " : SearchRe: " SearchRe ; debug only
-		 If (RegExMatch(SearchThis1, SearchRe) > 0) or (RegExMatch(SearchThis2, SearchRe) > 0) or (RegExMatch(SearchThis3, SearchRe) > 0)
+		 ;;ToolTip, % "Case: " case " : SearchRe: " SearchRe ; debug only
+;		 If (RegExMatch(SearchThis1, SearchRe) > 0) or (RegExMatch(SearchThis2, SearchRe) > 0) or (RegExMatch(SearchThis3, SearchRe) > 0)
+		 If (RegExMatch(SearchThis, SearchRe) > 0)
 			{
 			 Match++
 			}
@@ -615,7 +619,8 @@ Search(mode=1)
 			SearchRe := "i)" . SearchText
 		 Else
 			SearchRe := SearchText
-		 If (RegExMatch(SearchThis1, SearchRe) > 0) or (RegExMatch(SearchThis2, SearchRe) > 0) or (RegExMatch(SearchThis3, SearchRe) > 0)
+		 ;If (RegExMatch(SearchThis1, SearchRe) > 0) or (RegExMatch(SearchThis2, SearchRe) > 0) or (RegExMatch(SearchThis3, SearchRe) > 0)
+		 If (RegExMatch(SearchThis, SearchRe) > 0)
 			{
 			 Match++
 			}
@@ -630,8 +635,9 @@ Search(mode=1)
 		 If (Case = 1)     ; case sensitive, remove i) option
 			SearchRe := LTrim(SearchRe,"i")
 
-		 ;;;ToolTip, % "Case: " case " : SearchRe: " SearchRe ; debug only
-		 If (RegExMatch(SearchThis1, SearchRe) > 0) or (RegExMatch(SearchThis2, SearchRe) > 0) or (RegExMatch(SearchThis3, SearchRe) > 0)
+		 ;;ToolTip, % "Case: " case " : SearchRe: " SearchRe ; debug only
+		 ;If (RegExMatch(SearchThis1, SearchRe) > 0) or (RegExMatch(SearchThis2, SearchRe) > 0) or (RegExMatch(SearchThis3, SearchRe) > 0)
+		 If (RegExMatch(SearchThis, SearchRe) > 0)
 			{
 			 Match++
 			}
@@ -910,7 +916,7 @@ Else If (Script <> "") and (ScriptPaused = 0) ; we run script by saving it to tm
 	 FileDelete, %TmpDir%\tmpScript.ahk
 	 StringReplace, Script, Script, LLInit(), %LLInit%, All
 
-		Loop {
+	 Loop {
 		 If (InStr(Script, "[[Var=") = 0)
 			break
 		 RegExMatch(Script, "iU)\[\[Var=([^[]*)\]\]", ClipQ, 1)
@@ -1942,10 +1948,7 @@ Else If (A_ThisMenuItem = "&Manage Counters")
 				{
 				 Gui, 1:Destroy
 				 ReadCountersIni()
-				 If (Administrator = 1)
-					Gosub, RunAdmin
-				 else
-					Run % DllCall( "GetCommandLineW", "Str" ) ; reload with command line parameters
+				 Gosub, RunReload
 				}
 			}
 		}
@@ -1953,10 +1956,7 @@ Else If (A_ThisMenuItem = "E&xit")
 	ExitApp
 Else If (A_ThisMenuItem = "&Reload Bundles (restarts Lintalist)")
 	; Reload
-	 If (Administrator = 1)
-		Gosub, RunAdmin
-	 else
-		Run % DllCall( "GetCommandLineW", "Str" ) ; reload with command line parameters
+	Gosub, RunReload
 Else If (A_ThisMenuItem = "&Restart as Administrator")
 	{
 	 If !A_IsAdmin
@@ -1982,10 +1982,7 @@ Else If (A_ThisMenuItem = "&Configuration")
 	 IfMsgBox, Yes
 		{
 		 Gui, 1:Destroy
-		 If (Administrator = 1)
-			Gosub, RunAdmin
-		 else
-			Run % DllCall( "GetCommandLineW", "Str" ) ; reload with command line parameters
+		 Gosub, RunReload
 		}
 	}
 Else If (A_ThisMenuItem = "&Open Lintalist folder")
@@ -2048,10 +2045,7 @@ Else If (A_ThisMenuItem = "&Manage Local Variables")
 		 IfMsgBox, Yes
 			{
 			 Gui, 1:Destroy
-			 If (Administrator = 1)
-				Gosub, RunAdmin
-			 else
-				Run % DllCall( "GetCommandLineW", "Str" ) ; reload with command line parameters
+			 Gosub, RunReload
 			}
 		}
 ; Tools menu
@@ -2289,8 +2283,6 @@ If InStr(clip,"[[A_") ; check for built-in variables - https://autohotkey.com/do
 			Gosub, ProcessText
 
 		}
-
-	 Gosub, CheckFormat
 
 Return
 
@@ -2754,13 +2746,34 @@ AHK_NOTIFYICON(wParam, lParam)
 		}
 	}
 
+RunReload:
+Gosub, RunFile
+Run, %A_AhkPath% "include\restart.ahk"
+ExitApp
+Sleep 1000
+Return
+
+; Create restart file
+RunFile:
+FileDelete, %TmpDir%\restarttmp.ahk
+While FileExist(TmpDir "\restarttmp.ahk")
+Sleep 100
+if A_IsAdmin
+	FileAppend, % "Run, *RunAs " DllCall( "GetCommandLineW", "Str" ), %TmpDir%\restarttmp.ahk, UTF-8  ; reload with command line parameters
+else
+	FileAppend, % "Run, " DllCall( "GetCommandLineW", "Str" ), %TmpDir%\restarttmp.ahk, UTF-8  ; reload with command line parameters
+Sleep 100
+Return
+
 ; Run as admin
 RunAdmin:
 If Administrator and !A_IsAdmin
 	{
 	 if A_OSVersion not in WIN_2003,WIN_XP,WIN_2000
 		{
-		 Run % "*RunAs " DllCall( "GetCommandLineW", "Str" ),, UseErrorLevel
+		 Gosub, RunFile
+		 Run, *RunAs %A_AhkPath% "include\restart.ahk"
+		 Sleep 1000
 		 if !ErrorLevel
 			ExitApp
 		}

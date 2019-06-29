@@ -1,3 +1,10 @@
+### v1.9.8.4
+
+* Change: merge search string (SearchThis1,SearchThis2,SearchThis3) to allow for easier searching  
+* Change: Use external script (restart.ahk) to restart to prevent possible "Could not close the previous instance of this script" message https://github.com/lintalist/lintalist/issues/127#issuecomment-496279719   
+* Change/fix: MaxRes=30 in Ini (recommended setting anyway) + ObjectBundles.ahk https://github.com/lintalist/lintalist/issues/127#issuecomment-496279719  
+* Change: Statistics = 3 option to save Statistics in A_UserName-Statistics.ini (on request https://github.com/lintalist/lintalist/issues/112#issuecomment-494350363)  
+
 ### v1.9.8.3
 
 * Fix: unexpected () characters deletion for plugin content ending with ()]] not being a function  
