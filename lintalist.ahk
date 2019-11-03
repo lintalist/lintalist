@@ -4,7 +4,7 @@ Name            : Lintalist
 Author          : Lintalist
 Purpose         : Searchable interactive lists to copy & paste text, run scripts,
                   using easily exchangeable bundles
-Version         : 1.9.8.4
+Version         : 1.9.9
 Code            : https://github.com/lintalist/
 Website         : http://lintalist.github.io/
 AutoHotkey Forum: https://autohotkey.com/boards/viewtopic.php?f=6&t=3378
@@ -41,7 +41,7 @@ PluginMultiCaret:=0 ; TODOMC
 
 ; Title + Version are included in Title and used in #IfWinActive hotkeys and WinActivate
 Title=Lintalist
-Version=1.9.8.4
+Version=1.9.9
 
 ; Gosub, ReadPluginSettings
 
@@ -445,9 +445,9 @@ Gosub, TB_SetButtonStates
 XY:=StayOnMonXY(Width*DPIFactor()+20, Height*DPIFactor()+80, Mouse, MouseAlternative, Center) ; was XY:=StayOnMonXY(Width, Height, 0, 1, 0)
 StringSplit, Pos, XY, |
 Try
-	Gui, Show, w%Width% h%Height% x%Pos1% y%Pos2%, %AppWindow%
+	Gui, 1:Show, w%Width% h%Height% x%Pos1% y%Pos2%, %AppWindow%
 Catch
-	Gui, Show, w760 h400, %AppWindow%	
+	Gui, 1:Show, w760 h400, %AppWindow%	
 If (DisplayBundle > 1)
 	 CLV := New LV_Colors(HLV)
 
@@ -472,6 +472,11 @@ Critical, 50 ; experimental-v1.7
 ;MsgBox % "y1-----" Snippet[1,1,1] ; debug
 StartTime := A_TickCount
 ControlGetText, CurrText, Edit1, %AppWindow%
+If QueryDelimiter
+	{
+	 Gosub, LLQuery
+	 CurrText:=Query[1]
+	}
 If (CurrText = LastText)
 	{
 	 Critical, off ; experimental-v1.7
@@ -509,7 +514,7 @@ Else
 
 LastText:=CurrText
 ShowPreviewToggle=1
-
+ShortCutSearchGuiCounter:=0
 Loop, parse, SearchBundles, CSV
 	{
 	 If (A_TickCount - StartTime > 150) ; was 250 for <1.6 - experimental-v1.7
@@ -546,12 +551,22 @@ Loop, parse, SearchBundles, CSV
 		If (match > 0) ; we have a match
 			{
 			 IconVal:=""
+		If ShortCutSearchGui
+			{
+			 ShortCutSearchGuiCounter++
+			 If (ShortCutSearchGuiCounter > 11)
+				ShortCutSearchGuiCounter:=11
+			}
+		 If ShortCutSearchGui in 1,3
+			 ShortCutSearchGuiText:=ShortCutSearchGuiShow[ShortCutSearchGuiCounter]
+		 else
+			SearchGuiShortText:=""
+
 			 If (ShowIcons = 1)
 				{
-				 IconVal:=SetIcon(Snippet[Bundle,A_Index],Snippet[Bundle,A_Index,5])
+				 IconVal:=SetIcon(Snippet[Bundle,A_Index],Snippet[Bundle,A_Index,5],ShortCutSearchGui,ShortCutSearchGuiCounter)
 				}
-			 LV_Add(IconVal,Snippet[Bundle,A_Index,"1v"],Snippet[Bundle,A_Index,"2v"],Snippet[Bundle,A_Index,3],Snippet[Bundle,A_Index,4],Bundle . "_" . A_Index, MenuName_%Bundle%) ; populate listview
-
+			 LV_Add(IconVal,ShortCutSearchGuiText Snippet[Bundle,A_Index,"1v"],Snippet[Bundle,A_Index,"2v"],Snippet[Bundle,A_Index,3],Snippet[Bundle,A_Index,4],Bundle . "_" . A_Index, MenuName_%Bundle%) ; populate listview
 			 If (ShowPreviewToggle = 1) ; do only once to improve speed
 				{
 				 ShowPreview(PreviewSection)
@@ -705,10 +720,15 @@ Return
 ; We made a selection and now want to paste and process the selected text or run script
 Paste:
 Gui, 1:Submit, NoHide
+If QueryDelimiter
+	Gosub, LLQuery
 ControlFocus, SysListView321, %AppWindow%
 SelItem := LV_GetNext()
 If (SelItem = 0)
 	SelItem = 1
+If PasteResult
+	SelItem:=PasteResult
+PasteResult:=""	
 LV_GetText(Paste, SelItem, 5) ; get bundle_index from 5th column which is always hidden
 Gui, 1:Destroy
 CurrText= ; 20110623
@@ -720,6 +740,49 @@ StringSplit, paste, paste, _      ; split to bundle / index number
 Text1  :=Snippet[Paste1,Paste2,1] ; part 1 (enter, or shortcut, or shorthand)
 Text2  :=Snippet[Paste1,Paste2,2] ; part 2 (shift-enter)
 Script :=Snippet[Paste1,Paste2,5] ; script (if there is a script, run script instead)
+If (QueryDelimiter and ViaShorthand) or (QueryDelimiter and ViaShortCut)
+	{
+	 Text1:=RegExReplace(Text1,"iU)\[\[query[12]{0,1}=([^[]*)\]\]","[[input=$1]]")
+	 Text2:=RegExReplace(Text2,"iU)\[\[query[12]{0,1}=([^[]*)\]\]","[[input=$1]]")
+	 Script:=RegExReplace(Script,"iU)\[\[query[12]{0,1}=([^[]*)\]\]","[[input=$1]]")
+
+	 StringReplace, Text1, Text1, [[Query]] , [[Input=Enter Query string (full)]], All
+	 StringReplace, Text1, Text1, [[Query1]], [[Input=Enter Query string part 1]], All
+	 StringReplace, Text1, Text1, [[Query2]], [[Input=Enter Query string part 2]], All
+
+	 StringReplace, Text2, Text2, [[Query]] , [[Input=Enter Query string (full)]], All
+	 StringReplace, Text2, Text2, [[Query1]], [[Input=Enter Query string part 1]], All
+	 StringReplace, Text2, Text2, [[Query2]], [[Input=Enter Query string part 2]], All
+
+	}
+
+; process Query plugin before all others
+if QueryDelimiter
+	{
+	 Text1:=RegExReplace(Text1,"iU)\[\[query[12]{0,1}=([^[]*)\]\]",Trim(Query["full"]))
+	 Text2:=RegExReplace(Text2,"iU)\[\[query[12]{0,1}=([^[]*)\]\]",Trim(Query[1]))
+	 Script:=RegExReplace(Script,"iU)\[\[query[12]{0,1}=([^[]*)\]\]",Trim(Query[2]))
+
+	 StringReplace, Text1, Text1, [[Query]] , % Trim(Query["full"]), All
+	 StringReplace, Text1, Text1, [[Query1]], % Trim(Query[1]), All
+	 StringReplace, Text1, Text1, [[Query2]], % Trim(Query[2]), All
+
+	 StringReplace, Text2, Text2, [[Query]] , % Trim(Query["full"]), All
+	 StringReplace, Text2, Text2, [[Query1]], % Trim(Query[1]), All
+	 StringReplace, Text2, Text2, [[Query2]], % Trim(Query[2]), All
+
+	 StringReplace, Script, Script, [[Query]] , % Trim(Query["full"]), All
+	 StringReplace, Script, Script, [[Query1]], % Trim(Query[1]), All
+	 StringReplace, Script, Script, [[Query2]], % Trim(Query[2]), All
+	}
+Else if (Trim(QueryDelimiter) = "") ; remove query 
+	{
+	 Text1:=RegExReplace(Text1,"iU)\[\[query[12=]{0,2}([^[]*)\]\]")
+	 Text2:=RegExReplace(Text2,"iU)\[\[query[12=]{0,2}([^[]*)\]\]")
+	 Script:=RegExReplace(Script,"iU)\[\[query[12=]{0,2}([^[]*)\]\]")
+	}
+
+Query:=""
 
 If Statistics and SelItem
 	{
@@ -959,7 +1022,7 @@ If (OnPaste = 1)
 	Gosub, SaveSettings
 If Statistics and (OmniSearch or OmniSearchText)
 	Stats("OmniSearch")
-OmniSearch:=0,OmniSearchText:="",Typed:="",SnippetPasteMethod:="",SelItem:="" ; ,ViaShorthand:="",ViaText:=""
+OmniSearch:=0,OmniSearchText:="",Typed:="",SnippetPasteMethod:="",SelItem:="", ViaShorthand:=0, ViaShortCut:=0 ; ,ViaShorthand:="",ViaText:=""
 Return
 
 CheckHitList(CheckHitList, CheckFor, Bundle, RE = 0) ; RE no longer needed?
@@ -1090,6 +1153,11 @@ ShowPreview(Section="1")
 	 Return
 	}
 
+LLQuery:
+Query:=StrSplit(CurrText, QueryDelimiter,, 2)
+Query["full"]:=LTrim(CurrText,OmniChar)
+Return
+
 ; This function is used to reset the search mode buttons when you switch search mode
 TB_ResetButtons(in)
 	{
@@ -1171,6 +1239,7 @@ PauseShortcutButton:
 	 PauseShortcutButton:=!PauseShortcutButton
 	 MyToolbar.ModifyButton(MyToolbarIDs.ToggleShortcuts,"Check",PauseShortcutButton)
 	 Gosub, SetShortcutButton
+	 Gosub, PauseShortcut
 Return
 
 SetShortcutButton:
@@ -1308,7 +1377,11 @@ Return
 ; GUI related hotkeys
 
 #IfWinActive Lintalist snippet editor
-:*:[::[[]]{left 2}
+:*:[::
+ControlGetFocus, Control, A
+Control, EditPaste, [[]], %Control%, Lintalist snippet editor
+Send {left 2}
+Return
 #IfWinActive
 
 ; Not the best of methods, but it works best for some reason
@@ -1658,37 +1731,21 @@ If (DisplayBundle > 1)
 	GuiControl, +Redraw, SelItem
 Return
 
-Pgdn::
-	IfWinNotActive, %AppWindow%,
-		{
-		 Send, {PgDn}
-		 Return
-		}
-If (DisplayBundle > 1)
-	GuiControl, -Redraw, SelItem
-	ControlGetFocus, CurrCtrl, %AppWindow%
-	If (CurrCtrl = "Edit1")
-		ControlSend, SysListView321, {Down %VisibleRows%}, %AppWindow%
-ShowPreview(PreviewSection)
-If (DisplayBundle > 1)
-	GuiControl, +Redraw, SelItem
-Return
-
-Pgup::
-	IfWinNotActive, %AppWindow%,
-		{
-		 Send, {Pgup}
-		 Return
-		}
-If (DisplayBundle > 1)
-	GuiControl, -Redraw, SelItem
-	ControlGetFocus, CurrCtrl, %AppWindow%
-	If (CurrCtrl = "Edit1")
-		ControlSend, SysListView321, {Up %VisibleRows%}, %AppWindow%
-ShowPreview(PreviewSection)
-If (DisplayBundle > 1)
-	GuiControl, +Redraw, SelItem
-Return
+$!1:: ; alt-1..0 for the first 10 search results 
+$!2::
+$!3::
+$!4::
+$!5::
+$!6::
+$!7::
+$!8::
+$!9::
+$!0::
+If !ShortCutSearchGui
+	Return
+PasteResult:=(A_ThisHotkey= "$!0") ? 10 : SubStr(A_ThisHotkey,0)
+Gosub, Paste
+return
 
 $^1:: ; sort part1
 $^2:: ; part part2
@@ -1792,6 +1849,7 @@ If InStr(HitKeyHistory, ",") ; CSV indicates multiple hits so create gui for sel
 		 ClipQ1 .= MenuName_%MenuText1% "|"
 		}
 	 MultipleHotkey=1
+	 OldGui10NoResize:=Gui10NoResize
 	 Gui10NoResize:=1
 	 Gui, 10:Destroy
 	 Gui, 10:+Owner +AlwaysOnTop
@@ -1802,7 +1860,9 @@ If InStr(HitKeyHistory, ",") ; CSV indicates multiple hits so create gui for sel
 	 Gui, 10:Font,
 	 Gui, 10:Show, w410 h110, Select bundle
 	 ControlSend, ListBox1, {Down}, Select bundle
-	 Gui10NoResize:=0
+	 Gui10ListboxCheckPosition("Select bundle")
+	 Gui10NoResize:=OldGui10NoResize ; fix-to-prevent-resize
+	 OldGui10NoResize:=""            ; fix-to-prevent-resize
 	 Return
 	}
 Else ; only one hit e.g. unique shortcut
@@ -1814,6 +1874,8 @@ Else ; only one hit e.g. unique shortcut
 		{
 		 Send, {Blind}{BS %back%}
 		}
+	 else
+	 	ViaShortCut:=1 ; so we can actually check we're using a shortcut, for combination with QueryDelimiter
 	 Gosub, ViaShortCut
 	 if Statistics
 		{
@@ -1830,6 +1892,7 @@ Else ; only one hit e.g. unique shortcut
 	}
 ViaText=0
 ViaShorthand=0
+ViaShortCut=0
 Return
 
 ChoiceMouseOK: ; if selection by mouse
@@ -1886,6 +1949,7 @@ MadeChoice = 1
 InEditMode = 0
 EditMode =
 Clip:="" ; in case we cancelled Choice by using the X
+Gosub, 10GuiSavePos
 Gui, 10:Destroy
 Gui, 1:-Disabled
 Gui, 71:Destroy
@@ -1897,6 +1961,7 @@ GuiClose: ; GuiClose for Gui 1 (and not 1GuiClose)
 WinGetPos, X, Y, , ,  %AppWindow% ; remember position set by user
 XY:=X "|" Y
 Gui, 1:Destroy
+Query:=""
 CurrText=
 lasttext = fadsfSDFDFasdFdfsadfsadFDSFDf
 ViaText=0
@@ -1999,10 +2064,12 @@ Else If (A_ThisMenuItem = "&View Statistics")
 	 StatisticsReport()
 	}
 Else If (A_ThisMenuItem = "Pause &Shorthand")
-	Gosub, PauseShorthandButton
+	{
+	 Gosub, PauseShorthandButton
+	}
 Else If (A_ThisMenuItem = "Pause &Shortcut")
 	{
-	 Gosub, PauseShortcut
+	 Gosub, PauseShortcutButton
 	}
 Else If (A_ThisMenuItem = "Pause &Scripts")
 	{
@@ -2201,7 +2268,7 @@ Loop, parse, Group, CSV
 		 _h2=
 		}
 	}
-Gosub, PauseShortcutButton
+;Gosub, PauseShortcutButton
 Return
 
 PauseProgram:
@@ -2277,7 +2344,7 @@ If InStr(clip,"[[A_") ; check for built-in variables - https://autohotkey.com/do
 			 clipsave:="", PluginProcessFunction:=""
 			}
 		 else ; not a plugin, so remove it otherwise we'll get stuck in an endless loop, we replace [[]] with {{}} to show the "error"
-			clip:=StrReplace(clip,ProcessTextString,"{{" trim(ProcessTextString,"[]")"}}")
+			clip:=StrReplace(clip,ProcessTextString,"{{" trim(ProcessTextString,"[]") "}}")
 
 		 If (RegExMatch(Clip, "iU)\[\[\w") > 0) ; make sure all "plugins" are processed before proceeding incl. local variables
 			Gosub, ProcessText
@@ -2554,6 +2621,7 @@ Menu, Plugins, Add
 Menu, Plugins, Add, Insert [[C=]]        , PluginMenuHandler
 Menu, Plugins, Add, Insert [[Calc=]]     , PluginMenuHandler
 Menu, Plugins, Add, Insert [[Calendar=]] , PluginMenuHandler
+Menu, Plugins, Add, Insert [[Case=]]     , PluginMenuHandler
 ;Menu, Plugins, Add, Insert [[Choice=]]   , PluginMenuHandler
 Menu, Choice, Add, Insert [[Choice=]]	- normal, PluginMenuHandler
 Menu, Choice, Add, Insert [[Choice=?|]]	- question, PluginMenuHandler
@@ -2579,6 +2647,11 @@ Menu, Split, Add
 Menu, Split, Add, Insert [[sp=1]]        , PluginMenuHandler
 Menu, Split, Add, Insert [[sp=1`,1]]     , PluginMenuHandler
 Menu, Plugins, Add, Insert [[Split/Repeat]], :Split
+
+Menu, Query, Add, Insert [[Query]]   , PluginMenuHandler
+Menu, Query, Add, Insert [[Query1]]   , PluginMenuHandler
+Menu, Query, Add, Insert [[Query2]]   , PluginMenuHandler
+Menu, Plugins, Add, Insert [[Query]], :Query
 
 Menu, Plugins, Add
 

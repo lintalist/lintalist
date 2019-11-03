@@ -1,6 +1,6 @@
 ﻿; LintaList Include
 ; Purpose: Bundle & Snippet Editor
-; Version: 1.2
+; Version: 1.3
 ;
 ; Hotkeys used in Search GUI to start Bundle & Snippet Editor
 ; F4  = Edit snippet
@@ -10,7 +10,8 @@
 ; F8  = Delete snippet
 ; 
 ; History: 
-; v1.1 - Use font/fontsize settings in Editor as well (as in the Search GUI)
+; v1.3 - 'shortcuts' (Keyboard accelerators) for edit controls
+; v1.2 - Use font/fontsize settings in Editor as well (as in the Search GUI)
 ; v1.1 - Added (optional) Syntax Highlighting for snippets/html/scripts
 ; 
 ; 
@@ -90,6 +91,7 @@ If (EditMode = "AppendSnippet")
 			 StringSplit, MenuN, A_LoopField, _
 			 ClipQ1 .= MenuName_%MenuN1% "|"
 			} 
+		 OldGui10NoResize:=Gui10NoResize
 		 Gui10NoResize:=1
 		 Gui, 10:Destroy
 		 Gui, 10:+Owner +AlwaysOnTop
@@ -99,7 +101,9 @@ If (EditMode = "AppendSnippet")
 		 GuiControl, 10: , ListBox1, %ClipQ1%
 		 Gui, 10:Show, w410 h110, Append snippet to bundle:
 		 ControlSend, ListBox1, {Down}, Append snippet to bundle:
-		 Gui10NoResize:=0
+		 Gui10NoResize:=OldGui10NoResize ; fix-to-prevent-resize
+		 OldGui10NoResize:=""            ; fix-to-prevent-resize
+		 Gui10ListboxCheckPosition("Append snippet to bundle:")
 		 WinWaitClose, Append snippet to bundle:
 		 MadeChoice = 1
 
@@ -136,6 +140,7 @@ If (EditMode = "MoveSnippet")
 			Break
 		}		
 	 StringSplit, HkHm, ClipQ1, |	
+	 OldGui10NoResize:=Gui10NoResize
 	 Gui10NoResize:=1
 	 Gui, 10:Destroy
 	 Gui, 10:+Owner +AlwaysOnTop
@@ -145,7 +150,9 @@ If (EditMode = "MoveSnippet")
 	 GuiControl, 10: , ListBox1, %ClipQ1%
 	 Gui, 10:Show, w410 h110, Move snippet to bundle:
 	 ControlSend, ListBox1, {Down}, Move snippet to bundle:
-	 Gui10NoResize:=0
+	 Gui10NoResize:=OldGui10NoResize ; fix-to-prevent-resize
+	 OldGui10NoResize:=""            ; fix-to-prevent-resize
+	 Gui10ListboxCheckPosition("Move snippet to bundle:")
 	 WinWaitClose, Move snippet to bundle:
 	 MadeChoice = 1
 
@@ -234,12 +241,12 @@ Gui, 71:Add, Text    , x40    y13               , Bundle:`t%A_Space%%A_Space%%A_
 Gui, 71:Add, Text    , x340   y13               , File:%A_Space%%A_Space%%A_Space%%Filename%
 Gui, 71:Add, Text,     x20    y45 w700 h1 0x10 vTextLine
 Gui, 71:Add, Picture , x20    y65 w16 h16, %A_ScriptDir%\icons\hotkeys.ico
-Gui, 71:Add, Text    , x40    y65                  , Hotkey: 
+Gui, 71:Add, Text    , x40    y65               , Hotke&y: 
 
 If !EditorHotkeySyntax
 	{
 	 Gui, 71:Add, Hotkey  , xp+50  y63  w140 h20 vHKey  , %HKey%
-	 Gui, 71:Add, Checkbox, xp+150 y65  w70  h20 vWinKey %checked%, Win
+	 Gui, 71:Add, Checkbox, xp+150 y65  w70  h20 vWinKey %checked%, &Win
 	}
 else If EditorHotkeySyntax
 	{
@@ -248,11 +255,11 @@ else If EditorHotkeySyntax
 	}
 
 Gui, 71:Add, Picture , xp+80  y65  w16 h16, %A_ScriptDir%\icons\shorthand.ico
-Gui, 71:Add, Text    , xp+20  y65  w150 h20           , Shorthand: 
+Gui, 71:Add, Text    , xp+20  y65  w150 h20           , Sh&orthand: 
 Gui, 71:Add, Edit    , xp+70  y63  w150 h20 vShorthand, %Shorthand%
 
 Gui, 71:Add, Picture , x20    y100 w16 h16 vPicture1, %A_ScriptDir%\icons\text_dropcaps.png
-Gui, 71:Add, Text    , x40    y100  vText1Label       , Part 1 (Enter)
+Gui, 71:Add, Text    , x40    y100  vText1Label       , Part &1 (Enter)
 
 Gui, 71:Font,s%fontsize%,%font%
 If EditorSyntaxHL
@@ -261,8 +268,9 @@ else
 	Gui, 71:Add, Edit    , x20    y120  h120 w700 vText1  , %Text1%
 Gui, 71:Font,
 
+Gui, 71:font,s10 normal
 Gui, 71:Add, Picture , x20    yp+125 w16 h16 vPicture2, %A_ScriptDir%\icons\text_dropcaps.png
-Gui, 71:Add, Text    , x40    yp    vText2Label      , Part 2 (Shift-Enter)
+Gui, 71:Add, Text    , x40    yp    vText2Label      , Part &2 (Shift-Enter)
 Gui, 71:Font,s%fontsize%,%font%
 If EditorSyntaxHL
 	RC2 := new RichCode(RichCodeSettings.Clone(), "x20 yp+20 w700 h90 vText2")
@@ -270,8 +278,9 @@ else
 	Gui, 71:Add, Edit    , x20    yp+20 h90 w700 vText2  , %Text2%
 Gui, 71:Font,
 
+Gui, 71:font,s10 normal
 Gui, 71:Add, Picture , x20    yp+95 w16 h16 vPicture3, %A_ScriptDir%\icons\scripts.ico
-Gui, 71:Add, Text    , x40    yp    vText3Label              , Script
+Gui, 71:Add, Text    , x40    yp    vText3Label              , Scrip&t
 Gui, 71:Font,s%fontsize%,%font%
 If EditorSyntaxHL
 	RC3 := new RichCode(RichCodeSettings.Clone(), "x20 yp+20 w700 h90 vScript")
@@ -319,7 +328,8 @@ WinActivate, Lintalist snippet editor
 If EditorSyntaxHL
 	GuiControl, Focus, % RC1.hWnd
 else
-	ControlFocus, Text1, Lintalist snippet editor
+	;ControlFocus, Text1, Lintalist snippet editor
+	GuiControl, Focus, Text1
 Return
 
 #IfWinActive, Lintalist snippet editor ahk_class AutoHotkeyGUI
@@ -573,7 +583,7 @@ ArrayName=List_
 HotKeyHitList_%Counter%:=Chr(5)    ; clear
 ShortHandHitList_%Counter%:=Chr(5) ; clear
 ; MsgBox % Counter
-If (OldKey <> "") ; and (OldKey <> HKey)
+If (OldKey <> "") and (OldKey <> HKey) ; only turn off when the hotkey has changed
 	{
 	 Hotkey, IfWinNotActive, ahk_group BundleHotkeys
 	 Hotkey, % "$" . OldKey, Off ; set old hotkey off ...
@@ -747,3 +757,4 @@ Return
 
 EditorHotkeySyntaxDummyLabel:
 Return
+

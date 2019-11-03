@@ -1,3 +1,18 @@
+### v1.9.9
+
+* New: Search GUI shortcuts for first 10 search result (Alt+1..0) - show numbers as text and/or icons.  
+  Settings: ShortCutSearchGui - https://github.com/lintalist/lintalist/issues/137
+* New: String plugin to transform text (upper, lower, sentence, title case, trim...)
+* New: Query plugin and QueryDelimiter setting. Use (parts of) search query in Snippets, see docs and  
+  https://github.com/lintalist/lintalist/issues/136
+* New: Editor - 'shortcuts' (Keyboard accelerators) for the (Edit) controls
+* Change: removed Pgdown and Pgup hotkeys, no longer worked correctly and not all that useful
+* Change/fix: Change how Col2, Col3, and Col4 are set for listview columns to prevent accidental hiding of columns  
+  https://github.com/lintalist/lintalist/issues/126  
+* Fix: Choice plugin Cancel/Esc not storing position properly
+* Fix: Pausing / Enabling Shortcuts didn't work correctly, worked only after restart
+* Update TitleCase() to v1.2 https://github.com/lintalist/TitleCase
+
 ### v1.9.8.4
 
 * Change: merge search string (SearchThis1,SearchThis2,SearchThis3) to allow for easier searching  
@@ -42,7 +57,7 @@
 
 ### v1.9.7
 
-* New: AltPaste method via INI config - for example to paste in putty via shift+insert vs ctrl+v - #66  
+* New: AltPaste method via INI config - for example to paste in Putty via shift+insert vs ctrl+v - #66  
   https://github.com/lintalist/lintalist/issues/66 and docs\AltPaste.md
 * New: You can replace linefeed(s)/newline(s) per application via INI config in Linefeed.ini - #65 https://github.com/lintalist/lintalist/issues/65
 * New: You can now define the Copy, Cut, Paste and QuickSearch shortcuts (see settings)

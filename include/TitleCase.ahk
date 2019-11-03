@@ -5,11 +5,12 @@ Purpose    : Title case (capital case, headline style), example
              "The Quick Brown Fox Jumps over the Lazy Dog"
              A mixed-case style with all words capitalised, except for certain subsets
              -- https://en.wikipedia.org/wiki/Letter_case#Title_case
-Version    : 1.1
+Version    : 1.2
 Source     : https://github.com/lintalist/TitleCase
 License    : See license.txt for further details (GPL-2.0)
 
 History:
+v1.2 - adding RegExReplace() to address 1st 2nd 3rd 4th etc
 v1.1 - adding readme.md doc, minor mods to default LowerCaseList
 v1.0 - initial version
 
@@ -38,6 +39,7 @@ TitleCase(Text,lang="en",ini="TitleCase.ini")
 	 Text:=TitleCase_MixedCaseList(Text,settings.MixedCaseList)
 	 Text:=TitleCase_ExceptionsList(Text,settings.ExceptionsList)
 	 Text:=TitleCase_AlwaysLowerCaseList(Text,settings.AlwaysLowerCaseList)
+	 Text:=RegExReplace(Text,"im)\b(\d+)(st|nd|rd|th)\b","$1$L{2}") ; for 1st 2nd 3rd 4th etc
 	 Text:=RegExReplace(Text,"^(.)","$U{1}") ; ensure first char is always upper case
 	 Return Text
 	}

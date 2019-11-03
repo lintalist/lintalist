@@ -45,7 +45,7 @@ GetSnippetFileList:
 Loop
 	{
 	 If (InStr(Clip, "[[FileList=") = 0) or (A_Index > 100)
-	 Break
+		Break
 
 	 FileListDelimeter:="|"
 	 FileListOptions:=""

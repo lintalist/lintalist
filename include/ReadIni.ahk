@@ -96,6 +96,10 @@ INISetup:={ AlwaysLoadBundles:     {default:"",find:"bundles\"}
 			IniSetup["ShortcutCut"]:={default:"^x"}
 			IniSetup["ShortcutQuickSearch"]:={default:"^+{Left}^x"}
 			IniSetup["Statistics"]:={default:"0"}
+			IniSetup["ShortcutSearchGui"]:={default:"1"}
+			IniSetup["QueryDelimiter"]:={default:">"}
+
+	 ShortcutSearchGuiShow:=["1: ","2: ","3: ","4: ","5: ","6: ","7: ","8: ","9: ","0: ", "   "]
 
 	 for k, v in INISetup
 		{
@@ -152,6 +156,11 @@ INISetup:={ AlwaysLoadBundles:     {default:"",find:"bundles\"}
 			ShowGrid =
 		Else
 			ShowGrid = Grid
+
+	 If RegExMatch(QueryDelimiter,"^\s*\\s")
+	 	QueryDelimiter:=" "
+	 else
+	 	QueryDelimiter:=SubStr(Trim(QueryDelimiter),1,1) ; only use first char if a string was entered
 
 	 ReadCountersIni()
 	 ReadPlaySoundIni()

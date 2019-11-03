@@ -89,7 +89,7 @@ Loop                          ; Standard Loop for All Plugins
 	 StringReplace, clip, clip, %PluginText%, %PluginX%, All                  ; Insert User Defined Variable into Lintalist Clip in place of Plugin Markup
 	 
 	 PluginX:=""           ; Clear User Defined Variable
-	 PluginOptions:=""     ; Clear Standard Plugin Variable,
+	 PluginOptions:=""     ; Clear Standard Plugin Variable
 	 PluginText:=""        ; Clear Standard Plugin Variable
 	 ProcessTextString:="" ; Clear Standard Plugin Variable
 	}

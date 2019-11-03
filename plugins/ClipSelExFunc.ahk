@@ -2,10 +2,11 @@
 Plugin func   : Used in Selected & Clipboard plugins
 Purpose       : Process text for upper, lower, title, sentence and wrap options
 Credit        : Sentence case by Laszlo & None
-Updated       : 20181130
-Version       : 1.1
+Updated       : 20191019
+Version       : 1.2
 
 History:
+- 1.2 Adding trim,r
 - 1.1 Now using TitleCase() - https://github.com/lintalist/lintalist/issues/113#issuecomment-437522435
       and https://github.com/lintalist/TitleCase
 - 1.0 first version added to Lintalist v1.4
@@ -14,6 +15,10 @@ History:
 
 ClipSelEx(SelectedText,Options)
 	{
+	 If Options in trim,r
+		{
+		 SelectedText:=Trim(SelectedText)
+		}
 	 If Options in upper,u
 		{
 		 StringUpper, SelectedText, SelectedText

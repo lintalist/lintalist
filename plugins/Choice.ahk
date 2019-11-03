@@ -1,9 +1,10 @@
 ﻿/* 
 Plugin        : Choice [Standard Lintalist]
 Purpose       : Make a selection from a list [part of code also placed in lintalist.ahk and used to allow users to select a bundle]
-Version       : 1.7
+Version       : 1.8
 
 History:
+- 1.8 Fix for Cancel/Esc not storing position properly, and try to prevent incorrect Listbox heights using Gui10ListboxCheckPosition()
 - 1.7 Added option to "filter as you type" by using ! in first item (similar to question using ?) - uses SetEditCueBanner()
       Incorporate CancelPlugin (avoids SoundPlay and return nicely)
 - 1.6 You can now close/cancel it via the close button (x) in Gui
@@ -17,6 +18,12 @@ History:
 
 GetSnippetChoice:
 
+; just make sure we set it to prevent the listbox overlapping the cancel/random/autocenter options
+If (ChoiceAutoCenter = "")
+	{
+	 ChoiceAutoCenter:=1
+	 Gosub, ChoiceAutoCenterWrite
+	}
 
 MakeChoice:
 	  ChoiceQuestion:=""
@@ -70,7 +77,9 @@ MakeChoice:
 				Gui, 10:Show, w410 Center, Select and press enter
 			}
 		 else
-			Gui, 10:Show, w410 Center, Select and press enter	
+			Gui, 10:Show, w410 Center, Select and press enter
+
+		 Gui10ListboxCheckPosition("Select and press enter")
 		 SetEditCueBanner(HED1, "Filter: " ChoiceQuestion)
 		 DetectHiddenWindows, Off
 		 ControlSend, ListBox1, {Down}, Select and press enter
@@ -152,7 +161,8 @@ CancelPlugin:=1
 Return
 
 10GuiSavePos:
-WinGetPos, ChoiceX, ChoiceY, ChoiceWidth, ChoiceHeight, Select and press enter
+IfWinExist, Select and press enter
+	WinGetPos, ChoiceX, ChoiceY, ChoiceWidth, ChoiceHeight, Select and press enter
 Return
 
 ChoiceWindowPosition:
@@ -172,6 +182,7 @@ Return
 
 ChoiceAutoCenter:
 ChoiceAutoCenter:=!ChoiceAutoCenter
+ChoiceAutoCenterWrite:
 IniWrite, %ChoiceAutoCenter%, %A_ScriptDir%\session.ini, choice, ChoiceAutoCenter
 return
 
@@ -180,3 +191,22 @@ SetEditCueBanner(HWND, Cue) {  ; requires AHL_L
    Static EM_SETCUEBANNER := (0x1500 + 1)
    Return DllCall("User32.dll\SendMessageW", "Ptr", HWND, "Uint", EM_SETCUEBANNER, "Ptr", True, "WStr", Cue)
 }
+
+; Under some circumstances it would (still) be possible that the listbox in Gui, 10 could be
+; - too short (height < 10px) in the Add snippet/select Bundle gui
+; - too heigh so that it overlaps the cancel/random/Checkbox 
+; we there use this functions to check the height and reset it using ControlMove if needed
+; TODO: This should probably better be solved by not re-using Gui, 10: all the time and only use
+; it for Choice vs various other listbox GUIs
+Gui10ListboxCheckPosition(gui10title)
+	{
+	 ControlGetPos, Gui10ListboxX, Gui10ListboxY, Gui10ListboxWidth, Gui10ListboxHeight, Listbox1, %gui10title%
+	 ControlGetPos, Gui10CancelX, Gui10CancelY, , , Button1, %gui10title%
+	; MsgBox % Gui10CancelY ">" Gui10ListboxY+Gui10ListboxHeight "`n" Gui10ListboxX ":" Gui10ListboxY ":" Gui10ListboxWidth ":" Gui10ListboxHeight ; debug
+	 If (Gui10CancelY = "")
+		Gui10CancelY:=0
+	 If (Gui10ListboxY+Gui10ListboxHeight > Gui10CancelY) 
+		ControlMove, Listbox1, Gui10ListboxX, Gui10ListboxX, Gui10ListboxWidth, % Gui10CancelY-Gui10ListboxY-10, %gui10title%
+	 If (Gui10ListboxHeight < 20)
+		ControlMove, Listbox1, Gui10ListboxX, Gui10ListboxX, Gui10ListboxWidth, 110, %gui10title%
+	}

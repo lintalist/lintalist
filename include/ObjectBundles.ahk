@@ -1,8 +1,21 @@
-﻿; LintaList Include
-; Purpose: Load and Parse LintaList Bundles at startup into memory
-;          and later determine which one to load
-; Version: 1.3
-; Date:    20170204
+﻿/*
+
+LintaList Include
+Purpose: Load and Parse LintaList Bundles at startup into memory
+         and later determine which one to load
+Version: 1.4
+
+History:
+
+- 1.4 Adding numbers (text & icons) to first 10 results for search result shortcuts  https://github.com/lintalist/lintalist/issues/137
+- 1.3 Change/fix: Change how Col2, Col3, and Col4 are set for listview columns,  
+  if the first occurence was after MaxRes the column would remain hidden, now   
+  stored in Global Snippet object - this should fix ... "Column for shorthand" https://github.com/lintalist/lintalist/issues/126  
+- 1.2 Change/fix: MaxRes=30 in Ini (recommended setting anyway) + ObjectBundles.ahk https://github.com/lintalist/lintalist/issues/127#issuecomment-496279719  
+< 1.1 see changelog and repo history
+
+*/
+
 
 WhichBundle() ; determine which bundle to use based on active window (titlematch)
 	{
@@ -12,7 +25,7 @@ WhichBundle() ; determine which bundle to use based on active window (titlematch
 		{
 		 Load:=Group
 		 Return
-		}	 
+		}
 	 If (Lock = 1) ; Load was already set by FileMenu or was locked by user
 		 Return
 	 Load= ; clear
@@ -51,6 +64,7 @@ LoadBundle(Reload="")
 	 Global
 	 ;MsgBox % "x" Snippet[1,1,1] ; debug
 	 TotalMax:=0
+	 ShortCutSearchGuiCounter:=0
 	 Gui, 1:Default
 	 LV_Delete()
 	 If (ReLoad = "")
@@ -72,6 +86,12 @@ LoadBundle(Reload="")
 	 Loop, Parse, Load, CSV
 	 {
 	  Bundle:=A_LoopField
+	  If Snippet[Bundle,"Col2"]
+		Col2:=1
+	  If Snippet[Bundle,"Col3"]
+		Col3:=1
+	  If Snippet[Bundle,"Col4"]
+		Col4:=1
 	  MenuItem:=MenuName_%Bundle%
 	  If (MenuItem <> "") ; just to be sure
 			Menu, file, Check, &%MenuItem%
@@ -85,22 +105,34 @@ LoadBundle(Reload="")
 			Continue
 		 If (++TotalMax > Max)
 			Break
+		 If ShortCutSearchGui
+			{
+			 ShortCutSearchGuiCounter++
+			 If (ShortCutSearchGuiCounter > 11)
+				ShortCutSearchGuiCounter:=11
+			}
+		 If ShortCutSearchGui in 1,3
+			 ShortCutSearchGuiText:=ShortCutSearchGuiShow[ShortCutSearchGuiCounter]
+		 else
+			SearchGuiShortText:=""
 		 IfEqual, ShowIcons, 1
 			{
-			 IconVal:=SetIcon(Snippet[Bundle,A_Index],Snippet[Bundle,A_Index,5])
+			 IconVal:=SetIcon(Snippet[Bundle,A_Index],Snippet[Bundle,A_Index,5],ShortCutSearchGui,ShortCutSearchGuiCounter)
 			}
-		 LV_Add(IconVal,Snippet[Bundle,A_Index,"1v"],Snippet[Bundle,A_Index,"2v"],Snippet[Bundle,A_Index,3],Snippet[Bundle,A_Index,4],Bundle . "_" . A_Index, MenuName_%Bundle%) ; populate listview
-	
+		 LV_Add(IconVal, ShortCutSearchGuiText Snippet[Bundle,A_Index,"1v"],Snippet[Bundle,A_Index,"2v"],Snippet[Bundle,A_Index,3],Snippet[Bundle,A_Index,4],Bundle . "_" . A_Index, MenuName_%Bundle%) ; populate listview
+/*	
 		 If (Snippet[Bundle,A_Index,"2v"] <> "") ; part2 e.g. shift+enter
 			Col2 = 1
 		 If (Snippet[Bundle,A_Index,3] <> "")  ; key
 			Col3 = 1
 		 If (Snippet[Bundle,A_Index,4] <> "")  ; shorthand
 			Col4 = 1
+*/			
 		}
-	 }	
+	 }
 	 If (DisplayBundle > 1)
 		Gosub, ColorList
+	ShortCutSearchGuiCounter:=0	
 	 Return
 	}
 
@@ -171,11 +203,11 @@ LoadAllBundles()
 	 Loop, parse, AvailableBundles, CSV
 		{
 		 If (A_LoopField = DefaultBundle)
-			 DefaultBundleIndex:=A_Index ; default bundle defined in INI setting
+			DefaultBundleIndex:=A_Index ; default bundle defined in INI setting
 		 If A_LoopField in %LastBundle%
-			 Load .= A_Index ","
+			Load .= A_Index ","
 		 If A_LoopField in %AlwaysLoadBundles%
-			 StringReplace, AlwaysLoadBundles, AlwaysLoadBundles, %A_LoopField%, %A_Index%, All
+			StringReplace, AlwaysLoadBundles, AlwaysLoadBundles, %A_LoopField%, %A_Index%, All
 		 ReadBundle(A_LoopField, A_Index)
 		}	
 	 StringTrimRight, Load, Load, 1   ; remove trailing ,
@@ -340,7 +372,9 @@ ParseBundle(Patterns, Counter)
 
 		 Snippet[Counter,A_Index,"1v"]:=FixPreview(Snippet[Counter,A_Index,1])
 		 Snippet[Counter,A_Index,"2v"]:=FixPreview(Snippet[Counter,A_Index,2])
-		 
+		 If (Snippet[Counter,A_Index,"2v"] <> "")
+			Snippet[Counter,"Col2"]:=1
+		
 		 If (Snippet[Counter,A_Index,3] <> "") ; if no hotkey defined: skip
 			{
 			 Hotkey, IfWinNotActive, ahk_group BundleHotkeys	
@@ -350,14 +384,16 @@ ParseBundle(Patterns, Counter)
 				 Hotkey, % "$" . Snippet[Counter,A_Index,3], Off ; turn hotkeys off ...
 				}
 			 HotKeyHitList_%Counter% .= Snippet[Counter,A_Index,3] Chr(5)
+			 Snippet[Counter,"Col3"]:=1
 			 Hotkey, IfWinNotActive
 			}
 			
 		 If (Snippet[Counter,A_Index,4] <> "")                 ; if no shorthand defined: skip
 			{
 			 ShortHandHitList_%Counter% .= Snippet[Counter,A_Index,4] Chr(5)
+			 Snippet[Counter,"Col4"]:=1
 			} 
-			 
+			
 		 %ArrayName%%A_Index%= ; free mem	
 		}
 	 ;MsgBox % Snippet[Counter,1,1] ; debug
@@ -397,4 +433,3 @@ FixPreview(in)
 	 StringReplace, in, in, %A_Tab%, \t,all
 	 return in
 	}
-	

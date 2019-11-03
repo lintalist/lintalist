@@ -30,6 +30,7 @@ See "readme-howto.txt" for more information.
 #Include %A_ScriptDir%\plugins\Random.ahk      ; Random plugin
 #Include %A_ScriptDir%\plugins\PasteMethod.ahk ; Set PasteMethod per snippet
 #Include %A_ScriptDir%\plugins\FileList.ahk    ; Build file list 
+#Include %A_ScriptDir%\plugins\String.ahk      ; Transform text to upper, lower, sentence, title case, trim (basically a wrapper for ClipSelExFunc)
 ;#Include %A_ScriptDir%\plugins\FileCopy.ahk    ; Copy files to clipboard for pasting
 ;#Include %A_ScriptDir%\plugins\enc.ahk         ; Enc(rypt) plugin (decode)
 #Include %A_ScriptDir%\plugins\ClipSelExFunc.ahk
