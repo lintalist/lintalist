@@ -125,6 +125,11 @@ Markdown2HTML_(ByRef text)
 					StringTrimRight, t, t, 2
 					t .= "<br/>"
 				}
+				if SubStr(t, -1) = "--"
+				{
+					StringTrimRight, t, t, 2
+					t .= "<br></br>"
+				}
 			}else
 			{
 				out .= "</p>`n"
