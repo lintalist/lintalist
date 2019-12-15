@@ -31,6 +31,7 @@ See "readme-howto.txt" for more information.
 #Include %A_ScriptDir%\plugins\PasteMethod.ahk ; Set PasteMethod per snippet
 #Include %A_ScriptDir%\plugins\FileList.ahk    ; Build file list 
 #Include %A_ScriptDir%\plugins\String.ahk      ; Transform text to upper, lower, sentence, title case, trim (basically a wrapper for ClipSelExFunc)
+#Include %A_ScriptDir%\plugins\Comment.ahk     ; Add a comment to snippet which will be removed before pasting. Use a visual reminder or search aid.
 ;#Include %A_ScriptDir%\plugins\FileCopy.ahk    ; Copy files to clipboard for pasting
 ;#Include %A_ScriptDir%\plugins\enc.ahk         ; Enc(rypt) plugin (decode)
 #Include %A_ScriptDir%\plugins\ClipSelExFunc.ahk

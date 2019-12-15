@@ -116,6 +116,7 @@ Loop
  	 Counters .= VarName "," VarValue "|"
 	}
 iniwrite, %Counters%, %ini%, Settings, Counters
+Sleep 1000
 Save=0
 ExitApp
 Return

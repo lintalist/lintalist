@@ -126,3 +126,63 @@ MyFunc(parameters)
     Return
    }
 
+# Extending Snippet processing
+
+## Method 1, using "Alt-Enter"
+
+You can get a selected snippet into the clipboard by using the Alt-Enter functionality
+(=copy snippet to clipboard shortcut and label in lintalist.ahk) 
+
+Example code:
+Add this to your plugins\MyFunctions.ahk or plugins\MyPlugins.ahk file 
+and it won't be overwritten when Lintalist updates.
+
+
+#IfWinActive, ahk_group AppTitle    ; Hotkeys only work while Lintalist is active
+F11::                               ; example hotkey, here F11, so if you press this 
+                                    ; key it will process the snippet copy it to the clipboard
+
+ClipSet("s",1,SendMethod,Clipboard) ; store current clipboard contents
+ClearClipboard()                    ; clear it
+
+Gosub, !Enter                       ; get processed snippet into the clipboard 
+Sleep 250                           ; just give it a bit of additional time
+
+MsgBox % clipboard                  ; just to illustrate we have it
+; your code here to
+; modify the clipboard content, 
+; e.g. the actual purpose    
+
+SendKey(SendMethod, ShortcutPaste)  ; paste current clipboard using SendMethod and ShortcutPaste defined in Lintalist settings
+Clipboard:=ClipSet("g",1)           ; restore original clipboard contents
+
+Return
+#IfWinActive
+
+## Method 2, using a Script
+
+Use the [[llpart1]] and/or [[llpart2]] plugins in scripts, https://lintalist.github.io/#snippet-llpart 
+
+Example:
+
+#NoEnv
+#SingleInstance, force
+SetBatchLines, -1
+ListLines, off
+LLInit()                            ; fake call to load global variables from Lintalist main script - see Docs
+ClipSet("s",1,SendMethod,Clipboard) ; store current clipboard contents
+ClearClipboard()                    ; clear it
+[[llpart1]]
+
+Clipboard:=llpart1
+Sleep 200
+
+SendKey(SendMethod, ShortcutPaste)  ; paste current clipboard using SendMethod and ShortcutPaste defined in Lintalist settings
+Clipboard:=ClipSet("g",1)           ; restore original clipboard contents
+ExitApp
+
+
+Note: If you need the same script in many snippets, you can save the script 
+in a local variable and use that as script code, simply as [[Var=MyScript]]
+
+

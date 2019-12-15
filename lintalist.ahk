@@ -4,7 +4,7 @@ Name            : Lintalist
 Author          : Lintalist
 Purpose         : Searchable interactive lists to copy & paste text, run scripts,
                   using easily exchangeable bundles
-Version         : 1.9.9
+Version         : 1.9.10
 Code            : https://github.com/lintalist/
 Website         : http://lintalist.github.io/
 AutoHotkey Forum: https://autohotkey.com/boards/viewtopic.php?f=6&t=3378
@@ -41,7 +41,7 @@ PluginMultiCaret:=0 ; TODOMC
 
 ; Title + Version are included in Title and used in #IfWinActive hotkeys and WinActivate
 Title=Lintalist
-Version=1.9.9
+Version=1.9.10
 
 ; Gosub, ReadPluginSettings
 
@@ -266,7 +266,7 @@ ViaShorthand=0
 
 ; Toolbar setup
 ; Create an ImageList.
-ILA := IL_CreateCustom(17, 5, IconSize) ; TODO BIGICONS
+ILA := IL_CreateCustom(18, 5, IconSize) ; TODO BIGICONS
 IL_Add(ILA, "icons\snippet_new.ico")
 IL_Add(ILA, "icons\snippet_edit.ico")
 IL_Add(ILA, "icons\snippet_copy.ico")
@@ -288,6 +288,7 @@ IL_Add(ILA, "icons\locked.ico")
 IL_Add(ILA, "icons\no_scripts.ico")
 IL_Add(ILA, "icons\no_hotkeys.ico")
 IL_Add(ILA, "icons\no_shorthand.ico")
+IL_Add(ILA, "icons\pin-to-top.ico")
 
 MyToolbarIcons:={ "UnLocked" : "8"
 	, "Locked" : "14"
@@ -296,10 +297,11 @@ MyToolbarIcons:={ "UnLocked" : "8"
 	, "Hotkeys" : "5"
 	, "NoHotkeys" : "16"
 	, "ShortHand" : "6"
-	, "NoShortHand" : "17" }
+	, "NoShortHand" : "17" 
+	, "PinTop" : "18" }
 
 ; https://autohotkey.com/board/topic/94750-class-toolbar-create-and-modify-updated-19-08-2013/?p=599930
-IL_CreateCustom(InitialCount=17, GrowCount=5, IconSize=16)
+IL_CreateCustom(InitialCount=18, GrowCount=5, IconSize=16)
 	{
 	 return DllCall("ImageList_Create"
 			, "Int", IconSize
@@ -355,6 +357,16 @@ If Statistics
 	 Stats("SearchGui")
 OmniSearchText:=""
 LastText = fadsfSDFDFasdFdfsadfsadFDSFDf
+If !MenuToggleView ; if we toggle via the menu we should skip the hide/show option
+	{
+	 If WinActive(AppWindow) and StartSearchHotkeyToggle
+		{
+		 PlaySound(PlaySound,"close")
+		 Gosub, GuiClose
+		 Return
+		}
+	}
+MenuToggleView:=0
 If !WinActive(AppWindow)
 	GetActiveWindowStats()
 Else
@@ -371,7 +383,7 @@ Gui, 1:Font ; TODO BIGICONS
 
 ; TBSTYLE_FLAT     := 0x0800 Required to show separators as bars.
 ; TBSTYLE_TOOLTIPS := 0x0100 Required to show Tooltips.
-Gui, 1:Add, Custom, ClassToolbarWindow32 hwndhToolbar 0x0800 0x0100 0x0008 0x0040 x%barx% y%Yctrl% w550 ; TODO BIGICONS
+Gui, 1:Add, Custom, ClassToolbarWindow32 hwndhToolbar 0x0800 0x0100 0x0008 0x0040 x%barx% y%Yctrl% w580 ; TODO BIGICONS
 
 Gui, 1:Font,s%fontsize%,%font%
 
@@ -411,7 +423,9 @@ MyToolbar.Add("Enabled"
 	, "Label10=Regular Search (alt+r):10"
 	, "Label11=Fuzzy Search (alt+z):11"
 	, "Label12=Regular Expression Search (alt+x):12"
-	, "Label13=Magic Search (alt+m):13")
+	, "Label13=Magic Search (alt+m):13"
+	, "" ; vertical bar
+	, "GuiOnTop=Pin to top:18")
 
 ; Should the button bar be changed we don't need to update all the
 ; MyToolbar.ModifyButton calls, we can just update the IDs here.
@@ -427,7 +441,8 @@ MyToolbarIDs:={ "NewSnippet" : "1"
 	, "RegularSearch" : "13"
 	, "FuzzySearch" : "14"
 	, "RegExSearch" : "15"
-	, "MagicSearch" : "16"}
+	, "MagicSearch" : "16"
+	, "OnTop" : "18" }
 
 ; Removes text labels and show them as tooltips.
 MyToolbar.SetMaxTextRows(0)
@@ -618,7 +633,7 @@ Search(mode=1)
 		 SearchRe:="iUmsS)" SearchRe
 		 If (Case = 1)     ; case sensitive, remove i) option
 			SearchRe := LTrim(SearchRe,"i")
-		 ;;ToolTip, % "Case: " case " : SearchRe: " SearchRe ; debug only
+		 ;;;ToolTip, % "Case: " case " : SearchRe: " SearchRe ; debug only
 ;		 If (RegExMatch(SearchThis1, SearchRe) > 0) or (RegExMatch(SearchThis2, SearchRe) > 0) or (RegExMatch(SearchThis3, SearchRe) > 0)
 		 If (RegExMatch(SearchThis, SearchRe) > 0)
 			{
@@ -650,7 +665,7 @@ Search(mode=1)
 		 If (Case = 1)     ; case sensitive, remove i) option
 			SearchRe := LTrim(SearchRe,"i")
 
-		 ;;ToolTip, % "Case: " case " : SearchRe: " SearchRe ; debug only
+		 ;;;ToolTip, % "Case: " case " : SearchRe: " SearchRe ; debug only
 		 ;If (RegExMatch(SearchThis1, SearchRe) > 0) or (RegExMatch(SearchThis2, SearchRe) > 0) or (RegExMatch(SearchThis3, SearchRe) > 0)
 		 If (RegExMatch(SearchThis, SearchRe) > 0)
 			{
@@ -976,6 +991,7 @@ If (Script = "") or (ScriptPaused = 1) ; script is empty so we need to paste Tex
 	}
 Else If (Script <> "") and (ScriptPaused = 0) ; we run script by saving it to tmp file and running it
 	{
+
 	 FileDelete, %TmpDir%\tmpScript.ahk
 	 StringReplace, Script, Script, LLInit(), %LLInit%, All
 
@@ -1375,14 +1391,6 @@ Return
 #IfWinActive
 
 ; GUI related hotkeys
-
-#IfWinActive Lintalist snippet editor
-:*:[::
-ControlGetFocus, Control, A
-Control, EditPaste, [[]], %Control%, Lintalist snippet editor
-Send {left 2}
-Return
-#IfWinActive
 
 ; Not the best of methods, but it works best for some reason
 ; Hotkeys active in Gui, 10:
@@ -1998,6 +2006,7 @@ Else If (A_ThisMenuItem = "&Manage Counters")
 		 SaveUpdatedBundles()
 		 If WinExist(AppWindow " ahk_class AutoHotkeyGUI")
 			Gui, 1:+Disabled
+		 Gosub, GuiOnTopCheck
 		 RunWait, %A_AhkPath% include\CounterEditor.ahk %IniFile%
 		 IniRead, Counters, %IniFile%, settings, Counters, 0
 		 If WinExist(AppWindow " ahk_class AutoHotkeyGUI")
@@ -2015,6 +2024,8 @@ Else If (A_ThisMenuItem = "&Manage Counters")
 				 ReadCountersIni()
 				 Gosub, RunReload
 				}
+			 If OnTopStateSaved
+				Gosub, GuiOnTopCheck
 			}
 		}
 Else If (A_ThisMenuItem = "E&xit")
@@ -2042,6 +2053,7 @@ Else If (A_ThisMenuItem = "&Configuration")
 		 Return
 		}
 	 Gosub, SaveStartupSettings
+	 Gosub, GuiOnTopCheck
 	 IniSettingsEditor("Lintalist",A_ScriptDir "\" IniFile)
 	 MsgBox, 36, Restart?, In order for any changes to take effect you must reload.`nOK to restart? ; 4+32 = 36
 	 IfMsgBox, Yes
@@ -2049,6 +2061,8 @@ Else If (A_ThisMenuItem = "&Configuration")
 		 Gui, 1:Destroy
 		 Gosub, RunReload
 		}
+	 If OnTopStateSaved
+		Gosub, GuiOnTopCheck
 	}
 Else If (A_ThisMenuItem = "&Open Lintalist folder")
 	{
@@ -2102,6 +2116,7 @@ Else If (A_ThisMenuItem = "&Manage Local Variables")
 			}
 		 If WinExist(AppWindow " ahk_class AutoHotkeyGUI")
 			Gui, 1:+Disabled
+		 Gosub, GuiOnTopCheck
 		 RunWait, %A_AhkPath% include\localbundleeditor.ahk
 		 If WinExist(AppWindow " ahk_class AutoHotkeyGUI")
 			{
@@ -2114,6 +2129,8 @@ Else If (A_ThisMenuItem = "&Manage Local Variables")
 			 Gui, 1:Destroy
 			 Gosub, RunReload
 			}
+		 If OnTopStateSaved
+			Gosub, GuiOnTopCheck
 		}
 ; Tools menu
 Else If (A_ThisMenuItem = "Encrypt text")
@@ -2128,8 +2145,37 @@ else If (A_ThisMenuItem = "Convert UltraEdit taglist")
 	Run, %A_AhkPath% Extras\BundleConverters\UltraEdit.ahk
 ; /tools
 
+; View menu
+Else If (A_ThisMenuItem = "Toggle Wide/Narrow View")
+	{
+	 MenuToggleView:=1
+	 Gosub, GuiStart
+	}
+Else If (A_ThisMenuItem = "Toggle On Top`tCtrl+T")
+	Gosub, GuiOnTop
+; /View menu
+
 Return
 ; /for For tray and Search/Edit Gui menu
+
+GuiOnTop:
+OnTopState:=MyToolbar.GetButtonState(MyToolbarIDs.Ontop,"Checked")
+WinSet, AlwaysOnTop, Toggle, %AppWindow%
+OnTopState:=!OnTopState
+MyToolbar.ModifyButton(MyToolbarIDs.OnTop,"Check",OnTopState)
+Return
+
+GuiOnTopCheck:
+If MyToolbar.GetButtonState(MyToolbarIDs.Ontop,"Checked")
+	{
+	 OnTopStateSaved:=1
+	 Gosub, GuiOnTop
+	 Return
+	}
+If OnTopStateSaved
+	Gosub, GuiOnTop
+OnTopStateSaved:=0
+Return
 
 
 ; for filemenu - e.g. the bundles menu option
@@ -2628,6 +2674,7 @@ Menu, Choice, Add, Insert [[Choice=?|]]	- question, PluginMenuHandler
 Menu, Choice, Add, Insert [[Choice=!|]]	- filter, PluginMenuHandler
 Menu, Choice, Add, Insert [[Choice=!?|]]	- filter and question, PluginMenuHandler
 Menu, Plugins, Add, Insert [[Choice=]]   , :Choice
+Menu, Plugins, Add, Insert [[Comment=]]   , PluginMenuHandler
 Menu, Plugins, Add, Insert [[DateTime=]] , PluginMenuHandler
 ;Menu, Plugins, Add, Insert [[Enc=]]      , PluginMenuHandler
 Menu, Plugins, Add, Insert [[File=]]     , PluginMenuHandler
@@ -2667,6 +2714,9 @@ Menu, Tools, Add, Convert List             , GlobalMenuHandler
 Menu, Tools, Add, Convert Texter bundle    , GlobalMenuHandler
 Menu, Tools, Add, Convert UltraEdit taglist, GlobalMenuHandler
 
+Menu, View, Add, Toggle Wide/Narrow View   , GlobalMenuHandler
+Menu, View, Add, Toggle On Top`tCtrl+T,  GlobalMenuHandler
+
 Menu, Help, Add, &Help, GlobalMenuHandler
 Menu, Help, Icon,&Help, icons\help.ico
 Menu, Help, Add, &About, GlobalMenuHandler
@@ -2677,6 +2727,7 @@ Menu, Help, Icon,&Quick Start Guide, icons\help.ico
 Menu, MenuBar2, Add, &Plugins, :Plugins
 Menu, MenuBar2, Add, &Tools, :Tools ; make it available in Edit gui
 Menu, MenuBar , Add, &Tools, :Tools ; make it available in Search gui
+Menu, MenuBar , Add, &View,  :View ; make it available in Search gui
 Menu, MenuBar2, Add, &Help, :Help , Right ; make it available in Edit gui (Right works as of v1.1.22.07+)
 Menu, MenuBar , Add, &Help, :Help , Right ; make it available in Search gui
 Return

@@ -27,7 +27,7 @@ GetActiveWindowStats() ; Get Active Window & Control
 	 
 	 ; we can use this in our bundles to make sure we have 
 	 ; the default functions available to our scripts defined in the bundle
-	 
+
 	 LLInit= ; pass on basic data + functions to script from snippet
 	 (
 	  
@@ -128,6 +128,7 @@ SendKey(Method = 1, Keys = "")
 "e" or "Empty"
 "ea" or "EmptyAll"
 "g" or "Get"
+"ge" or "GetAndEmpty"      ; Lintalist addition
 "s" or "Set"
 "a" or "Append"
 "p" or "Prepend"
@@ -211,7 +212,12 @@ ClipSet(Task,ClipNum=1,SendMethod=1,Value="") ; by Learning one http://www.autoh
       Return
    }
    else if (task = "g" or task = "Get")
-   Return Clip%ClipNum%
+      Return Clip%ClipNum%
+   else if (task = "ge" or task = "GetAndEmpty") {
+   	ThisClip:=Clip%ClipNum%
+   	Clip%ClipNum% =
+    Return ThisClip
+   }
    else if (task = "s" or task = "Set") {
       Clip%ClipNum% := Value
       Return Clip%ClipNum%

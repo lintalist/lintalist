@@ -20,7 +20,7 @@
 <br /><br />
 <span style='font-size:.8em;'><b>Lintalist</b> is <b>open source</b> and developed in <a href='https://autohotkey.com/'>AutoHotkey</a>, an easy to learn scripting language for Windows.
 [WinXP(sp3)/Vista/7/8/10]<br /></span>
-<span class='date' style='float:right;display:inline;margin-top:0px;'>doc rev. 20191026</span></p>
+<span class='date' style='float:right;display:inline;margin-top:0px;'>doc rev. 20191215</span></p>
 </div>
 
 <div class='column'>
@@ -84,11 +84,11 @@
 </div>
 
 <div class='column'>
-<p><b>Download Lintalist <em>1.9.9</em></b>
+<p><b>Download Lintalist <em>1.9.10</em></b>
 <p>
 <a href='https://github.com/lintalist/lintalist/releases'><img src='img/lintalist65x65.gif' alt='Download Lintalist' width='65' align='left' border='0' style='margin-right: 5px;' /></a>
 Download (incl. source):<br />
-<a href='https://github.com/lintalist/lintalist/releases'><b>Latest release</b></a> (834 kb)<br />Simply unpack and run lintalist.ahk or lintalist.exe<br />
+<a href='https://github.com/lintalist/lintalist/releases'><b>Latest release</b></a> (894 kb)<br />Simply unpack and run lintalist.ahk or lintalist.exe<br />
 </p>
 
 <span class='tip' style="margin-bottom:10px;"><img src="img/usb.png" width=50 align=right title="USB image by Alessandro Rei (GNU/GPL) - http://findicons.com/icon/255067/usb?id=256158">Lintalist is a <b>portable application</b>. It stores all settings and bundles in the folder the program resides in. <a href="#portable">More...</a>
@@ -173,7 +173,7 @@ Installing Lintalist is easy, just download the ZIP file and unpack it in a fold
 If you are already an AutoHotkey user and have it installed, it is recommended to run <b>Lintalist.ahk</b>, this will ensure you will be running Lintalist with your preferred version of AutoHotkey. If you don't have AutoHotkey installed you can start <b>Lintalist.exe</b>.
 
 <b>Notes:</b>
-- Lintalist.exe: A renamed AutoHotkey.exe (v1.1.31.01 32-bit Unicode, See https://autohotkey.com/ and/or https://autohotkey.com/download/)
+- Lintalist.exe: A renamed AutoHotkey.exe (v1.1.32.00 32-bit Unicode, See https://autohotkey.com/ and/or https://autohotkey.com/download/)
 - Lintalist.ahk: The actual (main) source code of the program (see https://github.com/lintalist/lintalist)
 
 <h2 id='Searching'><a href='#Searching' class='headline'>Normal use: Starting Lintalist and searching for a Snippet</a></h2>
@@ -320,7 +320,8 @@ Shortcuts while search window is not active
 </tr>
 </thead>
 <tbody>
-<tr><td><b><kbd>Capslock</kbd>        </b></td><td>Start Searching (Open Lintalist searching window, change via config). If already active you can toggle between Wide and Narrow view.</td></tr>
+<tr><td><b><kbd>Capslock</kbd>        </b></td><td>Start Searching (Open Lintalist search window, change via configuration, <em>StartSearchHotkey</em> setting). If already active you can toggle between Wide and Narrow view.
+As of v1.9.10+ there is a setting to also use this key to Hide the search window: <em>StartSearchHotkeyToggle</em>.</td></tr>
 <tr><td><b><kbd>Ctrl</kbd>+<kbd>Capslock</kbd></b></td><td>Start Searching in <a href="#Omni">Omnisearch</a> mode (Open Lintalist searching window, change via config).</td></tr>
 <tr><td><b><kbd>Winkey</kbd>+<kbd>z</kbd></b></td><td>Start <a href="#QuickSearchHotkey">Quick search</a></td></tr>
 <tr><td><b><kbd>Ctrl</kbd>+<kbd>Winkey</kbd>+<kbd>q</kbd></b></td><td>Quit Lintalist</td></tr>
@@ -337,12 +338,12 @@ Shortcuts while search window is not active
 </tr>
 </thead>
 <tbody>
-<tr><td><b><kbd>Esc</kbd></b></td><td>Close Search Window                             </td></tr>
+<tr><td><b><kbd>Esc</kbd></b></td><td>Close/Hide Search Window                          </td></tr>
 <tr><td><b><kbd>Enter</kbd></b></td><td>Paste Found Text (Part 1) or Run Script *1      </td></tr>
 <tr><td><b><kbd>Shift</kbd>+<kbd>Enter</kbd></b></td><td>Paste Found Text (Part 2) or Run Script *1      </td></tr>
 <tr><td><b><kbd>Ctrl</kbd>+<kbd>Enter</kbd></b></td><td>Paste Found Text (Part 1) and DO NOT run script </td></tr>
 <tr><td><b><kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>Enter</kbd></b></td><td>Paste Found Text (Part 2) and DO NOT run script </td></tr>
-<tr><td><b><kbd>Alt</kbd>+<kbd>Enter</kbd></b></td><td>Copy Text (Part 1) to clipboard </td></tr>
+<tr><td><b><kbd>Alt</kbd>+<kbd>Enter</kbd></b></td><td>Copy Text (Part 1) to clipboard *2 </td></tr>
 <tr><td><b><kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>Enter</kbd></b></td><td>Copy Text (Part 2) to clipboard </td></tr>
 <tr><td><b><kbd> F2 </kbd></b></td><td>Omnisearch (toggle) <a href="#Omni">search in all bundles</a></td></tr>
 <tr><td><b><kbd> F4 </kbd></b></td><td>Edit Snippet                                    </td></tr>
@@ -358,14 +359,17 @@ Shortcuts while search window is not active
 5: Sort Bundle name (toggle)
 
 The sort will work even the column is not visible - for example if you do not show the Bundle name in the search results (see DisplayBundle) you can still sort it.</td></tr>
-<tr><td><b><kbd>Alt</kbd>+<kbd>1..0</kbd></b></td><td>You can use <kbd>Alt</kbd>+<kbd>1</kbd> to <kbd>Alt</kbd>+<kbd>0</kbd> for the first ten search results.
+<tr><td><b><kbd>Alt</kbd>+<kbd>1..0</kbd></b></td><td>You can use <kbd>Alt</kbd>+<kbd>1</kbd> to <kbd>Alt</kbd>+<kbd>0</kbd> for the first ten search results. The visual cues are disabled when using ColumnSort other than "NoSort"
 These can be disabled via the <b>ShortcutSearchGui</b> setting (Configuration).</td></tr>
+<tr><td><b><kbd>Ctrl</kbd>+<kbd>t</kbd></b></td><td>Toggle Search Window on top on or off. (per search instance)</td></tr>
 </tbody>
 </table>
 
 *1 - If Scripts are Paused the script - if any - will not run and text will be sent
    - The action for a single- or doubleclick with the left mouse button can be defined in the Configuration menu
      (SingleClickSends and DoubleClickSends)
+
+*2 This can be used get the selected snippet into the clipboard using other methods as well, see plugins\readme-howto.txt, "Extending Snippet processing" section 
 
 <h2 id='TrayMenu'><a href='#TrayMenu' class='headline'>Tray <em>Menu</em></a></h2>
 
@@ -444,7 +448,9 @@ More options may be added in future versions such as special hotkeys.</td></tr>
   between Wide &amp; Narrow view (you can set the width and height of both views via the
   configuration menu)
 
-  Note about TeamViewer: the "send key combinations" option must be enabled (checked) and you may need to experiment with a short/key combination that works for you (the default QuickSearchHotkey shortcut does seem to work out of the box for example, while Capslock may not). <a href='https://github.com/lintalist/lintalist/issues/104'>Discussion @ GH - #104</a></td></tr>
+  Note about TeamViewer: the "send key combinations" option must be enabled (checked) and you may need to experiment with a short/key combination that works for you (the default QuickSearchHotkey shortcut does seem to work out of the box for example, while Capslock may not). <a href='https://github.com/lintalist/lintalist/issues/104'>Discussion @ GH - #104</a>
+
+  As of v1.9.10+ see the StartSearchHotkeyToggle setting to Show/Hide the Search Window using the same shortcut.</td></tr>
 <tr id='QuickSearchHotkey'><td><b><a href='#QuickSearchHotkey' class='headline'>QuickSearchHotkey</a></b></td><td>Hotkey used to start quick search: It will cut (ctrl-x) the word to the left, open
   Lintalist and starts a search. If only one match is found it simply pastes or runs 
   the result directly.
@@ -697,14 +703,18 @@ Supported editors: Atom, Brackets, EverEdit, Komodo Edit, Sublime Text, TextAdep
 
 <b>Note:</b> The caret position may be incorrect for snippets with Unicode characters, complex scripts, glyphs etc. (trial and error may work). It may also depend on how the target application handles (auto) indentation or reformats/prettyfies pasted code. In such cases a specific script may be able to resolve such issues - <a href='https://github.com/lintalist/lintalist/issues/123'>Discussion @ GH - #123</a></td></tr>
 
-<tr id='c-plugin'><td><a href='#c-plugin' class='headline'><code>[[C=Char|Repeat]]</code></a></td><td>By default pasted texts are trimmed which means spaces and tabs will be trimmed from the snippet. You can use this plugin to insert one or more spaces and/or tabs at the beginning or end of a snippet. Or you can use it as a shorthand-code to insert a repeating text or character.
+<tr id='c-plugin'><td><a href='#c-plugin' class='headline'><code>[[C=Char|Repeat]]</code></a></td><td>By default pasted texts are trimmed which means spaces and tabs will be trimmed from the snippet. You can use this plugin to insert one or more spaces and/or tabs at the beginning or end of a snippet. Or you can use it as a shorthand-code to insert a repeating text or character(s).
 Basic example <code>[[C=-|30]]</code> insert 30 -'s
 Use [[C=space]] or [[C=\s]] for a space, [[C=tab]] or [[C=\t]] for a tab, and [[C=enter]] or [[C=\n]] for a new line.
 
 Neat trick: using a local variable or User input
 <code>[[C=[[Var=localvar]]|10]]</code> Repeat the local variable 'localvar' 10 times.
 <code>[[C=[[Input=Repeat which character|-]]|[[Input=How many times?|10]]]]</code> Repeat the entered character(s) 10 times.
-</td></tr> 
+
+      Create a HTML table asking for Number of Columns and Rows:
+<blockquote class='boxed'>&lt;table&gt;
+<b style='color:blue;'>[[C=</b>&lt;tr&gt;<b style='color:blue;'>[[C=</b>&lt;td&gt;&lt;/td&gt;<b style='color:red;'>|</b><b style='color:blue;'>[[Input=</b>How many columns?<b style='color:blue;'>]]]]</b>&lt;/tr&gt;
+<b style='color:red;'>|</b><b style='color:blue;'>[[Input=</b>how many rows?<b style='color:blue;'>]]]]</b>&lt;/table&gt;</blockquote></td></tr> 
 
 <tr id='calc-plugin'><td><a href='#calc-plugin' class='headline'><code>[[Calc=]]</code></a> *2</td><td>Evaluation of the math expressions - see <a href='#Calc'>documentation below</a>.</td></tr>
 
@@ -735,6 +745,11 @@ The order of <b>?!</b> doesn't matter.
 
 <tr id='clipboard-plugin'><td><a href='#clipboard-plugin' class='headline'><code>[[Clipboard]]</code></a> *1</td><td>Insert current Clipboard content.
 * Additional parameters are available, see <a href='#ClipEx'>Extending Clipboard &amp; Selected text</a>.</td></tr>
+
+<tr id='comment-plugin'><td><a href='#comment-plugin' class='headline'><code>[[Comment=]]</code></a></td><td>Add a comment to a snippet. The entire comment will be removed from the snippet before it is pasted. As a reminder: You can also use <a href='#Part1-2'>Part2</a> of a snippet for "hints" or notes".
+
+Example:
+<code>[[Comment=Add your comment text here which can be searched but all of it will be removed before pasting]]</code></td></tr>
 
 <tr id='counter-plugin'><td><a href='#counter-plugin' class='headline'><code>[[Counter=Name|Value|Reset]]</code></a></td><td>You can use multiple counters <b>across bundles</b>.
 Basic example <code>[[Counter=InvoiceNumber]]</code> --> increment by one and insert value of InvoiceNumber.

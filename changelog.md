@@ -1,3 +1,14 @@
+### v1.9.10
+
+* New: Comment plugin - add comment to snippet which will be removed before pasting. Use as visual reminder or search aid.
+* New: On Top button/option in Search Window <kbd>ctrl</kbd>+<kbd>t</kbd> (per search)
+* New: Option to show/hide the Search Window with the same shortcut (StartSearchHotkeyToggle setting)
+* New: View menu in Search Window to toggle wide/narrow window and On Top
+* New: Make a 64-bit version available for download as well (a renamed AutoHotkeyU64.exe)
+* New: EditorAutoCloseBrackets setting to define some editor hotstrings, example `[` -> `[[|]]`
+* Change: More flexible plugin check syntax in Editor (was too strict with regards to `[[..]]`). (EditorSnippetErrorCheck setting) 
+* Fix/Change: Disable Search GUI shortcuts when using the non-default ColumnSort setting (NoSort) 
+
 ### v1.9.9
 
 * New: Search GUI shortcuts for first 10 search result (Alt+1..0) - show numbers as text and/or icons.  

@@ -7,6 +7,9 @@
 ; F10 = Bundle properties
 
 BundlePropertiesEditor:
+
+Gosub, GuiOnTopCheck
+
 InEditMode = 1
 
 ; clear editor vars just to be sure
@@ -209,7 +212,8 @@ Gui, 1:-Disabled
 Gui, 81:Destroy
 WinActivate, %AppWindow%
 InEditMode = 0
-
+If OnTopStateSaved
+	Gosub, GuiOnTopCheck
 Return
 
 81GuiEscape:
@@ -219,6 +223,8 @@ Gui, 1:-Disabled
 Gui, 81:Destroy
 WinActivate, %AppWindow%
 InEditMode = 0
+If OnTopStateSaved
+	Gosub, GuiOnTopCheck
 Return
 
 ; https://github.com/Visionary1/AHK-Academy/blob/master/EM_SetCueBanner.ahk

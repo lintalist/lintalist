@@ -98,6 +98,9 @@ INISetup:={ AlwaysLoadBundles:     {default:"",find:"bundles\"}
 			IniSetup["Statistics"]:={default:"0"}
 			IniSetup["ShortcutSearchGui"]:={default:"1"}
 			IniSetup["QueryDelimiter"]:={default:">"}
+			IniSetup["StartSearchHotkeyToggle"]:={default:"0"}
+			IniSetup["EditorAutoCloseBrackets"]:={default:"[,[[|]]"}
+			IniSetup["EditorSnippetErrorCheck"]:={default:"[["}
 
 	 ShortcutSearchGuiShow:=["1: ","2: ","3: ","4: ","5: ","6: ","7: ","8: ","9: ","0: ", "   "]
 
@@ -162,6 +165,12 @@ INISetup:={ AlwaysLoadBundles:     {default:"",find:"bundles\"}
 	 else
 	 	QueryDelimiter:=SubStr(Trim(QueryDelimiter),1,1) ; only use first char if a string was entered
 
+	 Hotkey, IfWinActive, Lintalist snippet editor
+	 If (Trim(EditorAutoCloseBrackets) <> "") 
+	 	Loop, parse, EditorAutoCloseBrackets, `;
+	 		Hotstring(":*:" StrSplit(A_LoopField,",").1, Func("AutoCloseBrackets").Bind(StrSplit(A_LoopField,",").2))
+	 Hotkey, IfWinActive
+
 	 ReadCountersIni()
 	 ReadPlaySoundIni()
 
@@ -172,6 +181,9 @@ INISetup:={ AlwaysLoadBundles:     {default:"",find:"bundles\"}
 	 Loop, parse, IniListFinalCheck, CSV
 		If %A_LoopField% is not number
 			%A_LoopField%:=0
+
+	 If (ColumnSort <> "NoSort")
+	 	ShortCutSearchGui:=0
 
 	 ; See GuiCheckXYPos.ahk
 	 ; for Choice and Editor position so we can always SET a value #121

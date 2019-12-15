@@ -25,7 +25,7 @@ If (BigIcons = 1)
 	 SearchIconSize:=16
 	 SearchBoxX:=9+IconSize
 	 SearchBoxY:=2
-	 xBarPos:=330
+	 xBarPos:=360
 	}
 else If (BigIcons = 2)
 	{
@@ -41,7 +41,7 @@ else If (BigIcons = 2)
 		SearchIconSize:=24
 	 SearchBoxX:=9+IconSize
 	 SearchBoxY:=6
-	 xBarPos:=550
+	 xBarPos:=580
 	}
 
 VisibleRows:=Ceil(LVHeight/20)  ; TODO: Calculate correct value for 20 for pagedown/pageup as is just a rough guess

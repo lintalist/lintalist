@@ -17,6 +17,9 @@
 ; 
 
 BundleEditor:
+
+Gosub, GuiOnTopCheck
+
 InEditMode:=1
 WrapPart1:=1
 WrapPart2:=1
@@ -389,10 +392,14 @@ If (EditMode = "EditSnippet")
 Else If (EditMode = "AppendSnippet") or (EditMode = "CopySnippet") or (EditMode = "MoveSnippet") 
 	Check:=AppendToBundle
 
-If !SnippetErrorCheck(Text1,"[[") or !SnippetErrorCheck(Text2,"[[")
+If EditorSnippetErrorCheck
 	{
-	 MsgBox,48,Warning, Possible Plugin/function error in Snippet.`nMismatch number of square brackets "[[" and "]]".
-	 Return
+	 If !SnippetErrorCheck(Text1,EditorSnippetErrorCheck) or !SnippetErrorCheck(Text2,EditorSnippetErrorCheck)
+    	{
+    	 MsgBox,52,Warning, Possible Plugin/function error in Snippet.`nMismatch number of square brackets.`n`n(see EditorSnippetErrorCheck setting)`n`nDo you want to continue editing the snippet? (Yes)`nSelect No to ignore error(s) and save Edits.
+    	 IfMsgBox, Yes
+    	 	Return
+    	}
 	}
 
 ; EditorHotkeySyntax: check valid hotkey
@@ -627,16 +634,17 @@ WinActivate, %AppWindow%
 WinWaitActive, %AppWindow%
 LoadBundle(Load)
 UpdateLVColWidth()
-ControlFocus, Shorthand, %AppWindow%
 Gosub, SetStatusBar	
 lasttext = fadsfSDFDFasdFdfsadfsadFDSFDf
 Gosub, GetText
 ;LV_Modify(SelItem, "Select") ; set focus on snippet we edited in listview
 ;LV_Modify(SelItem, "Vis")    ; doesn't work yet as DOWN starts at row 1 again
 ;Sleep 10
-;ControlFocus, Edit1, %AppWindow%
+ControlFocus, Edit1, %AppWindow%
 ShowPreview(PreviewSection)
 InEditMode = 0
+If OnTopStateSaved
+	Gosub, GuiOnTopCheck
 Return
 
 71EditPart1:
@@ -720,11 +728,18 @@ Gui, 1:-Disabled
 Gui, 71:Destroy
 WinActivate, %AppWindow%
 InEditMode = 0
-ControlFocus, Shorthand, %AppWindow%
+ControlFocus, Edit1, %AppWindow%
+If OnTopStateSaved
+	Gosub, GuiOnTopCheck
 Return
 
 SnippetErrorCheck(in,type)
 	{
+	 if (type = "[")
+		{
+		 if (CountString(in, "[") = CountString(in, "]"))
+			Return 1
+		}
 	 if (type = "[[")
 		{
 		 if (CountString(in, "[[") = CountString(in, "]]"))
@@ -758,3 +773,12 @@ Return
 EditorHotkeySyntaxDummyLabel:
 Return
 
+; used in ReadIni for EditorAutoCloseBrackets settings
+AutoCloseBrackets(in)
+	{
+	 ControlGetFocus, Control, A
+	 what:=StrReplace(in,"|")
+	 Left:=StrLen(StrSplit(in,"|").2)
+	 Control, EditPaste, %what%, %Control%, Lintalist snippet editor
+	 Send {left %left%}
+	}
