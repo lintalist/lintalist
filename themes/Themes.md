@@ -8,7 +8,7 @@ flickering or some controls may loose their theme color temporarily.
 
 GUIs used by Plugins are not styled.
 
-Example themes @ https://github.com/lintalist/lintalist-bundles (unpack zip file to `lintalist\themes\')
+Example themes @ https://github.com/lintalist/lintalist-themes (unpack zip file to `lintalist\themes\')
 
 Discussion @ https://github.com/lintalist/lintalist/issues/147
 
