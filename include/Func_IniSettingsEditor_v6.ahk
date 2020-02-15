@@ -348,7 +348,7 @@ IniSettingsEditor(ProgName,IniFile,OwnedBy = 0,DisableGui = 0) {
 
             ;hide/show browse button depending on key type
             Typ := %CurrID%Typ 
-            If Typ in File,Folder,Exe
+            If Typ in File,Folder,Exe,Theme
                 GuiControl, Show , Button2, 
             Else 
                 GuiControl, Hide , Button2, 
@@ -498,6 +498,11 @@ else      If (Typ = "Exe"){
 		  StartFolder:=A_ScriptDir
           FileSelectFile, Selected, , %StartFolder%\bundles\, Select EXE for Snippet Editor, (*.exe) 
       }
+
+else      If (Typ = "Theme"){ 
+		  StartFolder:=A_ScriptDir
+          FileSelectFile, Selected, , %StartFolder%\themes\, Select Theme, (*.ini) 
+      }
           
       Else If (Typ = "Folder"){ 
           ;get StartFolder
@@ -519,6 +524,7 @@ else      If (Typ = "Exe"){
       ;If file or folder got selected, remove A_ScriptDir (since it's redundant) and set it into GUI
       If Selected { 
           StringReplace, Selected, Selected, %A_ScriptDir%\bundles
+          StringReplace, Selected, Selected, %A_ScriptDir%\themes
           StringReplace, Selected, Selected, `n, `, , All
           StringReplace, Selected, Selected, `r,  , , All
           If (SubStr(Selected,1,1) = ",")

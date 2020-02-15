@@ -69,4 +69,4 @@ lintalist.exe and just start lintalist.ahk directly.
 
 Lintalist uses various libraries, icons and more prepared by others - see [credits.txt](https://github.com/lintalist/lintalist/blob/master/docs/credits.txt) for a complete list (if something is missing do let me know)
 
-Copyright 2009-2019 Lintalist. See license.txt
+Copyright 2009-2020 Lintalist. See license.txt

@@ -1,9 +1,16 @@
-﻿; LintaList Include [could be used elsewhere]
-; Purpose: Get X, Y, Coordinates while keeping Gui ON active monitor
-; Version: 1.0.3
-; Date:    20140426
+﻿/*
+
+LintaList Include [could be used elsewhere]
+Purpose: Get X, Y, Coordinates while keeping Gui ON active monitor
+Version: 1.1
+
+History
+v1.1 Added MonitorTop check to avoid search window moving off screen (top), could happen when using Office and scrolling document (reports caret pos offscreen)
+v1.0 initial version 
 
 ; called as XY:=StayOnMonXY(Width, Height, 0, 1, 1) 
+
+*/
 
 StayOnMonXY(GW, GH, Mouse = 0, MouseAlternative = 1, Center = 0) 
 	{
@@ -19,6 +26,7 @@ StayOnMonXY(GW, GH, Mouse = 0, MouseAlternative = 1, Center = 0)
 		{
 		 SysGet, Monitor, Monitor, %A_Index%
 		 MonitorMaxRight%A_Index% := MonitorRight
+		 MonitorTop%A_Index%:=MonitorTop
 		}
 
 	 If (XY = "") and (Center = 2) ; first time we'll show Gui with Center = 2 so center it
@@ -102,6 +110,8 @@ StayOnMonXY(GW, GH, Mouse = 0, MouseAlternative = 1, Center = 0)
 		X = 20
 	 If If_Between(Y, -15, 15)	
 		Y = 20
+	 If (Y < MonitorTop1)
+		Y:=20
 	 Return ReturnXY(X,Y)
 	}
 

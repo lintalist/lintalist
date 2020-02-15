@@ -4,11 +4,11 @@ Name            : Lintalist
 Author          : Lintalist
 Purpose         : Searchable interactive lists to copy & paste text, run scripts,
                   using easily exchangeable bundles
-Version         : 1.9.10
+Version         : 1.9.11
 Code            : https://github.com/lintalist/
 Website         : http://lintalist.github.io/
 AutoHotkey Forum: https://autohotkey.com/boards/viewtopic.php?f=6&t=3378
-License         : Copyright (c) 2009-2019 Lintalist
+License         : Copyright (c) 2009-2020 Lintalist
 
 This program is free software; you can redistribute it and/or modify it under the
 terms of the GNU General Public License as published by the Free Software Foundation;
@@ -41,7 +41,7 @@ PluginMultiCaret:=0 ; TODOMC
 
 ; Title + Version are included in Title and used in #IfWinActive hotkeys and WinActivate
 Title=Lintalist
-Version=1.9.10
+Version=1.9.11
 
 ; Gosub, ReadPluginSettings
 
@@ -130,6 +130,7 @@ OnMessage(0x404, "AHK_NOTIFYICON")
 #Include %A_ScriptDir%\include\ObjectBundles.ahk
 #Include %A_ScriptDir%\include\StayOnMonitor.ahk
 #Include %A_ScriptDir%\include\ReadINI.ahk
+#Include %A_ScriptDir%\include\ReadTheme.ahk
 #Include %A_ScriptDir%\include\Default.ahk
 #Include %A_ScriptDir%\include\Func_IniSettingsEditor_v6.ahk
 ; /Includes
@@ -216,6 +217,10 @@ If (ScriptPaused = 1)
 Gosub, GuiStartupSettings
 ; /Dynamic Gui settings
 
+; theme
+If Theme
+	ReadTheme(theme)
+
 PastText1=1
 LoadAllBundles()
 LoadPersonalBundle()
@@ -231,6 +236,16 @@ Gosub, BuildEditorMenu
 Gosub, QuickStartGuide
 
 ; setup hotkey
+
+; check for programs that may use Capslock already and display warning
+
+If (StartSearchHotkey = "Capslock")
+	Loop, parse, % "nvda.exe", CSV
+		{
+		 Process, Exist, %A_LoopField%
+		 If ErrorLevel
+			MsgBox, 64, Lintalist, %A_LoopField% is running may conflict with Capslock.`nChange the Lintalist Hotkey in the Configuration.`nLook for the StartSearchHotkey setting.`n`nYou can find the Configuration option in the tray menu or`nvia the Edit, Configuration menu in the Lintalist search window.
+		}
 
 ; check capslock and scrolllock status so we can actually use them as hotkey if defined by user and 
 ; they are already in the DOWN (active) state when Lintalist is started
@@ -267,28 +282,17 @@ ViaShorthand=0
 ; Toolbar setup
 ; Create an ImageList.
 ILA := IL_CreateCustom(18, 5, IconSize) ; TODO BIGICONS
-IL_Add(ILA, "icons\snippet_new.ico")
-IL_Add(ILA, "icons\snippet_edit.ico")
-IL_Add(ILA, "icons\snippet_copy.ico")
 
-IL_Add(ILA, "icons\scripts.ico")
-IL_Add(ILA, "icons\hotkeys.ico")
-IL_Add(ILA, "icons\shorthand.ico")
+ILA_List:="snippet_new,snippet_edit,snippet_copy,scripts,hotkeys,shorthand,lettervariations,unlocked,case,search_1,search_2,search_3,search_4,locked,no_scripts,no_hotkeys,no_shorthand,pin-to-top"
 
-IL_Add(ILA, "icons\lettervariations.ico")
-IL_Add(ILA, "icons\unlocked.ico")
-IL_Add(ILA, "icons\case.ico")
 
-IL_Add(ILA, "icons\search_1.ico")
-IL_Add(ILA, "icons\search_2.ico")
-IL_Add(ILA, "icons\search_3.ico")
-IL_Add(ILA, "icons\search_4.ico")
-IL_Add(ILA, "icons\locked.ico")
-
-IL_Add(ILA, "icons\no_scripts.ico")
-IL_Add(ILA, "icons\no_hotkeys.ico")
-IL_Add(ILA, "icons\no_shorthand.ico")
-IL_Add(ILA, "icons\pin-to-top.ico")
+Loop, parse, ILA_List, CSV
+	{
+	 If FileExist("themes\icons\" A_LoopField "_" theme["path"] ".ico")
+		IL_Add(ILA, "themes\icons\" A_LoopField "_" theme["path"] ".ico")
+	 else
+		IL_Add(ILA, "icons\" A_LoopField ".ico")
+	}
 
 MyToolbarIcons:={ "UnLocked" : "8"
 	, "Locked" : "14"
@@ -373,11 +377,15 @@ Else
 	Gosub, ToggleView
 
 Gui, 1:Destroy ; just to be sure
+	
+If Theme["MainBackgroundColor"]
+	Gui, 1: Color, % Theme["MainBackgroundColor"]
 Gui, 1:+Border +Resize +MinSize%Width%x%Height%
+
 Gui, 1:Menu, MenuBar
 Gui, 1:Add, Picture, x4 y4 w%SearchIconSize% h-1, icons\search.ico ; TODO BIGICONS
 Gui, 1:Font, s%SearchFontSize% ; TODO BIGICONS
-Gui, 1:Add, Edit, 0x8000 x%SearchBoxX% y%SearchBoxY% w%SearchBoxWidth% h%SearchBoxHeight% -VScroll -HScroll gGetText vCurrText, %CurrText% ; TODO BIGICONS
+Gui, 1:Add, Edit, hwndEDID1 0x8000 x%SearchBoxX% y%SearchBoxY% w%SearchBoxWidth% h%SearchBoxHeight% -VScroll -HScroll gGetText vCurrText, %CurrText% ; TODO BIGICONS
 Gui, 1:Add, Button, x300 y2 w30 h20 0x8000 Default hidden gPaste, OK
 Gui, 1:Font ; TODO BIGICONS
 
@@ -387,12 +395,24 @@ Gui, 1:Add, Custom, ClassToolbarWindow32 hwndhToolbar 0x0800 0x0100 0x0008 0x004
 
 Gui, 1:Font,s%fontsize%,%font%
 
-Gui, 1:Add, Listview, %ShowGrid% count1000 x2 y%YLView% xLV0x100 hwndHLV vSelItem AltSubmit gClicked h%LVHeight% w%LVWidth% , Paste (Enter)|Paste (Shift+Enter)|Key|Short|Index|Bundle ; TODO BIGICONS
+If !Theme["ListViewTextColor"]
+	Theme["ListViewTextColor"]:="black"
 
-Gui, 1:Add, edit, x0 yp+%LVHeight%+2 -VScroll w%LVWidth% h%PreviewHeight%, preview
+If !Theme["ListViewBackgroundColor"]
+	Gui, 1:Add, Listview, % ShowGrid " count500 x2 y" YLView " xLV0x100 LV0x10000 hwndHLV vSelItem AltSubmit gClicked h" LVHeight " w" LVWidth " " , Paste (Enter)|Paste (Shift+Enter)|Key|Short|Index|Bundle ; TODO BIGICONS
+else if Theme["ListViewBackgroundColor"]
+	Gui, 1:Add, Listview, % ShowGrid " count500 x2 y" YLView " xLV0x100 LV0x10000 hwndHLV vSelItem AltSubmit gClicked h" LVHeight " w" LVWidth " c" Theme["ListViewTextColor"] " Background" Theme["ListViewBackgroundColor"] , Paste (Enter)|Paste (Shift+Enter)|Key|Short|Index|Bundle ; TODO BIGICONS
+
+Gui, 1:Add, edit, hwndEDID2  x0 yp+%LVHeight%+2 -VScroll w%LVWidth% h%PreviewHeight%, preview
+
+If Theme["PreviewBackgroundColor"]
+	 CtlColors.Attach(EDID2, Theme["PreviewBackgroundColor"], Theme["PreviewTextColor"])
 
 Gui, 1:Font, s8, Arial
-Gui, 1:Add, StatusBar,,
+If Theme["StatusBarBackgroundColor"]
+	Gui, 1:Add, StatusBar, % "Background" Theme["StatusBarBackgroundColor"] " -Theme" 
+else
+	Gui, 1:Add, StatusBar,,
 SB1:=Round(.8*Width)
 SB2:=Width-SB1
 SB_SetParts(SB1,SB2)
@@ -462,7 +482,8 @@ StringSplit, Pos, XY, |
 Try
 	Gui, 1:Show, w%Width% h%Height% x%Pos1% y%Pos2%, %AppWindow%
 Catch
-	Gui, 1:Show, w760 h400, %AppWindow%	
+	Gui, 1:Show, w760 h400, %AppWindow%
+	
 If (DisplayBundle > 1)
 	 CLV := New LV_Colors(HLV)
 
@@ -476,8 +497,14 @@ If (JumpSearch=1) ; Send clipboard text to search control
 	 UpdateLVColWidth()
 	}
 ControlSend, Edit1, {End}, %AppWindow%  ; 20110623
+
 Gosub, GetText                          ; 20110623
 PlaySound(PlaySound,"open")
+
+If Theme["SearchBoxBackgroundColor"]
+	 CtlColors.Attach(EDID1, Theme["SearchBoxBackgroundColor"], Theme["SearchBoxTextColor"])
+SetEditCueBanner(EDID1, "Type to search (Ctrl+f)")
+
 Return
 
 ; Incremental Search, here is where the magic starts, based on 320mph version by Fures, if you know of an even FASTER way let me know ;-)
@@ -514,7 +541,7 @@ LV_Delete()
 GuiControl,1: , Edit2, %A_Space% ; fix preview if no more snippets e.g. ghosting of last snippet
 
 ; setup imagelist and define icons
-#Include %A_ScriptDir%\include\ImageList.ahk
+;#Include %A_ScriptDir%\include\ImageList.ahk
 
 If (SubStr(CurrText,1,1) = OmniChar) or (OmniSearch = 1)
 	{
@@ -1023,6 +1050,7 @@ Else If (Script <> "") and (ScriptPaused = 0) ; we run script by saving it to tm
 			}
 		}
 	 FileAppend, % Script, %TmpDir%\tmpScript.ahk, UTF-8 ; %
+	 ;FileCopy, %TmpDir%\tmpScript.ahk, saved.ahk , 1 ; debug
 	 GUI, 1:Destroy
 	 RunWait, %A_AhkPath% "%TmpDir%\tmpScript.ahk"
 	 FileDelete, %TmpDir%\tmpScript.ahk
@@ -1164,8 +1192,8 @@ ShowPreview(Section="1")
 			Section = 2
 		}
 
-
 	 GuiControl,1: , Edit2, % Snippet[Paste1,Paste2,Section] ; set preview Edit control %
+
 	 Return
 	}
 
@@ -1302,6 +1330,16 @@ Return
 
 ; Shortcuts for the button bar
 #IfWinActive, ahk_group AppTitle
+
+^f::
+ControlFocus, Edit1, %AppWindow%
+Return
+
+; we add this for screenreader users (NVDA), that way they can TAB to the results listview
+; and use the UP and DOWN keys to 'listen' to the results.
+Tab::
+ControlFocus, SysListview321, %AppWindow%
+Return
 
 ; LetterVariations
 !v::
@@ -1686,10 +1724,10 @@ Return
 NumpadUp::
 ~Up::
 ControlGetFocus, OutputVar, %AppWindow%
-	{
-	 If (OutputVar <> "Edit1")
-		ControlFocus, Edit1, %AppWindow%
-	}
+	;{
+	; If (OutputVar <> "Edit1")
+	;	ControlFocus, Edit1, %AppWindow%
+	;}
 If (DisplayBundle > 1)
 	GuiControl, -Redraw, SelItem
 ControlSend, Edit1, ^{end}, %AppWindow% ; v1.4 to keep caret at end of typed text in searchbox
@@ -1702,7 +1740,11 @@ If (PreviousPos = 0) ; exception, focus is not on listview this will allow you t
 	 ShowPreview(PreviewSection)
 	 Return
 	}
-ControlSend, SysListview321, {Up}, %AppWindow%
+ControlGetFocus, OutputVar, %AppWindow%
+	{
+	 If (OutputVar = "Edit1")
+		ControlSend, SysListview321, {Up}, %AppWindow%
+	}
 ItemsInList:=LV_GetCount()
 ChoicePos:=PreviousPos-1
 If (ChoicePos <= 1)
@@ -1710,23 +1752,22 @@ If (ChoicePos <= 1)
 If (ChoicePos = PreviousPos)
 	ControlSend, SysListview321, {End}, %AppWindow%
 ShowPreview(PreviewSection)
-ControlFocus, Edit1, %AppWindow%
+;ControlFocus, Edit1, %AppWindow%
 If (DisplayBundle > 1)
 	GuiControl, +Redraw, SelItem
 Return
 
 NumpadDown::
 ~Down::
-ControlGetFocus, OutputVar, %AppWindow%
-	{
-	 If (OutputVar <> "Edit1")
-		ControlFocus, Edit1, %AppWindow%
-	}
 If (DisplayBundle > 1)
 	GuiControl, -Redraw, SelItem
 ControlSend, Edit1, ^{end}, %AppWindow% ; v1.4 to keep caret at end of typed text in searchbox
 PreviousPos:=LV_GetNext()
-ControlSend, SysListview321, {Down}, %AppWindow%
+ControlGetFocus, OutputVar, %AppWindow%
+	{
+	 If (OutputVar = "Edit1")
+		ControlSend, SysListview321, {Down}, %AppWindow%
+	}
 ItemsInList:=LV_GetCount()
 ChoicePos:=PreviousPos+1
 If (ChoicePos > ItemsInList)
@@ -1734,7 +1775,6 @@ If (ChoicePos > ItemsInList)
 If (ChoicePos = PreviousPos)
 	ControlSend, SysListview321, {Home}, %AppWindow%
 ShowPreview(PreviewSection)
-ControlFocus, Edit1, %AppWindow%
 If (DisplayBundle > 1)
 	GuiControl, +Redraw, SelItem
 Return
@@ -2832,6 +2872,7 @@ Return
 #Include %A_ScriptDir%\include\WinClipAPI.ahk      ; by Deo
 #Include %A_ScriptDir%\include\Markdown2HTML.ahk   ; by fincs + additions
 #Include %A_ScriptDir%\include\Class_LV_Colors.ahk ; by just me
+#Include %A_ScriptDir%\include\Class_CtlColors.ahk ; by just me
 #Include %A_ScriptDir%\include\AutoXYWH.ahk        ; by toralf & tmplinshi
 #Include %A_ScriptDir%\include\Class_Toolbar.ahk   ; by pulover
 ; /Includes
@@ -2912,5 +2953,7 @@ If Administrator and !A_IsAdmin
 		ExitApp
 	}
 Return
+
+#include *i %A_ScriptDir%\include\nvda.ahk
 
 #Include *i %A_ScriptDir%\autocorrect.ahk

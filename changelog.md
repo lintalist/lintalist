@@ -1,3 +1,14 @@
+### v1.9.11
+
+* New: Theme support incl. updating all listview icons with transparency.
+* New: <kbd>ctrl</kbd>+<kbd>f</kbd> shortcut to focus on search box in Lintalist GUI, <kbd>TAB</kbd> to set focus on Listview (results) https://github.com/lintalist/lintalist/issues/148
+* Changed how UP/DOWN are handled in the search results (related to TAB above)
+* Check for certain programs that might conflict with the standard Start search hotkey (capslock). Only NVDA for now. #148
+* New: Optional AfterPaste.ahk to allow additional actions after copy or paste (example: let NVDA speak the snippet text) https://github.com/lintalist/lintalist/issues/150
+* Update: Default.ahk make ShortcutCopy, ShortcutPaste, ShortcutCut available in Scripts as well. Changed timing of PasteDelay.
+* Update: TitleCase() v1.41 https://github.com/lintalist/TitleCase
+* Fix: StayOnMonitor to prevent searching GUI being displayed above the top of the monitor
+
 ### v1.9.10
 
 * New: Comment plugin - add comment to snippet which will be removed before pasting. Use as visual reminder or search aid.

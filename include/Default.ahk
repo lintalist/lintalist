@@ -1,7 +1,6 @@
 ﻿/*
 Name          : Standard functions, can also be shared by bundle scripts by including LLInit() in your bundle script
-Version       : 1.1
-Date          : 20170616
+Version       : 1.2
 Functions     :
 	- LLInit()
 	- GetActiveWindowStats()
@@ -9,6 +8,9 @@ Functions     :
 	- ClipSet() mod of virclip by Learning one http://www.autohotkey.com/forum/topic56926.html
 
 History:
+1.2 - ShortcutCopy, ShortcutPaste, ShortcutCut available in Scripts as well.
+    - optional includes nvda.ahk and afterpaste.ahk (see docs, used for nvda for now)
+    - moved Sleep, % PasteDelay to after pasting (replacing sleep, 50)
 1.1 PasteDelay, ActiveWindowID, ActiveControl now global as they should in SendKey()
 1.0 Initial version 20101010
 
@@ -37,7 +39,13 @@ GetActiveWindowStats() ; Get Active Window & Control
 		ActiveWindowTitle=%ActiveWindowTitle%
 		PasteDelay=%PasteDelay%
 		SendMethod=%SendMethod%
+		ShortcutCopy=%ShortcutCopy%
+		ShortcutPaste=%ShortcutPaste%
+		ShortcutCut=%ShortcutCut%
+
 		#include %A_ScriptDir%\include\default.ahk  	  
+
+		#include *i %A_ScriptDir%\include\nvda.ahk
 	  
 	 )
 	}
@@ -56,8 +64,7 @@ SendKey(Method = 1, Keys = "")
 	 ; Method: 4 = ControlSend
  
  global PasteDelay, ActiveWindowID, ActiveControl, ActiveWindowProcessName, AltPaste, ShortcutCopy, ShortcutPaste, ShortcutCut, ShortcutQuickSearch
- Sleep, % PasteDelay
-
+ 
 ; replace default keys with application specific keys defined in AltPaste.ini - see docs\AltPaste.md
  If ActiveWindowProcessName in % AltPaste.programs
 	{
@@ -108,8 +115,13 @@ SendKey(Method = 1, Keys = "")
 		 ControlSend, %ActiveControl%, %keys%, ahk_id %ActiveWindowID%
 		}
 
-	 Sleep 50 ; some time to get data to clipboard
-	 
+;	 Sleep 50 ; some time to get data to clipboard
+	 Sleep, % PasteDelay ; was at the start of the function, moved it here
+
+     ; Because one of the includes below will always fail code is only loaded once:
+	 #include *i %A_ScriptDir%\include\afterpaste.ahk     ; from lintastlist search
+	 #include *i %A_ScriptDir%\..\include\afterpaste.ahk  ; from a script
+
 ;	 If (Restore = 1)
 ;		 Clipboard:=ClipSet("g",2) ; restore
 	

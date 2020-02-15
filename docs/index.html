@@ -20,7 +20,7 @@
 <br /><br />
 <span style='font-size:.8em;'><b>Lintalist</b> is <b>open source</b> and developed in <a href='https://autohotkey.com/'>AutoHotkey</a>, an easy to learn scripting language for Windows.
 [WinXP(sp3)/Vista/7/8/10]<br /></span>
-<span class='date' style='float:right;display:inline;margin-top:0px;'>doc rev. 20191215</span></p>
+<span class='date' style='float:right;display:inline;margin-top:0px;'>doc rev. 20200215</span></p>
 </div>
 
 <div class='column'>
@@ -37,6 +37,7 @@
 <li><a href='#Configuration-MultiCaret'>MultiCaret</a></li>
 <li><a href='#Configuration-AltPaste'>AltPaste</a></li>
 <li><a href='#Configuration-Linefeed'>Linefeed</a></li>
+<li><a href='#Configuration-AfterPaste'>AfterPaste</a></li>
 </ul></li>
 <li><a href='#cmdline'>Command line parameters</a></li>
 <li><a href='#FAQ'>FAQ &amp; Known Issues</a></li>
@@ -84,11 +85,11 @@
 </div>
 
 <div class='column'>
-<p><b>Download Lintalist <em>1.9.10</em></b>
+<p><b>Download Lintalist <em>1.9.11</em></b>
 <p>
 <a href='https://github.com/lintalist/lintalist/releases'><img src='img/lintalist65x65.gif' alt='Download Lintalist' width='65' align='left' border='0' style='margin-right: 5px;' /></a>
 Download (incl. source):<br />
-<a href='https://github.com/lintalist/lintalist/releases'><b>Latest release</b></a> (894 kb)<br />Simply unpack and run lintalist.ahk or lintalist.exe<br />
+<a href='https://github.com/lintalist/lintalist/releases'><b>Latest release</b></a> (895 kb)<br />Simply unpack and run lintalist.ahk or lintalist.exe<br />
 </p>
 
 <span class='tip' style="margin-bottom:10px;"><img src="img/usb.png" width=50 align=right title="USB image by Alessandro Rei (GNU/GPL) - http://findicons.com/icon/255067/usb?id=256158">Lintalist is a <b>portable application</b>. It stores all settings and bundles in the folder the program resides in. <a href="#portable">More...</a>
@@ -339,6 +340,7 @@ As of v1.9.10+ there is a setting to also use this key to Hide the search window
 </thead>
 <tbody>
 <tr><td><b><kbd>Esc</kbd></b></td><td>Close/Hide Search Window                          </td></tr>
+<tr><td><b><kbd>Up</kbd>, <kbd>Down</kbd></b></td><td>Scroll through results, NumpadUp and NumpadDown also work.</td></tr>
 <tr><td><b><kbd>Enter</kbd></b></td><td>Paste Found Text (Part 1) or Run Script *1      </td></tr>
 <tr><td><b><kbd>Shift</kbd>+<kbd>Enter</kbd></b></td><td>Paste Found Text (Part 2) or Run Script *1      </td></tr>
 <tr><td><b><kbd>Ctrl</kbd>+<kbd>Enter</kbd></b></td><td>Paste Found Text (Part 1) and DO NOT run script </td></tr>
@@ -362,6 +364,8 @@ The sort will work even the column is not visible - for example if you do not sh
 <tr><td><b><kbd>Alt</kbd>+<kbd>1..0</kbd></b></td><td>You can use <kbd>Alt</kbd>+<kbd>1</kbd> to <kbd>Alt</kbd>+<kbd>0</kbd> for the first ten search results. The visual cues are disabled when using ColumnSort other than "NoSort"
 These can be disabled via the <b>ShortcutSearchGui</b> setting (Configuration).</td></tr>
 <tr><td><b><kbd>Ctrl</kbd>+<kbd>t</kbd></b></td><td>Toggle Search Window on top on or off. (per search instance)</td></tr>
+<tr><td><b><kbd>Ctrl</kbd>+<kbd>f</kbd></b></td><td>Set focus on the search box.</td></tr>
+<tr><td><b><kbd>Tab</kbd></b></td><td>Set focus on the search results (listview) - useful for screenreaders such as NVDA.</td></tr>
 </tbody>
 </table>
 
@@ -504,6 +508,44 @@ line3
 </blockquote>
 For specific programs you can define the character that needs to be used instead of the default "new line" character. This can either be one single character or multiple characters - see the linefeed.ini for more information. As an example two programs are already included, [notepad.exe] and [wordpad.exe].
 This can also be useful in for applications where pasting (CR)LF may be seen as "enter" which would (accidentally) execute / start process (command line applications for example) - replacing linefeed(s) with a space would prevent this. <a href='https://github.com/lintalist/lintalist/issues/65'>Discussion @ GH - #65</a>
+
+<h3 id='Configuration-AfterPaste'><a href='#Configuration-AfterPaste' class='headline'>After<em>Paste</em><span style='color:#080;'>.ahk</span></a></h3>
+
+If you want to perform some special action after Lintalist performs a copy or paste you can create a file in the include\ folder:
+
+Mandatory filename: AfterPaste.ahk
+
+The code is #include-d directly after the paste or copy command (in default.ahk) but before restoring the clipboard. It can not contain functions. 
+
+You can use "If (Keys = [ShortcutCopy|ShortcutPaste|ShortcutCut])" to determine when you want an action to be performed - see NVDA example below.
+
+If you want to use this in scripts as well be sure to include LLInit() in your script code so the proper values of ShortcutCopy, ShortcutPaste, and ShortcutCut are made available in the script.
+
+<h4 id='Configuration-nvda'><a href='#Configuration-nvda' class='headline'>NVDA</a></h4>
+
+If you want Lintalist to let NVDA speak the text of the snippet that has been pasted you can make use of some additional code.
+
+For NVDA users there is a ready made AfterPaste.ahk
+
+To make it work you need:
+
+1. AfterPaste.ahk - download directly here <a href='https://raw.githubusercontent.com/lintalist/Lintalist-AfterPaste/master/AfterPaste.ahk'>https://raw.githubusercontent.com/lintalist/Lintalist-AfterPaste/master/AfterPaste.ahk</a> ( Repository <a href='https://github.com/lintalist/Lintalist-AfterPaste'>https://github.com/lintalist/Lintalist-AfterPaste</a> )
+2. nvda.ahk - download directly here <a href='https://raw.githubusercontent.com/hi5/nvda-autohotkey/master/nvda.ahk'>https://raw.githubusercontent.com/hi5/nvda-autohotkey/master/nvda.ahk</a>
+3. NVDA Controller DLL files - download directly here <a href='http://www.nvda-project.org/nvdaControllerClient/nvdaControllerClient_20100219.7z'>http://www.nvda-project.org/nvdaControllerClient/nvdaControllerClient_20100219.7z</a> or here <a href='https://github.com/hi5/nvda-autohotkey/blob/master/nvdaControllerClient_20100219.7z?raw=true'>https://github.com/hi5/nvda-autohotkey/blob/master/nvdaControllerClient_20100219.7z?raw=true</a>
+
+Place AfterPaste.ahk and nvda.ahk to the lintalist\include folder.
+
+Place the nvdaControllerClient32.dll and nvdaControllerClient64.dll files to the Lintalist main folder where lintalist.ahk and lintalist.exe are also located.
+
+Restart Lintalist.
+
+If NVDA is running the text of the snippet should be spoken after it has been pasted.
+
+Note that NVDA may speak additional characters if you are using a shorthand. The combination of NVDA and AutoHotkey does not always work 100% correct when it tries to delete the typed characters before replacing it with the snippet text.
+
+You can modify AfterPaste.ahk to better suit your needs, this may include additional calls to the nvdaCancel() function or additional Sleep to allow Lintalist more time to paste the text.
+
+If you are using scripts and use SendKey(SendMethod, ShortcutPaste) to paste the clipboard, it will automatically Speak it as well as the default code in AfterPaste.ahk takes care of it.
 
 <h2 id='LintalistBundles'><a href='#LintalistBundles' class='headline'>Lintalist <em>Bundles</em></a></h2>
 
@@ -696,12 +738,14 @@ Basic example: "Hello, this is a sample <code>^|</code>text"
 The ^| (or ^$) code will be removed from the text and the caret will 
 be placed before the word `text`.
 
-Alternative notation: <code>^$</code> useful when you want to use this in combination with the Choice plugin where the | character would cause a problem -  <a href='https://github.com/lintalist/lintalist/issues/124'>Discussion @ GH - #124</a>
+Alternative notation: <code>^$</code> useful when you want to use this in combination with the Choice plugin where the | character would cause a problem - <a href='https://github.com/lintalist/lintalist/issues/124'>Discussion @ GH - #124</a>
 
 If you paste a snippet into an editor which supports Multi-caret/edit you can use those in Lintalist snippets by placing multiple caret locations in your snippet. If you don't want to use MultiCaret simply avoid using multiple ^| in a Lintalist snippet.
 Supported editors: Atom, Brackets, EverEdit, Komodo Edit, Sublime Text, TextAdept, UltraEdit 23+, Visual Studio Code editor. See <a href='MultiCaret.md'>docs/MultiCaret.md</a> for details.
 
-<b>Note:</b> The caret position may be incorrect for snippets with Unicode characters, complex scripts, glyphs etc. (trial and error may work). It may also depend on how the target application handles (auto) indentation or reformats/prettyfies pasted code. In such cases a specific script may be able to resolve such issues - <a href='https://github.com/lintalist/lintalist/issues/123'>Discussion @ GH - #123</a></td></tr>
+<b>Notes:</b>  
+1. The caret position may be incorrect for snippets with Unicode characters, complex scripts, glyphs etc. (trial and error may work). It may also depend on how the target application handles (auto) indentation or reformats/prettyfies pasted code. In such cases a specific script may be able to resolve such issues - <a href='https://github.com/lintalist/lintalist/issues/123'>Discussion @ GH - #123</a>
+2. For screenreaders: the plugin consists of two characters, a Circumflex Accent followed by a Vertical bar or pipe symbol. A Circumflex Accent followed by a dollar sign is also permitted.</td></tr>
 
 <tr id='c-plugin'><td><a href='#c-plugin' class='headline'><code>[[C=Char|Repeat]]</code></a></td><td>By default pasted texts are trimmed which means spaces and tabs will be trimmed from the snippet. You can use this plugin to insert one or more spaces and/or tabs at the beginning or end of a snippet. Or you can use it as a shorthand-code to insert a repeating text or character(s).
 Basic example <code>[[C=-|30]]</code> insert 30 -'s
@@ -714,7 +758,7 @@ Neat trick: using a local variable or User input
       Create a HTML table asking for Number of Columns and Rows:
 <blockquote class='boxed'>&lt;table&gt;
 <b style='color:blue;'>[[C=</b>&lt;tr&gt;<b style='color:blue;'>[[C=</b>&lt;td&gt;&lt;/td&gt;<b style='color:red;'>|</b><b style='color:blue;'>[[Input=</b>How many columns?<b style='color:blue;'>]]]]</b>&lt;/tr&gt;
-<b style='color:red;'>|</b><b style='color:blue;'>[[Input=</b>how many rows?<b style='color:blue;'>]]]]</b>&lt;/table&gt;</blockquote></td></tr> 
+<b style='color:red;'>|</b><b style='color:blue;'>[[Input=</b>How many rows?<b style='color:blue;'>]]]]</b>&lt;/table&gt;</blockquote></td></tr> 
 
 <tr id='calc-plugin'><td><a href='#calc-plugin' class='headline'><code>[[Calc=]]</code></a> *2</td><td>Evaluation of the math expressions - see <a href='#Calc'>documentation below</a>.</td></tr>
 
@@ -1362,7 +1406,7 @@ Note that % signs in snippets do not need to be escaped as the <code>(join`n %</
 
 ; ... your code ... may include <code>[[llpart1]]</code> and/or <code>[[llpart2]]</code> 
 
-<span class='llbundle'>SendKey(SendMethod, "^v")</span>           <span class='llcomment'>; paste changed clipboard using SendMethod defined by Lintalist settings</span>
+<span class='llbundle'>SendKey(SendMethod, ShortcutPaste)</span>  <span class='llcomment'>; paste changed clipboard using SendMethod defined by Lintalist settings</span>
 <span class='llbundle'>Clipboard:=ClipSet("g",1)</span>           <span class='llcomment'>; restore original clipboard contents</span>
 <span class='llbundle'>ExitApp</span>
 
@@ -1783,7 +1827,7 @@ There is also a configuration setting that can do this: ActivateWindow
 <img src='img/lintalist-title-footer.gif' alt='lintalist' align='left' style='margin-top:6px;padding-right:5px;' /><b>Disclaimer:</b> Use at your own risk. If you find a new bundle take a look at the script sections of each snippet. As Lintalist can run any AutoHotkey script it can also run faulty or insecure code. Be sensible, if you simply want to try a bundle selecting 'Pause scripts' via the tray menu might be a useful idea.
 </span> 
 
-<span style='float:right;'>&copy; Copyright 2009-2019 Lintalist. See license.txt</span>
+<span style='float:right;'>&copy; Copyright 2009-2020 Lintalist. See license.txt</span>
 </pre>
 
 <a href="https://github.com/lintalist"><img style="position: absolute; top: 0; right: 0; border: 0;" src="img/forkme_right_red_aa0000.png" alt="Fork me on GitHub"></a>

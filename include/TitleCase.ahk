@@ -5,11 +5,15 @@ Purpose    : Title case (capital case, headline style), example
              "The Quick Brown Fox Jumps over the Lazy Dog"
              A mixed-case style with all words capitalised, except for certain subsets
              -- https://en.wikipedia.org/wiki/Letter_case#Title_case
-Version    : 1.2
+Version    : 1.41
 Source     : https://github.com/lintalist/TitleCase
 License    : See license.txt for further details (GPL-2.0)
 
 History:
+v1.41 - removed static
+v1.4 - replaced pairs object by simple list (ensures order of processing as listed in INI)
+v1.3 - additional Find/Replace via INI setup - moved v1.2 to INI  
+       read language section in one go
 v1.2 - adding RegExReplace() to address 1st 2nd 3rd 4th etc
 v1.1 - adding readme.md doc, minor mods to default LowerCaseList
 v1.0 - initial version
@@ -20,26 +24,37 @@ Documentation see readme.md @ https://github.com/lintalist/TitleCase
 
 TitleCase(Text,lang="en",ini="TitleCase.ini")
 	{
-	 static settings:={}
+	 settings:={}, pairs:=""
 	 If !InStr(ini,"\")
-	 	ini:=A_ScriptDir "\" ini
+		ini:=A_ScriptDir "\" ini
 	 IfNotExist, %ini%
 		TitleCase_Ini(ini)
-	 inilist=LowerCaseList,UpperCaseList,MixedCaseList,ExceptionsList,AlwaysLowerCaseList
-	 loop, parse, inilist, CSV
-	 	{
- 		 IniRead, key, %ini%, %lang%, %A_LoopField%
- 		 If (key = "ERROR")
- 		 	key:=""
-		 settings[A_LoopField]:=key
-	 	}
+	 IniRead, LangSection, %ini%, %lang%
+	 Loop, parse, LangSection, `n, `r
+		{
+		 data:=StrSplit(A_LoopField,"=",2)
+		 settings[data[1]]:=data[2]
+		 if InStr(data[1],"_")
+			{
+			 pairdata:=StrSplit(A_LoopField,"_").1
+			 If pairdata not in pairs
+				pairs .= pairdata ","
+			}
+		}
 	 StringLower, Text, Text, T
 	 Text:=TitleCase_LowerCaseList(Text,settings.LowerCaseList)
 	 Text:=TitleCase_UpperCaseList(Text,settings.UpperCaseList)
 	 Text:=TitleCase_MixedCaseList(Text,settings.MixedCaseList)
 	 Text:=TitleCase_ExceptionsList(Text,settings.ExceptionsList)
+	 pairs:=trim(pairs,",")
+	 loop, parse, pairs, CSV
+		{
+		 find:=settings[A_LoopField "_find"]
+		 replace:=settings[A_LoopField "_replace"]
+		 Text:=RegExReplace(Text,find,replace)
+		}
 	 Text:=TitleCase_AlwaysLowerCaseList(Text,settings.AlwaysLowerCaseList)
-	 Text:=RegExReplace(Text,"im)\b(\d+)(st|nd|rd|th)\b","$1$L{2}") ; for 1st 2nd 3rd 4th etc
+
 	 Text:=RegExReplace(Text,"^(.)","$U{1}") ; ensure first char is always upper case
 	 Return Text
 	}
@@ -96,7 +111,12 @@ UpperCaseList=AHK,IBM,UK,USA
 MixedCaseList=AutoHotkey,iPod,iPad,iPhone
 ExceptionsList=
 AlwaysLowerCaseList=
-
+OrdinalIndicator_Find=im)\b(\d+)(st|nd|rd|th)\b
+OrdinalIndicator_Replace=$1$L{2}
+Hypen1_Find=im)-\K(.)
+Hypen1_Replace=$U{1}
+Hypen2_Find=im)-(and|but|for|nor|of|or|so|yet)-
+Hypen2_Replace=-$L{1}-
 )
 , %ini%, UTF-16
 	}

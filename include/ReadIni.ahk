@@ -101,6 +101,7 @@ INISetup:={ AlwaysLoadBundles:     {default:"",find:"bundles\"}
 			IniSetup["StartSearchHotkeyToggle"]:={default:"0"}
 			IniSetup["EditorAutoCloseBrackets"]:={default:"[,[[|]]"}
 			IniSetup["EditorSnippetErrorCheck"]:={default:"[["}
+			IniSetup["Theme"]:={default:"default"}
 
 	 ShortcutSearchGuiShow:=["1: ","2: ","3: ","4: ","5: ","6: ","7: ","8: ","9: ","0: ", "   "]
 
@@ -133,6 +134,11 @@ INISetup:={ AlwaysLoadBundles:     {default:"",find:"bundles\"}
 			 IconSize:=32
 			}
 
+		if (Theme = "default")
+			Theme:=""
+		else
+			Theme:=StrSplit(Theme,".").1
+				
 		StringSplit, ColumnWidthPart, ColumnWidth, -
 
 		if (ColumnSort <> "NoSort")

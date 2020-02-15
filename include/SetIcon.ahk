@@ -14,6 +14,7 @@ Icon8: Image text snippet with script
 -- See ImageList.ahk for complete list
 
 History:
+v1.2 - adding IL_CheckPath()
 v1.1 - adding overlay 1-10 result icons for alt_1..0 shortcuts in search result gui
 v1.0 - initial version
 
@@ -182,4 +183,14 @@ SetIcon(text,script,ShortCutSearchGui,ShortCutSearchGuiCounter)
 		}
 
 	 Return IconVal
+	}
+
+IL_CheckPath(Icon)
+	{
+	 global Theme
+	 Static IconPath1:=A_ScriptDir "\themes\icons\", IconPath2:=A_ScriptDir "\icons\"
+	 If FileExist(IconPath1 Icon "_" theme["path"] ".ico")
+		Return IconPath1 Icon "_" theme["path"] ".ico"
+	 else
+		Return IconPath2 Icon ".ico"
 	}

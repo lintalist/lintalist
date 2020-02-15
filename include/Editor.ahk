@@ -1,6 +1,6 @@
 ﻿; LintaList Include
 ; Purpose: Bundle & Snippet Editor
-; Version: 1.3
+; Version: 1.4
 ;
 ; Hotkeys used in Search GUI to start Bundle & Snippet Editor
 ; F4  = Edit snippet
@@ -10,6 +10,7 @@
 ; F8  = Delete snippet
 ; 
 ; History: 
+; v1.4 - adding themes
 ; v1.3 - 'shortcuts' (Keyboard accelerators) for edit controls
 ; v1.2 - Use font/fontsize settings in Editor as well (as in the Search GUI)
 ; v1.1 - Added (optional) Syntax Highlighting for snippets/html/scripts
@@ -29,39 +30,99 @@ Codes := { "AHK": { "Highlighter": "HighlightAHK" }
 	, "Snippet": {"Highlighter": "HighlightSnippet"	}
 	, "Plain": { "Highlighter": "" } } 
 
+FGColor:="0x" Theme["EditorTextColor"]
+BGColor:="0x" Theme["EditorBackgroundColor"]
+MainColorComments:="0x" Theme["MainColorComments"]
+MainColorFunctions:="0x" Theme["MainColorFunctions"]
+MainColorKeywords:="0x" Theme["MainColorKeywords"]
+MainColorMultiline:="0x" Theme["MainColorMultiline"]
+MainColorNumbers:="0x" Theme["MainColorNumbers"]
+MainColorPunctuation:="0x" Theme["MainColorPunctuation"]
+MainColorStrings:="0x" Theme["MainColorStrings"]
+AHKColorA_Builtins:="0x" Theme["AHKColorA_Builtins"]
+AHKColorCommands:="0x" Theme["AHKColorCommands"]
+AHKColorDirectives:="0x" Theme["AHKColorDirectives"]
+AHKColorFlow:="0x" Theme["AHKColorFlow"]
+AHKColorKeyNames:="0x" Theme["AHKColorKeyNames"]
+AHKColorKeywords:="0x" Theme["AHKColorKeywords"]
+SnippetsColorAttributes:="0x" Theme["SnippetsColorAttributes"]
+SnippetsColorEntities:="0x" Theme["SnippetsColorEntities"]
+SnippetsColorTags:="0x" Theme["SnippetsColorTags"]
+
+If (FGColor = "0x")
+	FGColor:="0x000000"
+If (BGColor = "0x")
+	BGColor:="0xFFFFFF"
+If (MainColorComments = "0x")
+	MainColorComments:="0x7F9F7F"
+If (MainColorFunctions = "0x")
+	MainColorFunctions:="0x7CC8CF"
+If (MainColorKeywords = "0x")
+	MainColorKeywords:="0xE4EDED"
+If (MainColorMultiline = "0x")
+	MainColorMultiline:="0x7F9F7F"
+If (MainColorNumbers = "0x")
+	MainColorNumbers:="0xF79B57"
+If (MainColorPunctuation = "0x")
+	MainColorPunctuation:="0x000088"
+If (MainColorStrings = "0x")
+	MainColorStrings:="0xCC9893"
+If (AHKColorA_Builtins = "0x")
+	AHKColorA_Builtins:="0xF79B57"
+If (AHKColorCommands = "0x")
+	AHKColorCommands:="0x008800"
+If (AHKColorDirectives = "0x")
+	AHKColorDirectives:="0x7CC8CF"
+If (AHKColorFlow = "0x")
+	AHKColorFlow:="0x008800"
+If (AHKColorFunctions = "0x")
+	AHKColorFunctions:="0x008800"
+If (AHKColorKeyNames = "0x")
+	AHKColorKeyNames:="0xCB8DD9"
+If (AHKColorKeywords = "0x")
+	AHKColorKeywords:="0xCB8DD9"
+If (SnippetsColorAttributes = "0x")
+	SnippetsColorAttributes:="0x7CC8CF"
+If (SnippetsColorEntities = "0x")
+	SnippetsColorEntities:="0xF79B57"
+If (SnippetsColorTags = "0x")
+	SnippetsColorTags:="0x008800"
+
 ; Settings array for the RichCode control
 RichCodeSettings:=
 ( LTrim Join Comments
 {
 	"TabSize": 4,
 	"Indent": "`t",
-	"FGColor": 0x000000,
-	"BGColor": 0xFFFFFF,
+	"FGColor": FGColor,
+	"BGColor": BGColor,
 	"Font": {"Typeface": font, "Size": fontsize},
 	
 	"UseHighlighter": True,
 	"WordWrap": False,
 	"HighlightDelay": 200,
 	"Colors": {
-		"Comments":     0x7F9F7F,
-		"Functions":    0x7CC8CF,
-		"Keywords":     0xE4EDED,
-		"Multiline":    0x7F9F7F,
-		"Numbers":      0xF79B57,
-		"Punctuation":  0x000088,
-		"Strings":      0xCC9893,
+		"Comments":     MainColorComments,
+		"Functions":    MainColorFunctions,
+		"Keywords":     MainColorKeywords,
+		"Multiline":    MainColorMultiline,
+		"Numbers":      MainColorNumbers,
+		"Punctuation":  MainColorPunctuation,
+		"Strings":      MainColorStrings,
 		
 		; AHK
-		"A_Builtins":   0xF79B57,
-		"Commands":     0x008800,
-		"Directives":   0x7CC8CF,
-		"Flow":         0x008800,
-		"KeyNames":     0xCB8DD9,
+		"A_Builtins":  AHKColorA_Builtins,
+		"Commands":    AHKColorCommands,
+		"Directives":  AHKColorDirectives,
+		"Flow":        AHKColorFlow,
+		"Functions":   AHKColorFunctions,
+		"KeyNames":    AHKColorKeyNames,
+		"KeyWords":    AHKColorKeywords,
 	
 		; Snippets-HTML
-		"Attributes":   0x7CC8CF,
-		"Entities":     0xF79B57,
-		"Tags":         0x008800 ; plugins
+		"Attributes":   SnippetsColorAttributes,
+		"Entities":     SnippetsColorEntities,
+		"Tags":         SnippetsColorTags ; plugins
 		}
 
 }
@@ -233,17 +294,21 @@ Filename:=Filename_%paste1%
 ActionText:=StrReplace(RegExReplace(EditMode,"([A-Z])"," $1"),"Append","New")
 
 Gui, 71:Destroy
+If Theme["MainBackgroundColor"]
+	Gui, 71: Color, % Theme["MainBackgroundColor"]
 Gui, 71:+Owner +Resize +MinSize740x520
 Gui, 71:Default
 Gui, 71:Menu, MenuBar2
+If Theme["EditorGuiTextColor"]
+	Gui, 71: font, % "c" Theme["EditorGuiTextColor"]
 Gui, 71:font,s12 bold
 Gui, 71:Add, Text,     x600   y10 vActionText, %ActionText%
 Gui, 71:font,s10 normal
-Gui, 71:Add, Picture , x20    y10 w16 h16, %A_ScriptDir%\icons\lintalist_bundle.png
+Gui, 71:Add, Picture , x20    y10 w16 h16, %EditorIconlintalist_bundle%
 Gui, 71:Add, Text    , x40    y13               , Bundle:`t%A_Space%%A_Space%%A_Space%%Name%
 Gui, 71:Add, Text    , x340   y13               , File:%A_Space%%A_Space%%A_Space%%Filename%
 Gui, 71:Add, Text,     x20    y45 w700 h1 0x10 vTextLine
-Gui, 71:Add, Picture , x20    y65 w16 h16, %A_ScriptDir%\icons\hotkeys.ico
+Gui, 71:Add, Picture , x20    y65 w16 h16, %EditorIconhotkeys%
 Gui, 71:Add, Text    , x40    y65               , Hotke&y: 
 
 If !EditorHotkeySyntax
@@ -253,44 +318,58 @@ If !EditorHotkeySyntax
 	}
 else If EditorHotkeySyntax
 	{
+	 Gui, 71: font, cBlack ; to avoid illegible text in shorthand (white on white for example)
 	 Gui, 71:Add, Edit  , xp+50  y63  w140 h20 vHKey  , %HKey%
 	 Gui, 71:Add, Link, xp+150 y65  w70  h20 , [<a href="https://autohotkey.com/docs/Hotkeys.htm">AHK Docs</a>]
 	}
+If Theme["EditorGuiTextColor"]
+	Gui, 71: font, % "c" Theme["EditorGuiTextColor"]
 
-Gui, 71:Add, Picture , xp+80  y65  w16 h16, %A_ScriptDir%\icons\shorthand.ico
+Gui, 71:Add, Picture , xp+80  y65  w16 h16, %EditorIconshorthand%
 Gui, 71:Add, Text    , xp+20  y65  w150 h20           , Sh&orthand: 
+Gui, 71: font, cBlack ; to avoid illegible text in shorthand (white on white for example)
 Gui, 71:Add, Edit    , xp+70  y63  w150 h20 vShorthand, %Shorthand%
-
-Gui, 71:Add, Picture , x20    y100 w16 h16 vPicture1, %A_ScriptDir%\icons\text_dropcaps.png
+If Theme["EditorGuiTextColor"]
+	Gui, 71: font, % "c" Theme["EditorGuiTextColor"]
+Gui, 71:Add, Picture , x20    y100 w16 h16 vPicture1, %EditorIcontext_dropcaps%
 Gui, 71:Add, Text    , x40    y100  vText1Label       , Part &1 (Enter)
 
 Gui, 71:Font,s%fontsize%,%font%
 If EditorSyntaxHL
 	RC1 := new RichCode(RichCodeSettings.Clone(), "x20 y120 w700 h120 vText1")
 else
-	Gui, 71:Add, Edit    , x20    y120  h120 w700 vText1  , %Text1%
+{
+	Gui, 71:Add, Edit    , x20    y120  h120 w700 vText1  HwndEditText1, %Text1%
+	}
+
 Gui, 71:Font,
 
+If Theme["EditorGuiTextColor"]
+	Gui, 71: font, % "c" Theme["EditorGuiTextColor"]
 Gui, 71:font,s10 normal
-Gui, 71:Add, Picture , x20    yp+125 w16 h16 vPicture2, %A_ScriptDir%\icons\text_dropcaps.png
+Gui, 71:Add, Picture , x20    yp+125 w16 h16 vPicture2, %EditorIcontext_dropcaps%
 Gui, 71:Add, Text    , x40    yp    vText2Label      , Part &2 (Shift-Enter)
 Gui, 71:Font,s%fontsize%,%font%
 If EditorSyntaxHL
 	RC2 := new RichCode(RichCodeSettings.Clone(), "x20 yp+20 w700 h90 vText2")
-else	
-	Gui, 71:Add, Edit    , x20    yp+20 h90 w700 vText2  , %Text2%
+else
+	Gui, 71:Add, Edit    , x20    yp+20 h90 w700 vText2  HwndEditText2, %Text2%
 Gui, 71:Font,
 
+If Theme["EditorGuiTextColor"]
+	Gui, 71: font, % "c" Theme["EditorGuiTextColor"]
 Gui, 71:font,s10 normal
-Gui, 71:Add, Picture , x20    yp+95 w16 h16 vPicture3, %A_ScriptDir%\icons\scripts.ico
+Gui, 71:Add, Picture , x20    yp+95 w16 h16 vPicture3, %EditorIconscripts%
 Gui, 71:Add, Text    , x40    yp    vText3Label              , Scrip&t
 Gui, 71:Font,s%fontsize%,%font%
 If EditorSyntaxHL
 	RC3 := new RichCode(RichCodeSettings.Clone(), "x20 yp+20 w700 h90 vScript")
 else
-	Gui, 71:Add, Edit    , x20    yp+20 h90 w700 vScript , %Script%
+	Gui, 71:Add, Edit    , x20    yp+20 h90 w700 vScript HwndEditScript, %Script%
 Gui, 71:Font,
 
+If Theme["EditorGuiTextColor"]
+	Gui, 71: font, % "c" Theme["EditorGuiTextColor"]
 Gui, 71:font, s8, arial
 If EditorSyntaxHL
 	Gui, 71:Add, Text, x400 y102 h16 w200, Note: press Ctrl+W to toggle Word Wrap
@@ -315,6 +394,13 @@ If EditorSyntaxHL
 	 RC3.Value := Script
 	}
 
+If !EditorSyntaxHL
+	{
+	 CtlColors.Attach(EditText1 , Theme["EditorBackgroundColor"],Theme["EditorTextColor"])
+	 CtlColors.Attach(EditText2 , Theme["EditorBackgroundColor"],Theme["EditorTextColor"])
+	 CtlColors.Attach(EditScript, Theme["EditorBackgroundColor"],Theme["EditorTextColor"])
+	}
+
 GuiCheckXYPos()
 DetectHiddenWindows, On
 Try
@@ -325,6 +411,7 @@ Try
 Catch
 	Gui, 71:Show, Hide w740 h520, Lintalist snippet editor
 DetectHiddenWindows, Off
+
 Gui, 71:Show
 
 WinActivate, Lintalist snippet editor
@@ -333,6 +420,9 @@ If EditorSyntaxHL
 else
 	;ControlFocus, Text1, Lintalist snippet editor
 	GuiControl, Focus, Text1
+
+
+
 Return
 
 #IfWinActive, Lintalist snippet editor ahk_class AutoHotkeyGUI
@@ -782,3 +872,15 @@ AutoCloseBrackets(in)
 	 Control, EditPaste, %what%, %Control%, Lintalist snippet editor
 	 Send {left %left%}
 	}
+
+ReadThemeEditorIcons:
+Loop, parse, % "lintalist_bundle.png,text_dropcaps.png,hotkeys.ico,shorthand.ico,scripts.ico", CSV
+	{
+	 SplitPath, A_LoopField, , , EditorIconOutExtension, EditorIconOutFileNameNoExt
+	 If FileExist(A_ScriptDir "\themes\icons\" EditorIconOutFileNameNoExt "_" Theme["path"] "." EditorIconOutExtension)
+		EditorIcon%EditorIconOutFileNameNoExt%:=A_ScriptDir "\themes\icons\" EditorIconOutFileNameNoExt "_" Theme["path"] "." EditorIconOutExtension
+	 else
+	 	EditorIcon%EditorIconOutFileNameNoExt%:=A_ScriptDir "\icons\" EditorIconOutFileNameNoExt "." EditorIconOutExtension
+	}
+EditorIconOutFileNameNoExt:="",EditorIconOutExtension:=""
+Return
