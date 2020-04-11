@@ -1,3 +1,14 @@
+### v1.9.12
+
+* New: you can now escape [[ and ]] in snippets. https://github.com/lintalist/lintalist/issues/162
+  and additionaly use [,],| in options using alternative notations: <SB, >SB, ^SB (see ParseEscaped in settings.ini)
+* New: paste HTML code from clipboard (if present) in the editor https://github.com/lintalist/lintalist/issues/59 
+* New: Run Query string using special hotkey (hidden expert option) https://github.com/lintalist/lintalist/issues/153
+* Fix: if there are no search results, disable edit, copy, move, delete
+* Further improvements for NVDA users
+  - disable tooltip in toolbar https://github.com/lintalist/lintalist/issues/161
+  - reporting snippet/listview contents to NVDA https://github.com/lintalist/lintalist/issues/159
+
 ### v1.9.11
 
 * New: Theme support incl. updating all listview icons with transparency.

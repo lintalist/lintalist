@@ -102,6 +102,10 @@ INISetup:={ AlwaysLoadBundles:     {default:"",find:"bundles\"}
 			IniSetup["EditorAutoCloseBrackets"]:={default:"[,[[|]]"}
 			IniSetup["EditorSnippetErrorCheck"]:={default:"[["}
 			IniSetup["Theme"]:={default:"default"}
+			IniSetup["ParseEscaped"]:={default:"<SB,>SB,^SB"}
+			IniSetup["QueryAction"]:={default:"0"}
+			IniSetup["QueryScript"]:={default:"RunQuery.ahk"}
+			IniSetup["QueryHotkey"]:={default:"F12"}
 
 	 ShortcutSearchGuiShow:=["1: ","2: ","3: ","4: ","5: ","6: ","7: ","8: ","9: ","0: ", "   "]
 
@@ -171,6 +175,11 @@ INISetup:={ AlwaysLoadBundles:     {default:"",find:"bundles\"}
 	 else
 	 	QueryDelimiter:=SubStr(Trim(QueryDelimiter),1,1) ; only use first char if a string was entered
 
+	 ParseEscapedArray:=StrSplit(ParseEscaped,",")
+
+	 
+	 If !FileExist(A_ScriptDir "\" QueryScript) and (QueryAction = 1)
+			FileAppend, `; See QueryAction`, QueryHotkey`, and QueryScript in settings.ini`nMsgBox `%0`% params: `%1`% `%2`% `%3`% `%4`% `%5`% `%6`% `%7`% `%8`% `%9`%`n, %A_ScriptDir%\%QueryScript%
 	 Hotkey, IfWinActive, Lintalist snippet editor
 	 If (Trim(EditorAutoCloseBrackets) <> "") 
 	 	Loop, parse, EditorAutoCloseBrackets, `;

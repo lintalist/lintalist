@@ -20,7 +20,7 @@
 <br /><br />
 <span style='font-size:.8em;'><b>Lintalist</b> is <b>open source</b> and developed in <a href='https://autohotkey.com/'>AutoHotkey</a>, an easy to learn scripting language for Windows.
 [WinXP(sp3)/Vista/7/8/10]<br /></span>
-<span class='date' style='float:right;display:inline;margin-top:0px;'>doc rev. 20200215</span></p>
+<span class='date' style='float:right;display:inline;margin-top:0px;'>doc rev. 20200411</span></p>
 </div>
 
 <div class='column'>
@@ -41,6 +41,7 @@
 </ul></li>
 <li><a href='#cmdline'>Command line parameters</a></li>
 <li><a href='#FAQ'>FAQ &amp; Known Issues</a></li>
+<li><a href='#Expert'>Expert</a></li>
 <li><a href='#History'>History</a> (changelog)</li>
 </ul>
 
@@ -85,7 +86,7 @@
 </div>
 
 <div class='column'>
-<p><b>Download Lintalist <em>1.9.11</em></b>
+<p><b>Download Lintalist <em>1.9.12</em></b>
 <p>
 <a href='https://github.com/lintalist/lintalist/releases'><img src='img/lintalist65x65.gif' alt='Download Lintalist' width='65' align='left' border='0' style='margin-right: 5px;' /></a>
 Download (incl. source):<br />
@@ -725,6 +726,11 @@ The plugins are processed in the following order:
 3. and finally [[plugin3]]
 
 <b>Available plugins:</b>
+
+<span class='tip'>[[..]] (Double square brackets) are used for snippet notation. You can escape these double square brackets to prevent them being interpreted as a plugin: 
+<span class='highlight'>\[\]</span>, and <span class='highlight'>\]\]</span>
+To escape [,], and | in the <em>options</em> of a plugin, use: <span class='highlight'>&lt;SB</span>, <span class='highlight'>&gt;SB</span>, and <span class='highlight'>^SB</span>. See ParseEscaped in settings.ini to change this.
+</span>
 
 <table>
 <thead>
@@ -1810,6 +1816,18 @@ There is also a configuration setting that can do this: ActivateWindow
 <a name='ki'></a><b>K:</b> 
 <b>A:</b> 
  -->
+
+<h2 id='Expert'><a href='#Expert' class='headline'>Expert</a></h2>
+
+<b><a href='#RunQuery' class='headline'>RunQuery</a></b> <a href='https://github.com/lintalist/lintalist/issues/153'>Discussion @ GH - #153</a>
+
+Allow user to use the query (what you typed in the searchbox) and start a user defined script passing on the query as parameter(s).
+
+In settings.ini there are three hidden options:
+
+QueryAction: disable/enable
+QueryHotkey: hotkey to use to "run query"
+QueryScript: script to start and where query is passed onto as parameter(s). Default RunQuery.ahk, a dummy script is created if not found and QueryAction is enabled.
 
 <h2 id='History'><a href='#History' class='headline'>History</a></h2>
 

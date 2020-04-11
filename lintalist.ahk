@@ -4,7 +4,7 @@ Name            : Lintalist
 Author          : Lintalist
 Purpose         : Searchable interactive lists to copy & paste text, run scripts,
                   using easily exchangeable bundles
-Version         : 1.9.11
+Version         : 1.9.12
 Code            : https://github.com/lintalist/
 Website         : http://lintalist.github.io/
 AutoHotkey Forum: https://autohotkey.com/boards/viewtopic.php?f=6&t=3378
@@ -41,7 +41,7 @@ PluginMultiCaret:=0 ; TODOMC
 
 ; Title + Version are included in Title and used in #IfWinActive hotkeys and WinActivate
 Title=Lintalist
-Version=1.9.11
+Version=1.9.12
 
 ; Gosub, ReadPluginSettings
 
@@ -265,6 +265,8 @@ Loop, parse, ProgramHotKeyList, CSV
 		}
 	}
 
+IsNVDARunning:=IsNVDARunning() ; used for up/down in listview as it looks like NVDA may have some issues with up/down navigation when listview NOT in focus/selected
+
 Hotkey, IfWinNotExist, ahk_group BundleHotkeys
 Hotkey, %StartSearchHotkey%, GUIStart
 If (StartOmniSearchHotkey <> "")
@@ -275,6 +277,9 @@ If (ExitProgramHotKey <> "")
 	Hotkey, %ExitProgramHotKey%, SaveSettings
 Hotkey, IfWinNotExist
 
+Hotkey, IfWinActive, ahk_group AppTitle
+Hotkey, %QueryHotkey%, RunQuery
+Hotkey, IfWinActive
 ProgramHotKeyList:=""
 
 ViaShorthand=0
@@ -391,7 +396,11 @@ Gui, 1:Font ; TODO BIGICONS
 
 ; TBSTYLE_FLAT     := 0x0800 Required to show separators as bars.
 ; TBSTYLE_TOOLTIPS := 0x0100 Required to show Tooltips.
-Gui, 1:Add, Custom, ClassToolbarWindow32 hwndhToolbar 0x0800 0x0100 0x0008 0x0040 x%barx% y%Yctrl% w580 ; TODO BIGICONS
+
+If !IsNVDARunning
+	Gui, 1:Add, Custom, ClassToolbarWindow32 hwndhToolbar 0x0800 0x0100 0x0008 0x0040 x%barx% y%Yctrl% w580 ; TODO BIGICONS
+else if IsNVDARunning ; skipt tooltips to avoid it being read twice (button name + tooltip)
+	Gui, 1:Add, Custom, ClassToolbarWindow32 hwndhToolbar 0x0800 0x0008 0x0040 x%barx% y%Yctrl% w580 ; TODO BIGICONS
 
 Gui, 1:Font,s%fontsize%,%font%
 
@@ -660,7 +669,7 @@ Search(mode=1)
 		 SearchRe:="iUmsS)" SearchRe
 		 If (Case = 1)     ; case sensitive, remove i) option
 			SearchRe := LTrim(SearchRe,"i")
-		 ;;;ToolTip, % "Case: " case " : SearchRe: " SearchRe ; debug only
+		 ;;;;ToolTip, % "Case: " case " : SearchRe: " SearchRe ; debug only
 ;		 If (RegExMatch(SearchThis1, SearchRe) > 0) or (RegExMatch(SearchThis2, SearchRe) > 0) or (RegExMatch(SearchThis3, SearchRe) > 0)
 		 If (RegExMatch(SearchThis, SearchRe) > 0)
 			{
@@ -692,7 +701,7 @@ Search(mode=1)
 		 If (Case = 1)     ; case sensitive, remove i) option
 			SearchRe := LTrim(SearchRe,"i")
 
-		 ;;;ToolTip, % "Case: " case " : SearchRe: " SearchRe ; debug only
+		 ;;;;ToolTip, % "Case: " case " : SearchRe: " SearchRe ; debug only
 		 ;If (RegExMatch(SearchThis1, SearchRe) > 0) or (RegExMatch(SearchThis2, SearchRe) > 0) or (RegExMatch(SearchThis3, SearchRe) > 0)
 		 If (RegExMatch(SearchThis, SearchRe) > 0)
 			{
@@ -878,6 +887,7 @@ If (Script = "") or (ScriptPaused = 1) ; script is empty so we need to paste Tex
 			 RegExMatch(Clip, "iU)\[\[rtf=([^[]*)\]\]", ClipQ, 1)
 			 FileRead,Clip,%ClipQ1%
 			 Gosub, ProcessText
+			 ParseEscaped()
 			 Gosub, CheckLineFeed
 			 If CancelPlugin
 				{
@@ -907,6 +917,7 @@ If (Script = "") or (ScriptPaused = 1) ; script is empty so we need to paste Tex
 	 Else
 		{
 		 Gosub, ProcessText
+		 ParseEscaped()
 		 Gosub, CheckLineFeed
 		 If CancelPlugin
 			{
@@ -1034,6 +1045,7 @@ Else If (Script <> "") and (ScriptPaused = 0) ; we run script by saving it to tm
 			{
 			 Clip:=Text%A_Index%
 			 Gosub, ProcessText
+			 ParseEscaped()
 			 Gosub, CheckLineFeed
 			 If CancelPlugin
 				{
@@ -1335,12 +1347,6 @@ Return
 ControlFocus, Edit1, %AppWindow%
 Return
 
-; we add this for screenreader users (NVDA), that way they can TAB to the results listview
-; and use the UP and DOWN keys to 'listen' to the results.
-Tab::
-ControlFocus, SysListview321, %AppWindow%
-Return
-
 ; LetterVariations
 !v::
 SearchLetterVariations:
@@ -1541,13 +1547,16 @@ If WinExist("Lintalist snippet editor")
 	 WinActivate, Lintalist snippet editor
 	 return
 	}
+If !ListviewResults()
+	Return
 EditMode = EditSnippet
-Gui, 1:Submit, NoHide
-ControlFocus, SysListView321, %AppWindow%
-SelItem := LV_GetNext()
-If (SelItem = 0)
-	SelItem = 1
-LV_GetText(Paste, SelItem, 5) ; get bundle_index from 5th column
+Gosub, GetPastefromSelItem
+;Gui, 1:Submit, NoHide
+;ControlFocus, SysListView321, %AppWindow%
+;SelItem := LV_GetNext()
+;If (SelItem = 0)
+;	SelItem = 1
+;LV_GetText(Paste, SelItem, 5) ; get bundle_index from 5th column
 gui 1:+Disabled
 gui 71:+Owner1
 Gosub, BundleEditor
@@ -1560,13 +1569,16 @@ If cl_ReadOnly
 	 MsgBox, 64, Lintalist, Lintalist is in Read Only mode - editing has been disabled.
 	 Return
 	}
+If !ListviewResults()
+	Return
 EditMode = CopySnippet
-Gui, 1:Submit, NoHide
-ControlFocus, SysListView321, %AppWindow%
-SelItem := LV_GetNext()
-If (SelItem = 0)
-	SelItem = 1
-LV_GetText(Paste, SelItem, 5) ; get bundle_index from 5th column
+Gosub, GetPastefromSelItem
+;Gui, 1:Submit, NoHide
+;ControlFocus, SysListView321, %AppWindow%
+;SelItem := LV_GetNext()
+;If (SelItem = 0)
+;	SelItem = 1
+;LV_GetText(Paste, SelItem, 5) ; get bundle_index from 5th column
 gui 1:+Disabled
 gui 71:+Owner1
 Gosub, BundleEditor
@@ -1579,13 +1591,16 @@ If cl_ReadOnly
 	 MsgBox, 64, Lintalist, Lintalist is in Read Only mode - editing has been disabled.
 	 Return
 	}
+If !ListviewResults()
+	Return
 EditMode = MoveSnippet
-Gui, 1:Submit, NoHide
-ControlFocus, SysListView321, %AppWindow%
-SelItem := LV_GetNext()
-If (SelItem = 0)
-	SelItem = 1
-LV_GetText(Paste, SelItem, 5) ; get bundle_index from 5th column
+Gosub, GetPastefromSelItem
+;Gui, 1:Submit, NoHide
+;ControlFocus, SysListView321, %AppWindow%
+;SelItem := LV_GetNext()
+;If (SelItem = 0)
+;	SelItem = 1
+;LV_GetText(Paste, SelItem, 5) ; get bundle_index from 5th column
 gui 1:+Disabled
 gui 71:+Owner1
 Gosub, BundleEditor
@@ -1611,13 +1626,16 @@ If cl_ReadOnly
 	 MsgBox, 64, Lintalist, Lintalist is in Read Only mode - editing has been disabled.
 	 Return
 	}
+If !ListviewResults()
+	Return
 InEditMode = 1
-Gui, 1:Submit, NoHide
-ControlFocus, SysListView321, %AppWindow%
-SelItem := LV_GetNext()
-If (SelItem = 0)
-	SelItem = 1
-LV_GetText(Paste, SelItem, 5) ; get bundle_index from 5th column
+Gosub, GetPastefromSelItem
+;Gui, 1:Submit, NoHide
+;ControlFocus, SysListView321, %AppWindow%
+;SelItem := LV_GetNext()
+;If (SelItem = 0)
+;	SelItem = 1
+;LV_GetText(Paste, SelItem, 5) ; get bundle_index from 5th column
 StringSplit, paste, paste, _
 f1:=Filename_%paste1%
 Gui, 99:+Owner1
@@ -1721,35 +1739,55 @@ PastText1=0
 Gosub, Paste
 Return
 
-NumpadUp::
+; we add this for screenreader users (NVDA), that way they can TAB to the results listview
+; and use the UP and DOWN keys to 'listen' to the results. If the listview already has focus
+; it jumps back to the Find control to continue searching
+Tab::
+ControlGetFocus, OutputVar, %AppWindow%
+If (OutputVar = "Edit1")
+	{
+	 If CheckListViewResults()
+		Return
+	 ControlFocus, SysListview321, %AppWindow%
+	 If (LV_GetNext() = 0)
+		LV_Modify(1, "Select Focus")
+	}
+else If (OutputVar = "SysListview321")
+	{
+	 ControlFocus, Edit1, %AppWindow%
+	 ControlSend, Edit1, ^{end}, %AppWindow%
+	}
+Return
+
+~NumpadUp::
 ~Up::
 ControlGetFocus, OutputVar, %AppWindow%
-	;{
-	; If (OutputVar <> "Edit1")
-	;	ControlFocus, Edit1, %AppWindow%
-	;}
+ControlSend, Edit1, ^{end}, %AppWindow% ; v1.4 to keep caret at end of typed text in searchbox
+If CheckListViewResults()
+	Return
 If (DisplayBundle > 1)
 	GuiControl, -Redraw, SelItem
-ControlSend, Edit1, ^{end}, %AppWindow% ; v1.4 to keep caret at end of typed text in searchbox
 PreviousPos:=LV_GetNext()
 If (PreviousPos = 0) ; exception, focus is not on listview this will allow you to jump to last item via UP key
 	{
 	 ControlSend, SysListview321, {End}, %AppWindow%
 	 If (DisplayBundle > 1)
-		 GuiControl, +Redraw, SelItem
+		GuiControl, +Redraw, SelItem
 	 ShowPreview(PreviewSection)
 	 Return
 	}
 ControlGetFocus, OutputVar, %AppWindow%
 	{
-	 If (OutputVar = "Edit1")
+	 If (OutputVar = "Edit1") and !IsNVDARunning
 		ControlSend, SysListview321, {Up}, %AppWindow%
+	 If (OutputVar = "Edit1") and IsNVDARunning
+		ControlFocus, SysListview321, %AppWindow%
 	}
 ItemsInList:=LV_GetCount()
 ChoicePos:=PreviousPos-1
 If (ChoicePos <= 1)
 	ChoicePos = 1
-If (ChoicePos = PreviousPos)
+If (ChoicePos = PreviousPos) and (OutputVar <> "SysListview321")
 	ControlSend, SysListview321, {End}, %AppWindow%
 ShowPreview(PreviewSection)
 ;ControlFocus, Edit1, %AppWindow%
@@ -1757,22 +1795,26 @@ If (DisplayBundle > 1)
 	GuiControl, +Redraw, SelItem
 Return
 
-NumpadDown::
+~NumpadDown::
 ~Down::
+If CheckListViewResults()
+	Return
 If (DisplayBundle > 1)
 	GuiControl, -Redraw, SelItem
 ControlSend, Edit1, ^{end}, %AppWindow% ; v1.4 to keep caret at end of typed text in searchbox
 PreviousPos:=LV_GetNext()
 ControlGetFocus, OutputVar, %AppWindow%
 	{
-	 If (OutputVar = "Edit1")
+	 If (OutputVar = "Edit1") and !IsNVDARunning
 		ControlSend, SysListview321, {Down}, %AppWindow%
+	 If (OutputVar = "Edit1") and IsNVDARunning
+		ControlFocus, SysListview321, %AppWindow%
 	}
 ItemsInList:=LV_GetCount()
 ChoicePos:=PreviousPos+1
 If (ChoicePos > ItemsInList)
 	ChoicePos := ItemsInList
-If (ChoicePos = PreviousPos)
+If (ChoicePos = PreviousPos) and (OutputVar <> "SysListview321")
 	ControlSend, SysListview321, {Home}, %AppWindow%
 ShowPreview(PreviewSection)
 If (DisplayBundle > 1)
@@ -2130,7 +2172,7 @@ Else If (A_ThisMenuItem = "Pause &Scripts")
 	 Gosub, PauseScriptButton
 	}
 Else If (A_ThisMenuItem = "&Manage Bundles") or (A_ThisMenuItem = "&Manage Bundles`tF10")
-	 Gosub, EditF10
+	Gosub, EditF10
 
 ; edit menu
 Else If (A_ThisMenuItem = "&Edit Snippet`tF4")
@@ -2315,6 +2357,17 @@ else If EditorHotkeySyntax
 	MatchListPlugins:="Edit3,Edit4,RICHEDIT50W1,RICHEDIT50W2"
 If Control not in %MatchListPlugins%
 	Return
+
+If (A_ThisMenuItem = "Paste HTML code")
+	{
+	 If !WinClip.HasFormat(49351)
+		{
+		 MsgBox, 48, Lintalist, No HTML content in the clipboard found.
+		 Return
+		}
+	 Gosub, PasteHTMLEdit
+	 Return
+	}
 
 If RegExMatch(A_ThisMenuItem,"i)(clipboard|selected)")
 	Control, EditPaste, % "[[" Trim(A_ThisMenuItem,"=") "]]", %Control%, Lintalist snippet editor
@@ -2682,6 +2735,8 @@ Loop, parse, ClipSelMenu, CSV
 	 Menu, ClipboardMenu, Add, Clipboard=%A_LoopField%, PluginMenuHandler
 	 Menu, SelectedMenu , Add, Selected=%A_LoopField% , PluginMenuHandler
 	}
+Menu, Plugins, Add, Paste HTML code, PluginMenuHandler
+Menu, Plugins, Add
 Menu, Plugins, Add, Insert [[Clipboard]], :ClipboardMenu
 Menu, Plugins, Add, Insert [[Selected]] , :SelectedMenu
 
@@ -2952,6 +3007,61 @@ If Administrator and !A_IsAdmin
 	 IfMsgBox Cancel
 		ExitApp
 	}
+Return
+
+; various helper functions for searching/listview
+IsNVDARunning()
+	{
+	 Process, Exist, nvda.exe
+	 return ErrorLevel
+	}
+
+; present audible message
+CheckListViewResults()
+	{
+	 global
+	 If (LV_GetCount() = 0)
+		{
+		 SoundPlay, *48
+		 Return 1
+		}
+	 Return 0
+	}
+
+; helper funcs for f4,f5,f6,f8
+; avoid modifying empty listview results
+ListviewResults()
+	{
+	 If (LV_GetCount() = 0)
+		{
+		 MsgBox, 48, Lintalist, There is no snippet to edit.
+		 Return 0
+		}
+	 Return 1
+	}
+
+; avoid some repetitive code
+GetPastefromSelItem:
+Gui, 1:Submit, NoHide
+ControlFocus, SysListView321, %AppWindow%
+SelItem := LV_GetNext()
+If (SelItem = 0)
+	SelItem = 1
+LV_GetText(Paste, SelItem, 5) ; get bundle_index from 5th column
+Return
+
+RunQuery:
+If !QueryAction
+	Return
+IfWinActive, %AppWindow%
+	ControlGetText, CurrText, Edit1, %AppWindow%
+Gui, 1:Destroy
+Try
+	Run, %QueryScript% %CurrText%
+Catch
+	MsgBox, 64, Lintalist, There is a problem starting Query Action`nperhaps %QueryScript% is not defined
+Paste:=""
+CurrText:=""
 Return
 
 #include *i %A_ScriptDir%\include\nvda.ahk

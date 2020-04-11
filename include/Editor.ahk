@@ -1,6 +1,6 @@
 ﻿; LintaList Include
 ; Purpose: Bundle & Snippet Editor
-; Version: 1.4
+; Version: 1.5
 ;
 ; Hotkeys used in Search GUI to start Bundle & Snippet Editor
 ; F4  = Edit snippet
@@ -10,6 +10,7 @@
 ; F8  = Delete snippet
 ; 
 ; History: 
+; v1.5 - paste html
 ; v1.4 - adding themes
 ; v1.3 - 'shortcuts' (Keyboard accelerators) for edit controls
 ; v1.2 - Use font/fontsize settings in Editor as well (as in the Search GUI)
@@ -376,6 +377,7 @@ If EditorSyntaxHL
 Gui, 71:Add, Button, x610 y100 h20 w110 0x8000 g71EditPart1  vEditorButton1, 1 - Edit in Editor ; part1
 Gui, 71:Add, Button, x610 y245 h20 w110 0x8000 g71EditPart2  vEditorButton2, 2 - Edit in Editor ; part2
 Gui, 71:Add, Button, x610 y360 h20 w110 0x8000 g71EditScript vEditorButton3, 3 - Edit in Editor ; script
+
 Gui, 71:font, s10
 
 Gui, 71:Add, Button, x20    y480 h30 w210 g71Save     vActionButton1, &Save
@@ -736,6 +738,33 @@ InEditMode = 0
 If OnTopStateSaved
 	Gosub, GuiOnTopCheck
 Return
+
+PasteHTMLEdit:
+If !WinClip.HasFormat(49351)
+	Return
+ControlGet, ControlID, Hwnd,, %control%, Lintalist snippet editor
+PasteFromHTML(WinClip.GetHTML())
+If EditorSyntaxHL
+	{
+	 SendMessage, 0x302, 0, 0, , ahk_id %ControlID%
+	}
+else
+	{
+	 Control, EditPaste, %clipboard%, %Control%, Lintalist snippet editor
+	}
+Return
+
+PasteFromHTML(in)
+	{
+	 in:=RegExReplace(in,"iUs)^.*<htm","[[html]]<htm")
+	 in:=StrReplace(in,"<!--StartFragment-->")
+	 in:=StrReplace(in,"<!--EndFragment-->")
+	 ; we need to go from UTF-8 bytes to Unicode text to prevent Ã, Ã¨, etc
+	 clipsize := StrPut(in, "CP0")
+	 VarSetCapacity(cliptemp, clipsize)
+	 StrPut(in, &cliptemp, "CP0")
+	 clipboard:=StrGet(&cliptemp, "UTF-8")
+	}
 
 71EditPart1:
 EditControlInEditor("Text1")

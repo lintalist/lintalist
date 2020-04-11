@@ -58,6 +58,10 @@ AHK class providing individual colors for ListView items/subitems by Just me
 https://github.com/AHK-just-me/Class_LV_Colors
 License: The Unlicense
 
+AHK class to set background and/or text colors for some AHK GUI controls by Just me
+https://github.com/AHK-just-me/Class_CtlColors/
+License: The Unlicense
+
 Calc plugin: All code belongs to MONSTER by Laszlo
 http://www.autohotkey.com/forum/viewtopic.php?t=17058
 

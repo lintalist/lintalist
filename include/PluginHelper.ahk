@@ -1,11 +1,12 @@
 ; LintaList Include
 ; Purpose: Parse (nested) plugins properly and assisting functions
-; Version: 1.2
+; Version: 1.3
 ;
 ; See the ProcessText label in Lintalist.ahk
 ; GrabPlugin() v1
 ;
 ; History:
+; - 1.3 Process escaped [[ ]] - ParseEscaped()
 ; - 1.2 Fix GrabPluginOptions to prevent removing closing ) - https://github.com/lintalist/lintalist/issues/125
 ; - 1.1 Lintalist v1.9.4 added ProcessFunction() and modified GrabPluginOptions() to accommodate functions in snippets
 ; - 1.0 Lintalist v1.6 - improved plugin parser
@@ -114,4 +115,14 @@ BuiltInVariables()
 	 global AutoHotkeyVariables,clip
 	 loop, parse, AutoHotkeyVariables, CSV
 		clip:=StrReplace(clip,"[[" A_LoopField "]]",%A_LoopField%)
+	}
+
+ParseEscaped()
+	{
+	 global clip, ParseEscapedArray
+	 clip:=StrReplace(clip,"\[\[","[[")
+	 clip:=StrReplace(clip,"\]\]","]]")
+	 clip:=StrReplace(clip,ParseEscapedArray[1],"[") ; escape [ <SB
+	 clip:=StrReplace(clip,ParseEscapedArray[2],"]") ; escape ] >SB
+	 clip:=StrReplace(clip,ParseEscapedArray[3],"|") ; escape | ^SB
 	}
