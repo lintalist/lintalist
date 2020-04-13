@@ -1,6 +1,16 @@
+### v1.9.13
+
+* New/Fix: "Update lintalist" could fail  
+  - (1) if there was a space in the path https://github.com/lintalist/lintalist/issues/154  
+  but also if the path "includes characters that cannot be used in a compressed folder"   
+  As an alternative it now detects if the console version of 7-zip is present, if so use that  
+  instead of the native Windows ZIP function. See docs\Update.md for instructions.  
+  - (2) missing %A_AhkPath% in Restart routine https://github.com/lintalist/lintalist/issues/163
+* Fix: potentially incorrect position of listbox in choice plugin
+
 ### v1.9.12
 
-* New: you can now escape [[ and ]] in snippets. https://github.com/lintalist/lintalist/issues/162
+* New: you can now escape [[ and ]] in snippets - https://github.com/lintalist/lintalist/issues/162
   and additionaly use [,],| in options using alternative notations: <SB, >SB, ^SB (see ParseEscaped in settings.ini)
 * New: paste HTML code from clipboard (if present) in the editor https://github.com/lintalist/lintalist/issues/59 
 * New: Run Query string using special hotkey (hidden expert option) https://github.com/lintalist/lintalist/issues/153

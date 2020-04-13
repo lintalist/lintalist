@@ -121,7 +121,7 @@ TextIcon_1.ico to TextIcon_10.ico
 
 Theme icon examples:
 
-`TextIcon_darkmode.ico`
+`TextIcon_darkmode.ico`  
 `TextIcon_1_darkmode.ico`
 
 ## Editor icons

@@ -1,9 +1,10 @@
 ﻿/* 
 Plugin        : Choice [Standard Lintalist]
 Purpose       : Make a selection from a list [part of code also placed in lintalist.ahk and used to allow users to select a bundle]
-Version       : 1.8
+Version       : 1.9
 
 History:
+- 1.9 Adding x/y position for listbox results to prevent possibly position.
 - 1.8 Fix for Cancel/Esc not storing position properly, and try to prevent incorrect Listbox heights using Gui10ListboxCheckPosition()
 - 1.7 Added option to "filter as you type" by using ! in first item (similar to question using ?) - uses SetEditCueBanner()
       Incorporate CancelPlugin (avoids SoundPlay and return nicely)
@@ -47,8 +48,8 @@ MakeChoice:
 		 Gui, 10:+Owner +AlwaysOnTop +Resize +MinSize
 		 Gui, 10:Default
 		 Gui, 10:font, s%FontSize%
-		 Gui, 10:Add, Edit,  x5 y5 w400 vChoiceFilterText gChoiceFilterText hwndHED1, 
-		 Gui, 10:Add, ListBox,     w400 R10 vItem gChoiceMouseOK, %PluginOptions%
+		 Gui, 10:Add, Edit,     x5 y5 w400 vChoiceFilterText gChoiceFilterText hwndHED1, 
+		 Gui, 10:Add, ListBox,  xp yp+30 w400 R10 vItem gChoiceMouseOK, %PluginOptions%
 		 Gui, 10:Add, button,   vChoiceCancel gCancelChoice, &Cancel
 		 Gui, 10:Add, button,   xp+90 w80 vChoiceRandom gChoiceRandom, &Random
 		 Gui, 10:Add, Checkbox, xp+90 yp+10 w120 vChoiceAutoCenter gChoiceAutoCenter, Auto Center
@@ -61,7 +62,7 @@ MakeChoice:
 			{
 			 GuiControl, Disable, Edit1
 			 GuiControl, Hide, Edit1
-			 Gui, 10:Add, Text,  x5 y10 w400, %ChoiceQuestion%
+			 Gui, 10:Add, Text, x5 y10 w400, %ChoiceQuestion%
 			}
 		 Gui, 10:Font,
 		 GuiCheckXYPos()
@@ -85,17 +86,6 @@ MakeChoice:
 		 ControlSend, ListBox1, {Down}, Select and press enter
 		 WinWaitClose, Select and press enter
 		 MadeChoice = 1
-/*
-		 Loop ; ugly hack: can't use return here because, well it returns and would thus skip the gui and proceed to paste
-			{
-			 If (MadeChoice = 1) or (InStr(Clip, "[[Choice") = 0)
-				{
-				 MadeChoice = 0
-				 Break
-				}
-			 Sleep 20 ; needed for ahk_l, if no sleep CPU usages jumps to 50%, no responding to hotkeys and no tray menu, no longer remember the revision of AHK_L this happened with or if it still 			 ToolTip % A_Index
-			}
-*/
 		}
 
 Return

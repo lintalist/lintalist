@@ -1,23 +1,27 @@
-; LintaList Include
-; Purpose: Parse (nested) plugins properly and assisting functions
-; Version: 1.3
-;
-; See the ProcessText label in Lintalist.ahk
-; GrabPlugin() v1
-;
-; History:
-; - 1.3 Process escaped [[ ]] - ParseEscaped()
-; - 1.2 Fix GrabPluginOptions to prevent removing closing ) - https://github.com/lintalist/lintalist/issues/125
-; - 1.1 Lintalist v1.9.4 added ProcessFunction() and modified GrabPluginOptions() to accommodate functions in snippets
-; - 1.0 Lintalist v1.6 - improved plugin parser
+/*
+
+LintaList Include
+Purpose: Parse (nested) plugins properly and assisting functions
+Version: 1.3
+
+See the ProcessText label in Lintalist.ahk
+GrabPlugin() v1
+
+History:
+- 1.3 Process escaped [[ ]] - ParseEscaped() - https://github.com/lintalist/lintalist/issues/162
+- 1.2 Fix GrabPluginOptions to prevent removing closing ) - https://github.com/lintalist/lintalist/issues/125
+- 1.1 Lintalist v1.9.4 added ProcessFunction() and modified GrabPluginOptions() to accommodate functions in snippets
+- 1.0 Lintalist v1.6 - improved plugin parser
+
+*/
 
 ; GrabPlugin is used for local variables only at the moment
 GrabPlugin(data,tag="",level="1")
 	{
 	 if (tag <> "")
-	 	tag .= "="
+		tag .= "="
 	 if RegExMatch(tag,"i)(Clipboard|Selected)")
-	 	tag:=trim(tag,"=")
+		tag:=trim(tag,"=")
 	 Start:=InStr(data,"[[" tag,,,level)
 	 Loop
 		{
@@ -60,7 +64,7 @@ CountString(String, Char)
 ProcessFunction(function,param)
 	{
 	 if (param = "")
-		 Return %function%()
+		Return %function%()
 
 	 fp:=[]
 	 Loop, parse, param, CSV

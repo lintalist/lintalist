@@ -4,7 +4,7 @@ Name            : Lintalist
 Author          : Lintalist
 Purpose         : Searchable interactive lists to copy & paste text, run scripts,
                   using easily exchangeable bundles
-Version         : 1.9.12
+Version         : 1.9.13
 Code            : https://github.com/lintalist/
 Website         : http://lintalist.github.io/
 AutoHotkey Forum: https://autohotkey.com/boards/viewtopic.php?f=6&t=3378
@@ -41,7 +41,7 @@ PluginMultiCaret:=0 ; TODOMC
 
 ; Title + Version are included in Title and used in #IfWinActive hotkeys and WinActivate
 Title=Lintalist
-Version=1.9.12
+Version=1.9.13
 
 ; Gosub, ReadPluginSettings
 
@@ -2074,7 +2074,7 @@ Else If (A_ThisMenuItem = "&About")
 Else If (A_ThisMenuItem = "&Quick Start Guide")
 	Gosub, QuickStartGuideMenu
 Else If (A_ThisMenuItem = "Check for updates")
-	Run, %A_AhkPath% %A_ScriptDir%\include\update.ahk
+	Run, %A_AhkPath% "%A_ScriptDir%\include\update.ahk"
 Else If (A_ThisMenuItem = "&Manage Counters")
 		{
 		 If cl_ReadOnly
@@ -2977,7 +2977,7 @@ Return
 RunFile:
 FileDelete, %TmpDir%\restarttmp.ahk
 While FileExist(TmpDir "\restarttmp.ahk")
-Sleep 100
+	Sleep 100
 if A_IsAdmin
 	FileAppend, % "Run, *RunAs " DllCall( "GetCommandLineW", "Str" ), %TmpDir%\restarttmp.ahk, UTF-8  ; reload with command line parameters
 else

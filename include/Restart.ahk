@@ -6,6 +6,7 @@
 ; References:
 ; https://github.com/lintalist/lintalist/issues/127#issuecomment-496279719 and
 ; https://github.com/lintalist/lintalist/issues/114
+; Bug fix: %A_AhkPath% https://github.com/lintalist/lintalist/issues/163
 
 #NoEnv
 #SingleInstance, force
@@ -25,7 +26,7 @@ While WinExist("lintalist.ahk ahk_class AutoHotkey")
 	 Sleep, 1000 
 	}
 
-Run, %LintalistFolder%\tmpscrpts\restarttmp.ahk
+Run, %A_AhkPath% "%LintalistFolder%\tmpscrpts\restarttmp.ahk"
 Sleep 1000
 FileDelete, %LintalistFolder%\tmpscrpts\restarttmp.ahk
 
