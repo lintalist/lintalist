@@ -688,6 +688,9 @@ If (OldKey <> "") and (OldKey <> HKey) ; only turn off when the hotkey has chang
 	 Hotkey, % "$" . OldKey, Off ; set old hotkey off ...
 	 Hotkey, IfWinNotActive
 	}
+
+Hotstring(":B0:" OldShorthand, Func("CheckTyped2").Bind(OldShorthand, Counter), false) ; turn previous shorthand off
+
 Loop, % Snippet[Counter].MaxIndex() ; LoopIt
 	{
 	 If (Snippet[Counter,A_Index,3] <> "") ; if no hotkey defined: skip
@@ -705,6 +708,7 @@ Loop, % Snippet[Counter].MaxIndex() ; LoopIt
 	 If (Snippet[Counter,A_Index,4] <> "") ; if no shorthand defined: skip
 		{
 		 ShortHandHitList_%Counter% .= Snippet[Counter,A_Index,4] Chr(5)
+		 Hotstring(":B0:" Snippet[Counter,A_Index,4], Func("CheckTyped2").Bind(Snippet[Counter,A_Index,4], Counter))   
 		}
 	}
 

@@ -4,7 +4,7 @@ Name            : Lintalist
 Author          : Lintalist
 Purpose         : Searchable interactive lists to copy & paste text, run scripts,
                   using easily exchangeable bundles
-Version         : 1.9.13
+Version         : 1.9.14
 Code            : https://github.com/lintalist/
 Website         : http://lintalist.github.io/
 AutoHotkey Forum: https://autohotkey.com/boards/viewtopic.php?f=6&t=3378
@@ -41,7 +41,7 @@ PluginMultiCaret:=0 ; TODOMC
 
 ; Title + Version are included in Title and used in #IfWinActive hotkeys and WinActivate
 Title=Lintalist
-Version=1.9.13
+Version=1.9.14
 
 ; Gosub, ReadPluginSettings
 
@@ -344,19 +344,28 @@ Loop
 	}
 Return
 
-; fix 201102 for switching windows with mouse, clear typed stack
+;; fix 201102 for switching windows with mouse, clear typed stack
+;~*Lbutton::
+;Typed=
+;Return
+;
+;~*MButton::
+;Typed=
+;Return
+;
+;~*RButton::
+;Typed=
+;Return
+
 ~*Lbutton::
-Typed=
-Return
-
 ~*MButton::
-Typed=
-Return
-
 ~*RButton::
-Typed=
+~*Alt::
+~*Ctrl::
+Hotstring("Reset")
 Return
 
+Return
 ; Here we build the Search Gui and fill it with content from the bundles and apply settings
 
 GUIStartOmni:
@@ -669,7 +678,7 @@ Search(mode=1)
 		 SearchRe:="iUmsS)" SearchRe
 		 If (Case = 1)     ; case sensitive, remove i) option
 			SearchRe := LTrim(SearchRe,"i")
-		 ;;;;ToolTip, % "Case: " case " : SearchRe: " SearchRe ; debug only
+		 ;;;;;ToolTip, % "Case: " case " : SearchRe: " SearchRe ; debug only
 ;		 If (RegExMatch(SearchThis1, SearchRe) > 0) or (RegExMatch(SearchThis2, SearchRe) > 0) or (RegExMatch(SearchThis3, SearchRe) > 0)
 		 If (RegExMatch(SearchThis, SearchRe) > 0)
 			{
@@ -701,7 +710,7 @@ Search(mode=1)
 		 If (Case = 1)     ; case sensitive, remove i) option
 			SearchRe := LTrim(SearchRe,"i")
 
-		 ;;;;ToolTip, % "Case: " case " : SearchRe: " SearchRe ; debug only
+		 ;;;;;ToolTip, % "Case: " case " : SearchRe: " SearchRe ; debug only
 		 ;If (RegExMatch(SearchThis1, SearchRe) > 0) or (RegExMatch(SearchThis2, SearchRe) > 0) or (RegExMatch(SearchThis3, SearchRe) > 0)
 		 If (RegExMatch(SearchThis, SearchRe) > 0)
 			{
@@ -770,6 +779,7 @@ Return
 
 ; We made a selection and now want to paste and process the selected text or run script
 Paste:
+Hotstring("Reset")
 Gui, 1:Submit, NoHide
 If QueryDelimiter
 	Gosub, LLQuery
@@ -787,6 +797,7 @@ if (paste = "") ; there were no search results, this will prevent pasting result
 	Return
 ; We got here via Shortcut or abbreviation defined in active bundle(s)
 ViaShortCut:
+Hotstring("Reset")
 StringSplit, paste, paste, _      ; split to bundle / index number
 Text1  :=Snippet[Paste1,Paste2,1] ; part 1 (enter, or shortcut, or shorthand)
 Text2  :=Snippet[Paste1,Paste2,2] ; part 2 (shift-enter)
@@ -1064,6 +1075,7 @@ Else If (Script <> "") and (ScriptPaused = 0) ; we run script by saving it to tm
 	 FileAppend, % Script, %TmpDir%\tmpScript.ahk, UTF-8 ; %
 	 ;FileCopy, %TmpDir%\tmpScript.ahk, saved.ahk , 1 ; debug
 	 GUI, 1:Destroy
+	 Hotstring("Reset")
 	 RunWait, %A_AhkPath% "%TmpDir%\tmpScript.ahk"
 	 FileDelete, %TmpDir%\tmpScript.ahk
 	 Script=
@@ -1079,6 +1091,7 @@ If (OnPaste = 1)
 If Statistics and (OmniSearch or OmniSearchText)
 	Stats("OmniSearch")
 OmniSearch:=0,OmniSearchText:="",Typed:="",SnippetPasteMethod:="",SelItem:="", ViaShorthand:=0, ViaShortCut:=0 ; ,ViaShorthand:="",ViaText:=""
+Hotstring("Reset")
 Return
 
 CheckHitList(CheckHitList, CheckFor, Bundle, RE = 0) ; RE no longer needed?
@@ -1890,6 +1903,7 @@ Typed:=Clipboard ; ??
 ; You pressed hotkey defined in the active bundle
 
 ShortCut:
+Hotstring("Reset")
 GetActiveWindowStats()
 If (ActiveWindowClass = "AutoHotkeyGUI") and RegExMatch(ActiveWindowTitle, "^Lintalist")
 	Return
@@ -1905,6 +1919,7 @@ Else If ((ViaText = 1) or (ViaShorthand = 1)) ; search in defined abbreviations
 	 Back:=StrLen(Typed) + 1
 	 If (HitKeyHistory = "")
 		HitKeyHistory:=CheckHitList("ShortHand", Typed, Load)
+     ;viatext:=0
 	}
 
 StringTrimRight, HitKeyHistory, HitKeyHistory, 1
@@ -1922,7 +1937,7 @@ If ((CheckHitKey = "_") or (CheckHitKey = "")) ; No hit, so simply send hotkey o
 		}
 	}
 
-If ((HitKeyHistory = "") and (ViaText = 1)) ; No hit so start searching
+If ((HitKeyHistory = "") and (ViaText = 1) and (ViaShortHand = 0)) ; No hit so start searching
 	{
 	 JumpSearch=1
 	 Gosub, GUIStart
@@ -1944,7 +1959,7 @@ If InStr(HitKeyHistory, ",") ; CSV indicates multiple hits so create gui for sel
 	 Gui, 10:Destroy
 	 Gui, 10:+Owner +AlwaysOnTop
 	 Gui, 10: font, s%FontSize%
-	 Gui, 10:Add, ListBox, w400 r5 x5 y5 vItem gChoiceMouseOK AltSubmit,
+	 Gui, 10:Add, ListBox, w400 r5 x5 y5 h100 vItem gChoiceMouseOK AltSubmit,
 	 Gui, 10:Add, button, default gChoiceOK hidden, OK
 	 GuiControl, 10: , ListBox1, |%ClipQ1%
 	 Gui, 10:Font,
@@ -1957,6 +1972,7 @@ If InStr(HitKeyHistory, ",") ; CSV indicates multiple hits so create gui for sel
 	}
 Else ; only one hit e.g. unique shortcut
 	{
+if (HitKeyHistory <> "")
 	 Paste:=HitKeyHistory
 	 SaveStat:=Paste
 	 PastText1=1
@@ -2555,6 +2571,48 @@ CheckCursorPos(Clip)
 	 Return Clip	
 	}
 
+CheckTyped2(in, bundlecode)
+	{
+	 global
+	 typed:=in
+	 if ShorthandPaused
+		Return
+	 IfWinActive, %AppWindow% ; disable shorthand while search gui is active
+		{
+		 Hotstring("Reset")
+		 Return
+		}
+
+	 GetActiveWindowStats()
+	 WhichBundle() 
+	 ; tooltip % MenuName_%bundlecode% ":" bundlecode ":" load ":" in
+
+	 if DefaultBundleIndex not in %load%
+		Return
+	 if bundlecode not in %load%
+		Return
+
+	 ViaText=1
+	 ViaShorthand=1
+	 Gosub, ShortCut
+	 if Statistics
+		{
+		 Stats(MenuName_%bundlecode% "__viashorthand__" in)
+		 Stats("SnippetShorthand")
+		 SaveStat2:=""
+		}
+	 Typed=
+	 in=
+	 bundlecode=
+	 Back=
+	 ViaText=0
+	 ViaShorthand=0
+	 HitKeyHistory=
+	 SaveStat2=
+	}
+
+; no longer used
+/*
 CheckTyped(TypedChar,EndKey)
 	{
 	 Global
@@ -2626,7 +2684,9 @@ CheckTyped(TypedChar,EndKey)
 		}
 	 Else
 		typed .= TypedChar
+	Return
 	}
+*/
 
 ; https://autohotkey.com/board/topic/6893-guis-displaying-differently-on-other-machines/page-3#entry77893
 DPIFactor()

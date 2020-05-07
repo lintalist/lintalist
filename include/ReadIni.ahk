@@ -154,16 +154,14 @@ INISetup:={ AlwaysLoadBundles:     {default:"",find:"bundles\"}
 				ColumnSortOption1:=2
 			}
 
-		TriggerKeysSource:=TriggerKeys
-		Loop, parse, TriggerKeys, CSV
-			{
-			 TmpKey = %A_LoopField%
-			 TmpTriggerKeys .= "EndKey:" TmpKey ","
-			 TmpKey =
-			 }
-		StringTrimRight, TmpTriggerKeys,TmpTriggerKeys,1
-		TriggerKeys:=TmpTriggerKeys
-		TmpTriggerKeys=
+		TriggerKeys:=StrReplace(TriggerKeys,"Tab","`t")
+		TriggerKeys:=StrReplace(TriggerKeys,"Space"," ")
+		TriggerKeys:=StrReplace(TriggerKeys,"Enter","`n")
+		TriggerKeys:=StrReplace(TriggerKeys,"`,","Comma")
+		TriggerKeys:=StrReplace(TriggerKeys,",","")
+		TriggerKeys:=StrReplace(TriggerKeys,"Comma",",")
+
+		OldValue := Hotstring("EndChars", TriggerKeys)
 
 		If (ShowGrid = 0)
 			ShowGrid =
@@ -176,7 +174,6 @@ INISetup:={ AlwaysLoadBundles:     {default:"",find:"bundles\"}
 	 	QueryDelimiter:=SubStr(Trim(QueryDelimiter),1,1) ; only use first char if a string was entered
 
 	 ParseEscapedArray:=StrSplit(ParseEscaped,",")
-
 	 
 	 If !FileExist(A_ScriptDir "\" QueryScript) and (QueryAction = 1)
 			FileAppend, `; See QueryAction`, QueryHotkey`, and QueryScript in settings.ini`nMsgBox `%0`% params: `%1`% `%2`% `%3`% `%4`% `%5`% `%6`% `%7`% `%8`% `%9`%`n, %A_ScriptDir%\%QueryScript%

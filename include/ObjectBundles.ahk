@@ -3,10 +3,11 @@
 LintaList Include
 Purpose: Load and Parse LintaList Bundles at startup into memory
          and later determine which one to load
-Version: 1.4
+Version: 1.5
 
 History:
 
+- 1.5 Introducing Hotstring()
 - 1.4 Adding numbers (text & icons) to first 10 results for search result shortcuts  https://github.com/lintalist/lintalist/issues/137
 - 1.3 Change/fix: Change how Col2, Col3, and Col4 are set for listview columns,  
   if the first occurence was after MaxRes the column would remain hidden, now   
@@ -209,7 +210,7 @@ LoadAllBundles()
 		 If A_LoopField in %AlwaysLoadBundles%
 			StringReplace, AlwaysLoadBundles, AlwaysLoadBundles, %A_LoopField%, %A_Index%, All
 		 ReadBundle(A_LoopField, A_Index)
-		}	
+		}
 	 StringTrimRight, Load, Load, 1   ; remove trailing ,
 	 StringTrimRight, Group, Group, 1 ; remove trailing ,
 	 StringTrimRight, MenuName_HitList, MenuName_HitList, 1 ; remove trailing |
@@ -238,13 +239,13 @@ ReadBundle(File, Counter)
 			 MenuName_0++
 			}
 		 IfInString, A_LoopField, Description:
-			 Description_%Counter%:=RegExReplace(A_LoopField, "i)^Description:\s*(.*)\s*$", "$1")
+			Description_%Counter%:=RegExReplace(A_LoopField, "i)^Description:\s*(.*)\s*$", "$1")
 		 IfInString, A_LoopField, Author:
-			 Author_%Counter%:=RegExReplace(A_LoopField, "i)^Author:\s*(.*)\s*$", "$1")
+			Author_%Counter%:=RegExReplace(A_LoopField, "i)^Author:\s*(.*)\s*$", "$1")
 		 IfInString, A_LoopField, TitleMatch:
-			 TitleMatchList_%Counter%:=RegExReplace(A_LoopField, "i)^TitleMatch:\s*(.*)\s*$", "$1")
+			TitleMatchList_%Counter%:=RegExReplace(A_LoopField, "i)^TitleMatch:\s*(.*)\s*$", "$1")
 		 IfInString, A_LoopField, Patterns:
-			 Break
+			Break
 		}
 	 CBundle=
 	}
@@ -332,7 +333,7 @@ Patterns:
 		}
 
 	 if (tosave <> "")
-		 Group:=OldGroup
+		Group:=OldGroup
 	}
 	
 ParseBundle(Patterns, Counter)
@@ -374,10 +375,10 @@ ParseBundle(Patterns, Counter)
 		 Snippet[Counter,A_Index,"2v"]:=FixPreview(Snippet[Counter,A_Index,2])
 		 If (Snippet[Counter,A_Index,"2v"] <> "")
 			Snippet[Counter,"Col2"]:=1
-		
+
 		 If (Snippet[Counter,A_Index,3] <> "") ; if no hotkey defined: skip
 			{
-			 Hotkey, IfWinNotActive, ahk_group BundleHotkeys	
+			 Hotkey, IfWinNotActive, ahk_group BundleHotkeys
 			 Hotkey, % "$" . Snippet[Counter,A_Index,3], ShortCut ; setup hotkeys
 			 If (ShortcutPaused = 1)
 				{
@@ -387,14 +388,16 @@ ParseBundle(Patterns, Counter)
 			 Snippet[Counter,"Col3"]:=1
 			 Hotkey, IfWinNotActive
 			}
-			
+
 		 If (Snippet[Counter,A_Index,4] <> "")                 ; if no shorthand defined: skip
 			{
 			 ShortHandHitList_%Counter% .= Snippet[Counter,A_Index,4] Chr(5)
 			 Snippet[Counter,"Col4"]:=1
-			} 
-			
+			 Hotstring(":B0:" Snippet[Counter,A_Index,4], Func("CheckTyped2").Bind(Snippet[Counter,A_Index,4], Counter))
+			}
+
 		 %ArrayName%%A_Index%= ; free mem	
+
 		}
 	 ;MsgBox % Snippet[Counter,1,1] ; debug
 	 patterns= ; free mem
@@ -403,7 +406,7 @@ ParseBundle(Patterns, Counter)
 
 CreateFirstBundle()
 	{
-Global IniFile		
+Global IniFile
 FileCreateDir, %A_ScriptDir%\bundles
 FileAppend, 
 (
