@@ -329,20 +329,20 @@ lvc:={1: "0xF5F5E2", 2: "0xF9F5EC", 3: "0xF9F3EC", 4: "0xF9EFEC", 5: "0xF5E8E2",
 SendKeysToFix=Enter,Space,Esc,Tab,Home,End,PgUp,PgDn,Up,Down,Left,Right,F1,F2,F2,F3,F4,F5,F6,F7,F8,F9,F10,F11,F12,AppsKey
 ;TerminatingCharacters={Alt}{LWin}{RWin}{Shift}{enter}{space}{esc}{tab}{Home}{End}{PgUp}{PgDn}{Up}{Down}{Left}{Right}{F1}{F2}{F2}{F3}{F4}{F5}{F6}{F7}{F8}{F9}{F10}{F11}{F12}.,¿?¡!'"()[]{}{}}{{}~$&*-+=\/><^|@#:`%;  ; "%
 TerminatingCharacters={Alt}{LWin}{RWin}{enter}{space}{esc}{tab}{Home}{End}{PgUp}{PgDn}{Up}{Down}{Left}{Right}{F1}{F2}{F2}{F3}{F4}{F5}{F6}{F7}{F8}{F9}{F10}{F11}{F12}  ; "%
-CheckTypedLoop:
-Gui, 10:Destroy
-Loop
-	{
-	 ;Get one key at a time
-	 if (cl_Active = 1) or (ActivateWindow = 1)
-		{
-		 Gosub, GuiStart
-		 cl_Active:=0, ActivateWindow:=0
-		}
-	 Input, TypedChar, L1 V I, {BS}%TerminatingCharacters%
-	 CheckTyped(TypedChar,ErrorLevel)
-	}
-Return
+;CheckTypedLoop:
+;Gui, 10:Destroy
+;Loop
+;	{
+;	 ;Get one key at a time
+;	 if (cl_Active = 1) or (ActivateWindow = 1)
+;		{
+;		 Gosub, GuiStart
+;		 cl_Active:=0, ActivateWindow:=0
+;		}
+;	 Input, TypedChar, L1 V I, {BS}%TerminatingCharacters%
+;	 CheckTyped(TypedChar,ErrorLevel)
+;	}
+;Return
 
 ;; fix 201102 for switching windows with mouse, clear typed stack
 ;~*Lbutton::
