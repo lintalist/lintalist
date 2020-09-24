@@ -1156,7 +1156,7 @@ UpdateLVColWidth()
 		 c2w += 25
 		}
 	 Else
-		 LV_ModifyCol(4,50+Col4Correction)
+		 LV_ModifyCol(4,120+Col4Correction)
 
 	 If (Col2 = 0)           ; paste2 column is empty so no need to show
 		{
