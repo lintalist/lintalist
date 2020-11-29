@@ -9,7 +9,7 @@ Functions     :
 
 History:
 1.2 - ShortcutCopy, ShortcutPaste, ShortcutCut available in Scripts as well.
-    - optional includes nvda.ahk and afterpaste.ahk (see docs, used for nvda for now)
+    - optional includes nvda.ahk and AfterPaste.ahk (see docs, used for nvda for now)
     - moved Sleep, % PasteDelay to after pasting (replacing sleep, 50)
 1.1 PasteDelay, ActiveWindowID, ActiveControl now global as they should in SendKey()
 1.0 Initial version 20101010
@@ -43,7 +43,7 @@ GetActiveWindowStats() ; Get Active Window & Control
 		ShortcutPaste=%ShortcutPaste%
 		ShortcutCut=%ShortcutCut%
 
-		#include %A_ScriptDir%\include\default.ahk  	  
+		#include %A_ScriptDir%\include\Default.ahk  	  
 
 		#include *i %A_ScriptDir%\include\nvda.ahk
 	  
@@ -119,8 +119,8 @@ SendKey(Method = 1, Keys = "")
 	 Sleep, % PasteDelay ; was at the start of the function, moved it here
 
      ; Because one of the includes below will always fail code is only loaded once:
-	 #include *i %A_ScriptDir%\include\afterpaste.ahk     ; from lintastlist search
-	 #include *i %A_ScriptDir%\..\include\afterpaste.ahk  ; from a script
+	 #include *i %A_ScriptDir%\include\AfterPaste.ahk     ; from lintastlist search
+	 #include *i %A_ScriptDir%\..\include\AfterPaste.ahk  ; from a script
 
 ;	 If (Restore = 1)
 ;		 Clipboard:=ClipSet("g",2) ; restore

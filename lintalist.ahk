@@ -4,7 +4,7 @@ Name            : Lintalist
 Author          : Lintalist
 Purpose         : Searchable interactive lists to copy & paste text, run scripts,
                   using easily exchangeable bundles
-Version         : 1.9.13
+Version         : 1.9.14
 Code            : https://github.com/lintalist/
 Website         : http://lintalist.github.io/
 AutoHotkey Forum: https://autohotkey.com/boards/viewtopic.php?f=6&t=3378
@@ -41,7 +41,7 @@ PluginMultiCaret:=0 ; TODOMC
 
 ; Title + Version are included in Title and used in #IfWinActive hotkeys and WinActivate
 Title=Lintalist
-Version=1.9.13
+Version=1.9.14
 
 ; Gosub, ReadPluginSettings
 
@@ -129,7 +129,7 @@ OnMessage(0x404, "AHK_NOTIFYICON")
 
 #Include %A_ScriptDir%\include\ObjectBundles.ahk
 #Include %A_ScriptDir%\include\StayOnMonitor.ahk
-#Include %A_ScriptDir%\include\ReadINI.ahk
+#Include %A_ScriptDir%\include\ReadIni.ahk
 #Include %A_ScriptDir%\include\ReadTheme.ahk
 #Include %A_ScriptDir%\include\Default.ahk
 #Include %A_ScriptDir%\include\Func_IniSettingsEditor_v6.ahk
@@ -220,6 +220,7 @@ Gosub, GuiStartupSettings
 ; theme
 If Theme
 	ReadTheme(theme)
+Gosub, ReadThemeEditorIcons
 
 PastText1=1
 LoadAllBundles()
@@ -273,6 +274,8 @@ If (StartOmniSearchHotkey <> "")
 	Hotkey, %StartOmniSearchHotkey%, GUIStartOmni
 If (QuickSearchHotkey <> "")
 	Hotkey, %QuickSearchHotkey%, ShortText
+If (QuickSearchHotkey2 <> "")
+	Hotkey, %QuickSearchHotkey2%, ShortText2
 If (ExitProgramHotKey <> "")
 	Hotkey, %ExitProgramHotKey%, SaveSettings
 Hotkey, IfWinNotExist
@@ -634,13 +637,15 @@ Loop, parse, SearchBundles, CSV
 
 	}
 
-If (CurrHits = 1)
+If (CurrHits = 1) and (QuickSearchHotkeyPart2 = 0) and (AutoExecuteOne <> 0)
 	{
 	 if (AutoExecuteOne = 1)
 		Gosub, paste
 	 else if (AutoExecuteOne = 2)
 		Gosub, shiftenter
 	}
+else If (CurrHits = 1) and (QuickSearchHotkeyPart2 = 1) and (AutoExecuteOne <> 0)
+	Gosub, shiftenter
 
 If (DisplayBundle > 1)
 	Gosub, ColorList
@@ -940,9 +945,10 @@ If (Script = "") or (ScriptPaused = 1) ; script is empty so we need to paste Tex
 		else
 			{
 			 If TryClipboard()
-				Clipboard:=ClipSet("s",2,SendMethod,Clip) ; set clip2
+				Clipboard:=ClipSet("s",1,SendMethod,Clip) ; this was ",2,SendMethod" set clip2 not sure why, changed it to 1
 			}
 		}
+
 
 	 If !(formatted > 0)  ; only check for ^| post if it is a plain text snippet
 		Clipboard:=CheckCursorPos(Clipboard)
@@ -1078,7 +1084,9 @@ If (OnPaste = 1)
 	Gosub, SaveSettings
 If Statistics and (OmniSearch or OmniSearchText)
 	Stats("OmniSearch")
-OmniSearch:=0,OmniSearchText:="",Typed:="",SnippetPasteMethod:="",SelItem:="", ViaShorthand:=0, ViaShortCut:=0 ; ,ViaShorthand:="",ViaText:=""
+OmniSearch:=0,OmniSearchText:="",Typed:="",SnippetPasteMethod:="",SelItem:="",ViaShorthand:=0,ViaShortCut:=0,QuickSearchHotkeyPart2:=0
+ ; ,ViaShorthand:="",ViaText:=""
+ClipSet("ea",1,SendMethod)
 Return
 
 CheckHitList(CheckHitList, CheckFor, Bundle, RE = 0) ; RE no longer needed?
@@ -1134,7 +1142,7 @@ UpdateLVColWidth()
 	 WinGetPos , , , AvailableWidth, , %AppWindow%
 	 If (AvailableWidth = "")
 		AvailableWidth:=Width
-	 AvailableWidth:=Round(AvailableWidth/DPIFactor())
+	 AvailableWidth:=Round(AvailableWidth/DPIFactor())-(ColumnWidthShorthand-65) ; accommodate for columnwidth set by user, -65 seems to work
 
 	 ColumnWidth:=Round(((AvailableWidth - factor) / 10))
 	 c1w:=Round((ColumnWidth) * (ColumnWidthPart1/10) - (Col4Correction/4) - 15)
@@ -1156,7 +1164,7 @@ UpdateLVColWidth()
 		 c2w += 25
 		}
 	 Else
-		 LV_ModifyCol(4,50+Col4Correction)
+		 LV_ModifyCol(4,ColumnWidthShorthand+Col4Correction)
 
 	 If (Col2 = 0)           ; paste2 column is empty so no need to show
 		{
@@ -1169,6 +1177,23 @@ UpdateLVColWidth()
 		 LV_ModifyCol(1,c1w) ; col1 is paste1 column
 		 LV_ModifyCol(2,c2w) ; paste2 column has content so show it
 		}
+
+/*
+	 ; double check if widths are presentable - keep this as additional backup for future reference 
+	 ; width_c1w, width_c2w would need to be added to local variables at start of function
+     ; https://github.com/lintalist/lintalist/issues/165#issuecomment-633706970
+	 SendMessage, 0x1000+29, 0, 0, SysListView321, %AppWindow%
+	 width_c1w := ErrorLevel
+
+	 SendMessage, 0x1000+29, 1, 0, SysListView321, %AppWindow%
+	 width_c2w := ErrorLevel
+
+	 If ((width_c1w+width_c2w+100+Col4Correction) < (AvailableWidth - 50))
+		{
+		 LV_ModifyCol(1,300)
+		 LV_ModifyCol(2,300)
+		}
+*/
 
 	 If (ColumnSort <> "NoSort")
 		SortResults(ColumnSortOption1,ColumnSortOption2,SortDirection)
@@ -1872,9 +1897,17 @@ Return
 
 ; Assorted labels -----------------------
 ; If you type some text and hit the SHORTCUT key it will see if it matches an abbreviation or fire up search if it doesn't
+
+ShortText2:
+If (QuickSearchHotkey2 = "") ; additional safety check to avoid triggering by accident
+	Return                  ; see "setup hotkey" at the start of the script and INI
+QuickSearchHotkeyPart2:=1
 ShortText:
 If (QuickSearchHotkey = "") ; additional safety check to avoid triggering by accident
-	Return                  ; see "setup hotkey" at the start of the script and INI
+	{
+	 QuickSearchHotkeyPart2:=0
+	 Return                  ; see "setup hotkey" at the start of the script and INI
+	}
 GetActiveWindowStats()
 WhichBundle()
 ClipSet("s",1,SendMethod,Clipboard) ; safe current content and clear clipboard
@@ -1918,6 +1951,7 @@ If ((CheckHitKey = "_") or (CheckHitKey = "")) ; No hit, so simply send hotkey o
 		 Loop, parse, SendKeysToFix, CSV
 			StringReplace, ThisHotkey, ThisHotkey, %A_LoopField%, {%A_LoopField%}
 		 Send %ThisHotkey%
+		 QuickSearchHotkeyPart2:=0
 		 Return
 		}
 	}
@@ -1926,6 +1960,7 @@ If ((HitKeyHistory = "") and (ViaText = 1)) ; No hit so start searching
 	{
 	 JumpSearch=1
 	 Gosub, GUIStart
+	 QuickSearchHotkeyPart2:=0
 	 Return
 	}
 
@@ -1983,6 +2018,7 @@ Else ; only one hit e.g. unique shortcut
 ViaText=0
 ViaShorthand=0
 ViaShortCut=0
+QuickSearchHotkeyPart2:=0
 Return
 
 ChoiceMouseOK: ; if selection by mouse
@@ -2074,7 +2110,7 @@ Else If (A_ThisMenuItem = "&About")
 Else If (A_ThisMenuItem = "&Quick Start Guide")
 	Gosub, QuickStartGuideMenu
 Else If (A_ThisMenuItem = "Check for updates")
-	Run, %A_AhkPath% "%A_ScriptDir%\include\update.ahk"
+	Run, %A_AhkPath% "%A_ScriptDir%\include\Update.ahk"
 Else If (A_ThisMenuItem = "&Manage Counters")
 		{
 		 If cl_ReadOnly
@@ -2199,7 +2235,7 @@ Else If (A_ThisMenuItem = "&Manage Local Variables")
 		 If WinExist(AppWindow " ahk_class AutoHotkeyGUI")
 			Gui, 1:+Disabled
 		 Gosub, GuiOnTopCheck
-		 RunWait, %A_AhkPath% include\localbundleeditor.ahk
+		 RunWait, %A_AhkPath% include\LocalBundleEditor.ahk
 		 If WinExist(AppWindow " ahk_class AutoHotkeyGUI")
 			{
 			 Gui, 1:-Disabled
@@ -2218,13 +2254,13 @@ Else If (A_ThisMenuItem = "&Manage Local Variables")
 Else If (A_ThisMenuItem = "Encrypt text")
 	 Run, %A_AhkPath% include\EncodeText.ahk
 else If (A_ThisMenuItem = "Convert CSV file")
-	Run, %A_AhkPath% Extras\BundleConverters\CSV.ahk
+	Run, %A_AhkPath% extras\BundleConverters\CSV.ahk
 else If (A_ThisMenuItem = "Convert List")
-	Run, %A_AhkPath% Extras\BundleConverters\List.ahk
+	Run, %A_AhkPath% extras\BundleConverters\List.ahk
 else If (A_ThisMenuItem = "Convert Texter bundle")
-	Run, %A_AhkPath% Extras\BundleConverters\Texter.ahk
+	Run, %A_AhkPath% extras\BundleConverters\Texter.ahk
 else If (A_ThisMenuItem = "Convert UltraEdit taglist")
-	Run, %A_AhkPath% Extras\BundleConverters\UltraEdit.ahk
+	Run, %A_AhkPath% extras\BundleConverters\UltraEdit.ahk
 ; /tools
 
 ; View menu
@@ -2630,12 +2666,15 @@ CheckTyped(TypedChar,EndKey)
 
 ; https://autohotkey.com/board/topic/6893-guis-displaying-differently-on-other-machines/page-3#entry77893
 DPIFactor()
-{ 
+{
+Global DPIDisable
+;If DPIDisable
+;	Return 1
 RegRead, DPI_value, HKEY_CURRENT_USER, Control Panel\Desktop\WindowMetrics, AppliedDPI 
 ; the reg key was not found - it means default settings 
 ; 96 is the default font size setting 
-if (errorlevel=1) OR (DPI_value=96 )
-	return 1
+if (errorlevel=1) OR (DPI_value=96)
+	Return 1
 else
 	Return  DPI_Value/96
 }
@@ -2802,6 +2841,28 @@ Menu, Plugins, Add, Insert [[html]]     , PluginMenuHandler
 Menu, Plugins, Add, Insert [[md]]       , PluginMenuHandler
 Menu, Plugins, Add, Insert [[rtf=]]     , PluginMenuHandler
 
+; create menu for your own plugins
+FileRead, MyPluginsFile, %A_ScriptDir%\plugins\MyPlugins.ahk
+	{
+	 MyPluginsMenu:=0
+	 Loop, parse, MyPluginsFile, `n, `r
+		{
+		 If RegExMatch(A_LoopField,"i)^#include")
+			{
+			 If !MyPluginsMenu
+				MyPluginsMenu:=1
+			 Menu, MyPlugins, Add, % "Insert [[" Trim(StrReplace(SubStr(A_LoopField,InStr(A_LoopField,"\",,0,1)+1),".ahk")," `n`t") "=]]", PluginMenuHandler
+			}
+		}
+	 MyPluginsFile:=""
+	}
+
+	If MyPluginsMenu
+		{
+		Menu, Plugins, Add
+		Menu, Plugins, Add, &MyPlugins, :MyPlugins
+	}
+
 ;Menu, Tools, Add, Encrypt text          , GlobalMenuHandler
 ;Menu, Tools, Add,
 Menu, Tools, Add, Convert CSV file         , GlobalMenuHandler
@@ -2905,10 +2966,10 @@ ExitApp
 Return
 
 ; other Include(s)
-#Include %A_ScriptDir%\include\editor.ahk
+#Include %A_ScriptDir%\include\Editor.ahk
 #Include %A_ScriptDir%\include\BundlePropertiesEditor.ahk
-#Include %A_ScriptDir%\plugins\plugins.ahk
-#Include %A_ScriptDir%\plugins\functions.ahk
+#Include %A_ScriptDir%\plugins\Plugins.ahk
+#Include %A_ScriptDir%\plugins\Functions.ahk
 #Include %A_ScriptDir%\include\GuiSettings.ahk
 #Include %A_ScriptDir%\include\SetShortcuts.ahk
 #Include %A_ScriptDir%\include\QuickStart.ahk
@@ -2968,7 +3029,7 @@ AHK_NOTIFYICON(wParam, lParam)
 
 RunReload:
 Gosub, RunFile
-Run, %A_AhkPath% "include\restart.ahk"
+Run, %A_AhkPath% "include\Restart.ahk"
 ExitApp
 Sleep 1000
 Return
@@ -2992,7 +3053,7 @@ If Administrator and !A_IsAdmin
 	 if A_OSVersion not in WIN_2003,WIN_XP,WIN_2000
 		{
 		 Gosub, RunFile
-		 Run, *RunAs %A_AhkPath% "include\restart.ahk"
+		 Run, *RunAs %A_AhkPath% "include\Restart.ahk"
 		 Sleep 1000
 		 if !ErrorLevel
 			ExitApp

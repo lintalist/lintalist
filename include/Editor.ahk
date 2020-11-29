@@ -1,6 +1,6 @@
 ﻿; LintaList Include
 ; Purpose: Bundle & Snippet Editor
-; Version: 1.5
+; Version: 1.6
 ;
 ; Hotkeys used in Search GUI to start Bundle & Snippet Editor
 ; F4  = Edit snippet
@@ -10,6 +10,7 @@
 ; F8  = Delete snippet
 ; 
 ; History: 
+; v1.6 - properly updating Col2, Col3, and Col4 (first attempt), check for ASCII 5 & 7
 ; v1.5 - paste html
 ; v1.4 - adding themes
 ; v1.3 - 'shortcuts' (Keyboard accelerators) for edit controls
@@ -291,6 +292,7 @@ If (EditMode = "EditSnippet") or (EditMode = "CopySnippet") ; get snippet vars f
 	}
 
 Filename:=Filename_%paste1%
+FileNameBackupSave:=Filename
 
 ActionText:=StrReplace(RegExReplace(EditMode,"([A-Z])"," $1"),"Append","New")
 
@@ -484,6 +486,12 @@ If (EditMode = "EditSnippet")
 Else If (EditMode = "AppendSnippet") or (EditMode = "CopySnippet") or (EditMode = "MoveSnippet") 
 	Check:=AppendToBundle
 
+If InStr(Text1 Text2 Script,Chr(5)) or InStr(Text1 Text2 Script,Chr(7))
+   	{
+   	 MsgBox,16,Warning, Illegal character in Snippet.`n`nUsing ASCII 5 (Enquiry) and ASCII 7 (Bell) in Snippets is not permitted, use [[Chr(5)]] and [[Chr(7)]] instead.
+   	 	Return
+   	}
+
 If EditorSnippetErrorCheck
 	{
 	 If !SnippetErrorCheck(Text1,EditorSnippetErrorCheck) or !SnippetErrorCheck(Text2,EditorSnippetErrorCheck)
@@ -557,6 +565,8 @@ If (EditMode = "EditSnippet")
 	{
 	 Snippet[Paste1,Paste2,1] := Text1      ; part 1 (enter)
 	 Snippet[Paste1,Paste2,2] := Text2      ; part 2 (shift-enter)
+	 If (Snippet[Paste1,Paste2,2] <> "")
+		Snippet[Paste1,"Col2"]:=1
 	 Snippet[Paste1,Paste2,3] := HKey       ; Hotkey
 	 Snippet[Paste1,Paste2,4] := Shorthand  ; Shorthand
 	 Snippet[Paste1,Paste2,5] := Script     ; Script (if there is a script run script instead)
@@ -574,9 +584,17 @@ Else If (EditMode = "AppendSnippet") or (EditMode = "CopySnippet") or (EditMode 
 		Return ; nothing to do
 
 	 ;Snippet[AppendToBundle].Push({1:Text1,2:Text2,3:HKey,4:Shorthand,5:Script,"1v":FixPreview(Text1),"2v":FixPreview(Text2)})
+	 If (Trim(Text2," `r`n`t") = "")
+		Text2:=""
 	 Snippet[AppendToBundle].InsertAt(1,{1:Text1,2:Text2,3:HKey,4:Shorthand,5:Script,"1v":FixPreview(Text1),"2v":FixPreview(Text2)})
 	 Snippet[AppendToBundle,"Save"]:=1  ; added 11/12/2018 fix movesnippet
 
+	 If Text2
+		Snippet[AppendToBundle,"Col2"]:=1
+	 If Shorthand
+		Snippet[AppendToBundle,"Col4"]:=1
+	 If HKey
+		Snippet[AppendToBundle,"Col3"]:=1
 /*
 	 Snippet[AppendToBundle,"Save"]:=1
 	 listcounter:= Snippet[AppendToBundle].MaxIndex() + 1
@@ -609,6 +627,11 @@ Else If (EditMode = "AppendSnippet") or (EditMode = "CopySnippet") or (EditMode 
   LLShorthand: %Shorthand%
   LLScript: %Script%
 )
+
+If (FileName <> FileNameBackupSave) ; added 23/08/2020 still wrong bundle from time to time
+	FileName:=FileNameBackupSave
+FileNameBackupSave:=""
+
  ;  File= 
  ;  File .= A_ScriptDir "\bundles\" FileName_%AppendToBundle% ; debug 04/04/2018
     File := A_ScriptDir "\bundles\" Filename ; debug 04/04/2018
@@ -700,11 +723,13 @@ Loop, % Snippet[Counter].MaxIndex() ; LoopIt
 			}
 		 HotKeyHitList_%Counter% .= Snippet[Counter,A_Index,3] Chr(5)
 		 Hotkey, IfWinNotActive
+		 Snippet[Counter,"Col3"]:=1
 		}
 			
 	 If (Snippet[Counter,A_Index,4] <> "") ; if no shorthand defined: skip
 		{
 		 ShortHandHitList_%Counter% .= Snippet[Counter,A_Index,4] Chr(5)
+		 Snippet[Counter,"Col4"]:=1
 		}
 	}
 
@@ -866,10 +891,10 @@ SnippetErrorCheck(in,type)
 		}
 	}
 
-#include %A_ScriptDir%\include\richcode\RichCode.ahk
-#include %A_ScriptDir%\include\richcode\AHK.ahk
-#include %A_ScriptDir%\include\richcode\SnippetHTML.ahk
-#include %A_ScriptDir%\include\richcode\Util.ahk
+#include %A_ScriptDir%\include\RichCode\RichCode.ahk
+#include %A_ScriptDir%\include\RichCode\AHK.ahk
+#include %A_ScriptDir%\include\RichCode\SnippetHTML.ahk
+#include %A_ScriptDir%\include\RichCode\Util.ahk
 
 EditorWindowPosition:
 IniRead, EditorX     , %A_ScriptDir%\session.ini, editor, EditorX, 100

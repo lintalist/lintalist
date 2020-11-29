@@ -104,7 +104,7 @@ this is a **normal line** of *text* with some markup
 </ul>
 ~~~
 
-Inserting a link [ahkscript](http://ahkscript.org) also works
+Inserting a link [autohotkey.com](http://autohotkey.com) also works
 
 As does an image
 

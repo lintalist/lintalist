@@ -58,6 +58,13 @@ and DateTime.ahk are among the easier examples.
 Don't forget to post on the forum if you've written a
 plugin, have any suggestions and/or requests. Have fun!
 
+Note: if you add an an include to MyPlugins.ahk in this format:
+
+#Include %A_ScriptDir%\plugins\YourPlugin.ahk
+
+YourPlugin will automatically be added to a "MyPlugins" submenu
+(Plugins- and contextmenus in the Editor)
+
 ## 3 - Example (by FanaticGuru @ https://autohotkey.com/boards/viewtopic.php?p=182346#p182346)
 
 /* 

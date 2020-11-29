@@ -54,5 +54,4 @@ SnippetsColorTags
 		 Theme[ReadKey]:=ThemeKey
 		}
 	 Theme["path"]:=Trim(IniFile,"\")
-	 Gosub, ReadThemeEditorIcons ; see editor.ahk
 	}

@@ -6,17 +6,17 @@ Purpose: Update script for Lintalist
 References/credits:
 
 ChangeButtonNames
-http://ahkscript.org/docs/scripts/MsgBoxButtonNames.htm	  
+http://autohotkey.com/docs/scripts/MsgBoxButtonNames.htm	  
 
 CopyFilesAndFolders (AHK Docs)
-http://ahkscript.org/docs/commands/FileCopy.htm
+http://autohotkey.com/docs/commands/FileCopy.htm
 
 AutoHotkey wrapper for Windows native Zip feature by Coco
-http://ahkscript.org/boards/viewtopic.php?f=6&t=3892
+http://autohotkey.com/boards/viewtopic.php?f=6&t=3892
 https://github.com/cocobelgica/AutoHotkey-ZipFile
 
 VersionCompare by boiler 
-http://ahkscript.org/boards/viewtopic.php?f=6&t=5959
+http://autohotkey.com/boards/viewtopic.php?f=6&t=5959
 
 v1.6 - Use 7-zip console version as backup to bypass 
        "Compressed (zipped) Folders Error" - see docs\Update.md
@@ -164,13 +164,13 @@ ExitApp
 
 ; ---------------------------------------------------------------------------
 
-; VersionCompare function by boiler at ahkscript.org - boiler
+; VersionCompare function by boiler at autohotkey.com - boiler
 ; Compares versions where simple string comparison can fail, such as 9.1.3.2 and 10.1.3.5
 ; Both version numbers are in format n1[.n2.n3.n4...] where each n can be any number of digits.
 ; Fills in zeros for missing sections for purposes of comparison (e.g., comparing 9 to 8.1).
 ; Not limited to 4 sections.  Can handle 5.3.2.1.6.19.6 (and so on) if needed.
 ; Returns 1 if version1 is more recent, 2 if version 2 is more recent, 0 if they are the same.
-; http://ahkscript.org/boards/viewtopic.php?f=6&t=5959
+; http://autohotkey.com/boards/viewtopic.php?f=6&t=5959
 
 VersionCompare(version1, version2)
 	{
@@ -190,7 +190,7 @@ VersionCompare(version1, version2)
 	 return 0
 	}
 
-ChangeButtonNames: ; http://ahkscript.org/docs/scripts/MsgBoxButtonNames.htm	  
+ChangeButtonNames: ; http://autohotkey.com/docs/scripts/MsgBoxButtonNames.htm	  
 IfWinNotExist, Update ahk_class #32770
     Return  ; Keep waiting...
 SetTimer, ChangeButtonNames, off 
@@ -204,7 +204,7 @@ ControlSetText, Button3, Cancel, Update ahk_class #32770
 Return
 
 ; CopyFilesAndFolders
-; http://ahkscript.org/docs/commands/FileCopy.htm
+; http://autohotkey.com/docs/commands/FileCopy.htm
 
 CopyFilesAndFolders(SourcePattern, DestinationFolder, DoOverwrite = false) 
 ; Copies all files and folders matching SourcePattern into the folder named DestinationFolder and

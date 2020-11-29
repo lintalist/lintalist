@@ -1,3 +1,16 @@
+### v1.9.14
+
+* New: QuickSearchHotkey2 setting, same as QuickSearchHotkey but always use Part2 of the snippet https://github.com/lintalist/lintalist/issues/169
+* New: Editor add check for ASCII 5 (Enquiry) and ASCII 7 (Bell) https://github.com/lintalist/lintalist/issues/170
+* New: Automatically create MyPlugins submenu in the Editor if they are present (ht gibbons6546 @ autohotkey forum)
+* Change: Choice plugin - Automatically remove empty entries/options, to include an empty option make it the first option (ht gibbons6546 @ autohotkey forum)
+* New: Setting to disable DPIfactor to resolve issue with multimonitor setup with different DPIs https://github.com/lintalist/lintalist/issues/165
+* Fix: Ensure icons for Editor are correctly loaded incl. the default "theme" (e.g. no theme) https://github.com/lintalist/lintalist/issues/171
+* Fix: Editor properly update column data to show part2, hotkey & shorthand columns when adding these for the first time
+* Fix: File plugin, wouldn't be read correctly when using "|clean" as an option
+* Fix/Change: try to match #includes to correct case of FileNames for mapped drives https://github.com/lintalist/lintalist/issues/176
+* Minor changes to DOCs/links (ahkscript.org to autohotkey.com)
+
 ### v1.9.13
 
 * New/Fix: "Update lintalist" could fail  

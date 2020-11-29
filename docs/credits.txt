@@ -47,12 +47,12 @@ Source: https://github.com/fincs/GenDocs
 + modifactions for table and HTML block support (see Markdown2HTML.ahk)
 
 AutoHotkey wrapper for Windows native Zip feature by Coco
-http://ahkscript.org/boards/viewtopic.php?f=6&t=3892
+http://autohotkey.com/boards/viewtopic.php?f=6&t=3892
 https://github.com/cocobelgica/AutoHotkey-ZipFile
 License: WTFPL
 
 VersionCompare by boiler
-http://ahkscript.org/boards/viewtopic.php?f=6&t=5959
+http://autohotkey.com/boards/viewtopic.php?f=6&t=5959
 
 AHK class providing individual colors for ListView items/subitems by Just me
 https://github.com/AHK-just-me/Class_LV_Colors
@@ -66,7 +66,7 @@ Calc plugin: All code belongs to MONSTER by Laszlo
 http://www.autohotkey.com/forum/viewtopic.php?t=17058
 
 AutoXYWH() by toralf & tmplinshi
-http://ahkscript.org/boards/viewtopic.php?t=1079
+http://autohotkey.com/boards/viewtopic.php?t=1079
 
 Class Toolbar by Pulover [Rodolfo U. Batista] 
 https://github.com/Pulover/Class_Toolbar

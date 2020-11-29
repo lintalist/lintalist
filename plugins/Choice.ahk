@@ -1,9 +1,10 @@
 ﻿/* 
 Plugin        : Choice [Standard Lintalist]
 Purpose       : Make a selection from a list [part of code also placed in lintalist.ahk and used to allow users to select a bundle]
-Version       : 1.9
+Version       : 2.0
 
 History:
+- 2.0 Automatically remove empty entries in Listbox (||* -> |) - to include an empty entry make it the first option/entry
 - 1.9 Adding x/y position for listbox results to prevent possibly position.
 - 1.8 Fix for Cancel/Esc not storing position properly, and try to prevent incorrect Listbox heights using Gui10ListboxCheckPosition()
 - 1.7 Added option to "filter as you type" by using ! in first item (similar to question using ?) - uses SetEditCueBanner()
@@ -41,6 +42,7 @@ MakeChoice:
 				}
 			 PluginOptions:=StrReplace(PluginOptions,StrSplit(PluginOptions,"|").1 "|")
 			}
+		 PluginOptions:=RegExReplace(PluginOptions,"\|\|*","|",,,2)
 		 MultipleHotkey=0
 		 if (ChoiceQuestion = "")
 			ChoiceQuestion:="Select and press enter"

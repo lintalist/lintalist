@@ -1,9 +1,10 @@
 ﻿/* 
 Plugin        : File [Standard Lintalist]
 Purpose       : Insert the contents of a file
-Version       : 1.2
+Version       : 1.3
 
 History:
+- 1.3 Fix "Clean" - |clean had to be stripped from path passed on to FixUri
 - 1.2 Incorporate CancelPlugin (avoids SoundPlay and return nicely)
 - 1.1 as of Lintalist v1.6 it now also uses FixURI, and the options select and clean have been added
 - 1.0 first version
@@ -33,7 +34,7 @@ GetSnippetFile:
 				}
 			 If (StrSplit(PluginOptions,"|").2 = "clean") or (StrSplit(PluginOptions,"|").3 = "clean")
 				{
-				 PluginOptions:=FixURI(PluginOptions,"txt",A_ScriptDir)
+				 PluginOptions:=FixURI(StrSplit(PluginOptions,"|").1,"txt",A_ScriptDir)
 				 FileRead, PluginSnippetFile, %PluginOptions%
 				 StringReplace, PluginSnippetFile, PluginSnippetFile, [, %A_Space%, All
 				 StringReplace, PluginSnippetFile, PluginSnippetFile, ], %A_Space%, All

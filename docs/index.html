@@ -20,7 +20,7 @@
 <br /><br />
 <span style='font-size:.8em;'><b>Lintalist</b> is <b>open source</b> and developed in <a href='https://autohotkey.com/'>AutoHotkey</a>, an easy to learn scripting language for Windows.
 [WinXP(sp3)/Vista/7/8/10]<br /></span>
-<span class='date' style='float:right;display:inline;margin-top:0px;'>doc rev. 20200413</span></p>
+<span class='date' style='float:right;display:inline;margin-top:0px;'>doc rev. 20201129</span></p>
 </div>
 
 <div class='column'>
@@ -42,6 +42,7 @@
 <li><a href='#cmdline'>Command line parameters</a></li>
 <li><a href='#FAQ'>FAQ &amp; Known Issues</a></li>
 <li><a href='#Expert'>Expert</a></li>
+<li><a href='#Linux'>Linux</a></li>
 <li><a href='#History'>History</a> (changelog)</li>
 </ul>
 
@@ -86,11 +87,11 @@
 </div>
 
 <div class='column'>
-<p><b>Download Lintalist <em>1.9.13</em></b>
+<p><b>Download Lintalist <em>1.9.14</em></b>
 <p>
 <a href='https://github.com/lintalist/lintalist/releases'><img src='img/lintalist65x65.gif' alt='Download Lintalist' width='65' align='left' border='0' style='margin-right: 5px;' /></a>
 Download (incl. source):<br />
-<a href='https://github.com/lintalist/lintalist/releases'><b>Latest release</b></a> (907 kb)<br />Simply unpack and run lintalist.ahk or lintalist.exe<br />
+<a href='https://github.com/lintalist/lintalist/releases'><b>Latest release</b></a> (908 kb)<br />Simply unpack and run lintalist.ahk or lintalist.exe<br />
 </p>
 
 <span class='tip' style="margin-bottom:10px;"><img src="img/usb.png" width=50 align=right title="USB image by Alessandro Rei (GNU/GPL) - http://findicons.com/icon/255067/usb?id=256158">Lintalist is a <b>portable application</b>. It stores all settings and bundles in the folder the program resides in. <a href="#portable">More...</a>
@@ -104,10 +105,16 @@ Download (incl. source):<br />
 <li><a href='https://www.softpedia.com/get/Office-tools/Other-Office-Tools/Lintalist.shtml'>Softpedia.com</a> (en) &#x2197;</li>
 <li><a href='https://www.majorgeeks.com/files/details/lintalist.html'>MajorGeeks.com</a> (en) &#x2197;</li>
 <li><a href='https://www.freewarefiles.com/Lintalist_program_109453.html'>Freewarefiles.com</a> (en) &#x2197;</li>
+<li><a href='https://www.filecroco.com/download-lintalist/'>filecroco.com</a> (en) &#x2197;</li>
 <li><a href='http://www.ilovefreesoftware.com/25/windows/free-text-expander-tool-enter-snippets-according-to-active-program.html'>ilovefreesoftware.com</a> (en) &#x2197;</li>
+<li><a href='https://itigic.com/lintalist-an-alternative-to-the-windows-clipboard/'>itigic.com</a> (en) &#x2197; (<a href='https://itigic.com/pt/lintalist-an-alternative-to-the-windows-clipboard/'>pt</a>) &#x2197;</li>
 <li><a href='https://www.libellules.ch/dotclear/index.php?post/2018/10/31/Lintalist-gestionnaire-des-extraits-de-texte'>libellules.ch</a> (fr) &#x2197;</li>
 <li><a href='http://www.bchari.com/2019/03/lintalist.html'>bchari.com</a> (jp) &#x2197;</li>
-</ul>
+<li><a href='https://computertotaal.nl/artikelen/apps-software/dit-zijn-de-beste-freeware-tips-van-februari-2020/#rs-1582032317595'>computertotaal.nl</a> (nl) &#x2197;</li>
+<li><a href='https://videotanfolyam.hu/blog/2081/Lintalist_gyorsabb_es_kevesebb_gepeles_elore_megirt_szovegek_hasznalataval'>videotanfolyam.hu</a> (hu) &#x2197;</li>
+<!--
+<li><a href=''></a>  (en) &#x2197;</li>
+--></ul>
 </div>
 
 <div class='brk'></div>
@@ -180,7 +187,7 @@ If you are already an AutoHotkey user and have it installed, it is recommended t
 
 <h2 id='Searching'><a href='#Searching' class='headline'>Normal use: Starting Lintalist and searching for a Snippet</a></h2>
 
-If Lintalist is running you can activate the search window by pressing <kbd>CAPSLOCK</kbd>, the default hotkey. You can change this hotkey via the configuration menu accessible via the tray menu by right clicking on the Lintalist icon <img src="img/lintalist65x65.gif" width="14" height="14" border="0" alt="lintalist icon" style="margin-top:-5px;padding-top:0;">).
+If Lintalist is running you can activate the search window by pressing <kbd>CAPSLOCK</kbd>, the default hotkey. You can change this hotkey via the configuration menu accessible via the tray menu by right clicking on the Lintalist icon <img src="img/lintalist65x65.gif" width="14" height="14" border="0" alt="lintalist icon" style="vertical-align:middle" >).
 
 Based on the active program title, one or more bundles will be loaded into the search window so you can start searching:
 
@@ -198,7 +205,7 @@ While you type, the number of results will decrease (called incremental search o
 After pressing <kbd>ENTER</kbd> on a selected entry from the results list, by default the text (Part1) is pasted in the active program (note the explanation above). <kbd>SHIFT</kbd>+<kbd>ENTER</kbd> and <kbd>ENTER</kbd> will use the first item in the results list unless you have selected another item with the arrow keys. Depending on the snippet either a text is pasted OR a script is run (note explanation above).
 [v1.9.7+] If you just want to copy the snippet to the clipboard and not paste it press <kbd>Alt</kbd>+<kbd>ENTER</kbd> for Part 1 and <kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>ENTER</kbd> for Part 2.
 
-You can also use the <kbd>Up</kbd> and <kbd>Down</kbd> <!--, <kbd>Page Up</kbd> and <kbd>Page Down</kbd> -->keys to navigate through the list. You can select a different bundle or load all bundles via the Bundle menu. If you choose a bundle from the bundle menu (<kbd>Alt</kbd>+<kbd>b</kbd>), that bundle will be locked and always remain active until you unlock it (<kbd>Alt</kbd>+<kbd>l</kbd>, letter l).
+You can also use the <kbd>Up</kbd> and <kbd>Down</kbd> <!--, <kbd>Page Up</kbd> and <kbd>Page Down</kbd> -->keys to navigate through the list. You can select a different bundle or load all bundles via the Bundle menu. If you choose a bundle from the bundle menu (<kbd>Alt</kbd>+<kbd>b</kbd>), that bundle will be <b style='color:#c00;'>locked</b> (toolbar icon: <img src='img/locked.ico' width='18' height='18' alt='locked icon' style="vertical-align:middle" />) and always remain active until you unlock it (<kbd>Alt</kbd>+<kbd>l</kbd>, letter l).
 If enabled you can use <kbd>Alt</kbd>+<kbd>1..0</kbd> for the first ten search results. [v1.9.9]+
 
 <span class='tip'>What happens when you (double) click on an entry in the list is determined by a setting in the configuration menu. (SingleClickSends and DoubleClickSends setting)</span>
@@ -267,7 +274,7 @@ Example: The case-insensitive RegEx 'se\w*g' it is actually using the following 
 
 Sometimes accented letters are part of the text you are searching for. These can be difficult or slow to type. By adding the variations of these letters to the search string you can search for 'cafe' but still find 'caf&eacute;'. So the 'e' in the query will be translated to searching for 'e&#xE9;&#xE8;&#xEA;&#x1E19;&#x11B;&#x115;&#x1EBD;&#x1E1B;&#x1EBB;&#x117;&#xEB;&#x113;&#x229;&#x119;&#x1D92;&#x247;&#x205;&#x1EBF;&#x1EC1;&#x1EC5;&#x1EC3;&#x1E1D;&#x1E17;&#x1E15;&#x207;&#x1EB9;&#x1EC7;&#xE6;&#x1FD;&#x1E3;&#x153;&#x1D6B;'.
 When active all search modes will use a Regular Expression (Regular and Fuzzy)
-(De)Activate the setting via the <i>L<u>v</u>?</i> checkbox in the Search GUI (<kbd>Alt</kbd>+<kbd>v</kbd>) or the SearchLetterVariations setting in the Configuration menu.
+(De)Activate the setting via the <i>L<u>v</u></i> button in the Search GUI (<kbd>Alt</kbd>+<kbd>v</kbd>) or the SearchLetterVariations setting in the Configuration menu.
 More information in the comments of 'include\LetterVariations.ahk'
 
 <h3 id='Omni'><a href='#Omni' class='headline'><em>Omni</em>search (search all bundles)</a></h3>
@@ -296,18 +303,28 @@ Query: @state -> will find "state" in all bundles
 - If you press <kbd>Ctrl</kbd>+<kbd>Capslock</kbd> the search GUI is opened in Omnisearch mode (tip: use <kbd>F2</kbd> to toggle). You can define the hotkey in the settings (StartOmniSearchHotkey)
 
 Note: while using option 2 &amp; 3 the text "(All)" will be added to the statusbar (bottom right) to indicate you are using Omnisearch when the results are updated.
-  
+
+<h3 id='lockedbundles'><a href='#lockedbundles' class='headline'><em>Locked</em> bundle(s), TitleMatch</a></h3>
+
+By default bundles use the TitleMatch property to determine which snippets to use. In order to always use a specific (set of) bundles:
+
+1. Use All Bundles all of the time - see <a href='#LoadAllBundles'>Load All Bundles</a>
+2. Load a specific bundle from the Bundle menu.
+3. Use the <b style='color:#c00;'>lock</b> toolbar icon: <img src='img/locked.ico' width='18' height='18' alt='locked icon' style="vertical-align:middle" />, or shortcut <kbd>Alt</kbd>+<kbd>l</kbd>
+
+See also <a href='#faq5'>FAQ 5</a>.
+
 <h2 id='Shortcuts'><a href='#Shortcuts' class='headline'>Using <em>Shortcuts</em> (Hotkeys)</a></h2>
 
 If the snippet definition includes a shortcut and is part of a currently active bundle you can insert <b>the text from Part 1</b> OR <b>run the script</b> by pressing the hotkey WITHOUT activating the Lintalist search window. Shortcuts are disabled while the Lintalist search window is active. 
 
-<span class='tip'>You can enable / disable the use of Shortcuts via the Tray menu</span>
+<span class='tip'>You can enable / disable the use of Shortcuts via the Tray menu, or the button in the toolbar in the search window</span>
 
 <h2 id='Shorthand'><a href='#Shorthand' class='headline'>Using <em>Shorthand</em> (Abbreviations)</a></h2>
 
 If the snippet definition includes a shorthand and is part of a currently active bundle you can insert <b>the text from Part 1</b> OR <b>run the script</b> by typing the abbreviation (= the shorthand) followed by a <b>Space</b> or <b>Tab</b> WITHOUT activating the Lintalist search window. Shorthand is disabled while the Lintalist search window is active.
 
-<span class='tip'>You can enable / disable the use of Shorthands via the Tray menu</span>
+<span class='tip'>You can enable / disable the use of Shorthands via the Tray menu, or the button in the toolbar in the search window</span>
 
 <h2 id='KeyboardShortcuts'><a href='#KeyboardShortcuts' class='headline'>Lintalist Keyboard <em>Shortcuts</em></a></h2>
 
@@ -1724,7 +1741,7 @@ Just to note that this feature hasn't been tested as vigorously as the regular T
 
 New bundles are stored in the bundle directory. Lintalist is restarted after you add a new bundle. A first snippet is automatically added when a new bundle is created.
 
-Once you have created a bundle you can add new snippets via the Edit, New snippet menu or press F7 - make sure the bundle is loaded first by selecting it via the Bundle menu in the Search window. You can add as many snippets as you like. Once ready do not forget to unlock the bundle by ticking the Lock check box in the Lintalist search window.
+Once you have created a bundle you can add new snippets via the Edit, New snippet menu or press F7 - make sure the bundle is loaded first by selecting it via the Bundle menu in the Search window. You can add as many snippets as you like. Once ready do not forget to unlock the bundle by using the Lock button in the Lintalist search window.
 
 An illustrated guide is available in the <a href="https://github.com/lintalist/lintalist/wiki/Adding-a-new-Bundle-using-Lintalist">Wiki</a>.
 
@@ -1792,8 +1809,8 @@ There is also a configuration setting that can do this: ActivateWindow
 
 <a name='faq5'></a><b>Q5:</b> I type the shorthand (abbreviation) or press the shortcut but nothing happens!
 <b>A5:</b> - Make sure shortcuts and shorthand are not disabled (tray menu). Perhaps Lintalist is paused.
-    - Another bundle may be locked so the bundle you think should be active isn't, unlock it.
-    - Make sure the title match of the bundle is set correctly if it is not the default bundle.
+    - Another bundle may be locked so the bundle you think should be active isn't, unlock it using the button on the toolbar.
+    - Make sure the TitleMatch of the bundle is set correctly if it is not the default bundle (bundle editor).
 
 <h3>Known Issues</h3>
 
@@ -1828,6 +1845,10 @@ In settings.ini there are three hidden options:
 QueryAction: disable/enable
 QueryHotkey: hotkey to use to "run query"
 QueryScript: script to start and where query is passed onto as parameter(s). Default RunQuery.ahk, a dummy script is created if not found and QueryAction is enabled.
+
+<h2 id='Linux'><a href='#Linux' class='headline'>Linux</a></h2>
+
+It seems it is possible to run Lintalist on Linux, more information here <a href='https://github.com/sl5net/Lintalist4Linux'>github.com/sl5net/Lintalist4Linux</a> (independent project, not tested)
 
 <h2 id='History'><a href='#History' class='headline'>History</a></h2>
 

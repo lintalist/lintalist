@@ -38,6 +38,7 @@ INISetup:={ AlwaysLoadBundles:     {default:"",find:"bundles\"}
 			, StartSearchHotkey:   {default:"Capslock",empty:"Capslock"}
 			, StartOmniSearchHotkey: {default:"^Capslock"}
 			, QuickSearchHotkey:   {default:"#z"}
+			, QuickSearchHotkey2:  {default:""}
 			, ExitProgramHotKey:   {default:"^#q"}
 			, CompactWidth:        {default:"450",min:"300"}
 			, CompactHeight:       {default:"450",min:"300"}
@@ -82,13 +83,13 @@ INISetup:={ AlwaysLoadBundles:     {default:"",find:"bundles\"}
 			, SearchLetterVariations: {default:"0"}
 			, Font:                {default:"Arial"}
 			, FontSize:            {default:"10"}
-			, PlaySound:           {default:""}
 			, XY:                  {default:"50|50"}
 			, BigIcons:            {default:"1"}
 			, AutoHotkeyVariables: {default:""}
 			, EditorSyntaxHL:      {default:"0"}
 			, SnippetEditor:       {default:""} } ; becomes too long 
-
+			
+			IniSetup["PlaySound"]:={default:""}
 			IniSetup["EditorHotkeySyntax"]:={default:"0"}
 			IniSetup["Administrator"]:={default:"0"}
 			IniSetup["ShortcutPaste"]:={default:"^v"}
@@ -106,6 +107,8 @@ INISetup:={ AlwaysLoadBundles:     {default:"",find:"bundles\"}
 			IniSetup["QueryAction"]:={default:"0"}
 			IniSetup["QueryScript"]:={default:"RunQuery.ahk"}
 			IniSetup["QueryHotkey"]:={default:"F12"}
+			IniSetup["DPIDisable"]:={default:"0"}
+			IniSetup["ColumnWidthShorthand"]:={default:"50"}
 
 	 ShortcutSearchGuiShow:=["1: ","2: ","3: ","4: ","5: ","6: ","7: ","8: ","9: ","0: ", "   "]
 
