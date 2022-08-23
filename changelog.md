@@ -1,3 +1,11 @@
+### v1.9.15
+
+* New: Allow for _ in MyFunction and MyPlugin names https://github.com/lintalist/lintalist/issues/221
+* New: Split plugin: use 0 (zero) to indicate last item https://github.com/lintalist/lintalist/issues/207
+* New: Show the shortcut key on the Tray menu https://github.com/lintalist/lintalist/issues/191
+* Fix: Revert change so it actually restores Clipboard contents https://github.com/lintalist/lintalist/issues/217
+* Fix: Take into account that using a "deadkey" TriggerKey would produce an erroneous backspace https://github.com/lintalist/lintalist/issues/223
+
 ### v1.9.14
 
 * New: QuickSearchHotkey2 setting, same as QuickSearchHotkey but always use Part2 of the snippet https://github.com/lintalist/lintalist/issues/169

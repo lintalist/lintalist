@@ -20,7 +20,7 @@
 <br /><br />
 <span style='font-size:.8em;'><b>Lintalist</b> is <b>open source</b> and developed in <a href='https://autohotkey.com/'>AutoHotkey</a>, an easy to learn scripting language for Windows.
 [WinXP(sp3)/Vista/7/8/10]<br /></span>
-<span class='date' style='float:right;display:inline;margin-top:0px;'>doc rev. 20201129</span></p>
+<span class='date' style='float:right;display:inline;margin-top:0px;'>doc rev. 20220823</span></p>
 </div>
 
 <div class='column'>
@@ -87,11 +87,11 @@
 </div>
 
 <div class='column'>
-<p><b>Download Lintalist <em>1.9.14</em></b>
+<p><b>Download Lintalist <em>1.9.15</em></b>
 <p>
 <a href='https://github.com/lintalist/lintalist/releases'><img src='img/lintalist65x65.gif' alt='Download Lintalist' width='65' align='left' border='0' style='margin-right: 5px;' /></a>
 Download (incl. source):<br />
-<a href='https://github.com/lintalist/lintalist/releases'><b>Latest release</b></a> (908 kb)<br />Simply unpack and run lintalist.ahk or lintalist.exe<br />
+<a href='https://github.com/lintalist/lintalist/releases'><b>Latest release</b></a> (916 kb)<br />Simply unpack and run lintalist.ahk or lintalist.exe<br />
 </p>
 
 <span class='tip' style="margin-bottom:10px;"><img src="img/usb.png" width=50 align=right title="USB image by Alessandro Rei (GNU/GPL) - http://findicons.com/icon/255067/usb?id=256158">Lintalist is a <b>portable application</b>. It stores all settings and bundles in the folder the program resides in. <a href="#portable">More...</a>
@@ -104,6 +104,7 @@ Download (incl. source):<br />
 <ul>
 <li><a href='https://www.softpedia.com/get/Office-tools/Other-Office-Tools/Lintalist.shtml'>Softpedia.com</a> (en) &#x2197;</li>
 <li><a href='https://www.majorgeeks.com/files/details/lintalist.html'>MajorGeeks.com</a> (en) &#x2197;</li>
+<li><a href='https://www.ghacks.net/2020/02/21/lintalist-is-an-open-source-snippet-manager-for-windows/'>Ghacks.com</a> (en) &#x2197;</li>
 <li><a href='https://www.freewarefiles.com/Lintalist_program_109453.html'>Freewarefiles.com</a> (en) &#x2197;</li>
 <li><a href='https://www.filecroco.com/download-lintalist/'>filecroco.com</a> (en) &#x2197;</li>
 <li><a href='http://www.ilovefreesoftware.com/25/windows/free-text-expander-tool-enter-snippets-according-to-active-program.html'>ilovefreesoftware.com</a> (en) &#x2197;</li>
@@ -182,7 +183,7 @@ Installing Lintalist is easy, just download the ZIP file and unpack it in a fold
 If you are already an AutoHotkey user and have it installed, it is recommended to run <b>Lintalist.ahk</b>, this will ensure you will be running Lintalist with your preferred version of AutoHotkey. If you don't have AutoHotkey installed you can start <b>Lintalist.exe</b>.
 
 <b>Notes:</b>
-- Lintalist.exe: A renamed AutoHotkey.exe (v1.1.32.00 32-bit Unicode, See https://autohotkey.com/ and/or https://autohotkey.com/download/)
+- Lintalist.exe: A renamed AutoHotkey.exe (v1.1.34.04 32-bit Unicode, See https://autohotkey.com/ and/or https://autohotkey.com/download/)
 - Lintalist.ahk: The actual (main) source code of the program (see https://github.com/lintalist/lintalist)
 
 <h2 id='Searching'><a href='#Searching' class='headline'>Normal use: Starting Lintalist and searching for a Snippet</a></h2>
@@ -744,9 +745,9 @@ The plugins are processed in the following order:
 
 <b>Available plugins:</b>
 
-<span class='tip'>[[..]] (Double square brackets) are used for snippet notation. You can escape these double square brackets to prevent them being interpreted as a plugin: 
+<span class='tip' id='Brackets'><a href='#Brackets' class='headline'>[[..]] (Double square brackets) are used for plugin snippet notation. You can escape these double square brackets to prevent them being interpreted as a plugin: 
 <span class='highlight'>\[\]</span>, and <span class='highlight'>\]\]</span>
-To escape [,], and | in the <em>options</em> of a plugin, use: <span class='highlight'>&lt;SB</span>, <span class='highlight'>&gt;SB</span>, and <span class='highlight'>^SB</span>. See ParseEscaped in settings.ini to change this.
+To escape [,], and | in the <em>options</em> of a plugin, use: <span class='highlight'>&lt;SB</span>, <span class='highlight'>&gt;SB</span>, and <span class='highlight'>^SB</span>. See ParseEscaped in settings.ini to change this.</a>
 </span>
 
 <table>
@@ -1385,7 +1386,7 @@ See <a href='#Configuration'>Configuration</a> for information about SendMethod,
 <b id='script-plugins'><a href='#script-plugins' class='headline'>Special Script plugins</a></b> [v1.9.3+]
 
 Use <code>[[llpart1]]</code> and <code>[[llpart2]]</code> in your script to include the contents of Part1 and/or Part2 in your scripts.
-It will process any plugins before setting the result as a variable in a (multiline) variable in your script.
+It will process any plugins before setting the result as a (multiline) variable in your script.
 
 This Script code (in the snippet):
 <blockquote class='boxed'>
@@ -1866,7 +1867,7 @@ It seems it is possible to run Lintalist on Linux, more information here <a href
 <img src='img/lintalist-title-footer.gif' alt='lintalist' align='left' style='margin-top:6px;padding-right:5px;' /><b>Disclaimer:</b> Use at your own risk. If you find a new bundle take a look at the script sections of each snippet. As Lintalist can run any AutoHotkey script it can also run faulty or insecure code. Be sensible, if you simply want to try a bundle selecting 'Pause scripts' via the tray menu might be a useful idea.
 </span> 
 
-<span style='float:right;'>&copy; Copyright 2009-2020 Lintalist. See license.txt</span>
+<span style='float:right;'>&copy; Copyright 2009-2022 Lintalist. See license.txt</span>
 </pre>
 
 <a href="https://github.com/lintalist"><img style="position: absolute; top: 0; right: 0; border: 0;" src="img/forkme_right_red_aa0000.png" alt="Fork me on GitHub"></a>

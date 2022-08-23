@@ -4,11 +4,11 @@ Name            : Lintalist
 Author          : Lintalist
 Purpose         : Searchable interactive lists to copy & paste text, run scripts,
                   using easily exchangeable bundles
-Version         : 1.9.14
+Version         : 1.9.15
 Code            : https://github.com/lintalist/
 Website         : http://lintalist.github.io/
 AutoHotkey Forum: https://autohotkey.com/boards/viewtopic.php?f=6&t=3378
-License         : Copyright (c) 2009-2020 Lintalist
+License         : Copyright (c) 2009-2022 Lintalist
 
 This program is free software; you can redistribute it and/or modify it under the
 terms of the GNU General Public License as published by the Free Software Foundation;
@@ -23,6 +23,7 @@ See license.txt for further details.
 */
 
 ; Default settings
+#Requires AutoHotkey v1.1.31+ ; we use Switch
 #NoEnv
 #SingleInstance, force
 SetBatchLines, -1
@@ -41,7 +42,7 @@ PluginMultiCaret:=0 ; TODOMC
 
 ; Title + Version are included in Title and used in #IfWinActive hotkeys and WinActivate
 Title=Lintalist
-Version=1.9.14
+Version=1.9.15
 
 ; Gosub, ReadPluginSettings
 
@@ -228,6 +229,7 @@ LoadPersonalBundle()
 Menu, Tray, Icon, icons\lintalist.ico ; loading is done so show active Icon
 Menu, tray, UnCheck, &Pause Lintalist
 Menu, tray, Tip, %AppWindow% - active`nPress %StartSearchHotkey% to start search...
+Menu, Tray, Rename, %AppWindow%, %AppWindow% - %StartSearchHotkey%
 if (MinLen > 1)
 	MinLen--
 
@@ -411,9 +413,9 @@ If !Theme["ListViewTextColor"]
 	Theme["ListViewTextColor"]:="black"
 
 If !Theme["ListViewBackgroundColor"]
-	Gui, 1:Add, Listview, % ShowGrid " count500 x2 y" YLView " xLV0x100 LV0x10000 hwndHLV vSelItem AltSubmit gClicked h" LVHeight " w" LVWidth " " , Paste (Enter)|Paste (Shift+Enter)|Key|Short|Index|Bundle ; TODO BIGICONS
+	Gui, 1:Add, Listview, % ShowGrid " count500 x2 y" YLView " xLV0x100 LV0x10000 hwndHLV vSelItem AltSubmit gClicked h" LVHeight " w" LVWidth " ", Paste (Enter)|Paste (Shift+Enter)|Key|Short|Index|Bundle ; TODO BIGICONS
 else if Theme["ListViewBackgroundColor"]
-	Gui, 1:Add, Listview, % ShowGrid " count500 x2 y" YLView " xLV0x100 LV0x10000 hwndHLV vSelItem AltSubmit gClicked h" LVHeight " w" LVWidth " c" Theme["ListViewTextColor"] " Background" Theme["ListViewBackgroundColor"] , Paste (Enter)|Paste (Shift+Enter)|Key|Short|Index|Bundle ; TODO BIGICONS
+	Gui, 1:Add, Listview, % ShowGrid " count500 x2 y" YLView " xLV0x100 LV0x10000 hwndHLV vSelItem AltSubmit gClicked h" LVHeight " w" LVWidth " c" Theme["ListViewTextColor"] " Background" Theme["ListViewBackgroundColor"], Paste (Enter)|Paste (Shift+Enter)|Key|Short|Index|Bundle ; TODO BIGICONS
 
 Gui, 1:Add, edit, hwndEDID2  x0 yp+%LVHeight%+2 -VScroll w%LVWidth% h%PreviewHeight%, preview
 
@@ -945,7 +947,7 @@ If (Script = "") or (ScriptPaused = 1) ; script is empty so we need to paste Tex
 		else
 			{
 			 If TryClipboard()
-				Clipboard:=ClipSet("s",1,SendMethod,Clip) ; this was ",2,SendMethod" set clip2 not sure why, changed it to 1
+				Clipboard:=ClipSet("s",2,SendMethod,Clip) ; Must be 2 to restore clipboard #217 
 			}
 		}
 
@@ -2504,7 +2506,11 @@ If InStr(clip,"[[A_") ; check for built-in variables - https://autohotkey.com/do
 		 PluginText:=ProcessTextString
 		 ; PluginName:=Trim(StrSplit(PluginText,"=").1,"[]") ; debug only
 		 ; PluginName:=Trim(StrSplit(StrSplit(PluginText,"=").1,"_").1,"[]") ; plugins only: name=
-		 PluginName:=Trim(StrSplit(StrSplit(PluginText,["=","("]).1,"_").1,"[]") ; v2.0 allow for plugins and functions: name= and name(
+		 ; PluginName:=Trim(StrSplit(StrSplit(PluginText,["=","("]).1,"_").1,"[]") ; v2.0 allow for plugins and functions: name= and name(
+		 PluginName:=Trim(StrSplit(PluginText,["=","("]).1,"[]") ; 3.0 allow for plugins and functions: name= and name( but with underscore
+		 If RegExMatch(PluginName,"iU)^(Split_|SplitRepeat_)") ; check for named split
+		 	PluginName:=StrSplit(PluginName,"_").1
+
 		 PluginOptions:=GrabPluginOptions(PluginText)
 		 If IsLabel("GetSnippet" PluginName)
 			Gosub, GetSnippet%PluginName%
@@ -2638,6 +2644,9 @@ CheckTyped(TypedChar,EndKey)
 				Return
 
 			 HitKeyHistory:=CheckHitList("Shorthand", Typed, Load)
+
+			 If EndKey in %TriggerKeysDead%
+				StringTrimRight, Typed, Typed, 1
 
 			 If (HitKeyHistory <> "")
 				{

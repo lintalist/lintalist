@@ -1,9 +1,10 @@
 ﻿/* 
 Plugin        : Split [Standard Lintalist]
 Purpose       : Split input into variables
-Version       : 1.2
+Version       : 1.3
 
 History:
+- 1.3 Add [[sp=0]] to indicate the last item from split https://github.com/lintalist/lintalist/issues/207
 - 1.2 Fix https://github.com/lintalist/lintalist/issues/116
 - 1.1 Adding named split - Lintalist v1.7
 - 1.0 first version
@@ -54,6 +55,8 @@ GetSnippetSplit:
 			 sp:=StrSplit(spwhat,SplitDelimiter(StrSplit(PluginOptions,"|").2),"`r")
 			 for k, v in sp
 				StringReplace, clip, clip, [[sp%named%=%k%]], %v%, All
+			StringReplace, clip, clip, [[sp%named%=0]], % sp[sp.length()], All
+
 			;msgbox % clip	
 			}
 		 clip:=RegExReplace(clip,"iU)\[\[sp" named "=.*\]\]") ; remove any stray named [[sp=]]
@@ -77,8 +80,6 @@ GetSnippetSplit:
 	 named:=""
 Return
 
-
-
 SplitDelimiter(delim)
 	{
 	 If (delim = "\n")
@@ -95,4 +96,3 @@ SplitDelimiter(delim)
 	 	delim:=delim
 	 Return delim 
 	}
-	

@@ -109,6 +109,7 @@ INISetup:={ AlwaysLoadBundles:     {default:"",find:"bundles\"}
 			IniSetup["QueryHotkey"]:={default:"F12"}
 			IniSetup["DPIDisable"]:={default:"0"}
 			IniSetup["ColumnWidthShorthand"]:={default:"50"}
+			IniSetup["TriggerKeysDead"]:={default:"F1,F2,F3,F4,F5,F6,F7,F8,F9,F10,F11,F12,F13,F14,F15,F16,F17,F18,F19,F20,F21,F22,F23,F24,CapsLock,NumLock,ScrollLock"}
 
 	 ShortcutSearchGuiShow:=["1: ","2: ","3: ","4: ","5: ","6: ","7: ","8: ","9: ","0: ", "   "]
 
@@ -166,6 +167,16 @@ INISetup:={ AlwaysLoadBundles:     {default:"",find:"bundles\"}
 			 }
 		StringTrimRight, TmpTriggerKeys,TmpTriggerKeys,1
 		TriggerKeys:=TmpTriggerKeys
+		TmpTriggerKeys=
+
+		Loop, parse, TriggerKeysDead, CSV
+			{
+			 TmpKey = %A_LoopField%
+			 TmpTriggerKeys .= "EndKey:" TmpKey ","
+			 TmpKey =
+			 }
+		StringTrimRight, TmpTriggerKeys,TmpTriggerKeys,1
+		TriggerKeysDead:=TmpTriggerKeys
 		TmpTriggerKeys=
 
 		If (ShowGrid = 0)
