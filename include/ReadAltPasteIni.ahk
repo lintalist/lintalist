@@ -1,13 +1,22 @@
-﻿; LintaList Include
-; Purpose: Read AltPaste INI
-; Version: 1.0
-; Date:    20180817
+﻿/*
+LintaList Include
+Purpose: Read AltPaste INI
+Version: 1.1
+Date:    20220929
 
-/*
+History:
+1.1 PasteDelay, PasteMethod added #230
+1.0 Initial version 20180817
+
+Ini format:
+
 [program.exe]
 Copy=^{Ins}
 Cut=+{Del}
 Paste=+{Ins}
+QuickSearch=
+PasteDelay=ms
+PasteMethod=0-2
 */
 
 ReadAltPasteIni()
@@ -20,7 +29,7 @@ ReadAltPasteIni()
 	 ; IniRead, OutputVar, Filename, Section, Key [, Default]
 	 IniRead, SectionNames, %ini%
 	 AltPaste:={}
-	 keys:="copy,cut,paste,QuickSearch"
+	 keys:="copy,cut,paste,QuickSearch,PasteDelay,PasteMethod"
 	 AltPaste["programs"]:=Trim(StrReplace(SectionNames,"`n",","),",")
 	 Loop, parse, SectionNames, `n
 		{
@@ -35,7 +44,11 @@ ReadAltPasteIni()
 			AltPaste[section,"paste"]:=paste
 		 if QuickSearch
 			AltPaste[section,"QuickSearch"]:=QuickSearch
-		 copy:="",cut:="",paste:="",QuickSearch:=""
+		 if PasteDelay
+			AltPaste[section,"PasteDelay"]:=PasteDelay
+		 if PasteMethod
+			AltPaste[section,"PasteMethod"]:=PasteMethod
+		 copy:="",cut:="",paste:="",QuickSearch:="",PasteDelay:="",PasteMethod:=""
 		}
 	}
 
@@ -52,8 +65,13 @@ FileAppend,
 ; copy=
 ; cut=
 ; paste=
-; Use AHK notation (^=ctrl +=shift !=alt) for the shortcuts.
+; QuickSearch=     see documentation (cut word to the left, start Lintalist Search Gui)
 ;
+; Use AHK notation (^=ctrl +=shift !=alt) for the above shortcuts.
+;
+; PasteDelay=      see documentation, delay in milliseconds, overrides global setting
+; PasteMethod=0-2, see documentation, overrides global setting
+; 
 ; IBM Common User Access (CUA) standard:
 ; Copy : Control+Insert -> ^{Ins}
 ; Cut  : Shift+Delete   -> +{Del}

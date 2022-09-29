@@ -1,3 +1,8 @@
+### v1.9.16
+
+* New: AltPaste, addition to define PasteDelay (ms) and PasteMethod (0-2) per program
+* Fix: Fix the change so it actually restores Clipboard contents https://github.com/lintalist/lintalist/issues/217 (line '970' was omitted from commit)
+
 ### v1.9.15
 
 * New: Allow for _ in MyFunction and MyPlugin names https://github.com/lintalist/lintalist/issues/221

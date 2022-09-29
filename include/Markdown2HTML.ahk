@@ -11,7 +11,7 @@ Source: https://github.com/fincs/GenDocs
   using a ~~~ block HTML-code is included as is
 
 See documentation "Formatted Text Snippets", "Markdown" for more information on tables
-and how to use the simplyfied version of the Markdown syntax that is supported by
+and how to use the simplified version of the Markdown syntax that is supported by
 this function.
 
 */

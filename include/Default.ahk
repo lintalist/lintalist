@@ -65,6 +65,8 @@ SendKey(Method = 1, Keys = "")
  
  global PasteDelay, ActiveWindowID, ActiveControl, ActiveWindowProcessName, AltPaste, ShortcutCopy, ShortcutPaste, ShortcutCut, ShortcutQuickSearch
  
+ UsePasteDelay:=PasteDelay
+
 ; replace default keys with application specific keys defined in AltPaste.ini - see docs\AltPaste.md
  If ActiveWindowProcessName in % AltPaste.programs
 	{
@@ -88,6 +90,10 @@ SendKey(Method = 1, Keys = "")
 		 if AltPaste[ActiveWindowProcessName].HasKey("QuickSearch")
 			keys:=AltPaste[ActiveWindowProcessName].QuickSearch
 		}
+
+	 if AltPaste[ActiveWindowProcessName].HasKey("PasteDelay")
+		UsePasteDelay:=AltPaste[ActiveWindowProcessName].PasteDelay
+
 	}
 
 ;	 If ((Save = 1) or (Save = ""))
@@ -116,10 +122,10 @@ SendKey(Method = 1, Keys = "")
 		}
 
 ;	 Sleep 50 ; some time to get data to clipboard
-	 Sleep, % PasteDelay ; was at the start of the function, moved it here
+	 Sleep, % UsePasteDelay ; was at the start of the function, moved it here
 
      ; Because one of the includes below will always fail code is only loaded once:
-	 #include *i %A_ScriptDir%\include\AfterPaste.ahk     ; from lintastlist search
+	 #include *i %A_ScriptDir%\include\AfterPaste.ahk     ; from lintalist search
 	 #include *i %A_ScriptDir%\..\include\AfterPaste.ahk  ; from a script
 
 ;	 If (Restore = 1)

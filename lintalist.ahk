@@ -4,7 +4,7 @@ Name            : Lintalist
 Author          : Lintalist
 Purpose         : Searchable interactive lists to copy & paste text, run scripts,
                   using easily exchangeable bundles
-Version         : 1.9.15
+Version         : 1.9.16
 Code            : https://github.com/lintalist/
 Website         : http://lintalist.github.io/
 AutoHotkey Forum: https://autohotkey.com/boards/viewtopic.php?f=6&t=3378
@@ -42,7 +42,7 @@ PluginMultiCaret:=0 ; TODOMC
 
 ; Title + Version are included in Title and used in #IfWinActive hotkeys and WinActivate
 Title=Lintalist
-Version=1.9.15
+Version=1.9.16
 
 ; Gosub, ReadPluginSettings
 
@@ -214,7 +214,7 @@ If (ScriptPaused = 1)
 	Menu, tray, Check, Pause &Scripts
 ; /Tray Menu
 
-; Dynamic Gui elements, postions etc.
+; Dynamic Gui elements, positions etc.
 Gosub, GuiStartupSettings
 ; /Dynamic Gui settings
 
@@ -250,7 +250,7 @@ If (StartSearchHotkey = "Capslock")
 			MsgBox, 64, Lintalist, %A_LoopField% is running may conflict with Capslock.`nChange the Lintalist Hotkey in the Configuration.`nLook for the StartSearchHotkey setting.`n`nYou can find the Configuration option in the tray menu or`nvia the Edit, Configuration menu in the Lintalist search window.
 		}
 
-; check capslock and scrolllock status so we can actually use them as hotkey if defined by user and 
+; check capslock and ScrollLock status so we can actually use them as hotkey if defined by user and 
 ; they are already in the DOWN (active) state when Lintalist is started
 
 ProgramHotKeyList:="StartSearchHotkey,StartOmniSearchHotkey,QuickSearchHotkey,ExitProgramHotKey"
@@ -404,7 +404,7 @@ Gui, 1:Font ; TODO BIGICONS
 
 If !IsNVDARunning
 	Gui, 1:Add, Custom, ClassToolbarWindow32 hwndhToolbar 0x0800 0x0100 0x0008 0x0040 x%barx% y%Yctrl% w580 ; TODO BIGICONS
-else if IsNVDARunning ; skipt tooltips to avoid it being read twice (button name + tooltip)
+else if IsNVDARunning ; skip tooltips to avoid it being read twice (button name + tooltip)
 	Gui, 1:Add, Custom, ClassToolbarWindow32 hwndhToolbar 0x0800 0x0008 0x0040 x%barx% y%Yctrl% w580 ; TODO BIGICONS
 
 Gui, 1:Font,s%fontsize%,%font%
@@ -554,7 +554,7 @@ Gui, 1:Default
 LV_Delete()
 GuiControl,1: , Edit2, %A_Space% ; fix preview if no more snippets e.g. ghosting of last snippet
 
-; setup imagelist and define icons
+; setup ImageList and define icons
 ;#Include %A_ScriptDir%\include\ImageList.ahk
 
 If (SubStr(CurrText,1,1) = OmniChar) or (OmniSearch = 1)
@@ -740,14 +740,14 @@ Clicked:
 		 Return
 		}
 
-	; ignore all other events apart from doubleclick and normal left-click
+	; ignore all other events apart from DoubleClick and normal left-click
 	If A_GuiControlEvent not in DoubleClick,Normal
 		Return
 	IfEqual A_GuiControlEvent, Normal
 		{
 		 ShowPreview(PreviewSection)
 		 If (SingleClickSends = 0) ; if set to 1 in configuration a normal click will act
-			Return                 ; the same as a doubleclick (also configurable)
+			Return                 ; the same as a DoubleClick (also configurable)
 		}
 
 	If (DoubleClickSends = 1)
@@ -951,22 +951,25 @@ If (Script = "") or (ScriptPaused = 1) ; script is empty so we need to paste Tex
 			}
 		}
 
-
 	 If !(formatted > 0)  ; only check for ^| post if it is a plain text snippet
 		Clipboard:=CheckCursorPos(Clipboard)
 	 formatted:=0
 	 GUI, 1:Destroy
 
-	If Statistics
+	 If Statistics
 		Stats("TotalBytes",StrLen(Clipboard))
+
+	 If AltPaste[ActiveWindowProcessName].HasKey("PasteMethod")
+		SnippetPasteMethod:=AltPaste[ActiveWindowProcessName].PasteMethod
 
 	 If (SnippetPasteMethod = 0) or (SnippetPasteMethod = "") ; there was no PasteMethod plugin in the snippet
 		{
 		
-		 If (PasteMethod = 0) ; paste it and clear formatted clipboard
+		 If (PasteMethod = 0) or (SnippetPasteMethod = 0) ; paste it and clear formatted clipboard
 			{
 			 SendKey(SendMethod, ShortcutPaste)
 			 PlaySound(PlaySound,"paste")
+			 Clipboard:=ClipSet("s",2,SendMethod,Clip) ; Must be 2 to restore clipboard #217 
 			 WinClip.Clear()
 			}
 		 else If (PasteMethod = 1) ; paste it, keep formatted clipboard
@@ -975,7 +978,7 @@ If (Script = "") or (ScriptPaused = 1) ; script is empty so we need to paste Tex
 			 PlaySound(PlaySound,"paste")
 			}
 		}
-	 else ; PasteMethod was set in the snippet
+	 else ; PasteMethod was set in the snippet or in AltPaste.ini
 		If (SnippetPasteMethod = 1) ; 1 Paste snippet and keep it as the current clipboard content (so you can manually paste it again)
 			{
 			 SendKey(SendMethod, ShortcutPaste)
@@ -983,7 +986,7 @@ If (Script = "") or (ScriptPaused = 1) ; script is empty so we need to paste Tex
 			}
 		; else PasteMethod was set in the snippet, so it must be: 2 Don't paste snippet content but copy it to the clipboard so you can manually paste it.
 
-	 If (((BackLeft > 0) or (BackUp > 0)) and (PasteMethod <> 2)) ; place caret at postion defined in snippet text via ^|
+	 If (((BackLeft > 0) or (BackUp > 0)) and (PasteMethod <> 2)) ; place caret at position defined in snippet text via ^|
 		{
 		 If (BackUp > 0)
 			{
@@ -2032,7 +2035,7 @@ Gui, 10:Submit,NoHide
 If (item = "") ; if we didn't focus on results list while "typing to filter" in Choice it may return empty
 	{
 	 ControlGet, item, List, Focused, ListBox1,  Select and press enter
-	 If InStr(item,"`n") ; we may get all the results of the "typing to filter" so asume we want first result
+	 If InStr(item,"`n") ; we may get all the results of the "typing to filter" so assume we want first result
 		item:=Trim(StrSplit(item,"`n").1,"`n`r")
 	}
 Gosub, 10GuiSavePos
@@ -2520,7 +2523,7 @@ If InStr(clip,"[[A_") ; check for built-in variables - https://autohotkey.com/do
 			 PluginProcessFunction:=ProcessFunction(PluginName,PluginOptions)
 			 if (clipsave = clip) ; if function hasn't modified the clip, modify clip by replacing the function calls
 				clip:=StrReplace(clip,PluginText,PluginProcessFunction)
-			 if InStr(clip,PluginText) ; safety check, if func HAS modified the clip, but has omitted to remove itself from clip we need to remove it otherwise we're stuk in an endless loop
+			 if InStr(clip,PluginText) ; safety check, if func HAS modified the clip, but has omitted to remove itself from clip we need to remove it otherwise we're stuck in an endless loop
 				clip:=StrReplace(clip,PluginText)
 			 clipsave:="", PluginProcessFunction:=""
 			}
@@ -2917,7 +2920,7 @@ if !cl_ReadOnly
 
 	 ; this same code is also in ReadIni.ahk 
 	 ; just make sure these specific settings have a value so reloading/restarting works better 
-	 ; (when updateing AHK via the official installer script it seems some settings are lost)
+	 ; (when updating AHK via the official installer script it seems some settings are lost)
 	 IniListFinalCheck:="Lock,Case,ShorthandPaused,ShortcutPaused,ScriptPaused"
 	 Loop, parse, IniListFinalCheck, CSV
 		If %A_LoopField% is not number

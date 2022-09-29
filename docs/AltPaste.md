@@ -23,6 +23,8 @@ Use the name of the program executable as [section] name, followed by one or mor
 - Cut=         alternative cut   shortcut +{Del} for console applications 
 - Paste=       alternative paste shortcut +{Ins} for console applications
 - QuickSearch= alternative shortcut to Select and Cut Word to the Left of the Caret position
+- PasteDelay=  see documentation, delay in milliseconds, overrides global setting
+- PasteMethod= 0-2, see documentation, overrides global setting
 
 Only add those keys you need for that application.
 Restart Lintalist after modifying `AltPaste.ini`
