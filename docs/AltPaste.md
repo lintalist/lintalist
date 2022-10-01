@@ -58,4 +58,4 @@ Instructions: https://www.howtogeek.com/howto/25590/how-to-enable-ctrlv-for-past
     Paste=!{space}ep  
     Copy=!{space}ey
     
-2) If you do want to use `^v` to paste in your cmd.exe you could consider installing **Clink** which enables this - among many other useful features - more information and download at https://mridgers.github.io/clink/
+2) If you do want to use `^v` to paste in your cmd.exe you could consider installing **Clink** which enables this - among many other useful features - more information and download at https://chrisant996.github.io/clink/ ( a fork of the original clink https://mridgers.github.io/clink/ )

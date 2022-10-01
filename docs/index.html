@@ -87,7 +87,7 @@
 </div>
 
 <div class='column'>
-<p><b>Download Lintalist <em>1.9.16</em></b>
+<p><b>Download Lintalist <em>1.9.17</em></b>
 <p>
 <a href='https://github.com/lintalist/lintalist/releases'><img src='img/lintalist65x65.gif' alt='Download Lintalist' width='65' align='left' border='0' style='margin-right: 5px;' /></a>
 Download (incl. source):<br />
@@ -293,10 +293,10 @@ This has the disadvantage that it also sets the Locked state so next time you br
 
 <b>2. Omnisearch query</b>
 
-When you start your query with a predefined character (@ by default) Lintalist will search in all bundles independent of the ones that are currently loaded or locked in the search Gui. You can define this character in the settings (OmniChar). If you don't want to use Omnisearch while typing a query simply disable it by erasing the OmniChar in the settings menu.
+When you start your query with a predefined character (<b style='color:#c00;'>@</b> by default) Lintalist will search in all bundles independent of the ones that are currently loaded or locked in the search Gui. You can define this character in the settings (OmniChar). If you don't want to use Omnisearch while typing a query simply disable it by erasing the OmniChar in the settings menu.
 
 Query: state -> will find "state" in the currently loaded bundle(s)
-Query: @state -> will find "state" in all bundles
+Query: <b style='color:#c00;'>@</b>state -> will find "state" in all bundles
 
 <b>3. Omnisearch shortcuts</b>
 
@@ -304,6 +304,25 @@ Query: @state -> will find "state" in all bundles
 - If you press <kbd>Ctrl</kbd>+<kbd>Capslock</kbd> the search GUI is opened in Omnisearch mode (tip: use <kbd>F2</kbd> to toggle). You can define the hotkey in the settings (StartOmniSearchHotkey)
 
 Note: while using option 2 &amp; 3 the text "(All)" will be added to the statusbar (bottom right) to indicate you are using Omnisearch when the results are updated.
+
+<h3 id='ColumnSearch'><a href='#ColumnSearch' class='headline'><em>Column</em>Search (search specific part of a snippet)</a></h3>
+
+By default Lintalist tries to find matches in <em>part1, part2</em>, and <em>shorthand</em> of a snippet while searching.
+
+When you start your query with a number (1 to 5), followed by a predefined character (<b style='color:#c00;'></b>&lt;</b> by default, ColumnSearchDelimiter in the settings) Lintalist will search in a specific part of a snippet. To disable this feature erase the ColumnSearchDelimiter in the settings.
+
+Query: state -> will find "state" in part1, part2, and shorthand of a snippet
+Query: 1<b style='color:#c00;'>&lt;</b>state -> will find "state" in <b>only</b> if it it is <b>part1</b> of a snippet
+
+1 to 5 refers to the <a href="#SnippetsBundles">"part" or "section"</a></a> of a snippet:
+
+1&lt; Part1
+2&lt; Part2
+3&lt; Shortcut (key)
+4&lt; Shorthand (abbreviation)
+5&lt; Script
+
+Start the query with the OmniSearch character to combine it with ColumnSearch (e.g. <b style='color:#c00;'>@</b>1<b style='color:#c00;'>&lt;</b>state)
 
 <h3 id='lockedbundles'><a href='#lockedbundles' class='headline'><em>Locked</em> bundle(s), TitleMatch</a></h3>
 

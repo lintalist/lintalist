@@ -4,7 +4,7 @@ Name            : Lintalist
 Author          : Lintalist
 Purpose         : Searchable interactive lists to copy & paste text, run scripts,
                   using easily exchangeable bundles
-Version         : 1.9.16
+Version         : 1.9.17
 Code            : https://github.com/lintalist/
 Website         : http://lintalist.github.io/
 AutoHotkey Forum: https://autohotkey.com/boards/viewtopic.php?f=6&t=3378
@@ -42,7 +42,7 @@ PluginMultiCaret:=0 ; TODOMC
 
 ; Title + Version are included in Title and used in #IfWinActive hotkeys and WinActivate
 Title=Lintalist
-Version=1.9.16
+Version=1.9.17
 
 ; Gosub, ReadPluginSettings
 
@@ -533,6 +533,7 @@ If QueryDelimiter
 	 Gosub, LLQuery
 	 CurrText:=Query[1]
 	}
+
 If (CurrText = LastText)
 	{
 	 Critical, off ; experimental-v1.7
@@ -569,6 +570,7 @@ Else
 	}
 
 LastText:=CurrText
+
 ShowPreviewToggle=1
 ShortCutSearchGuiCounter:=0
 Loop, parse, SearchBundles, CSV
@@ -576,13 +578,21 @@ Loop, parse, SearchBundles, CSV
 	 If (A_TickCount - StartTime > 150) ; was 250 for <1.6 - experimental-v1.7
 		ControlGetText, CurrText, Edit1, %AppWindow%
 	 If (CurrText <> LastText)
-		 Goto GetText
+		Goto GetText
 	 Bundle:=A_LoopField
 
 	 Max:=Snippet[Bundle].MaxIndex()
 	 Loop,% Max ; %
 		{
+		 A_BundleIndex:=A_Index
+		 SearchThis:=""
 		 SearchText:=LTrim(CurrText,OmniChar)
+
+		 If ColumnSearchDelimiter and RegExMatch(SearchText,"^[0-5]" ColumnSearchDelimiter)
+			{
+			Gosub, ColumnSearchText
+			SearchText:=ColumnSearchText
+			}
 
 		 If SearchLetterVariations and (SearchMethod <> 4)
 			SearchText:=LetterVariations(SearchText,Case)
@@ -591,15 +601,23 @@ Loop, parse, SearchBundles, CSV
 ;		 SearchThis1:=Snippet[Bundle,A_Index,1] ; part '1' (enter)
 ;		 SearchThis2:=Snippet[Bundle,A_Index,2] ; part '2' (shift-enter)
 ;		 SearchThis3:=Snippet[Bundle,A_Index,4] ; shorthand
-		 SearchThis:=Snippet[Bundle,A_Index,1] " " Snippet[Bundle,A_Index,2] " " Snippet[Bundle,A_Index,4] ; part1, part2, shorthand
-	
+		 If ColumnID
+			SearchThis:=Snippet[Bundle,A_BundleIndex,ColumnID]
+		 else
+			{
+			 If (ColumnSearch = "") ; could be set in hidden Ini setting
+				SearchThis:=Snippet[Bundle,A_BundleIndex,1] " " Snippet[Bundle,A_BundleIndex,2] " " Snippet[Bundle,A_BundleIndex,4] ; part1, part2, shorthand
+			 else
+				Loop, parse, ColumnSearch, CSV
+					SearchThis .= Snippet[Bundle,A_BundleIndex,A_LoopField] " "	
+			}
 
 		 If (SearchMethod = 1) ; normal
 			{
 			 if (SearchLetterVariations = 0)
 				Search(SearchMethod)
 			 else If (SearchLetterVariations = 1) ; search normal with letter variations making it a RegExMatch search
-				 Search(3) ; RegEx search
+				Search(3) ; RegEx search
 			}
 		 else
 			Search(SearchMethod)
@@ -620,9 +638,9 @@ Loop, parse, SearchBundles, CSV
 
 			 If (ShowIcons = 1)
 				{
-				 IconVal:=SetIcon(Snippet[Bundle,A_Index],Snippet[Bundle,A_Index,5],ShortCutSearchGui,ShortCutSearchGuiCounter)
+				 IconVal:=SetIcon(Snippet[Bundle,A_BundleIndex],Snippet[Bundle,A_BundleIndex,5],ShortCutSearchGui,ShortCutSearchGuiCounter)
 				}
-			 LV_Add(IconVal,ShortCutSearchGuiText Snippet[Bundle,A_Index,"1v"],Snippet[Bundle,A_Index,"2v"],Snippet[Bundle,A_Index,3],Snippet[Bundle,A_Index,4],Bundle . "_" . A_Index, MenuName_%Bundle%) ; populate listview
+			 LV_Add(IconVal,ShortCutSearchGuiText Snippet[Bundle,A_BundleIndex,"1v"],Snippet[Bundle,A_BundleIndex,"2v"],Snippet[Bundle,A_BundleIndex,3],Snippet[Bundle,A_BundleIndex,4],Bundle . "_" . A_BundleIndex, MenuName_%Bundle%) ; populate listview
 			 If (ShowPreviewToggle = 1) ; do only once to improve speed
 				{
 				 ShowPreview(PreviewSection)
@@ -1244,6 +1262,10 @@ Query:=StrSplit(CurrText, QueryDelimiter,, 2)
 Query["full"]:=LTrim(CurrText,OmniChar)
 Return
 
+ColumnSearchText:
+ColumnID:=Trim(SubStr(CurrText,1,2),"@<")
+ColumnSearchText:=LTrim(StrSplit(CurrText, ColumnSearchDelimiter,, 2).2,OmniChar)
+Return
 ; This function is used to reset the search mode buttons when you switch search mode
 TB_ResetButtons(in)
 	{
@@ -2093,10 +2115,12 @@ WinGetPos, X, Y, , ,  %AppWindow% ; remember position set by user
 XY:=X "|" Y
 Gui, 1:Destroy
 Query:=""
-CurrText=
-lasttext = fadsfSDFDFasdFdfsadfsadFDSFDf
-ViaText=0
-ViaShorthand=0
+ColumnID:=""
+ColumnSearchText:=""
+CurrText:=""
+lasttext:="fadsfSDFDFasdFdfsadfsadFDSFDf"
+ViaText:=0
+ViaShorthand:=0
 OmniSearch:=0
 Return
 
@@ -2667,6 +2691,7 @@ CheckTyped(TypedChar,EndKey)
 				 ViaText=0
 				 ViaShorthand=0
 				 HitKeyHistory=
+				 CheckHitKey=
 				 SaveStat2=
 				}
 			}

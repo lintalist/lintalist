@@ -1,6 +1,12 @@
+### v1.9.17
+
+* New: Added setting for ColumnSearchDelimiter to allow to search in a specific part of 
+  the snippet (part1, part2, hotkey, shorthand, and script) https://github.com/lintalist/lintalist/issues/227
+  (a ColumnSearch setting is also available as hidden setting to automatically implement this for all searches)
+
 ### v1.9.16
 
-* New: AltPaste, addition to define PasteDelay (ms) and PasteMethod (0-2) per program
+* New: AltPaste, addition to define PasteDelay (ms) and PasteMethod (0-2) per program https://github.com/lintalist/lintalist/issues/230
 * Fix: Fix the change so it actually restores Clipboard contents https://github.com/lintalist/lintalist/issues/217 (line '970' was omitted from commit)
 
 ### v1.9.15
@@ -37,7 +43,7 @@
 ### v1.9.12
 
 * New: you can now escape [[ and ]] in snippets - https://github.com/lintalist/lintalist/issues/162
-  and additionaly use [,],| in options using alternative notations: <SB, >SB, ^SB (see ParseEscaped in settings.ini)
+  and additionally use [,],| in options using alternative notations: <SB, >SB, ^SB (see ParseEscaped in settings.ini)
 * New: paste HTML code from clipboard (if present) in the editor https://github.com/lintalist/lintalist/issues/59 
 * New: Run Query string using special hotkey (hidden expert option) https://github.com/lintalist/lintalist/issues/153
 * Fix: if there are no search results, disable edit, copy, move, delete
@@ -122,7 +128,7 @@
 * Update: Incorporate CancelPlugin (avoids SoundPlay and return nicely) in plugins: Calendar, Choice, File and Input
 * Change: Revert change https://github.com/lintalist/lintalist/issues/52 (v1.8)
 * Change: Choice and Editor now use WinWaitClose vs "ugly Loop"
-* Change: LCID values for Calendar and DateTime can now be Hexidecimal values as well (L1036 and L0x040C = French)
+* Change: LCID values for Calendar and DateTime can now be Hexadecimal values as well (L1036 and L0x040C = French)
 
 ### v1.9.7
 

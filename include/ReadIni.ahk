@@ -110,6 +110,8 @@ INISetup:={ AlwaysLoadBundles:     {default:"",find:"bundles\"}
 			IniSetup["DPIDisable"]:={default:"0"}
 			IniSetup["ColumnWidthShorthand"]:={default:"50"}
 			IniSetup["TriggerKeysDead"]:={default:"F1,F2,F3,F4,F5,F6,F7,F8,F9,F10,F11,F12,F13,F14,F15,F16,F17,F18,F19,F20,F21,F22,F23,F24,CapsLock,NumLock,ScrollLock"}
+			IniSetup["ColumnSearchDelimiter"]:={default:"<"}
+			IniSetup["ColumnSearch"]:={default:""}
 
 	 ShortcutSearchGuiShow:=["1: ","2: ","3: ","4: ","5: ","6: ","7: ","8: ","9: ","0: ", "   "]
 
@@ -126,10 +128,10 @@ INISetup:={ AlwaysLoadBundles:     {default:"",find:"bundles\"}
 		 if (%k% = "")
 			%k%:=v.empty
 		 if v.min
-			if (%k% < v.min)	
+			if (%k% < v.min)
 				%k%:=v.min
 		 if v.max
-			if (%k% > v.max)	
+			if (%k% > v.max)
 				%k%:=v.max
 		}
 
@@ -189,11 +191,15 @@ INISetup:={ AlwaysLoadBundles:     {default:"",find:"bundles\"}
 	 else
 	 	QueryDelimiter:=SubStr(Trim(QueryDelimiter),1,1) ; only use first char if a string was entered
 
-	 ParseEscapedArray:=StrSplit(ParseEscaped,",")
+	 If RegExMatch(ColumnSearchDelimiter,"^\s*\\s")
+	 	ColumnSearchDelimiter:=" "
+	 else
+	 	ColumnSearchDelimiter:=SubStr(Trim(ColumnSearchDelimiter),1,1) ; only use first char if a string was entered
 
+	 ParseEscapedArray:=StrSplit(ParseEscaped,",")
 	 
 	 If !FileExist(A_ScriptDir "\" QueryScript) and (QueryAction = 1)
-			FileAppend, `; See QueryAction`, QueryHotkey`, and QueryScript in settings.ini`nMsgBox `%0`% params: `%1`% `%2`% `%3`% `%4`% `%5`% `%6`% `%7`% `%8`% `%9`%`n, %A_ScriptDir%\%QueryScript%
+		FileAppend, `; See QueryAction`, QueryHotkey`, and QueryScript in settings.ini`nMsgBox `%0`% params: `%1`% `%2`% `%3`% `%4`% `%5`% `%6`% `%7`% `%8`% `%9`%`n, %A_ScriptDir%\%QueryScript%
 	 Hotkey, IfWinActive, Lintalist snippet editor
 	 If (Trim(EditorAutoCloseBrackets) <> "") 
 	 	Loop, parse, EditorAutoCloseBrackets, `;
@@ -205,7 +211,7 @@ INISetup:={ AlwaysLoadBundles:     {default:"",find:"bundles\"}
 
 	 ; this same code is also in lintalist.ahk - SaveSettings: 
 	 ; just make sure these specific settings have a value so reloading/restarting works better 
-	 ; (when updateing AHK via the official installer script it seems some settings are lost)
+	 ; (when updating AHK via the official installer script it seems some settings are lost)
 	 IniListFinalCheck:="Lock,Case,ShorthandPaused,ShortcutPaused,ScriptPaused"
 	 Loop, parse, IniListFinalCheck, CSV
 		If %A_LoopField% is not number
