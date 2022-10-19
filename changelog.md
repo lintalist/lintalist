@@ -1,3 +1,7 @@
+### v1.9.18
+
+* Fix: Column Search should now reset properly after a search, so normal search works correctly again https://github.com/lintalist/lintalist/issues/232
+
 ### v1.9.17
 
 * New: Added setting for ColumnSearchDelimiter to allow to search in a specific part of 

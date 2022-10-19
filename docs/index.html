@@ -20,7 +20,7 @@
 <br /><br />
 <span style='font-size:.8em;'><b>Lintalist</b> is <b>open source</b> and developed in <a href='https://autohotkey.com/'>AutoHotkey</a>, an easy to learn scripting language for Windows.
 [WinXP(sp3)/Vista/7/8/10]<br /></span>
-<span class='date' style='float:right;display:inline;margin-top:0px;'>doc rev. 20220823</span></p>
+<span class='date' style='float:right;display:inline;margin-top:0px;'>doc rev. 20221008</span></p>
 </div>
 
 <div class='column'>
@@ -28,7 +28,12 @@
 <ul>
 <li><a href='#Introduction'>Introduction</a></li>
 <li><a href='#Installing'>Installing Lintalist</a></li>
-<li><a href='#Searching'>Start searching</a></li>
+<li><a href='#Searching'>Start searching</a>
+  <ul>
+    <li><a href='#Omni'>OmniSearch</a></li>
+    <li><a href='#ColumnSearch'>ColumnSearch</a></li>
+  </ul>
+</li>
 <li><a href='#Shortcuts'>Using Shortcuts</a> (Hotkeys)</li>
 <li><a href='#Shorthand'>Using Shorthand</a> (Abbrev.)</li>
 <li><a href='#KeyboardShortcuts'>Lintalist Keyboard Shortcuts</a></li>
@@ -87,11 +92,11 @@
 </div>
 
 <div class='column'>
-<p><b>Download Lintalist <em>1.9.17</em></b>
+<p><b>Download Lintalist <em>1.9.18</em></b>
 <p>
 <a href='https://github.com/lintalist/lintalist/releases'><img src='img/lintalist65x65.gif' alt='Download Lintalist' width='65' align='left' border='0' style='margin-right: 5px;' /></a>
 Download (incl. source):<br />
-<a href='https://github.com/lintalist/lintalist/releases'><b>Latest release</b></a> (916 kb)<br />Simply unpack and run lintalist.ahk or lintalist.exe<br />
+<a href='https://github.com/lintalist/lintalist/releases'><b>Latest release</b></a> (917 kb)<br />Simply unpack and run lintalist.ahk or lintalist.exe<br />
 </p>
 
 <span class='tip' style="margin-bottom:10px;"><img src="img/usb.png" width=50 align=right title="USB image by Alessandro Rei (GNU/GPL) - http://findicons.com/icon/255067/usb?id=256158">Lintalist is a <b>portable application</b>. It stores all settings and bundles in the folder the program resides in. <a href="#portable">More...</a>
@@ -278,7 +283,7 @@ When active all search modes will use a Regular Expression (Regular and Fuzzy)
 (De)Activate the setting via the <i>L<u>v</u></i> button in the Search GUI (<kbd>Alt</kbd>+<kbd>v</kbd>) or the SearchLetterVariations setting in the Configuration menu.
 More information in the comments of 'include\LetterVariations.ahk'
 
-<h3 id='Omni'><a href='#Omni' class='headline'><em>Omni</em>search (search all bundles)</a></h3>
+<h3 id='Omni'><a href='#Omni' class='headline'><em>Omni</em>Search (search all bundles)</a></h3>
 
 By default you are only searching in the loaded bundles, you can however search in all bundles using the following methods:
 
@@ -307,14 +312,14 @@ Note: while using option 2 &amp; 3 the text "(All)" will be added to the statusb
 
 <h3 id='ColumnSearch'><a href='#ColumnSearch' class='headline'><em>Column</em>Search (search specific part of a snippet)</a></h3>
 
-By default Lintalist tries to find matches in <em>part1, part2</em>, and <em>shorthand</em> of a snippet while searching.
+By default Lintalist tries to find matches in <em>part1, part2</em>, and <em>shorthand</em> of a snippet <a href='#SearchSnippets'>while searching</a>.
 
 When you start your query with a number (1 to 5), followed by a predefined character (<b style='color:#c00;'></b>&lt;</b> by default, ColumnSearchDelimiter in the settings) Lintalist will search in a specific part of a snippet. To disable this feature erase the ColumnSearchDelimiter in the settings.
 
 Query: state -> will find "state" in part1, part2, and shorthand of a snippet
-Query: 1<b style='color:#c00;'>&lt;</b>state -> will find "state" in <b>only</b> if it it is <b>part1</b> of a snippet
+Query: 1<b style='color:#c00;'>&lt;</b>state -> will find "state" <b>only</b> if it is found in <b>part1</b> of a snippet
 
-1 to 5 refers to the <a href="#SnippetsBundles">"part" or "section"</a></a> of a snippet:
+1 to 5 refers to the <a href="#SnippetsBundles">"part" or "section"</a> of a snippet:
 
 1&lt; Part1
 2&lt; Part2
