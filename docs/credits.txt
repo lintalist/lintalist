@@ -23,7 +23,7 @@ IniSettingsEditor_v6.ahk
 http://www.autohotkey.com/forum/viewtopic.php?p=69534#69534
 by Rajat, mod by toralf, further mod by me
 
-Delimiter Seperated Values by DerRaphael [in CSV.ahk]
+Delimiter Separated Values by DerRaphael [in CSV.ahk]
 http://www.autohotkey.com/forum/post-203280.html#203280
 
 ClipSet() is a mod of virclip by Learning one 
@@ -34,7 +34,7 @@ License: public domain
 http://www.autohotkey.com/forum/topic3010.html
 
 WinClip is a clipboard manipulation class which allow you to do a bit more than the common ahk
-clipboard can intended for AHK_L unicode x32/x64
+clipboard can intended for AHK_L Unicode x32/x64
 Author:        Deo - http://www.apathysoftworks.com/ & http://www.autohotkey.com/board/user/11644-deo/
 Download:      http://www.apathysoftworks.com/ahk/WinClip.zip
 Documentation: http://www.apathysoftworks.com/ahk/index.html
@@ -44,7 +44,7 @@ Forum:         http://www.autohotkey.com/board/topic/74670-class-winclip-direct-
 Markdown2HTML() + StrStartsWith() functions 
 from GenDocs v3.0-alpha004 - Author: fincs
 Source: https://github.com/fincs/GenDocs
-+ modifactions for table and HTML block support (see Markdown2HTML.ahk)
++ modifications for table and HTML block support (see Markdown2HTML.ahk)
 
 AutoHotkey wrapper for Windows native Zip feature by Coco
 http://autohotkey.com/boards/viewtopic.php?f=6&t=3892

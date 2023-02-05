@@ -4,11 +4,11 @@ Name            : Lintalist
 Author          : Lintalist
 Purpose         : Searchable interactive lists to copy & paste text, run scripts,
                   using easily exchangeable bundles
-Version         : 1.9.18
+Version         : 1.9.19
 Code            : https://github.com/lintalist/
 Website         : http://lintalist.github.io/
 AutoHotkey Forum: https://autohotkey.com/boards/viewtopic.php?f=6&t=3378
-License         : Copyright (c) 2009-2022 Lintalist
+License         : Copyright (c) 2009-2023 Lintalist
 
 This program is free software; you can redistribute it and/or modify it under the
 terms of the GNU General Public License as published by the Free Software Foundation;
@@ -42,7 +42,7 @@ PluginMultiCaret:=0 ; TODOMC
 
 ; Title + Version are included in Title and used in #IfWinActive hotkeys and WinActivate
 Title=Lintalist
-Version=1.9.18
+Version=1.9.19
 
 ; Gosub, ReadPluginSettings
 
@@ -898,7 +898,8 @@ If (Script = "") or (ScriptPaused = 1) ; script is empty so we need to paste Tex
 		}
 	 If (Text1 = "") and (Text2 <> "")   ; if Text1 is empty check if Text2 has content so we can paste that
 		Clip:=Text2
-	 ClipSet("s",1,SendMethod,Clipboard) ; store in clip1
+	 If (clipboard <> typed)
+		 ClipSet("s",1,SendMethod,Clipboard) ; store in clip1
 	 ClearClipboard()
 	 ; process formatted text: HTML, Markdown, RTF and Image
 	 ; RTF and Image are processed here, MD and HTML just before pasting to allow for nesting snippets using [[snippet=]]
@@ -908,7 +909,7 @@ If (Script = "") or (ScriptPaused = 1) ; script is empty so we need to paste Tex
 		{
 		 WinClip.Clear()
 		 formatted:=1
-		 if InStr(Clip,"[[rtf=")
+		 If InStr(Clip,"[[rtf=")
 			{
 			 RegExMatch(Clip, "iU)\[\[rtf=([^[]*)\]\]", ClipQ, 1)
 			 FileRead,Clip,%ClipQ1%
@@ -952,11 +953,11 @@ If (Script = "") or (ScriptPaused = 1) ; script is empty so we need to paste Tex
 			 ClipSet("ea",1,SendMethod)
 			 Return
 			}
-		 if (formatMD = 1) or (formatHTML = 1)
+		 If (formatMD = 1) or (formatHTML = 1)
 			{
 			 StringReplace,Clip,Clip,[[md]],,All
 			 StringReplace,Clip,Clip,[[html]],,All
-			 if (formatMD = 1)
+			 If (formatMD = 1)
 				Clip:=Markdown2HTML(Clip)
 			 Clip:=FixURI(Clip,"html",A_ScriptDir)
 			 WinClip.SetHTML(Clip)
@@ -1060,15 +1061,13 @@ If (Script = "") or (ScriptPaused = 1) ; script is empty so we need to paste Tex
 Else If (Script <> "") and (ScriptPaused = 0) ; we run script by saving it to tmp file and running it
 	{
 
-	 FileDelete, %TmpDir%\tmpScript.ahk
-	 StringReplace, Script, Script, LLInit(), %LLInit%, All
-
 	 Loop {
 		 If (InStr(Script, "[[Var=") = 0)
 			break
 		 RegExMatch(Script, "iU)\[\[Var=([^[]*)\]\]", ClipQ, 1)
 		 StringReplace, Script, Script, [[Var=%ClipQ1%]], % LocalVar_%ClipQ1%, All ; %
 		}
+
 	 Loop, 2 ; check for plugins llpart1 and llpart2
 		{
 		 If InStr(Script,"[[llpart" A_Index "]]")
@@ -1091,6 +1090,12 @@ Else If (Script <> "") and (ScriptPaused = 0) ; we run script by saving it to tm
 			 BackUp:=0
 			}
 		}
+	 
+	 FileDelete, %TmpDir%\tmpScript.ahk
+	 StringReplace, Script, Script, LLInit(), %LLInit%, All
+
+	 StringReplace, Script, Script, [[LLShortHand]], LLShortHand:="%Typed%"`n, All
+
 	 FileAppend, % Script, %TmpDir%\tmpScript.ahk, UTF-8 ; %
 	 ;FileCopy, %TmpDir%\tmpScript.ahk, saved.ahk , 1 ; debug
 	 GUI, 1:Destroy
@@ -2022,7 +2027,9 @@ Else ; only one hit e.g. unique shortcut
 	{
 	 Paste:=HitKeyHistory
 	 SaveStat:=Paste
-	 PastText1=1
+	 PastText1=1 ; #169 #236
+	 If QuickSearchHotkeyPart2
+		PastText1=0
 	 If (ViaShorthand = 1) and (Paste <> "")
 		{
 		 Send, {Blind}{BS %back%}

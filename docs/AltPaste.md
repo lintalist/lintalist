@@ -19,7 +19,7 @@ or modify the entry to your preference(s).
 Use the name of the program executable as [section] name, followed by one or more of these four keys: 
 ( Use AHK Syntax: ^=ctrl +=shift !=alt )
 
-- Copy=        alternative copy shortcut  ^{Ins} for console applications[1]
+- Copy=        alternative copy  shortcut ^{Ins} for console applications[1]
 - Cut=         alternative cut   shortcut +{Del} for console applications 
 - Paste=       alternative paste shortcut +{Ins} for console applications
 - QuickSearch= alternative shortcut to Select and Cut Word to the Left of the Caret position

@@ -1,3 +1,12 @@
+Lintalist v1.9.19
+
+### v1.9.19
+
+* Fix: QuickSearchHotkey2 didn't work https://github.com/lintalist/lintalist/issues/236 https://github.com/lintalist/lintalist/issues/169
+* Fix: QuickSearchHotkey/QuickSearchHotkey2 did not restore clipboard https://github.com/lintalist/lintalist/issues/236
+* LLInit() in a Local Var + Script snippet combination https://github.com/lintalist/lintalist/issues/238#issuecomment-1404014721
+* New: [[LLShorthand]] available in scripts similar to [[LLPart1]] and [[LPart2]] https://github.com/lintalist/lintalist/issues/237
+
 ### v1.9.18
 
 * Fix: Column Search should now reset properly after a search, so normal search works correctly again https://github.com/lintalist/lintalist/issues/232
