@@ -1,4 +1,6 @@
-Lintalist v1.9.19
+### v1.9.20
+
+* * Fix: QuickSearchHotkey/QuickSearchHotkey2 did not restore clipboard with a Script snippet https://github.com/lintalist/lintalist/issues/236#issuecomment-1421500855
 
 ### v1.9.19
 

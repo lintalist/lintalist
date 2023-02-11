@@ -4,7 +4,7 @@ Name            : Lintalist
 Author          : Lintalist
 Purpose         : Searchable interactive lists to copy & paste text, run scripts,
                   using easily exchangeable bundles
-Version         : 1.9.19
+Version         : 1.9.20
 Code            : https://github.com/lintalist/
 Website         : http://lintalist.github.io/
 AutoHotkey Forum: https://autohotkey.com/boards/viewtopic.php?f=6&t=3378
@@ -42,7 +42,7 @@ PluginMultiCaret:=0 ; TODOMC
 
 ; Title + Version are included in Title and used in #IfWinActive hotkeys and WinActivate
 Title=Lintalist
-Version=1.9.19
+Version=1.9.20
 
 ; Gosub, ReadPluginSettings
 
@@ -1104,6 +1104,8 @@ Else If (Script <> "") and (ScriptPaused = 0) ; we run script by saving it to tm
 	 Script=
 	 If Statistics
 		Stats("Scripts")
+	 If (clipboard = typed) ; indicates we haven't changed the clipboard in the script so try to restore it #236
+		clipboard:=ClipSet("g",1)
 	}
 
 If Statistics
