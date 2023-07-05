@@ -643,7 +643,7 @@ If !(EditMode = "MoveSnippet") ; added 11/12/2018 fix movesnippet
 		{
 		 MsgBox, 48, Error, ERROR: Can not append snippet to Bundle (No file name available)`nBundle: %File%`n`nDo you wish to Reload?
 		 IfMsgBox, Yes
-		 	Reload
+		 	Gosub, RunReload
 		}
 	Else
 		{	
@@ -697,7 +697,8 @@ Patterns:
 	 Gui, 71:Destroy
 	 Gui, 1:Destroy
 	 ;Menu, File, DeleteAll
-	 Reload ; lazy solution - it is just easier for now
+	 ;Reload ; lazy solution - it is just easier for now
+	 Gosub, RunReload
 	}
 	 
 ; Update shortcutlist and shorthandlist here
@@ -744,7 +745,8 @@ If (OldKey <> HKey)
 	{
 	 MsgBox,52, Restart, It seems you changed the hotkey, it is advised to restart Lintalist.`nOK to Restart?
 	 IfMsgBox, Yes
-	 	Reload
+	 	Gosub, RunReload
+	 	; Reload
 	}
 	
 WinActivate, %AppWindow%

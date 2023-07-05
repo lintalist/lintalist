@@ -1,6 +1,13 @@
+### v1.9.21
+
+* New: Toggle timer to StartSearchHotkey activation + option to disable to toggle view mode (wide/narrow)   
+  see settings StartSearchHotkeyTimeOut and StartSearchHotkeyToggleView https://github.com/lintalist/lintalist/issues/247  
+* New: ShorthandPart2 setting to paste Part2 of snippet, simular to QuickSearchHotkey2 https://github.com/lintalist/lintalist/discussions/242
+* Fix: Shorthand not being saved when reloading with default bundle only https://github.com/lintalist/lintalist/issues/246
+
 ### v1.9.20
 
-* * Fix: QuickSearchHotkey/QuickSearchHotkey2 did not restore clipboard with a Script snippet https://github.com/lintalist/lintalist/issues/236#issuecomment-1421500855
+* Fix: QuickSearchHotkey/QuickSearchHotkey2 did not restore clipboard with a Script snippet https://github.com/lintalist/lintalist/issues/236#issuecomment-1421500855
 
 ### v1.9.19
 

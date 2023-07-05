@@ -4,7 +4,7 @@ Name            : Lintalist
 Author          : Lintalist
 Purpose         : Searchable interactive lists to copy & paste text, run scripts,
                   using easily exchangeable bundles
-Version         : 1.9.20
+Version         : 1.9.21
 Code            : https://github.com/lintalist/
 Website         : http://lintalist.github.io/
 AutoHotkey Forum: https://autohotkey.com/boards/viewtopic.php?f=6&t=3378
@@ -42,7 +42,7 @@ PluginMultiCaret:=0 ; TODOMC
 
 ; Title + Version are included in Title and used in #IfWinActive hotkeys and WinActivate
 Title=Lintalist
-Version=1.9.20
+Version=1.9.21
 
 ; Gosub, ReadPluginSettings
 
@@ -367,6 +367,13 @@ Return
 GUIStartOmni:
 OmniSearch:=1
 GuiStart: ; build GUI
+StartSearchHotkeyTimeOutStart:=A_TickCount
+Keywait % A_ThisHotkey
+If ((A_TickCount - StartSearchHotkeyTimeOutStart) < StartSearchHotkeyTimeOut)
+	{
+	 StartSearchHotkeyTimeOutStart:=""
+	 Return
+	}
 If Statistics
 	 Stats("SearchGui")
 OmniSearchText:=""
@@ -384,7 +391,10 @@ MenuToggleView:=0
 If !WinActive(AppWindow)
 	GetActiveWindowStats()
 Else
-	Gosub, ToggleView
+	{
+	 If StartSearchHotkeyToggleView
+	 	Gosub, ToggleView
+	}
 
 Gui, 1:Destroy ; just to be sure
 	
@@ -1115,7 +1125,7 @@ If (OnPaste = 1)
 	Gosub, SaveSettings
 If Statistics and (OmniSearch or OmniSearchText)
 	Stats("OmniSearch")
-OmniSearch:=0,OmniSearchText:="",Typed:="",SnippetPasteMethod:="",SelItem:="",ViaShorthand:=0,ViaShortCut:=0,QuickSearchHotkeyPart2:=0
+OmniSearch:=0,OmniSearchText:="",Typed:="",SnippetPasteMethod:="",SelItem:="",ViaShorthand:=0,ViaShortCut:=0,QuickSearchHotkeyPart2:=0,ShorthandPastePart2:=0
  ; ,ViaShorthand:="",ViaText:=""
 ClipSet("ea",1,SendMethod)
 Return
@@ -2030,11 +2040,13 @@ Else ; only one hit e.g. unique shortcut
 	 Paste:=HitKeyHistory
 	 SaveStat:=Paste
 	 PastText1=1 ; #169 #236
-	 If QuickSearchHotkeyPart2
+	 If QuickSearchHotkeyPart2 or ShorthandPastePart2
 		PastText1=0
 	 If (ViaShorthand = 1) and (Paste <> "")
 		{
 		 Send, {Blind}{BS %back%}
+		 If ShorthandPastePart2 ; additional character was typed
+		 	Send, {Blind}{BS}
 		}
 	 else
 	 	ViaShortCut:=1 ; so we can actually check we're using a shortcut, for combination with QueryDelimiter
@@ -2637,7 +2649,7 @@ CheckCursorPos(Clip)
 CheckTyped(TypedChar,EndKey)
 	{
 	 Global
-	 expandit:=0
+	 expandit:=0,PasteShorthandPart2:=0
 	 
 	 if TypedChar in %TriggerKeysSource%
 		expandit:=1
@@ -2679,7 +2691,11 @@ CheckTyped(TypedChar,EndKey)
 			{
 			 If (Typed = "")
 				Return
-
+			 If (SubStr(Typed,0) = ShorthandPart2)
+			 	{
+			 	 StringTrimRight, Typed, Typed, 1
+			 	 ShorthandPastePart2:=1
+			 	}
 			 HitKeyHistory:=CheckHitList("Shorthand", Typed, Load)
 
 			 If EndKey in %TriggerKeysDead%
@@ -3075,6 +3091,10 @@ AHK_NOTIFYICON(wParam, lParam)
 	}
 
 RunReload:
+
+if !cl_ReadOnly ; if readonly do not update bundles.
+	SaveUpdatedBundles()
+
 Gosub, RunFile
 Run, %A_AhkPath% "include\Restart.ahk"
 ExitApp
