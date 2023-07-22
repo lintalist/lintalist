@@ -1,6 +1,6 @@
 ﻿; LintaList Include
 ; Purpose: Bundle & Snippet Editor
-; Version: 1.6
+; Version: 1.7
 ;
 ; Hotkeys used in Search GUI to start Bundle & Snippet Editor
 ; F4  = Edit snippet
@@ -10,6 +10,7 @@
 ; F8  = Delete snippet
 ; 
 ; History: 
+; v1.7 - "Quote paths" in Edit in Editor 
 ; v1.6 - properly updating Col2, Col3, and Col4 (first attempt), check for ASCII 5 & 7
 ; v1.5 - paste html
 ; v1.4 - adding themes
@@ -836,9 +837,9 @@ EditControlInEditor(ControlID)
 	 FileDelete, %TmpDir%\__tmplintalistedit.txt
 	 FileAppend, %ToFile%, %TmpDir%\__tmplintalistedit.txt, UTF-8
 	 If (SnippetEditor = "")
-		Run, %TmpDir%\__tmplintalistedit.txt
+		Run, "%TmpDir%\__tmplintalistedit.txt"
 	 else
-		Run, %SnippetEditor% %TmpDir%\__tmplintalistedit.txt
+		Run, "%SnippetEditor%" "%TmpDir%\__tmplintalistedit.txt"
 	 WinWait, __tmplintalistedit
 	 SetTimer, CheckEdit, 500, On
 	 Return

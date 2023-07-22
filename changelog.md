@@ -1,8 +1,13 @@
+### v1.9.22
+
+* Fix: StartSearchHotkeyTimeOut should now work (better) with both StartSearchHotkey and StartOmniSearchHotkey, incl. modifier keys https://github.com/lintalist/lintalist/issues/247#issuecomment-1627195701
+* Fix: Quote file paths in "Edit in Editor" (Snippet Editor) avoiding errors with spaces in paths https://github.com/lintalist/lintalist/issues/249
+
 ### v1.9.21
 
 * New: Toggle timer to StartSearchHotkey activation + option to disable to toggle view mode (wide/narrow)   
   see settings StartSearchHotkeyTimeOut and StartSearchHotkeyToggleView https://github.com/lintalist/lintalist/issues/247  
-* New: ShorthandPart2 setting to paste Part2 of snippet, simular to QuickSearchHotkey2 https://github.com/lintalist/lintalist/discussions/242
+* New: ShorthandPart2 setting to paste Part2 of snippet, similar to QuickSearchHotkey2 https://github.com/lintalist/lintalist/discussions/242
 * Fix: Shorthand not being saved when reloading with default bundle only https://github.com/lintalist/lintalist/issues/246
 
 ### v1.9.20
@@ -308,7 +313,7 @@
   Windows media or user files)  
   ht @starstuff - https://github.com/lintalist/lintalist/issues/45  
 * New: SearchLetterVariations setting -  Allow for variations of letters in search query
-  Searching for 'e' is translated to searching for 'e���...' etc  
+  Searching for 'e' is translated to searching for 'eéèê...' etc  
   You can toggle this setting via the Search GUI - https://github.com/lintalist/lintalist/issues/33  
   Note: Consequence for Fuzzy search is that this now always using a RegEx which could be slower.
 * New: added help menu with Help and About options and added About to tray menu - https://github.com/lintalist/lintalist/issues/47  

@@ -189,6 +189,22 @@ em.sel {
 	color: #c00;
 	}
 
+.setting::before {
+	content: "\002699  ";
+	color:#1e90ff;
+  }
+
+.setting {
+	color: #000;
+	background-color:#f2f3f4;
+	padding: 0 0.5em;
+	margin:0.1em;
+	border-radius: 4px;
+	border: 1px dashed #666;
+	font-weight:bold;
+  display: inline-block;
+  }
+
 a:visited {color: #000; }
 a:hover {color: #c00; }
 
@@ -210,4 +226,4 @@ a.headline, a.headline:link {
 a.headline:hover::after {
     content: " \0000B6";
     color: #888;
-}
+  }

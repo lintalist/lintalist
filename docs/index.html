@@ -20,7 +20,7 @@
 <br /><br />
 <span style='font-size:.8em;'><b>Lintalist</b> is <b>open source</b> and developed in <a href='https://autohotkey.com/'>AutoHotkey</a>, an easy to learn scripting language for Windows.
 [WinXP(sp3)/Vista/7/8/10]<br /></span>
-<span class='date' style='float:right;display:inline;margin-top:0px;'>doc rev. 20230205</span></p>
+<span class='date' style='float:right;display:inline;margin-top:0px;'>doc rev. 20230722</span></p>
 </div>
 
 <div class='column'>
@@ -86,17 +86,16 @@
 <li><a href='http://www.portablefreeware.com/index.php?id=2686'>Portablefreeware.com</a></li>
 <li><a href='http://www.donationcoder.com/forum/index.php?topic=41475.0'>Donationcoder.com</a></li>
 <li><a href='http://alternativeto.net/software/lintalist/'>AlternativeTo</a></li>
-<li><a href='https://twitter.com/lintalist'>@lintalist</a></li>
 </ul>
 
 </div>
 
 <div class='column'>
-<p><b>Download Lintalist <em>1.9.21</em></b>
+<p><b>Download Lintalist <em>1.9.22</em></b>
 <p>
 <a href='https://github.com/lintalist/lintalist/releases'><img src='img/lintalist65x65.gif' alt='Download Lintalist' width='65' align='left' border='0' style='margin-right: 5px;' /></a>
 Download (incl. source):<br />
-<a href='https://github.com/lintalist/lintalist/releases'><b>Latest release</b></a> (919 kb)<br />Simply unpack and run lintalist.ahk or lintalist.exe<br />
+<a href='https://github.com/lintalist/lintalist/releases'><b>Latest release</b></a> (920 kb)<br />Simply unpack and run lintalist.ahk or lintalist.exe<br />
 </p>
 
 <span class='tip' style="margin-bottom:10px;"><img src="img/usb.png" width=50 align=right title="USB image by Alessandro Rei (GNU/GPL) - http://findicons.com/icon/255067/usb?id=256158">Lintalist is a <b>portable application</b>. It stores all settings and bundles in the folder the program resides in. <a href="#portable">More...</a>
@@ -188,7 +187,7 @@ Installing Lintalist is easy, just download the ZIP file and unpack it in a fold
 If you are already an AutoHotkey user and have it installed, it is recommended to run <b>Lintalist.ahk</b>, this will ensure you will be running Lintalist with your preferred version of AutoHotkey. If you don't have AutoHotkey installed you can start <b>Lintalist.exe</b>.
 
 <b>Notes:</b>
-- Lintalist.exe: A renamed AutoHotkey.exe (v1.1.37.00 32-bit Unicode, See https://autohotkey.com/ and/or https://autohotkey.com/download/)
+- Lintalist.exe: A renamed AutoHotkey.exe (v1.1.37.01 32/64-bit Unicode, See https://autohotkey.com/ and/or https://autohotkey.com/download/)
 - Lintalist.ahk: The actual (main) source code of the program (see https://github.com/lintalist/lintalist)
 
 <h2 id='Searching'><a href='#Searching' class='headline'>Normal use: Starting Lintalist and searching for a Snippet</a></h2>
@@ -206,7 +205,7 @@ Based on the active program title, one or more bundles will be loaded into the s
 
 <span class='tip'>If you press the same hotkey again while the Lintalist Search window is active it will toggle between the Wide &amp; Narrow view. You can set the width and height of both views via the configuration menu.</span>
 
-While you type, the number of results will decrease (called incremental search or quick filter). A small icon indicates if it is purely a text snippet <img src='img/texticon.gif' alt='Lintalist text snippet' style='display:inline;margin-bottom:-3px;' /> or if it actually will run a script <img src='img/scripticon.gif' alt='Lintalist script snippet' style='display:inline;margin-bottom:-2px;' />.  You can turn the icons on and off via the configuration menu (ShowIcons setting), you can also influence the order of the results by setting various sorting options (see SortByUsage and ColumnSort settings).
+While you type, the number of results will decrease (called incremental search or quick filter). A small icon indicates if it is purely a text snippet <img src='img/texticon.gif' alt='Lintalist text snippet' style='display:inline;margin-bottom:-3px;' /> or if it actually will run a script <img src='img/scripticon.gif' alt='Lintalist script snippet' style='display:inline;margin-bottom:-2px;' />.  You can turn the icons on and off via the configuration menu (<span class='setting'>ShowIcons</span> setting), you can also influence the order of the results by setting various sorting options (see <span class='setting'>SortByUsage</span> and <span class='setting'>ColumnSort</span> settings).
 
 After pressing <kbd>ENTER</kbd> on a selected entry from the results list, by default the text (Part1) is pasted in the active program (note the explanation above). <kbd>SHIFT</kbd>+<kbd>ENTER</kbd> and <kbd>ENTER</kbd> will use the first item in the results list unless you have selected another item with the arrow keys. Depending on the snippet either a text is pasted OR a script is run (note explanation above).
 [v1.9.7+] If you just want to copy the snippet to the clipboard and not paste it press <kbd>Alt</kbd>+<kbd>ENTER</kbd> for Part 1 and <kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>ENTER</kbd> for Part 2.
@@ -214,7 +213,7 @@ After pressing <kbd>ENTER</kbd> on a selected entry from the results list, by de
 You can also use the <kbd>Up</kbd> and <kbd>Down</kbd> <!--, <kbd>Page Up</kbd> and <kbd>Page Down</kbd> -->keys to navigate through the list. You can select a different bundle or load all bundles via the Bundle menu. If you choose a bundle from the bundle menu (<kbd>Alt</kbd>+<kbd>b</kbd>), that bundle will be <b style='color:#c00;'>locked</b> (toolbar icon: <img src='img/locked.ico' width='18' height='18' alt='locked icon' style="vertical-align:middle" />) and always remain active until you unlock it (<kbd>Alt</kbd>+<kbd>l</kbd>, letter l).
 If enabled you can use <kbd>Alt</kbd>+<kbd>1..0</kbd> for the first ten search results. [v1.9.9]+
 
-<span class='tip'>What happens when you (double) click on an entry in the list is determined by a setting in the configuration menu. (SingleClickSends and DoubleClickSends setting)</span>
+<span class='tip'>What happens when you (double) click on an entry in the list is determined by a setting in the configuration menu. (<span class='setting'>SingleClickSends</span> and <span class='setting'>DoubleClickSends</span> setting)</span>
 
 <b id='default-bundle'><a href='#SearchOptions' class='headline'>Default bundle</a></b>: there is also a default bundle which is always loaded - unless you lock a specific bundle - that way you always have your generic snippets available in every program. 
 
@@ -280,7 +279,7 @@ Example: The case-insensitive RegEx 'se\w*g' it is actually using the following 
 
 Sometimes accented letters are part of the text you are searching for. These can be difficult or slow to type. By adding the variations of these letters to the search string you can search for 'cafe' but still find 'caf&eacute;'. So the 'e' in the query will be translated to searching for 'e&#xE9;&#xE8;&#xEA;&#x1E19;&#x11B;&#x115;&#x1EBD;&#x1E1B;&#x1EBB;&#x117;&#xEB;&#x113;&#x229;&#x119;&#x1D92;&#x247;&#x205;&#x1EBF;&#x1EC1;&#x1EC5;&#x1EC3;&#x1E1D;&#x1E17;&#x1E15;&#x207;&#x1EB9;&#x1EC7;&#xE6;&#x1FD;&#x1E3;&#x153;&#x1D6B;'.
 When active all search modes will use a Regular Expression (Regular and Fuzzy)
-(De)Activate the setting via the <i>L<u>v</u></i> button in the Search GUI (<kbd>Alt</kbd>+<kbd>v</kbd>) or the SearchLetterVariations setting in the Configuration menu.
+(De)Activate the setting via the <i>L<u>v</u></i> button in the Search GUI (<kbd>Alt</kbd>+<kbd>v</kbd>) or the <span class='setting'>SearchLetterVariations</span> setting in the Configuration menu.
 More information in the comments of 'include\LetterVariations.ahk'
 
 <h3 id='Omni'><a href='#Omni' class='headline'><em>Omni</em>Search (search all bundles)</a></h3>
@@ -306,7 +305,7 @@ Query: <b style='color:#c00;'>@</b>state -> will find "state" in all bundles
 <b>3. Omnisearch shortcuts</b>
 
 - While search GUI is active: press <kbd>F2</kbd> to toggle the Omnisearch.
-- If you press <kbd>Ctrl</kbd>+<kbd>Capslock</kbd> the search GUI is opened in Omnisearch mode (tip: use <kbd>F2</kbd> to toggle). You can define the hotkey in the settings (StartOmniSearchHotkey)
+- If you press <kbd>Ctrl</kbd>+<kbd>Capslock</kbd> the search GUI is opened in Omnisearch mode (tip: use <kbd>F2</kbd> to toggle). You can define the hotkey in the settings - <span class='setting'>StartOmniSearchHotkey</span>
 
 Note: while using option 2 &amp; 3 the text "(All)" will be added to the statusbar (bottom right) to indicate you are using Omnisearch when the results are updated.
 
@@ -314,7 +313,7 @@ Note: while using option 2 &amp; 3 the text "(All)" will be added to the statusb
 
 By default Lintalist tries to find matches in <em>part1, part2</em>, and <em>shorthand</em> of a snippet <a href='#SearchSnippets'>while searching</a>.
 
-When you start your query with a number (1 to 5), followed by a predefined character (<b style='color:#c00;'></b>&lt;</b> by default, ColumnSearchDelimiter in the settings) Lintalist will search in a specific part of a snippet. To disable this feature erase the ColumnSearchDelimiter in the settings.
+When you start your query with a number (1 to 5), followed by a predefined character (<b style='color:#c00;'></b>&lt;</b> by default, <span class='setting'>ColumnSearchDelimiter</span> in the settings) Lintalist will search in a specific part of a snippet. To disable this feature erase the <span class='setting'>ColumnSearchDelimiter</span> in the settings.
 
 Query: state -> will find "state" in part1, part2, and shorthand of a snippet
 Query: 1<b style='color:#c00;'>&lt;</b>state -> will find "state" <b>only</b> if it is found in <b>part1</b> of a snippet
@@ -364,8 +363,8 @@ Shortcuts while search window is not active
 </tr>
 </thead>
 <tbody>
-<tr><td><b><kbd>Capslock</kbd>        </b></td><td>Start Searching (Open Lintalist search window, change via configuration, <em>StartSearchHotkey</em> setting). If already active you can toggle between Wide and Narrow view.
-As of v1.9.10+ there is a setting to also use this key to Hide the search window: <em>StartSearchHotkeyToggle</em>.</td></tr>
+<tr><td><b><kbd>Capslock</kbd>        </b></td><td>Start Searching (Open Lintalist search window, change via configuration, <span class='setting'>StartSearchHotkey</span> setting). If already active you can toggle between Wide and Narrow view.
+As of v1.9.10+ there is a setting to also use this key to Hide the search window: <span class='setting'>StartSearchHotkeyToggle</span>.</td></tr>
 <tr><td><b><kbd>Ctrl</kbd>+<kbd>Capslock</kbd></b></td><td>Start Searching in <a href="#Omni">Omnisearch</a> mode (Open Lintalist searching window, change via config).</td></tr>
 <tr><td><b><kbd>Winkey</kbd>+<kbd>z</kbd></b></td><td>Start <a href="#QuickSearchHotkey">Quick search</a></td></tr>
 <tr><td><b><kbd>Ctrl</kbd>+<kbd>Winkey</kbd>+<kbd>q</kbd></b></td><td>Quit Lintalist</td></tr>
@@ -405,7 +404,7 @@ As of v1.9.10+ there is a setting to also use this key to Hide the search window
 
 The sort will work even the column is not visible - for example if you do not show the Bundle name in the search results (see DisplayBundle) you can still sort it.</td></tr>
 <tr><td><b><kbd>Alt</kbd>+<kbd>1..0</kbd></b></td><td>You can use <kbd>Alt</kbd>+<kbd>1</kbd> to <kbd>Alt</kbd>+<kbd>0</kbd> for the first ten search results. The visual cues are disabled when using ColumnSort other than "NoSort"
-These can be disabled via the <b>ShortcutSearchGui</b> setting (Configuration).</td></tr>
+These can be disabled via the <span class='setting'>ShortcutSearchGui</span> setting (Configuration).</td></tr>
 <tr><td><b><kbd>Ctrl</kbd>+<kbd>t</kbd></b></td><td>Toggle Search Window on top on or off. (per search instance)</td></tr>
 <tr><td><b><kbd>Ctrl</kbd>+<kbd>f</kbd></b></td><td>Set focus on the search box.</td></tr>
 <tr><td><b><kbd>Tab</kbd></b></td><td>Set focus on the search results (listview) - useful for screenreaders such as NVDA.</td></tr>
@@ -414,7 +413,7 @@ These can be disabled via the <b>ShortcutSearchGui</b> setting (Configuration).<
 
 *1 - If Scripts are Paused the script - if any - will not run and text will be sent
    - The action for a single- or doubleclick with the left mouse button can be defined in the Configuration menu
-     (SingleClickSends and DoubleClickSends)
+     (<span class='setting'>SingleClickSends</span> and <span class='setting'>DoubleClickSends</span>)
 
 *2 This can be used get the selected snippet into the clipboard using other methods as well, see plugins\readme-howto.txt, "Extending Snippet processing" section 
 
@@ -479,7 +478,7 @@ More options may be added in future versions such as special hotkeys.</td></tr>
   5 = Edit snippet
   6 = New snippet
 
-  <b>SingleClickSends</b> as of v1.4 you can also use a single click for the same actions above.
+  <span class='setting'>SingleClickSends</span> as of v1.4 you can also use a single click for the same actions above.
   </td></tr>
 <tr id='DefaultBundle'><td><b><a href='#DefaultBundle' class='headline'>DefaultBundle</a></b></td><td>File name e.g. default.txt
   If no matching bundle can be found based on the window title load this bundle.</td></tr>
@@ -495,9 +494,9 @@ More options may be added in future versions such as special hotkeys.</td></tr>
   between Wide &amp; Narrow view (you can set the width and height of both views via the
   configuration menu)
 
-  Note about TeamViewer: the "send key combinations" option must be enabled (checked) and you may need to experiment with a short/key combination that works for you (the default QuickSearchHotkey shortcut does seem to work out of the box for example, while Capslock may not). <a href='https://github.com/lintalist/lintalist/issues/104'>Discussion @ GH - #104</a>
+  Note about <b>TeamViewer</b>: the "send key combinations" option must be enabled (checked) and you may need to experiment with a short/key combination that works for you (the default QuickSearchHotkey shortcut does seem to work out of the box for example, while Capslock may not). <a href='https://github.com/lintalist/lintalist/issues/104'>Discussion @ GH - #104</a>
 
-  As of v1.9.10+ see the StartSearchHotkeyToggle setting to Show/Hide the Search Window using the same shortcut.</td></tr>
+  As of v1.9.10+ see the <span class='setting'>StartSearchHotkeyToggle</span> setting to Show/Hide the Search Window using the same shortcut.</td></tr>
 <tr id='QuickSearchHotkey'><td><b><a href='#QuickSearchHotkey' class='headline'>QuickSearchHotkey</a></b></td><td>Hotkey used to start quick search: It will cut (ctrl-x) the word to the left, open
   Lintalist and starts a search. If only one match is found it simply pastes or runs 
   the result directly.
@@ -531,17 +530,17 @@ Edit settings.ini or choose configuration in the tray menu for more options.
 <span class='small'>Settings</span>
 <img src='img/lintalist-config.png' alt='Lintalist settings' border='0'  style='max-width:100%;' />
 
-<h3 id='Configuration-MultiCaret'><a href='#Configuration-MultiCaret' class='headline'>MultiCaret</a></h3>
+<h3 id='Configuration-MultiCaret'><a href='#Configuration-MultiCaret' class='headline'>Multi<em>Caret</em></a></h3>
 
 You can define multiple caret locations in your snippet, see <a href='#caret-plugin'>the caret plugin</a> for a brief introduction.
 Detailed information on how to setup <b>MultiCaret.ini</b> in <a href='MultiCaret.md'>docs/MultiCaret.md</a>.
 
-<h3 id='Configuration-AltPaste'><a href='#Configuration-AltPaste' class='headline'>AltPaste</a></h3>
+<h3 id='Configuration-AltPaste'><a href='#Configuration-AltPaste' class='headline'>Alt<em>Paste</em></a></h3>
 
 By default Lintalist uses <kbd>ctrl</kbd>+<kbd>c</kbd>, <kbd>ctrl</kbd>+<kbd>v</kbd> to copy and paste.
 If you need to use other shortcuts in specific programs (console or graphics applications for example) you can define these in <b>AltPaste.ini</b>, see <a href='AltPaste.md'>docs/AltPaste.md</a> for more information.
 
-<h3 id='Configuration-Linefeed'><a href='#Configuration-Linefeed' class='headline'>Linefeed</a></h3>
+<h3 id='Configuration-Linefeed'><a href='#Configuration-Linefeed' class='headline'>Line<em>feed</em></a></h3>
 
 Some programs require CRLF to be used for pasting a new line into the document/control (notepad.exe for example) - otherwise pasting a snippet will have its new lines (enters, returns) 'removed' or so it seems:
 <blockquote class='boxed'>line1line2line3</blockquote> <i>vs</i>
@@ -620,7 +619,7 @@ A bundle consists of one or more snippets. A snippet consists of five sections:
 <tr><td><b>Script</b> *2 </td><td>If a snippet has a script the Text from Part1 will <b>NOT</b> be pasted but instead the script will be run if Enter or the Shortcut-key keys are pressed.</td></tr>
 </tbody>
 </table>
-What happens when you double click on an entry in the list is determined by a setting in the configuration menu. (DoubleClickSends setting)
+What happens when you double click on an entry in the list is determined by a setting in the configuration menu. (<span class='setting'>DoubleClickSends</span> setting)
 
 <span class='tip'>It is advised to always have some useful content in Part1, this will ensure you can always see what you select while searching, even it if the selected snippet runs a script.</span>
 
@@ -771,7 +770,7 @@ The plugins are processed in the following order:
 
 <span class='tip' id='Brackets'><a href='#Brackets' class='headline'>[[..]] (Double square brackets) are used for plugin snippet notation. You can escape these double square brackets to prevent them being interpreted as a plugin: 
 <span class='highlight'>\[\]</span>, and <span class='highlight'>\]\]</span>
-To escape [,], and | in the <em>options</em> of a plugin, use: <span class='highlight'>&lt;SB</span>, <span class='highlight'>&gt;SB</span>, and <span class='highlight'>^SB</span>. See ParseEscaped in settings.ini to change this.</a>
+To escape [,], and | in the <em>options</em> of a plugin, use: <span class='highlight'>&lt;SB</span>, <span class='highlight'>&gt;SB</span>, and <span class='highlight'>^SB</span>. See <span class='setting'>ParseEscaped</span> in settings.ini to change this.</a>
 </span>
 
 <table>
@@ -1507,7 +1506,7 @@ My temp folder is <code>[[EnvGet(temp)]]</code>
 
 </blockquote>
 
-If you want to change which AutoHotkey built-in variables are supported simply edit the <b>AutoHotkeyVariables</b> key in settings.ini (exit Lintalist first before doing so)
+If you want to change which AutoHotkey built-in variables are supported simply edit the <span class='setting'>AutoHotkeyVariables</span> key in settings.ini (exit Lintalist first before doing so)
 
 Use <code>[[EnvGet(EnvVarName)]]</code> to read Environment variables.
 
@@ -1795,7 +1794,7 @@ Also, if you know of taglists, bundles, etc of other editors and programs you wo
 	Usage Running lintalist.exe installed: <em>lintalist.exe lintalist.ahk -Active</em>
 	Usage AutoHotkey installed:            <em>lintalist.ahk -Active</em>
 
-There is also a configuration setting that can do this: ActivateWindow
+There is also a configuration setting that can do this: <span class='setting'>ActivateWindow</span>
 
 <b>-Bundle=</b><i>filename.txt</i>: load specific bundle and lock
 
@@ -1812,11 +1811,11 @@ There is also a configuration setting that can do this: ActivateWindow
 <h3>Faq</h3>
 
 <a name='faq1'></a><b>Q1:</b> Nothing gets pasted / I just see the letter v (or nothing at all)
-<b>A1:</b> You probably need to increase the PasteDelay setting. Right-click tray icon, configuration, PasteDelay. 
+<b>A1:</b> You probably need to increase the <span class='setting'>PasteDelay</span> setting. Right-click tray icon, configuration, PasteDelay. 
     Increase the milliseconds. You may need to experiment a bit to find a good setting.
 
 <a name='faq2'></a><b>Q2:</b> It still does not work!
-<b>A2:</b> There are a number of SendMethods you can try. There are 4, Right-click tray icon, configuration, SendMethod. 
+<b>A2:</b> There are a number of <span class='setting'>SendMethods</span> you can try. There are 4, Right-click tray icon, configuration, SendMethod. 
     Try various methods until you find one that works, see Q1 as well as you might need to try a number of combinations.
     A good program to test it in is Notepad.
 
@@ -1848,11 +1847,11 @@ There is also a configuration setting that can do this: ActivateWindow
 <a name='ki2'></a><b>K2:</b> It doesn't always work with Flash edit controls
 <b>A2:</b> When the Lintalist GUI becomes active the Flash (edit) control looses focus. It is not possible to 
     reliably detect and (re)focus these types of controls. If you experience this often you could resort to
-    manual pasting after you've changed the <b>PasteMethod</b> setting to 1 or 2 - See <a href='https://github.com/lintalist/lintalist/issues/68#issuecomment-256087094'>#68</a>
+    manual pasting after you've changed the <span class='setting'>PasteMethod</span> setting to 1 or 2 - See <a href='https://github.com/lintalist/lintalist/issues/68#issuecomment-256087094'>#68</a>
 
 <a name='ki3'></a><b>K3:</b> It doesn't work with programs installed via the Windows Store
 <b>A3:</b> That seems to be correct and there is no solution for such applications at the moment.
-    Manual pasting might work here for you as well, see <b>PasteMethod</b> setting or use the <b>PasteMethod</b> hotkey.
+    Manual pasting might work here for you as well, see <span class='setting'>PasteMethod</span> setting or use the <b>PasteMethod</b> hotkey.
 
 <!-- 
 <a name='ki'></a><b>K:</b> 

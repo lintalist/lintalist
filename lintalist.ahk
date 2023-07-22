@@ -4,7 +4,7 @@ Name            : Lintalist
 Author          : Lintalist
 Purpose         : Searchable interactive lists to copy & paste text, run scripts,
                   using easily exchangeable bundles
-Version         : 1.9.21
+Version         : 1.9.22
 Code            : https://github.com/lintalist/
 Website         : http://lintalist.github.io/
 AutoHotkey Forum: https://autohotkey.com/boards/viewtopic.php?f=6&t=3378
@@ -42,7 +42,7 @@ PluginMultiCaret:=0 ; TODOMC
 
 ; Title + Version are included in Title and used in #IfWinActive hotkeys and WinActivate
 Title=Lintalist
-Version=1.9.21
+Version=1.9.22
 
 ; Gosub, ReadPluginSettings
 
@@ -271,7 +271,10 @@ Loop, parse, ProgramHotKeyList, CSV
 IsNVDARunning:=IsNVDARunning() ; used for up/down in listview as it looks like NVDA may have some issues with up/down navigation when listview NOT in focus/selected
 
 Hotkey, IfWinNotExist, ahk_group BundleHotkeys
-Hotkey, %StartSearchHotkey%, GUIStart
+If (QuickSearchHotkey <> "")
+	Hotkey, %StartSearchHotkey%, GUIStart
+Else
+	MsgBox % "StartSearchHotkey setting not found, no method to start Lintalist search via hotkey"
 If (StartOmniSearchHotkey <> "")
 	Hotkey, %StartOmniSearchHotkey%, GUIStartOmni
 If (QuickSearchHotkey <> "")
@@ -367,13 +370,13 @@ Return
 GUIStartOmni:
 OmniSearch:=1
 GuiStart: ; build GUI
-StartSearchHotkeyTimeOutStart:=A_TickCount
-Keywait % A_ThisHotkey
-If ((A_TickCount - StartSearchHotkeyTimeOutStart) < StartSearchHotkeyTimeOut)
-	{
-	 StartSearchHotkeyTimeOutStart:=""
-	 Return
-	}
+
+; https://github.com/lintalist/lintalist/issues/247
+; https://www.autohotkey.com/boards/viewtopic.php?f=76&t=119231 
+KeyWait % ReturnKeyWaitKey(A_ThisHotkey), % "T" StartSearchHotkeyTimeOut / 1000
+If !ErrorLevel
+ Return
+	
 If Statistics
 	 Stats("SearchGui")
 OmniSearchText:=""
@@ -1501,6 +1504,14 @@ Label13: ; Magic Search
 	 SearchMethod:=4
 	 Gosub, ResetSearch
 Return
+
+ReturnKeyWaitKey(in)
+	{
+	 in := RegExReplace(in, "[#^+!<>]") ; remove standard modifiers inc. <^>! AltGr
+	 If InStr(in," & ")                 ; check for custom hotkey (a & b)
+	 	in:=trim(StrSplit(A_ThisHotkey,"&").2)
+	 return in
+	}
 
 #IfWinActive
 
