@@ -114,6 +114,20 @@ Loop, Parse, PluginOptions, |
 	 if RegExMatch(A_LoopField,re) 
 		PluginOptionsResults .= A_LoopField "|"
 	}
+
+; Check if PluginOptionsResults is empty, if so, set the font to bold and update the listbox
+if (PluginOptionsResults = "")
+{
+	Gui, 10:Font, Bold
+	GuiControl, Font, Item 
+	PluginOptionsResults := PluginsFilterText
+}
+else
+{
+	Gui, 10:Font, s%FontSize% Normal  ; Reset to normal font if there are matches
+	GuiControl, Font, Item
+}
+
 GuiControl, 10:, ListBox1, |%PluginOptionsResults%
 PluginsFilterText:=""
 PluginOptionsResults:=""
