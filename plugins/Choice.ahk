@@ -1,9 +1,12 @@
 ﻿/* 
 Plugin        : Choice [Standard Lintalist]
 Purpose       : Make a selection from a list [part of code also placed in lintalist.ahk and used to allow users to select a bundle]
-Version       : 2.0
+Version       : 2.1
 
 History:
+- 2.1 Check if PluginOptionsResults is empty, if so, set the font to bold and update the listbox -- https://github.com/lintalist/lintalist/pull/258/files
+      Addition: ChoiceInput checkbox so it can be user choice?
+      and adding -SysMenu https://github.com/lintalist/lintalist/discussions/260
 - 2.0 Automatically remove empty entries in Listbox (||* -> |) - to include an empty entry make it the first option/entry
 - 1.9 Adding x/y position for listbox results to prevent possibly position.
 - 1.8 Fix for Cancel/Esc not storing position properly, and try to prevent incorrect Listbox heights using Gui10ListboxCheckPosition()
@@ -47,18 +50,21 @@ MakeChoice:
 		 if (ChoiceQuestion = "")
 			ChoiceQuestion:="Select and press enter"
 		 Gui, 10:Destroy
-		 Gui, 10:+Owner +AlwaysOnTop +Resize +MinSize
+		 Gui, 10:+Owner +AlwaysOnTop +Resize +MinSize -SysMenu
 		 Gui, 10:Default
 		 Gui, 10:font, s%FontSize%
 		 Gui, 10:Add, Edit,     x5 y5 w400 vChoiceFilterText gChoiceFilterText hwndHED1, 
 		 Gui, 10:Add, ListBox,  xp yp+30 w400 R10 vItem gChoiceMouseOK, %PluginOptions%
-		 Gui, 10:Add, button,   vChoiceCancel gCancelChoice, &Cancel
-		 Gui, 10:Add, button,   xp+90 w80 vChoiceRandom gChoiceRandom, &Random
-		 Gui, 10:Add, Checkbox, xp+90 yp+10 w120 vChoiceAutoCenter gChoiceAutoCenter, Auto Center
+		 Gui, 10:Add, button,   w70       vChoiceCancel gCancelChoice, &Cancel
+		 Gui, 10:Add, button,   xp+75 w80 vChoiceRandom gChoiceRandom, &Random
+		 Gui, 10:Add, Checkbox, xp+90  yp-5 w106 vChoiceAutoCenter gChoiceAutoCenter, &Auto Center
+		 Gui, 10:Add, Checkbox, xp+110 yp   w130 vChoiceInput gChoiceInput, &Use as [[Input]]
 		 Gui, 10:Add, button,   xp yp default vChoiceOK gChoiceOK hidden, OK
 
 		 If ChoiceAutoCenter
-			GuiControl,,ChoiceAutoCenter, 1
+			GuiControl,10:,ChoiceAutoCenter, 1
+		 If ChoiceInput
+			GuiControl,10:,ChoiceInput, 1
 		 DetectHiddenWindows, On
 		 If !ChoiceFilter
 			{
@@ -83,7 +89,7 @@ MakeChoice:
 			Gui, 10:Show, w410 Center, Select and press enter
 
 		 Gui10ListboxCheckPosition("Select and press enter")
-		 SetEditCueBanner(HED1, "Filter: " ChoiceQuestion)
+		 SetEditCueBanner(HED1, "Filter: " ChoiceQuestion " (Ctrl+f)")
 		 DetectHiddenWindows, Off
 		 ControlSend, ListBox1, {Down}, Select and press enter
 		 WinWaitClose, Select and press enter
@@ -102,6 +108,7 @@ AutoXYWH("w h" , "Item")
 AutoXYWH("y"   , "ChoiceCancel")
 AutoXYWH("y"   , "ChoiceRandom")
 AutoXYWH("y"   , "ChoiceAutoCenter")
+AutoXYWH("y"   , "ChoiceInput")
 Return
 
 ChoiceFilterText:
@@ -115,8 +122,10 @@ Loop, Parse, PluginOptions, |
 		PluginOptionsResults .= A_LoopField "|"
 	}
 
+; https://github.com/lintalist/lintalist/pull/258/files
 ; Check if PluginOptionsResults is empty, if so, set the font to bold and update the listbox
-if (PluginOptionsResults = "")
+; Addition: ChoiceInput checkbox so it can be user choice
+if (PluginOptionsResults = "") and (ChoiceInput)
 {
 	Gui, 10:Font, Bold
 	GuiControl, Font, Item 
@@ -131,6 +140,15 @@ else
 GuiControl, 10:, ListBox1, |%PluginOptionsResults%
 PluginsFilterText:=""
 PluginOptionsResults:=""
+Gui, 10:Submit,NoHide	
+If (item = "") ; if we didn't focus on results list while "typing to filter" in Choice it may return empty
+	{
+	 ControlGet, item, List, Focused, ListBox1,  Select and press enter
+	 If InStr(item,"`n") ; we may get all the results of the "typing to filter" so assume we want first result
+		item:=Trim(StrSplit(item,"`n").1,"`n`r")
+	}
+
+Gui, 10:Default
 Return
 
 ChoiceRandom:
@@ -173,6 +191,7 @@ Return
 
 ChoiceWindowPosition:
 IniRead, ChoiceAutoCenter, %A_ScriptDir%\session.ini, choice, ChoiceAutoCenter, 1
+IniRead, ChoiceInput     , %A_ScriptDir%\session.ini, choice, ChoiceInput, 1
 IniRead, ChoiceX         , %A_ScriptDir%\session.ini, choice, ChoiceX, 300
 IniRead, ChoiceY         , %A_ScriptDir%\session.ini, choice, ChoiceY, 300
 IniRead, ChoiceWidth     , %A_ScriptDir%\session.ini, choice, ChoiceWidth, 410
@@ -190,7 +209,18 @@ ChoiceAutoCenter:
 ChoiceAutoCenter:=!ChoiceAutoCenter
 ChoiceAutoCenterWrite:
 IniWrite, %ChoiceAutoCenter%, %A_ScriptDir%\session.ini, choice, ChoiceAutoCenter
-return
+ControlFocus, Edit1, Select and press enter
+ControlSend, Edit1, {End}, Select and press enter
+Return
+
+ChoiceInput:
+ChoiceInput:=!ChoiceInput
+ChoiceInputWrite:
+IniWrite, %ChoiceInput%, %A_ScriptDir%\session.ini, choice, ChoiceInput
+ControlFocus, Edit1, Select and press enter
+ControlSend, Edit1, {End}, Select and press enter
+Gosub, ChoiceFilterText
+Return
 
 ; just me @ https://autohotkey.com/board/topic/76540-function-seteditcuebanner-ahk-l/
 SetEditCueBanner(HWND, Cue) {  ; requires AHL_L
