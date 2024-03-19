@@ -300,7 +300,7 @@ ActionText:=StrReplace(RegExReplace(EditMode,"([A-Z])"," $1"),"Append","New")
 Gui, 71:Destroy
 If Theme["MainBackgroundColor"]
 	Gui, 71: Color, % Theme["MainBackgroundColor"]
-Gui, 71:+Owner +Resize +MinSize740x520
+Gui, 71:+Owner1 +Resize +MinSize740x520
 Gui, 71:Default
 Gui, 71:Menu, MenuBar2
 If Theme["EditorGuiTextColor"]
