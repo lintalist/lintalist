@@ -29,7 +29,6 @@ InEditMode = 1
 If (EditMode = "")
 	Return
 
-Gui, 81:+Owner1
 Gui, 81:Font,s10
 Gui, 81:Add, Text, x20 y10, Note: New and modified Bundle properties are only stored when you press SAVE.
 Gui, 81:Add, GroupBox, x260 y40 w420 h390, Properties:
