@@ -1,4 +1,4 @@
-﻿# Themes for Lintalist
+# Themes for Lintalist
 
 The Lintalist Search GUI and Snippet Editor can be styled using Themes defined in INI files.
 
@@ -30,6 +30,8 @@ SearchBoxTextColor=White
 SearchBoxBackgroundColor=Black
 ListViewTextColor=White
 ListViewBackgroundColor=Black
+ListViewBackgroundColorAlternateRow=eeeeee
+ListViewBackgroundColorSelection=ffcc00,000000
 PreviewTextColor=White
 PreviewBackgroundColor=Black
 EditorGuiTextColor=White
@@ -38,6 +40,9 @@ EditorBackgroundColor=000000
 ; note that it is not possible to set the Text color of the statusbar
 StatusBarBackgroundColor=Gray
 ```
+
+`ListViewBackgroundColorAlternateRow` and `ListViewBackgroundColorSelection` overrule `AlternateRowColor` and `AlternateSelectionColor` set in Configuration.
+Color values for these two settings have to be set in 6-digit hexadecimal RGB `RRGGBB` format.  
 
 Additional keys for *Syntax Highlighting* (default settings, you only have to use those keys you wish to change)
 

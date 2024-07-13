@@ -3,10 +3,11 @@
 LintaList Include
 Purpose: Load and Parse LintaList Bundles at startup into memory
          and later determine which one to load
-Version: 1.4
+Version: 1.5
 
 History:
 
+- 1.5 Add ahk_exe in TitleMatch https://github.com/lintalist/lintalist/issues/286
 - 1.4 Adding numbers (text & icons) to first 10 results for search result shortcuts  https://github.com/lintalist/lintalist/issues/137
 - 1.3 Change/fix: Change how Col2, Col3, and Col4 are set for listview columns,  
   if the first occurence was after MaxRes the column would remain hidden, now   
@@ -41,12 +42,22 @@ WhichBundle() ; determine which bundle to use based on active window (titlematch
 				{
 				 Load .= A_LoopField ","
 				}
-			}
-		 Else
-			If ActiveWindowTitle contains %MatchList%
+			 If ActiveWindowProcessName not contains %MatchList%
 				{
 				 Load .= A_LoopField ","
 				}
+			}
+		 else
+			{
+			 If ActiveWindowTitle contains %MatchList%
+				{
+				 Load .= A_LoopField ","
+				}
+			 If ActiveWindowProcessName contains %MatchList%
+				{
+				 Load .= A_LoopField ","
+				}
+			}
 		}
 	 If (Load = "") ; Load default bundle if no match found, default is set in ini DefaultBundleIndex is defined in LoadAllBundles() 
 		Load .= DefaultBundleIndex ","
@@ -56,7 +67,7 @@ WhichBundle() ; determine which bundle to use based on active window (titlematch
 ;		StringTrimRight, Load, Load, 1
 	 Load:=Trim(Load,",")
 	 Sort, Load, U D, ; remove duplicates if any (might be added via AlwaysLoadBundles)
-	 Return Load	
+	 Return Load
 	}
 	
 LoadBundle(Reload="")
@@ -132,7 +143,7 @@ LoadBundle(Reload="")
 	 }
 	 If (DisplayBundle > 1)
 		Gosub, ColorList
-	ShortCutSearchGuiCounter:=0	
+	 ShortCutSearchGuiCounter:=0
 	 Return
 	}
 

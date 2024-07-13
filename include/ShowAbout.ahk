@@ -14,12 +14,12 @@ Gui, 55:Add, Picture, xp+280 yp-15 ,docs\img\poweredbyahk.png
 Gui, 55:font, bold
 Gui, 55:Add, Text, x10 yp+115, %AppWindow%
 Gui, 55:font, 
-Gui, 55:Add,Link,  x10 yp+30, Website: <a href="https://lintalist.github.com">lintalist.github.com</a>, source code: <a href="https://github.com/lintalist">github.com/lintalist</a> (Language <a href="http://autohotkey.com/">AutoHotkey</a>)
+Gui, 55:Add,Link,  x10 yp+30, Website: <a href="https://lintalist.github.io">lintalist.github.io</a>, source code: <a href="https://github.com/lintalist">github.com/lintalist</a> (Language <a href="https://www.autohotkey.com/">AutoHotkey</a>)
 Gui, 55:Add, Text, x10 yp+30,
 (
 Searchable interactive texts to copy && paste text, run scripts, using easily exchangeable bundles.
 
-Copyright (c) 2009-2023 Lintalist.
+Copyright (c) 2009-2024 Lintalist.
 
 This program is free software; you can redistribute it and/or modify it under the
 terms of the GNU General Public License as published by the Free Software Foundation;
@@ -38,7 +38,7 @@ ControlFocus, Button2, About %AppWindow%
 Return
 
 55GuiUpdates:
-Run, %A_AhkPath% %A_ScriptDir%\include\update.ahk
+Run, "%A_AhkPath%" "%A_ScriptDir%\include\Update.ahk"
 Return
 
 ;55GuiClose: ; debug only - label is already part of QuickStart.ahk

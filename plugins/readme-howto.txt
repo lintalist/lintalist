@@ -3,7 +3,7 @@
 
 # Introduction
 
-A Lintalist plugin is basically a AutoHotkey script which is included
+A Lintalist plugin is basically a AutoHotkey v1 script which is included
 in the main Lintalist script at startup. You can learn more about AutoHotkey
 at http://www.autohotkey.com/ - there you will find an introduction,
 tutorials, full documentation and support forum to get you started.

@@ -181,13 +181,18 @@ em.sel {
 	color: #fff;
 	padding: 5px;
 	display: inline-block;
-	
 	margin:0;
 	}
 
 .highlight {
 	color: #c00;
 	}
+
+.discussion::before {
+	content: "\01F5EA  ";
+	color:#1e90ff;
+	font-size:1.25em;
+  }
 
 .setting::before {
 	content: "\002699  ";
@@ -205,6 +210,7 @@ em.sel {
   display: inline-block;
   }
 
+a {color: #06C; }
 a:visited {color: #000; }
 a:hover {color: #c00; }
 
@@ -224,6 +230,6 @@ a.headline, a.headline:link {
 	}
 
 a.headline:hover::after {
-    content: " \0000B6";
-    color: #888;
+  content: " \0000B6";
+  color: #888;
   }

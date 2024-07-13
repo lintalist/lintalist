@@ -7,7 +7,7 @@ Version: 1.0
 
 ReadTheme(IniFile)
 	{
-	 Global Theme:=[]
+	 Global Theme:=[],AlternateRowColor,AlternateSelectionColor
 	 ini=%A_ScriptDir%\themes\%IniFile%.ini
 	 If !FileExist(ini)
 		Return
@@ -19,6 +19,8 @@ SearchBoxTextColor
 SearchBoxBackgroundColor
 ListViewTextColor
 ListViewBackgroundColor
+ListViewBackgroundColorAlternateRow
+ListViewBackgroundColorSelection
 PreviewTextColor
 PreviewBackgroundColor
 EditorGuiTextColor
@@ -54,4 +56,9 @@ SnippetsColorTags
 		 Theme[ReadKey]:=ThemeKey
 		}
 	 Theme["path"]:=Trim(IniFile,"\")
+
+	 If Theme["ListViewBackgroundColorAlternateRow"]
+		AlternateRowColor:=Theme["ListViewBackgroundColorAlternateRow"]
+	 If Theme["ListViewBackgroundColorSelection"]
+		AlternateSelectionColor:=StrSplit(Theme["ListViewBackgroundColorSelection"],",")
 	}

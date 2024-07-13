@@ -19,8 +19,8 @@
 <b>Lintalist</b> allows you to store and (incrementally) <b>search</b> and <b>edit texts</b> in bundles and <b>paste</b> a selected text in your active program. The text <b>can</b> be interactive, for example you can automatically insert the current time and date, ask for (basic) user input or make a selection from a list etc and finally it can also <b>run a script</b>. You can use <b>keyboard shortcuts</b> or <b>abbreviations</b> to paste the text (or run the script) without opening the search window.<br /><br />Formatted text (html, markdown, rtf and images) is supported in Snippets, and Lintalist can be <b>extended</b> by writing your own <b><a href='#InteractiveBundleText'>plugins</a></b>.
 <br /><br />
 <span style='font-size:.8em;'><b>Lintalist</b> is <b>open source</b> and developed in <a href='https://autohotkey.com/'>AutoHotkey</a>, an easy to learn scripting language for Windows.
-[WinXP(sp3)/Vista/7/8/10]<br /></span>
-<span class='date' style='float:right;display:inline;margin-top:0px;'>doc rev. 20230722</span></p>
+<b>[Windows 7/8/10/11]</b> <span style='color:#666;'>(untested under WinXP(sp3)/Vista)</span><br /></span>
+<span class='date' style='float:right;display:inline;margin-top:0px;'>doc rev. 20240713</span></p>
 </div>
 
 <div class='column'>
@@ -43,6 +43,11 @@
 <li><a href='#Configuration-AltPaste'>AltPaste</a></li>
 <li><a href='#Configuration-Linefeed'>Linefeed</a></li>
 <li><a href='#Configuration-AfterPaste'>AfterPaste</a></li>
+<li><a href='#Configuration-ScriptTemplates'>Script Templates</a> (right click menu)</li>
+<li><a href='#Configuration-AdditionalTools'>Additional Tools</a> (menu)</li>
+<li><a href='#Configuration-SnippetEditor'>Additional Editors</a> (Snippet Editor)</li>
+<li><a href='#Configuration-Themes'>Themes</a></li>
+<li><a href='#Configuration-nvda'>NVDA</a></li>
 </ul></li>
 <li><a href='#cmdline'>Command line parameters</a></li>
 <li><a href='#FAQ'>FAQ &amp; Known Issues</a></li>
@@ -50,15 +55,6 @@
 <li><a href='#Linux'>Linux</a></li>
 <li><a href='#History'>History</a> (changelog)</li>
 </ul>
-
-<p><br />Lintalist <b>Bundles</b>:<br />
-<a href='https://github.com/lintalist/lintalist-bundles/'>github.com/lintalist/lintalist-bundles/</a></p>
-
-<p><b>Videos:</b><br />
-<a href="http://youtu.be/XfjZPAhHB8c">General</a>; 
-<a href="http://youtu.be/Q6SFkttjUQk">HTML/MD</a>; 
-<a href="http://youtu.be/J1StUarGHmI">Formatted</a>; and
-<a href="http://youtu.be/Rtd_ChyRVkM">Plugins</a></p>
 
 </div>
 
@@ -81,21 +77,33 @@
 <p><b>Feedback</b></p>
 
 <ul>
-<li><a href='https://github.com/lintalist/lintalist/issues'>Issues at GH</a> (preferred)</li>
+<li><a href='https://github.com/lintalist/lintalist/'>Issues &amp; Discussions at GH</a> <span class='discussion'></span> (preferred)</li>
 <li><a href='https://autohotkey.com/boards/viewtopic.php?f=6&t=3378'>autohotkey.com forum</a> (Guest posting allowed)</li>
 <li><a href='http://www.portablefreeware.com/index.php?id=2686'>Portablefreeware.com</a></li>
 <li><a href='http://www.donationcoder.com/forum/index.php?topic=41475.0'>Donationcoder.com</a></li>
-<li><a href='http://alternativeto.net/software/lintalist/'>AlternativeTo</a></li>
 </ul>
+
+<br />
+<p>Lintalist <b>Bundles</b>:<br />
+<a href='https://github.com/lintalist/lintalist-bundles/'>github.com/lintalist/lintalist-bundles/</a></p>
+
+<p>&#127912; Lintalist <b>Themes</b>:<br />
+<a href='https://github.com/lintalist/themes/'>github.com/lintalist/themes/</a></p>
+
+<p>&#128250; <b>Videos:</b><br />
+<a href="http://youtu.be/XfjZPAhHB8c">General</a>; 
+<a href="http://youtu.be/Q6SFkttjUQk">HTML/MD</a>; 
+<a href="http://youtu.be/J1StUarGHmI">Formatted</a>; and
+<a href="http://youtu.be/Rtd_ChyRVkM">Plugins</a></p>
 
 </div>
 
 <div class='column'>
-<p><b>Download Lintalist <em>1.9.22</em></b>
+<p><b>Download Lintalist <em>1.9.23</em></b>
 <p>
 <a href='https://github.com/lintalist/lintalist/releases'><img src='img/lintalist65x65.gif' alt='Download Lintalist' width='65' align='left' border='0' style='margin-right: 5px;' /></a>
 Download (incl. source):<br />
-<a href='https://github.com/lintalist/lintalist/releases'><b>Latest release</b></a> (920 kb)<br />Simply unpack and run lintalist.ahk or lintalist.exe<br />
+<a href='https://github.com/lintalist/lintalist/releases'><b>Latest release</b></a> (lintalist64.zip, 1mb)<br />Simply unpack and run lintalist.ahk or lintalist.exe<br />
 </p>
 
 <span class='tip' style="margin-bottom:10px;"><img src="img/usb.png" width=50 align=right title="USB image by Alessandro Rei (GNU/GPL) - http://findicons.com/icon/255067/usb?id=256158">Lintalist is a <b>portable application</b>. It stores all settings and bundles in the folder the program resides in. <a href="#portable">More...</a>
@@ -106,6 +114,7 @@ Download (incl. source):<br />
 
 <p><b>Reviews</b></p>
 <ul>
+<li><a href='http://alternativeto.net/software/lintalist/'>AlternativeTo</a> (en) &#x2197;</li>
 <li><a href='https://www.softpedia.com/get/Office-tools/Other-Office-Tools/Lintalist.shtml'>Softpedia.com</a> (en) &#x2197;</li>
 <li><a href='https://www.majorgeeks.com/files/details/lintalist.html'>MajorGeeks.com</a> (en) &#x2197;</li>
 <li><a href='https://www.ghacks.net/2020/02/21/lintalist-is-an-open-source-snippet-manager-for-windows/'>Ghacks.com</a> (en) &#x2197;</li>
@@ -184,10 +193,10 @@ If you want to take your copy of Lintalist with you all you have to do is copy t
 
 Installing Lintalist is easy, just download the ZIP file and unpack it in a folder of your preference. Make sure you have write permissions for the destination folder (i.e. don't unpack into a folder like "C:\Program Files"). It is probably easiest to work with if you place it in your "My Documents" folder as this will make it easier for Lintalist to update your bundles while you are using them. Lintalist is fully portable and doesn't write any settings to the registry, so you can run it directly from a USB flash drive or DropBox folder for example.
 
-If you are already an AutoHotkey user and have it installed, it is recommended to run <b>Lintalist.ahk</b>, this will ensure you will be running Lintalist with your preferred version of AutoHotkey. If you don't have AutoHotkey installed you can start <b>Lintalist.exe</b>.
+If you are already an AutoHotkey user and have it installed, it is recommended to run <b>Lintalist.ahk</b>, this will ensure you will be running Lintalist with your preferred version of AutoHotkey (v1.1.37.02 recommended). If you don't have AutoHotkey installed you can start <b>Lintalist.exe</b>.
 
 <b>Notes:</b>
-- Lintalist.exe: A renamed AutoHotkey.exe (v1.1.37.01 32/64-bit Unicode, See https://autohotkey.com/ and/or https://autohotkey.com/download/)
+- Lintalist.exe: A renamed AutoHotkey.exe (v1.1.37.02 32/64-bit Unicode, See https://autohotkey.com/ and/or https://autohotkey.com/download/)
 - Lintalist.ahk: The actual (main) source code of the program (see https://github.com/lintalist/lintalist)
 
 <h2 id='Searching'><a href='#Searching' class='headline'>Normal use: Starting Lintalist and searching for a Snippet</a></h2>
@@ -313,18 +322,19 @@ Note: while using option 2 &amp; 3 the text "(All)" will be added to the statusb
 
 By default Lintalist tries to find matches in <em>part1, part2</em>, and <em>shorthand</em> of a snippet <a href='#SearchSnippets'>while searching</a>.
 
-When you start your query with a number (1 to 5), followed by a predefined character (<b style='color:#c00;'></b>&lt;</b> by default, <span class='setting'>ColumnSearchDelimiter</span> in the settings) Lintalist will search in a specific part of a snippet. To disable this feature erase the <span class='setting'>ColumnSearchDelimiter</span> in the settings.
+When you start your query with a number (1 to 6), followed by a predefined character (<b style='color:#c00;'></b>&lt;</b> by default, <span class='setting'>ColumnSearchDelimiter</span> in the settings) Lintalist will search in a specific part of a snippet. To disable this feature erase the <span class='setting'>ColumnSearchDelimiter</span> in the settings.
 
 Query: state -> will find "state" in part1, part2, and shorthand of a snippet
 Query: 1<b style='color:#c00;'>&lt;</b>state -> will find "state" <b>only</b> if it is found in <b>part1</b> of a snippet
 
-1 to 5 refers to the <a href="#SnippetsBundles">"part" or "section"</a> of a snippet:
+1 to 5 refers to the <a href="#SnippetsBundles">"part" or "section"</a> of a snippet (6 to the bundle name + description if any):
 
 1&lt; Part1
 2&lt; Part2
 3&lt; Shortcut (key)
 4&lt; Shorthand (abbreviation)
 5&lt; Script
+6&lt; Bundle name and description
 
 Start the query with the OmniSearch character to combine it with ColumnSearch (e.g. <b style='color:#c00;'>@</b>1<b style='color:#c00;'>&lt;</b>state)
 
@@ -417,6 +427,21 @@ These can be disabled via the <span class='setting'>ShortcutSearchGui</span> set
 
 *2 This can be used get the selected snippet into the clipboard using other methods as well, see plugins\readme-howto.txt, "Extending Snippet processing" section 
 
+<b>Lintalist Plugins</b>
+
+<table>
+<thead>
+<tr>
+	<th width="20%">Keys</th>
+	<th width="80%">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr><td><b><kbd>Ins</kbd></b></td><td>Inserts the search query in the input control when using <code>[[Input]]</code> and <code>[[Choice]]</code> (with search option). <span class='discussion'></span><a href='https://github.com/lintalist/lintalist/discussions/280'>Discussion @ GH - #280</a></td></tr>
+<tr><td><b><kbd>F3</kbd></b></td><td><code>[[FileList/Choice]]</code> toggle preview window to view an image if the FileList has returned full paths. If an option in choice seems to be a valid path (a-z:\) it automatically opens the preview window. (Also supports a limited number of text formats: txt,md,html,css,ahk,cmd) <span class='discussion'></span><a href='https://github.com/lintalist/lintalist/issues/239'>Discussion @ GH - #239</a></td></tr>
+</tbody>
+</table>
+
 <h2 id='TrayMenu'><a href='#TrayMenu' class='headline'>Tray <em>Menu</em></a></h2>
 
 - <a href='#LoadAllBundles'>Load All Bundles</a>
@@ -494,7 +519,7 @@ More options may be added in future versions such as special hotkeys.</td></tr>
   between Wide &amp; Narrow view (you can set the width and height of both views via the
   configuration menu)
 
-  Note about <b>TeamViewer</b>: the "send key combinations" option must be enabled (checked) and you may need to experiment with a short/key combination that works for you (the default QuickSearchHotkey shortcut does seem to work out of the box for example, while Capslock may not). <a href='https://github.com/lintalist/lintalist/issues/104'>Discussion @ GH - #104</a>
+  Note about <b>TeamViewer</b>: the "send key combinations" option must be enabled (checked) and you may need to experiment with a short/key combination that works for you (the default QuickSearchHotkey shortcut does seem to work out of the box for example, while Capslock may not). <span class='discussion'></span><a href='https://github.com/lintalist/lintalist/issues/104'>Discussion @ GH - #104</a>
 
   As of v1.9.10+ see the <span class='setting'>StartSearchHotkeyToggle</span> setting to Show/Hide the Search Window using the same shortcut.</td></tr>
 <tr id='QuickSearchHotkey'><td><b><a href='#QuickSearchHotkey' class='headline'>QuickSearchHotkey</a></b></td><td>Hotkey used to start quick search: It will cut (ctrl-x) the word to the left, open
@@ -522,10 +547,14 @@ More options may be added in future versions such as special hotkeys.</td></tr>
 <tr id='Statistics'><td><b><a href='#Statistics' class='headline'>Statistics</a></b></td><td>Default setting: turned off.
 You can keep track of bundle and snippet usage by activating the Statistics. View the Stats via the Tray- or Edit menu options (Search GUI).
 The Statistics are saved to statistics.ini every two hours while Lintalist is running, viewing the Statistics, and closing the program.
-Note that not all the Statistics may be a 100% accurate. <a href='https://github.com/lintalist/lintalist/issues/112'>Discussion @ GH - #112</a></td></tr>
+Note that not all the Statistics may be a 100% accurate. <span class='discussion'></span><a href='https://github.com/lintalist/lintalist/issues/112'>Discussion @ GH - #112</a></td></tr>
+
+<tr id='AlternateRowColor'><td><b><a href='#AlternateRowColor' class='headline'>AlternateRowColor</a></b>         </td><td>Defines the alternating background colour of Rows in the Search Results (listview).
+6-digit hexadecimal RGB (RRGGBB) format. (eeeeee or c0c0c0 are light gray). Set to empty value to disable. 
+Related: <span class='setting'>AlternateSelectionColor</span> (define colour of highlighted row in search results).</td></tr>
 </tbody>
 </table>
-Edit settings.ini or choose configuration in the tray menu for more options.
+Edit settings.ini (close Lintalist first) or choose configuration in the tray menu for more options and restart to apply changes.
 
 <span class='small'>Settings</span>
 <img src='img/lintalist-config.png' alt='Lintalist settings' border='0'  style='max-width:100%;' />
@@ -549,7 +578,7 @@ line2
 line3
 </blockquote>
 For specific programs you can define the character that needs to be used instead of the default "new line" character. This can either be one single character or multiple characters - see the linefeed.ini for more information. As an example two programs are already included, [notepad.exe] and [wordpad.exe].
-This can also be useful in for applications where pasting (CR)LF may be seen as "enter" which would (accidentally) execute / start process (command line applications for example) - replacing linefeed(s) with a space would prevent this. <a href='https://github.com/lintalist/lintalist/issues/65'>Discussion @ GH - #65</a>
+This can also be useful in for applications where pasting (CR)LF may be seen as "enter" which would (accidentally) execute / start process (command line applications for example) - replacing linefeed(s) with a space would prevent this. <span class='discussion'></span><a href='https://github.com/lintalist/lintalist/issues/65'>Discussion @ GH - #65</a>
 
 <h3 id='Configuration-AfterPaste'><a href='#Configuration-AfterPaste' class='headline'>After<em>Paste</em><span style='color:#080;'>.ahk</span></a></h3>
 
@@ -563,7 +592,49 @@ You can use "If (Keys = [ShortcutCopy|ShortcutPaste|ShortcutCut])" to determine 
 
 If you want to use this in scripts as well be sure to include LLInit() in your script code so the proper values of ShortcutCopy, ShortcutPaste, and ShortcutCut are made available in the script.
 
-<h4 id='Configuration-nvda'><a href='#Configuration-nvda' class='headline'>NVDA</a></h4>
+<h3 id='Configuration-ScriptTemplates'><a href='#Configuration-ScriptTemplates' class='headline'>Script <em>Templates</em></a></h3>
+
+To show a menu to insert templates into the script editor (on right click):
+
+1. Create a folder named <b>ScriptTemplates</b> in the Lintalist folder (so where lintalist.ahk/exe is residing.)
+2. Any *.ahk files placed in the folder will appear after a right click in the edit control. Changes to the folder contents will only appear in the editor after restarting lintalist. (This menu is only shown in the script section of the snippet editor, e.g. the third editing section at the bottom).
+
+<span class='discussion'></span><a href='https://github.com/lintalist/lintalist/discussions/256'>Discussion @ GH - #256</a>
+
+<h3 id='Configuration-AdditionalTools'><a href='#Configuration-AdditionalTools' class='headline'>Additional <em>Tools</em></a></h3>
+
+<span style='color:#c00;'>&lt;expert option&gt;</span>
+
+The Lintalist Search and Snippet Editor have a 'Tools' menu with the above 'Bundle Converters'.
+
+Create a <b>UserTools.ini</b> in the Lintalist folder (where <b>settings.ini</b> also resides) to add new options to this Tools menu.
+
+Format:
+name of menu option=path\program-to-run.exe (quotes around paths with spaces)
+
+<blockquote class='boxed'>
+<b>[Settings]</b>
+Notepad=c:\windows\notepad.exe
+Paint=mspaint.exe
+
+</blockquote>
+To remove these tools delete or rename UserTools.ini and restart Lintalist. <span class='discussion'></span><a href='https://github.com/lintalist/lintalist/discussions/275'>Discussion @ GH - #275</a>
+
+<span style='color:#c00;'>&lt;/expert option&gt;</span>
+
+<h3 id='Configuration-Themes'><a href='#Configuration-Themes' class='headline'>Themes</a></h3>
+
+The Lintalist Search GUI and Snippet Editor can be styled using Themes defined in INI files.
+
+Support will remain somewhat rudimentary. Given the limitations of AutoHotkey in this regard not all (parts of) the controls and Windows can be styled. There might also be some undesired flickering or some controls may loose their theme color temporarily. GUIs used by Plugins are not styled.
+
+Description of how Themes work and can be made here <a href='../themes/Themes.md'>themes/Themes.md</a>
+
+Example themes @ <a href='https://github.com/lintalist/lintalist-themes'>https://github.com/lintalist/lintalist-themes</a> (unpack zip file to lintalist\themes\)
+
+<span class='discussion'></span><a href='https://github.com/lintalist/lintalist/issues/147'>Discussion @ GH - #147</a>
+
+<h3 id='Configuration-nvda'><a href='#Configuration-nvda' class='headline'>NVDA</a></h3>
 
 If you want Lintalist to let NVDA speak the text of the snippet that has been pasted you can make use of some additional code.
 
@@ -785,13 +856,13 @@ Basic example: "Hello, this is a sample <code>^|</code>text"
 The ^| (or ^$) code will be removed from the text and the caret will 
 be placed before the word `text`.
 
-Alternative notation: <code>^$</code> useful when you want to use this in combination with the Choice plugin where the | character would cause a problem - <a href='https://github.com/lintalist/lintalist/issues/124'>Discussion @ GH - #124</a>
+Alternative notation: <code>^$</code> useful when you want to use this in combination with the Choice plugin where the | character would cause a problem - <span class='discussion'></span><a href='https://github.com/lintalist/lintalist/issues/124'>Discussion @ GH - #124</a>
 
 If you paste a snippet into an editor which supports Multi-caret/edit you can use those in Lintalist snippets by placing multiple caret locations in your snippet. If you don't want to use MultiCaret simply avoid using multiple ^| in a Lintalist snippet.
 Supported editors: Atom, Brackets, EverEdit, Komodo Edit, Sublime Text, TextAdept, UltraEdit 23+, Visual Studio Code editor. See <a href='MultiCaret.md'>docs/MultiCaret.md</a> for details.
 
 <b>Notes:</b>  
-1. The caret position may be incorrect for snippets with Unicode characters, complex scripts, glyphs etc. (trial and error may work). It may also depend on how the target application handles (auto) indentation or reformats/prettyfies pasted code. In such cases a specific script may be able to resolve such issues - <a href='https://github.com/lintalist/lintalist/issues/123'>Discussion @ GH - #123</a>
+1. The caret position may be incorrect for snippets with Unicode characters, complex scripts, glyphs etc. (trial and error may work). It may also depend on how the target application handles (auto) indentation or reformats/prettyfies pasted code. In such cases a specific script may be able to resolve such issues - <span class='discussion'></span><a href='https://github.com/lintalist/lintalist/issues/123'>Discussion @ GH - #123</a>
 2. For screenreaders: the plugin consists of two characters, a Circumflex Accent followed by a Vertical bar or pipe symbol. A Circumflex Accent followed by a dollar sign is also permitted.</td></tr>
 
 <tr id='c-plugin'><td><a href='#c-plugin' class='headline'><code>[[C=Char|Repeat]]</code></a></td><td>By default pasted texts are trimmed which means spaces and tabs will be trimmed from the snippet. You can use this plugin to insert one or more spaces and/or tabs at the beginning or end of a snippet. Or you can use it as a shorthand-code to insert a repeating text or character(s).
@@ -917,6 +988,8 @@ X : Relative paths, strip root folder path e.g.
 
 ! : Assume FileList was called using [[Choice=!]] "filter as you type" so
     <code>[[FileList=!wp|*.txt]]</code> becomes <code>[[Choice=!Filter|[[FileList=!wp|*.txt]]]]</code> automatically. Default delimiter assumed (pipe character)
+
+Example to illustrate image preview usage: <code>[[FileList=!?P|[[A_ScriptDir]]\docs\img\*.*]]</code>. Toggle preview window with <kbd>F3</kbd>
 </td></tr>
 
 <tr id='input-plugin'><td><a href='#input-plugin' class='headline'><code>[[Input=Text|Default]]</code></a></td>
@@ -1691,11 +1764,47 @@ You can find an example image file in the Extras\formatted\ folder.
 
 <h3 id='F4'><a href='#F4' class='headline'><span class='key'>F4</span> (Edit Snippet)</a></h3>
 
-Start searching your bundle and select the snippet you want to edit (highlight with cursor or mouse) and use F4 to edit it. The Lintalist Bundle Editor will be shown so you can now edit the shortcut, shorthand, both text parts and the script. If you prefer to edit the texts or scripts in your default text editor* click the corresponding 'Edit in Editor' button. It will open the text or script in a new editor window. Save the temporary file and close the editor to automatically copy any changes back to the Lintalist Bundle Editor. You can use the plugins menu to insert plugins including the available local variables and counters.
+Start searching your bundle and select the snippet you want to edit (highlight with cursor or mouse) and use F4 to edit it. The Lintalist Bundle Editor will be shown so you can now edit the shortcut, shorthand, both text parts and the script. 
+Use the plugins menu to insert plugins including the available local variables and counters.
+
+To edit the texts or scripts in the default text editor* click the corresponding 'Edit in Editor' button. It will open the text or script in a new editor window. Save the temporary file and close the editor to automatically copy any changes back to the Lintalist Bundle Editor.
+
+[✔] Monitor editor: Uncheck to disable the automatic updating from the external temporary text file as described above. After pressing 'Edit in Editor' the button will change to 'Load from File' to manually load the contents of the edited file.
+
+When using 'Edit in Editor', the other 'Edit in Editor' buttons in the Snippet Editor will be disabled. Use the 'Editor' menu option 'Reset (enable) Edit Buttons' to enable all buttons again in their original state should this be needed.
 
 To store the modified snippet click the save button, the changes are immediately available.
 
-* [v1.7+] you can change the editor used via the "SnippetEditor" setting in the configuration menu.
+<span class='tip'>Right-click in the edit controls of <b>Part1</b> or <b>Part2</b> for the <b>Plugins</b> menu to appear, or in the <b>Script</b> edit control for <a href='#Configuration-ScriptTemplates'>Script Templates</a></span>
+
+* [v1.7+] Change the editor used via the <span class='setting'>SnippetEditor</span> setting in the configuration menu.
+
+<a id='Configuration-SnippetEditor'></a><span style='color:#c00;'>&lt;expert option&gt;</span> 
+<span class='setting'>SnippetEditor</span> defines the Editor to launch for the "edit in editor" function in the Lintalist snippet editor.
+
+To be able to select alternative editors on the fly, create <b>Editors.ini</b> in the Lintalist folder (where <b>settings.ini</b> also resides).
+
+Format: 
+name of menu option=path\program-to-run.exe (no quotes around paths with spaces)
+
+<blockquote class='boxed'>
+<b>[settings]</b>
+TextAdept=c:\Portable\TextAdept\TextAdept.exe
+Notepad++=c:\Portable\npp\notepad++.exe
+
+</blockquote>
+Experimental option: To change the default extension of __tmplintalistedit.<b>txt</b> to something else, manually add an entry to <b>session.ini</b> under the <b>[editor]</b> section:
+
+<blockquote class='boxed'>
+<b>[editor]</b>
+EditorTempFileExtension=<b>ahk</b>
+
+</blockquote>
+Restart Lintalist after creating or editing <b>editors.ini</b> or <b>session.ini</b>.
+The defined editors are accessible via the 'Editor' menu. Choosing 'Default' will use the editor defined in <span class='setting'>SnippetEditor</span>.
+To remove the editors delete or rename editors.ini and restart Lintalist.
+
+<span style='color:#c00;'>&lt;/expert option&gt;</span>
 
 <span class='small'>Snippet editor</span>
 <img src='img/lintalist-snippet-editor.png' alt='Snippet editor' border='0'  style='max-width:100%;' />
@@ -1724,7 +1833,7 @@ To add a new snippet to bundle make sure the bundle you wish to add the snippet 
 
 To add the new snippet to the selected bundle click the save button, the changes are immediately available.
 
-<h3 id='F8'><a href='#F8' class='headline'><span class='key'>F8</span> (Delete Snippet)</3></h3>
+<h3 id='F8'><a href='#F8' class='headline'><span class='key'>F8</span> (Delete Snippet)</a></h3>
 
 Start searching your bundle and select the snippet you want to edit (highlight with cursor or mouse) and use F8 to delete it. After confirmation the snippet is removed from the bundle.
 
@@ -1755,8 +1864,18 @@ To add a new bundle (a collection of snippets) open the Lintalist search window 
 <a name='TitleMatch'></a>
 The most important fields are <b>Name</b> and <b>TitleMatch</b>. The <b>Name</b> is used in the Bundle menu and can be displayed in the search results (see configuration) and the <b>TitleMatch</b> field will allow you to make a Bundle context sensitive which means the search, abbccreviations and shortcuts will only be available in Windows which match the title you enter in the <b>TitleMatch</b> field.
 
-The <b>TitleMatch</b> field can be a comma separated list of partial window title matches. You can <b>not</b> use Wildcards.
-Example: .txt,.doc is OK, *.txt,*.doc is not.
+The <b>TitleMatch</b> field can be a comma separated list of
+
+1. Partial window title matches. Do <b>not</b> use Wildcards.
+   Example: .txt,.doc is OK, *.txt,*.doc is not.
+
+and/or
+
+2. File name of the executable of the program. (The 'ahk_exe' in AutoHotkey terminology) 
+   Example: cmd.exe,notepad.exe
+
+Partial window title matches and "exe" can be combined.
+Example: .txt,notepad.exe
 
 As of <b>v1.9</b> you can also do the opposite: use the <b>TitleMatch</b> field to define the windows where the bundle should NOT be active by starting the list with a <b>!</b> (exclamation mark).
 This can be useful if you want a bundle to work everywhere except in a specific window. 
@@ -1774,7 +1893,7 @@ An illustrated guide is available in the <a href="https://github.com/lintalist/l
 
 <h3 id='BundleConvertors'><a href='#BundleConvertors' class='headline'>Bundle Converters</a></h3>
 
-The following converters are available via <b>Extras\BundleConverters\</b> (requires AutoHotkey) or available via the Tools menu in the Search window and the Bundle editor.
+The following converters are available via <b>Extras\BundleConverters\</b> (requires AutoHotkey) available via the Tools menu in the Search window and the Snippet editor.
 
 - List.ahk		Regular lists (plain text file, one item per line)
 - UltraEdit.ahk		UltraEdit Taglists (<a href='http://www.ultraedit.com/downloads/extras/tags-autocomplete.html'>http://www.ultraedit.com/downloads/extras/tags-autocomplete.html</a>)
@@ -1800,10 +1919,10 @@ There is also a configuration setting that can do this: <span class='setting'>Ac
 
 <b>-Ini=</b><i>filename-for-settings.ini</i>: use a different settings file (default is settings.ini) [v1.8+]
 
-<b>-ReadOnly</b>: start in ReadOnly mode, no editing of bundles, settings.ini, counters and local variables [v1.9.4+] <a href='https://github.com/lintalist/lintalist/issues/95'>Discussion @ GH - #95</a>
+<b>-ReadOnly</b>: start in ReadOnly mode, no editing of bundles, settings.ini, counters and local variables [v1.9.4+] <span class='discussion'></span><a href='https://github.com/lintalist/lintalist/issues/95'>Discussion @ GH - #95</a>
 (A * is added to the Lintalist Search GUI title and Tray Menu tooltip)
 
-<b>-Administrator</b>: (re)start Lintalist as Administrator - also available as a Setting via Configuration (Administrator) or via the Tray menu [v1.9.7+] <a href='https://github.com/lintalist/lintalist/issues/99'>Discussion @ GH - #99</a>
+<b>-Administrator</b>: (re)start Lintalist as Administrator - also available as a Setting via Configuration (Administrator) or via the Tray menu [v1.9.7+] <span class='discussion'></span><a href='https://github.com/lintalist/lintalist/issues/99'>Discussion @ GH - #99</a>
 (<em>username</em>^ is added to the Lintalist Search GUI title and Tray Menu tooltip)
 
 <h2 id='FAQ'><a href='#FAQ' class='headline'>F.A.<em>Q</em> &amp; Known <em>Issues</em></a></h2>
@@ -1860,7 +1979,7 @@ There is also a configuration setting that can do this: <span class='setting'>Ac
 
 <h2 id='Expert'><a href='#Expert' class='headline'>Expert</a></h2>
 
-<b><a href='#RunQuery' class='headline'>RunQuery</a></b> <a href='https://github.com/lintalist/lintalist/issues/153'>Discussion @ GH - #153</a>
+<b><a href='#RunQuery' class='headline'>RunQuery</a></b> <span class='discussion'></span><a href='https://github.com/lintalist/lintalist/issues/153'>Discussion @ GH - #153</a>
 
 Allow user to use the query (what you typed in the searchbox) and start a user defined script passing on the query as parameter(s).
 
@@ -1890,7 +2009,7 @@ It seems it is possible to run Lintalist on Linux, more information here <a href
 <img src='img/lintalist-title-footer.gif' alt='lintalist' align='left' style='margin-top:6px;padding-right:5px;' /><b>Disclaimer:</b> Use at your own risk. If you find a new bundle take a look at the script sections of each snippet. As Lintalist can run any AutoHotkey script it can also run faulty or insecure code. Be sensible, if you simply want to try a bundle selecting 'Pause scripts' via the tray menu might be a useful idea.
 </span> 
 
-<span style='float:right;'>&copy; Copyright 2009-2023 Lintalist. See license.txt</span>
+<span style='float:right;'>&copy; Copyright 2009-2024 Lintalist. See license.txt</span>
 </pre>
 
 <a href="https://github.com/lintalist"><img style="position: absolute; top: 0; right: 0; border: 0;" src="img/forkme_right_red_aa0000.png" alt="Fork me on GitHub"></a>

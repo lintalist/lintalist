@@ -1,9 +1,10 @@
-﻿/* 
+﻿/*
 Plugin        : Choice [Standard Lintalist]
 Purpose       : Make a selection from a list [part of code also placed in lintalist.ahk and used to allow users to select a bundle]
-Version       : 2.1
+Version       : 2.2
 
 History:
+- 2.2 Image Preview w filelist - https://github.com/lintalist/lintalist/issues/239 (only works with fullpath, P) 
 - 2.1 Check if PluginOptionsResults is empty, if so, set the font to bold and update the listbox -- https://github.com/lintalist/lintalist/pull/258/files
       Addition: ChoiceInput checkbox so it can be user choice?
       and adding -SysMenu https://github.com/lintalist/lintalist/discussions/260
@@ -23,12 +24,18 @@ History:
 
 GetSnippetChoice:
 
+doc := ComObjCreate("htmlfile")
+FileRead, htmltemplate, %A_ScriptDir%\docs\previewtemplate.htm
+htmdoc:=StrReplace(htmltemplate,"--content--","Hello")
 ; just make sure we set it to prevent the listbox overlapping the cancel/random/autocenter options
 If (ChoiceAutoCenter = "")
 	{
 	 ChoiceAutoCenter:=1
 	 Gosub, ChoiceAutoCenterWrite
 	}
+
+
+Gosub, PreviewWindowPosition
 
 MakeChoice:
 	  ChoiceQuestion:=""
@@ -53,14 +60,23 @@ MakeChoice:
 		 Gui, 10:+Owner +AlwaysOnTop +Resize +MinSize -SysMenu
 		 Gui, 10:Default
 		 Gui, 10:font, s%FontSize%
-		 Gui, 10:Add, Edit,     x5 y5 w400 vChoiceFilterText gChoiceFilterText hwndHED1, 
+		 Gui, 10:Add, Edit,     x5 y5 w400 vChoiceFilterText gChoiceFilterText hwndHED1,
 		 Gui, 10:Add, ListBox,  xp yp+30 w400 R10 vItem gChoiceMouseOK, %PluginOptions%
 		 Gui, 10:Add, button,   w70       vChoiceCancel gCancelChoice, &Cancel
 		 Gui, 10:Add, button,   xp+75 w80 vChoiceRandom gChoiceRandom, &Random
 		 Gui, 10:Add, Checkbox, xp+90  yp-5 w106 vChoiceAutoCenter gChoiceAutoCenter, &Auto Center
 		 Gui, 10:Add, Checkbox, xp+110 yp   w130 vChoiceInput gChoiceInput, &Use as [[Input]]
+		 ;Gui, 10:Add, button  , xp+130 yp   w130 vPreview gTogglePreview, 👁 View
 		 Gui, 10:Add, button,   xp yp default vChoiceOK gChoiceOK hidden, OK
 
+		 Gui, PreviewChoice:Destroy
+		 Gui, PreviewChoice:Default
+		 Gui, PreviewChoice:+ToolWindow +Border -Sysmenu +AlwaysOnTop
+;		 Gui, PreviewChoice:Add, Picture,     x5 y5 w400 h400 vPreviewChoiceText
+		 Gui, PreviewChoice:Add, ActiveX, w450 h405 x5 y5 vdoc, HTMLFile
+		 If RegExMatch(PluginOptions,"i)[a-z]:\\") ; there seems to be a file path in the options
+			Gosub, PreviewChoiceShow
+			
 		 If ChoiceAutoCenter
 			GuiControl,10:,ChoiceAutoCenter, 1
 		 If ChoiceInput
@@ -83,10 +99,14 @@ MakeChoice:
 				 Gui, 10:Show
 				}
 			 Catch
-				Gui, 10:Show, w410 Center, Select and press enter
+				Gui, 10:Show, w410 Center, Select and press enter - Lintalist (choice plugin)
 			}
 		 else
-			Gui, 10:Show, w410 Center, Select and press enter
+			Gui, 10:Show, w410 Center, Select and press enter - Lintalist (choice plugin)
+		 ControlGet, item, List, Focused, ListBox1,  Select and press enter
+		 If InStr(item,"`n") ; we may get all the results of the "typing to filter" so assume we want first result
+			item:=Trim(StrSplit(item,"`n").1,"`n`r")
+		 Gosub, UpdatePreview
 
 		 Gui10ListboxCheckPosition("Select and press enter")
 		 SetEditCueBanner(HED1, "Filter: " ChoiceQuestion " (Ctrl+f)")
@@ -118,7 +138,7 @@ Loop, Parse, PluginOptions, |
 	 re:="iUms)" PluginsFilterText
 	 if InStr(PluginsFilterText,A_Space) ; prepare regular expression to ensure search is done independent on the position of the words
 		re:="iUms)(?=.*" RegExReplace(PluginsFilterText,"iUms)(.*)\s","$1)(?=.*") ")"
-	 if RegExMatch(A_LoopField,re) 
+	 if RegExMatch(A_LoopField,re)
 		PluginOptionsResults .= A_LoopField "|"
 	}
 
@@ -128,7 +148,7 @@ Loop, Parse, PluginOptions, |
 if (PluginOptionsResults = "") and (ChoiceInput)
 {
 	Gui, 10:Font, Bold
-	GuiControl, Font, Item 
+	GuiControl, Font, Item
 	PluginOptionsResults := PluginsFilterText
 }
 else
@@ -140,14 +160,30 @@ else
 GuiControl, 10:, ListBox1, |%PluginOptionsResults%
 PluginsFilterText:=""
 PluginOptionsResults:=""
-Gui, 10:Submit,NoHide	
+Gui, 10:Submit,NoHide
 If (item = "") ; if we didn't focus on results list while "typing to filter" in Choice it may return empty
 	{
 	 ControlGet, item, List, Focused, ListBox1,  Select and press enter
 	 If InStr(item,"`n") ; we may get all the results of the "typing to filter" so assume we want first result
 		item:=Trim(StrSplit(item,"`n").1,"`n`r")
 	}
+Gosub, UpdatePreview
+Return
 
+UpdatePreview:
+Gui, PreviewChoice:Default
+SplitPath, item, , , OutExtension
+if OutExtension in bmp,gif,ico,jpg,jpeg,png
+	htmdoc:=StrReplace(htmltemplate,"--content--","<img src=file:///" StrReplace(StrReplace(item," ","%20"),"\","/") "  >")
+else if OutExtension in txt,md,htm,html,shtm,shtml,css,ahk,cmd
+	{
+	 FileRead, htmltextdata, %item%
+	 htmdoc:=StrReplace(htmltemplate,"--content--","<pre><code>" htmltextdata "</code></pre>")
+	}
+else
+	htmdoc:=StrReplace(htmltemplate,"--content--","no preview possible")
+doc.write(htmdoc)
+doc.close()
 Gui, 10:Default
 Return
 
@@ -175,13 +211,28 @@ PluginOptions:=""
 ChoiceQuestion:=""
 PluginsFilterText:=""
 PluginOptionsResults:=""
+Gosub, PreviewChoiceGuiClose
 Gosub, 10GuiSavePos
 Gui, 10:Default
 Gui, 10:Destroy
+Gui, PreviewChoice:Destroy
 Sleep 50
 clip:=""
 CancelPlugin:=1
 ; Gosub, CheckTypedLoop ; revert https://github.com/lintalist/lintalist/issues/52 no longer needed?
+Return
+
+PreviewChoiceGuiClose:
+IfWinNotExist, preview ahk_class AutoHotkeyGUI
+	Return
+WinGetPos, PreviewX, PreviewY, , , preview ahk_class AutoHotkeyGUI
+IniWrite, %PreviewX%      , %A_ScriptDir%\session.ini, choice, PreviewX
+IniWrite, %PreviewY%      , %A_ScriptDir%\session.ini, choice, PreviewY
+Return
+
+PreviewWindowPosition:
+IniRead, PreviewX         , %A_ScriptDir%\session.ini, choice, PreviewX, 10
+IniRead, PreviewY         , %A_ScriptDir%\session.ini, choice, PreviewY, 10
 Return
 
 10GuiSavePos:
@@ -230,7 +281,7 @@ SetEditCueBanner(HWND, Cue) {  ; requires AHL_L
 
 ; Under some circumstances it would (still) be possible that the listbox in Gui, 10 could be
 ; - too short (height < 10px) in the Add snippet/select Bundle gui
-; - too heigh so that it overlaps the cancel/random/Checkbox 
+; - too high so that it overlaps the cancel/random/Checkbox
 ; we there use this functions to check the height and reset it using ControlMove if needed
 ; TODO: This should probably better be solved by not re-using Gui, 10: all the time and only use
 ; it for Choice vs various other listbox GUIs
@@ -241,8 +292,34 @@ Gui10ListboxCheckPosition(gui10title)
 	; MsgBox % Gui10CancelY ">" Gui10ListboxY+Gui10ListboxHeight "`n" Gui10ListboxX ":" Gui10ListboxY ":" Gui10ListboxWidth ":" Gui10ListboxHeight ; debug
 	 If (Gui10CancelY = "")
 		Gui10CancelY:=0
-	 If (Gui10ListboxY+Gui10ListboxHeight > Gui10CancelY) 
+	 If (Gui10ListboxY+Gui10ListboxHeight > Gui10CancelY)
 		ControlMove, Listbox1, Gui10ListboxX, Gui10ListboxX, Gui10ListboxWidth, % Gui10CancelY-Gui10ListboxY-10, %gui10title%
 	 If (Gui10ListboxHeight < 20)
 		ControlMove, Listbox1, Gui10ListboxX, Gui10ListboxX, Gui10ListboxWidth, 110, %gui10title%
 	}
+
+#IfWinActive, Select and press enter ahk_class AutoHotkeyGUI
+F3::
+TogglePreview:
+if WinExist("preview ahk_class AutoHotkeyGUI")
+	{
+	 Gosub, PreviewChoiceGuiClose
+	 Gui, PreviewChoice:Hide
+	}
+else
+	Gosub, PreviewChoiceShow
+Return
+#IfWinActive
+
+#IfWinActive, preview ahk_class AutoHotkeyGUI
+Esc::
+F3::
+Gosub, TogglePreview
+Return
+#IfWinActive
+
+PreviewChoiceShow:
+Gui, PreviewChoice:Show, w465 h410 x%PreviewX% y%PreviewY% NA, preview
+;WinActivate, preview ahk_class AutoHotkeyGUI
+WinActivate, Select and press enter ahk_class AutoHotkeyGUI
+Return

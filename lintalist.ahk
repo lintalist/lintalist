@@ -4,11 +4,11 @@ Name            : Lintalist
 Author          : Lintalist
 Purpose         : Searchable interactive lists to copy & paste text, run scripts,
                   using easily exchangeable bundles
-Version         : 1.9.22
+Version         : 1.9.23
 Code            : https://github.com/lintalist/
 Website         : http://lintalist.github.io/
 AutoHotkey Forum: https://autohotkey.com/boards/viewtopic.php?f=6&t=3378
-License         : Copyright (c) 2009-2023 Lintalist
+License         : Copyright (c) 2009-2024 Lintalist
 
 This program is free software; you can redistribute it and/or modify it under the
 terms of the GNU General Public License as published by the Free Software Foundation;
@@ -23,7 +23,7 @@ See license.txt for further details.
 */
 
 ; Default settings
-#Requires AutoHotkey v1.1.31+ ; we use Switch
+#Requires AutoHotkey v1.1.32+ ; we use Switch
 #NoEnv
 #SingleInstance, force
 SetBatchLines, -1
@@ -42,7 +42,7 @@ PluginMultiCaret:=0 ; TODOMC
 
 ; Title + Version are included in Title and used in #IfWinActive hotkeys and WinActivate
 Title=Lintalist
-Version=1.9.22
+Version=1.9.23
 
 ; Gosub, ReadPluginSettings
 
@@ -145,12 +145,12 @@ if 0 > 0  ; check cl parameters
 		 param := %A_Index%  ; Fetch the contents of the variable whose name is contained in A_Index.
 		 if (param = "-Active")
 			cl_Active:=1
-		 if (param = "-ReadOnly") ; possible to expand to various options, see discussion https://github.com/lintalist/lintalist/issues/95 
+		 if (param = "-ReadOnly") ; possible to expand to various options, see discussion https://github.com/lintalist/lintalist/issues/95
 			{
 			 cl_ReadOnly:=1
 			 AppWindow:="*" AppWindow
 			}
-		 if (param = "-Administrator") 
+		 if (param = "-Administrator")
 			{
 			 cl_Administrator:=1
 			 AppWindow:=A_UserName "^ " AppWindow
@@ -182,11 +182,13 @@ If (Administrator = 1) or (cl_Administrator = 1)
 ReadMultiCaretIni()
 ReadAltPasteIni()
 ReadLineFeedIni()
+ReadEditorsIni()
+
 If Statistics
 	Statistics()
 Else
 	{
-	 
+
 	 Menu, Tray, Disable, &View Statistics
 	}
 
@@ -250,7 +252,7 @@ If (StartSearchHotkey = "Capslock")
 			MsgBox, 64, Lintalist, %A_LoopField% is running may conflict with Capslock.`nChange the Lintalist Hotkey in the Configuration.`nLook for the StartSearchHotkey setting.`n`nYou can find the Configuration option in the tray menu or`nvia the Edit, Configuration menu in the Lintalist search window.
 		}
 
-; check capslock and ScrollLock status so we can actually use them as hotkey if defined by user and 
+; check capslock and ScrollLock status so we can actually use them as hotkey if defined by user and
 ; they are already in the DOWN (active) state when Lintalist is started
 
 ProgramHotKeyList:="StartSearchHotkey,StartOmniSearchHotkey,QuickSearchHotkey,ExitProgramHotKey"
@@ -314,7 +316,7 @@ MyToolbarIcons:={ "UnLocked" : "8"
 	, "Hotkeys" : "5"
 	, "NoHotkeys" : "16"
 	, "ShortHand" : "6"
-	, "NoShortHand" : "17" 
+	, "NoShortHand" : "17"
 	, "PinTop" : "18" }
 
 ; https://autohotkey.com/board/topic/94750-class-toolbar-create-and-modify-updated-19-08-2013/?p=599930
@@ -371,14 +373,16 @@ GUIStartOmni:
 OmniSearch:=1
 GuiStart: ; build GUI
 
-; https://github.com/lintalist/lintalist/issues/247
-; https://www.autohotkey.com/boards/viewtopic.php?f=76&t=119231 
-KeyWait % ReturnKeyWaitKey(A_ThisHotkey), % "T" StartSearchHotkeyTimeOut / 1000
-If !ErrorLevel
- Return
-	
+If (StartSearchHotkeyTimeOut > 0)
+	{
+	; https://github.com/lintalist/lintalist/issues/247
+	; https://www.autohotkey.com/boards/viewtopic.php?f=76&t=119231
+	KeyWait % ReturnKeyWaitKey(A_ThisHotkey), % "T" StartSearchHotkeyTimeOut / 1000
+	If !ErrorLevel
+	 Return
+	}
 If Statistics
-	 Stats("SearchGui")
+	Stats("SearchGui")
 OmniSearchText:=""
 LastText = fadsfSDFDFasdFdfsadfsadFDSFDf
 If !MenuToggleView ; if we toggle via the menu we should skip the hide/show option
@@ -396,14 +400,14 @@ If !WinActive(AppWindow)
 Else
 	{
 	 If StartSearchHotkeyToggleView
-	 	Gosub, ToggleView
+		Gosub, ToggleView
 	}
 
 Gui, 1:Destroy ; just to be sure
-	
+
 If Theme["MainBackgroundColor"]
 	Gui, 1: Color, % Theme["MainBackgroundColor"]
-Gui, 1:+Border +Resize +MinSize%Width%x%Height%
+Gui, 1:+Border +Resize +MinSize%Width%x%Height% hwndHW_Gui
 
 Gui, 1:Menu, MenuBar
 Gui, 1:Add, Picture, x4 y4 w%SearchIconSize% h-1, icons\search.ico ; TODO BIGICONS
@@ -437,7 +441,7 @@ If Theme["PreviewBackgroundColor"]
 
 Gui, 1:Font, s8, Arial
 If Theme["StatusBarBackgroundColor"]
-	Gui, 1:Add, StatusBar, % "Background" Theme["StatusBarBackgroundColor"] " -Theme" 
+	Gui, 1:Add, StatusBar, % "Background" Theme["StatusBarBackgroundColor"] " -Theme"
 else
 	Gui, 1:Add, StatusBar,,
 SB1:=Round(.8*Width)
@@ -510,9 +514,14 @@ Try
 	Gui, 1:Show, w%Width% h%Height% x%Pos1% y%Pos2%, %AppWindow%
 Catch
 	Gui, 1:Show, w760 h400, %AppWindow%
-	
-If (DisplayBundle > 1)
-	 CLV := New LV_Colors(HLV)
+
+If (DisplayBundle > 1) or AlternateRowColor
+	CLV := New LV_Colors(HLV)
+
+If AlternateRowColor and (DisplayBundle < 2) ; if we use colors in DisplayBundle we do not want alternating rows
+	CLV.AlternateRows("0x" AlternateRowColor)
+If IsObject(AlternateSelectionColor)
+	CLV.SelectionColors("0x" AlternateSelectionColor[1],"0x" AlternateSelectionColor[2])
 
 If (JumpSearch=1) ; Send clipboard text to search control
 	{
@@ -529,7 +538,7 @@ Gosub, GetText                          ; 20110623
 PlaySound(PlaySound,"open")
 
 If Theme["SearchBoxBackgroundColor"]
-	 CtlColors.Attach(EDID1, Theme["SearchBoxBackgroundColor"], Theme["SearchBoxTextColor"])
+	CtlColors.Attach(EDID1, Theme["SearchBoxBackgroundColor"], Theme["SearchBoxTextColor"])
 SetEditCueBanner(EDID1, "Type to search (Ctrl+f)")
 
 Return
@@ -602,7 +611,7 @@ Loop, parse, SearchBundles, CSV
 		 SearchThis:=""
 		 SearchText:=LTrim(CurrText,OmniChar)
 
-		 If ColumnSearchDelimiter and RegExMatch(SearchText,"^[0-5]" ColumnSearchDelimiter)
+		 If ColumnSearchDelimiter and RegExMatch(SearchText,"^[0-6]" ColumnSearchDelimiter)
 			{
 			Gosub, ColumnSearchText
 			SearchText:=ColumnSearchText
@@ -616,14 +625,18 @@ Loop, parse, SearchBundles, CSV
 ;		 SearchThis2:=Snippet[Bundle,A_Index,2] ; part '2' (shift-enter)
 ;		 SearchThis3:=Snippet[Bundle,A_Index,4] ; shorthand
 		 If ColumnID
-			SearchThis:=Snippet[Bundle,A_BundleIndex,ColumnID]
+			{
+			 SearchThis:=Snippet[Bundle,A_BundleIndex,ColumnID]
+			 If (ColumnID = 6)
+				SearchThis:=MenuName_%Bundle% " " Description_%Bundle%
+			}
 		 else
 			{
 			 If (ColumnSearch = "") ; could be set in hidden Ini setting
 				SearchThis:=Snippet[Bundle,A_BundleIndex,1] " " Snippet[Bundle,A_BundleIndex,2] " " Snippet[Bundle,A_BundleIndex,4] ; part1, part2, shorthand
 			 else
 				Loop, parse, ColumnSearch, CSV
-					SearchThis .= Snippet[Bundle,A_BundleIndex,A_LoopField] " "	
+					SearchThis .= Snippet[Bundle,A_BundleIndex,A_LoopField] " "
 			}
 
 		 If (SearchMethod = 1) ; normal
@@ -818,9 +831,10 @@ If (SelItem = 0)
 	SelItem = 1
 If PasteResult
 	SelItem:=PasteResult
-PasteResult:=""	
+PasteResult:=""
 LV_GetText(Paste, SelItem, 5) ; get bundle_index from 5th column which is always hidden
 Gui, 1:Destroy
+SavedSearchText:=CurrText
 CurrText= ; 20110623
 if (paste = "") ; there were no search results, this will prevent pasting result from empty Gui, instead it would paste the previous one
 	Return
@@ -865,7 +879,7 @@ if QueryDelimiter
 	 StringReplace, Script, Script, [[Query1]], % Trim(Query[1]), All
 	 StringReplace, Script, Script, [[Query2]], % Trim(Query[2]), All
 	}
-Else if (Trim(QueryDelimiter) = "") ; remove query 
+Else if (Trim(QueryDelimiter) = "") ; remove query
 	{
 	 Text1:=RegExReplace(Text1,"iU)\[\[query[12=]{0,2}([^[]*)\]\]")
 	 Text2:=RegExReplace(Text2,"iU)\[\[query[12=]{0,2}([^[]*)\]\]")
@@ -895,13 +909,13 @@ If ((Paste2 <> 1) and (SortByUsage = 1)) ; if it already is the first don't both
 
 If (Text1 = "") and (Text2 = "") and (Script = "")
 	Return ; nothing to paste or run
+If (InStr(Text1, "[[Clipboard]]") > 0) or (InStr(Text2, "[[Clipboard]]") > 0) ; if we do it here it saves us some time getting back the original clipsaved variable
+	{ ; insert clipboard
+	 StringReplace, Text1, Text1, [[Clipboard]], %Clipboard%, All
+	 StringReplace, Text2, Text2, [[Clipboard]], %Clipboard%, All
+	}
 If (Script = "") or (ScriptPaused = 1) ; script is empty so we need to paste Text1 or Text2
 	{
-	 If (InStr(Text1, "[[Clipboard]]") > 0) or (InStr(Text2, "[[Clipboard]]") > 0) ; if we do it here it saves us some time getting back the original clipsaved variable
-		{ ; insert clipboard
-		 StringReplace, Text1, Text1, [[Clipboard]], %Clipboard%, All
-		 StringReplace, Text2, Text2, [[Clipboard]], %Clipboard%, All
-		}
 	 If (PastText1 = 1) OR (Text2 = "")
 		Clip:=Text1
 	 Else If (PastText1 = 0) ; if shift-enter use Text2 BUT if it is empty revert to Text1
@@ -980,7 +994,7 @@ If (Script = "") or (ScriptPaused = 1) ; script is empty so we need to paste Tex
 		else
 			{
 			 If TryClipboard()
-				Clipboard:=ClipSet("s",2,SendMethod,Clip) ; Must be 2 to restore clipboard #217 
+				Clipboard:=ClipSet("s",2,SendMethod,Clip) ; Must be 2 to restore clipboard #217
 			}
 		}
 
@@ -997,12 +1011,12 @@ If (Script = "") or (ScriptPaused = 1) ; script is empty so we need to paste Tex
 
 	 If (SnippetPasteMethod = 0) or (SnippetPasteMethod = "") ; there was no PasteMethod plugin in the snippet
 		{
-		
+
 		 If (PasteMethod = 0) or (SnippetPasteMethod = 0) ; paste it and clear formatted clipboard
 			{
 			 SendKey(SendMethod, ShortcutPaste)
 			 PlaySound(PlaySound,"paste")
-			 Clipboard:=ClipSet("s",2,SendMethod,Clip) ; Must be 2 to restore clipboard #217 
+			 Clipboard:=ClipSet("s",2,SendMethod,Clip) ; Must be 2 to restore clipboard #217
 			 WinClip.Clear()
 			}
 		 else If (PasteMethod = 1) ; paste it, keep formatted clipboard
@@ -1103,7 +1117,7 @@ Else If (Script <> "") and (ScriptPaused = 0) ; we run script by saving it to tm
 			 BackUp:=0
 			}
 		}
-	 
+
 	 FileDelete, %TmpDir%\tmpScript.ahk
 	 StringReplace, Script, Script, LLInit(), %LLInit%, All
 
@@ -1173,6 +1187,12 @@ UpdateLVColWidth()
 	{
 	 global
 	 local c4w
+	 if SavedColumnsWidth
+		{
+		 loop, parse, SavedColumnsWidth, CSV
+		 LV_ModifyCol(A_Index,Round(A_LoopField/DPIFactor()))
+		 Return
+		}
 	 factor:=225
 	 Col4Correction:=Abs(FontSize-10)*10+10 ; if we set a bigger font size shorthand becomes to narrow very quickly ; TODO BIGICONS/fonts
 	 If DisplayBundle in 0,2 ; Bundle name, 6th column setting 0 & 2 hide column
@@ -1223,7 +1243,7 @@ UpdateLVColWidth()
 		}
 
 /*
-	 ; double check if widths are presentable - keep this as additional backup for future reference 
+	 ; double check if widths are presentable - keep this as additional backup for future reference
 	 ; width_c1w, width_c2w would need to be added to local variables at start of function
      ; https://github.com/lintalist/lintalist/issues/165#issuecomment-633706970
 	 SendMessage, 0x1000+29, 0, 0, SysListView321, %AppWindow%
@@ -1509,7 +1529,7 @@ ReturnKeyWaitKey(in)
 	{
 	 in := RegExReplace(in, "[#^+!<>]") ; remove standard modifiers inc. <^>! AltGr
 	 If InStr(in," & ")                 ; check for custom hotkey (a & b)
-	 	in:=trim(StrSplit(A_ThisHotkey,"&").2)
+		in:=trim(StrSplit(A_ThisHotkey,"&").2)
 	 return in
 	}
 
@@ -1526,10 +1546,28 @@ Return
 #IfWinActive
 
 #IfWinActive, Select and press enter ahk_class AutoHotkeyGUI
+Ins::
+Control, EditPaste, % SavedSearchText, Edit1, Select and press enter ahk_class AutoHotkeyGUI
+Return
+#IfWinActive
+
+#IfWinActive, Lintalist (input plugin) ahk_class #32770
+Ins::
+Control, EditPaste, % SavedSearchText, Edit1, Lintalist (input plugin) ahk_class #32770
+Return
+#IfWinActive
+
+#IfWinActive, Select and press enter ahk_class AutoHotkeyGUI
+^f::
+ControlFocus, Edit1, Select and press enter
+ControlSend, Edit1, {End}, Select and press enter
+Return
+
 Esc:: ; when we try cancel second time it fails. Why? Keyhistory shows the key is pressed
 Gosub, 10GuiClose
 Gosub, CancelChoice
 Gui, 10:Destroy
+Gui, PreviewChoice:Destroy
 Return
 #IfWinActive
 
@@ -1580,6 +1618,9 @@ If (ChoicePos = PreviousPos)
 	SendMessage, 0x18b, 0, 0, ListBox1, Select and press enter  ; 0x18b is LB_GETCOUNT (for a ListBox).
 	SendMessage, 390, (Errorlevel-1), 0, ListBox1, Select and press enter  ; LB_SETCURSEL = 390
 	}
+Gui, 10:Submit,NoHide
+Gosub, UpdatePreview
+Gui, 10:Default
 Return
 
 NumpadDown::
@@ -1593,6 +1634,9 @@ SendMessage, 0x188, 0, 0, ListBox1, Select and press enter  ; 0x188 is LB_GETCUR
 ChoicePos:=ErrorLevel+1
 If (ChoicePos = PreviousPos)
 	SendMessage, 390, 0, 0, ListBox1, Select and press enter  ; LB_SETCURSEL = 390 - position 'one'
+Gui, 10:Submit,NoHide
+Gosub, UpdatePreview
+Gui, 10:Default
 Return
 #IfWinActive
 
@@ -1846,14 +1890,12 @@ ControlGetFocus, OutputVar, %AppWindow%
 ControlSend, Edit1, ^{end}, %AppWindow% ; v1.4 to keep caret at end of typed text in searchbox
 If CheckListViewResults()
 	Return
-If (DisplayBundle > 1)
-	GuiControl, -Redraw, SelItem
+GuiControl, -Redraw, SelItem
 PreviousPos:=LV_GetNext()
 If (PreviousPos = 0) ; exception, focus is not on listview this will allow you to jump to last item via UP key
 	{
 	 ControlSend, SysListview321, {End}, %AppWindow%
-	 If (DisplayBundle > 1)
-		GuiControl, +Redraw, SelItem
+	 GuiControl, +Redraw, SelItem
 	 ShowPreview(PreviewSection)
 	 Return
 	}
@@ -1871,17 +1913,14 @@ If (ChoicePos <= 1)
 If (ChoicePos = PreviousPos) and (OutputVar <> "SysListview321")
 	ControlSend, SysListview321, {End}, %AppWindow%
 ShowPreview(PreviewSection)
-;ControlFocus, Edit1, %AppWindow%
-If (DisplayBundle > 1)
-	GuiControl, +Redraw, SelItem
+GuiControl, +Redraw, SelItem
 Return
 
 ~NumpadDown::
 ~Down::
 If CheckListViewResults()
 	Return
-If (DisplayBundle > 1)
-	GuiControl, -Redraw, SelItem
+GuiControl, -Redraw, SelItem
 ControlSend, Edit1, ^{end}, %AppWindow% ; v1.4 to keep caret at end of typed text in searchbox
 PreviousPos:=LV_GetNext()
 ControlGetFocus, OutputVar, %AppWindow%
@@ -1898,11 +1937,10 @@ If (ChoicePos > ItemsInList)
 If (ChoicePos = PreviousPos) and (OutputVar <> "SysListview321")
 	ControlSend, SysListview321, {Home}, %AppWindow%
 ShowPreview(PreviewSection)
-If (DisplayBundle > 1)
-	GuiControl, +Redraw, SelItem
+GuiControl, +Redraw, SelItem
 Return
 
-$!1:: ; alt-1..0 for the first 10 search results 
+$!1:: ; alt-1..0 for the first 10 search results
 $!2::
 $!3::
 $!4::
@@ -1934,11 +1972,29 @@ Return
 
 #IfWinActive Lintalist snippet editor
 $Rbutton::
+
 ControlGetFocus, Control, Lintalist snippet editor
+
 If !EditorHotkeySyntax
-	MatchListPlugins:="Edit2,Edit3,RICHEDIT50W1,RICHEDIT50W2"
+	{
+	 MatchListPlugins:="Edit2,Edit3,RICHEDIT50W1,RICHEDIT50W2"
+	 MatchListScriptTemplate:="Edit4,RICHEDIT50W3"
+	}
 else If EditorHotkeySyntax
-	MatchListPlugins:="Edit3,Edit4,RICHEDIT50W1,RICHEDIT50W2"
+	{
+	 MatchListPlugins:="Edit3,Edit4,RICHEDIT50W1,RICHEDIT50W2"
+	 MatchListScriptTemplate:="Edit5,RICHEDIT50W3"
+	}
+
+If Control in %MatchListScriptTemplate% ; script control
+	{
+	 Try ; the ScriptTemplates menu may not exits if we don't have any files in the "ScriptTemplates" folder
+		Menu, ScriptTemplates, Show
+	 Catch
+		Send {RButton}
+	 Return
+	}
+
 If Control not in %MatchListPlugins%
 	Send {Rbutton}
 Else
@@ -1956,10 +2012,10 @@ Return
 
 ShortText2:
 If (QuickSearchHotkey2 = "") ; additional safety check to avoid triggering by accident
-	Return                  ; see "setup hotkey" at the start of the script and INI
+	Return                   ; see "setup hotkey" at the start of the script and INI
 QuickSearchHotkeyPart2:=1
 ShortText:
-If (QuickSearchHotkey = "") ; additional safety check to avoid triggering by accident
+If (QuickSearchHotkey = "")  ; additional safety check to avoid triggering by accident
 	{
 	 QuickSearchHotkeyPart2:=0
 	 Return                  ; see "setup hotkey" at the start of the script and INI
@@ -2083,7 +2139,14 @@ Return
 
 ChoiceMouseOK: ; if selection by mouse
 If (A_GuiEvent <> "DoubleClick")
-	Return
+	{
+	 If WinExist("preview ahk_class AutoHotkeyGUI")
+		{
+		 Gui, 10:Submit,NoHide	
+		 Gosub, UpdatePreview
+		}
+	 Return
+	}
 
 ChoiceOK: ; selected via Enter
 Gui, 10:Submit,NoHide
@@ -2095,6 +2158,7 @@ If (item = "") ; if we didn't focus on results list while "typing to filter" in 
 	}
 Gosub, 10GuiSavePos
 Gui, 10:Destroy
+Gui, PreviewChoice:Destroy
 
 MadeChoice=1
 If (MultipleHotkey=1) ; via hotkey
@@ -2155,6 +2219,13 @@ lasttext:="fadsfSDFDFasdFdfsadfsadFDSFDf"
 ViaText:=0
 ViaShorthand:=0
 OmniSearch:=0
+Return
+
+; tools from usertools.ini
+UserToolsMenuHandler:
+for k, v in UserToolObj
+	if (v.1 = A_ThisMenuItem)
+		Run % v.2
 Return
 
 ; For tray and Search/Edit Gui menu - not including the File and Plugin Menus
@@ -2333,6 +2404,25 @@ Else If (A_ThisMenuItem = "Toggle Wide/Narrow View")
 	}
 Else If (A_ThisMenuItem = "Toggle On Top`tCtrl+T")
 	Gosub, GuiOnTop
+else If (A_ThisMenuItem = "Save column widths")
+	{
+	; https://www.autohotkey.com/docs/v1/lib/ListView.htm#LV_GetCount_Remarks
+	 Gui +LastFound
+	 SavedColumnsWidth:=""
+	 Loop % LV_GetCount("Column")
+		{
+		 SendMessage, 0x101D, A_Index - 1, 0, SysListView321  ; 0x101D is LVM_GETCOLUMNWIDTH.
+		 SavedColumnsWidth .= ErrorLevel ","
+		}
+	 SavedColumnsWidth:=RTrim(SavedColumnsWidth,",")
+	 IniWrite, %SavedColumnsWidth%, %IniFile%, Settings, SavedColumnsWidth
+	}
+else If (A_ThisMenuItem = "Reset column widths")
+	{
+	 SavedColumnsWidth:=""
+	 IniWrite, %SavedColumnsWidth%, %IniFile%, Settings, SavedColumnsWidth
+	 UpdateLVColWidth()
+	}
 ; /View menu
 
 Return
@@ -2430,7 +2520,7 @@ else
 			{
 			 ;
 			}
-			
+
 		}
 	 ; /checkmarks
 	 Lock:=LoadAll
@@ -2480,6 +2570,22 @@ If InStr(A_ThisMenuItem,"=")
 
 Return
 ;/PluginMenuHandler
+
+ScriptTemplatesMenuHandler:
+ControlGetFocus, Control, Lintalist snippet editor
+ScriptTemplatesCode:=""
+FileRead, ScriptTemplatesCode, %A_ScriptDir%\ScriptTemplates\%A_ThisMenuItem%
+If ErrorLevel
+	{
+	 MsgBox, 64, Lintalist, %A_ScriptDir%\ScriptTemplates\%A_ThisMenuItem%`nCan not be read.
+	 ScriptTemplatesCode:=""
+	 Return
+	}
+Control, EditPaste, % ScriptTemplatesCode, %Control%, Lintalist snippet editor
+
+ScriptTemplatesCode:=""
+Return
+;/ScriptTemplatesMenuHandler
 
 PauseShortcut: ; Toggle Hotkeys defined in Bundles
 Loop, parse, Group, CSV
@@ -2654,14 +2760,14 @@ CheckCursorPos(Clip)
 			StringReplace, Clip, Clip, ^|, ,All ; TODOMC
 		 UpLines=
 		}
-	 Return Clip	
+	 Return Clip
 	}
 
 CheckTyped(TypedChar,EndKey)
 	{
 	 Global
 	 expandit:=0,PasteShorthandPart2:=0
-	 
+
 	 if TypedChar in %TriggerKeysSource%
 		expandit:=1
 
@@ -2744,9 +2850,9 @@ DPIFactor()
 Global DPIDisable
 ;If DPIDisable
 ;	Return 1
-RegRead, DPI_value, HKEY_CURRENT_USER, Control Panel\Desktop\WindowMetrics, AppliedDPI 
-; the reg key was not found - it means default settings 
-; 96 is the default font size setting 
+RegRead, DPI_value, HKEY_CURRENT_USER, Control Panel\Desktop\WindowMetrics, AppliedDPI
+; the reg key was not found - it means default settings
+; 96 is the default font size setting
 if (errorlevel=1) OR (DPI_value=96)
 	Return 1
 else
@@ -2887,10 +2993,10 @@ Menu, Plugins, Add, Insert [[DateTime=]] , PluginMenuHandler
 ;Menu, Plugins, Add, Insert [[Enc=]]      , PluginMenuHandler
 Menu, Plugins, Add, Insert [[File=]]     , PluginMenuHandler
 
-Menu, Filelist, Add, Insert [[FileList=?T|]]	- TotalCmdr, PluginMenuHandler 
-Menu, Filelist, Add, Insert [[FileList=?W]]	- Window (title), PluginMenuHandler 
-Menu, Filelist, Add, Insert [[FileList=?E]]	- Explorer, PluginMenuHandler 
-Menu, Filelist, Add, Insert [[FileList=?|]], PluginMenuHandler 
+Menu, Filelist, Add, Insert [[FileList=?T|]]	- TotalCmdr, PluginMenuHandler
+Menu, Filelist, Add, Insert [[FileList=?W]]	- Window (title), PluginMenuHandler
+Menu, Filelist, Add, Insert [[FileList=?E]]	- Explorer, PluginMenuHandler
+Menu, Filelist, Add, Insert [[FileList=?|]], PluginMenuHandler
 Menu, Plugins, Add, Insert [[FileList=]] , :Filelist
 Menu, Plugins, Add, Insert [[Input=]]    , PluginMenuHandler
 Menu, Plugins, Add, Insert [[PasteMethod=]], PluginMenuHandler
@@ -2943,9 +3049,12 @@ Menu, Tools, Add, Convert CSV file         , GlobalMenuHandler
 Menu, Tools, Add, Convert List             , GlobalMenuHandler
 Menu, Tools, Add, Convert Texter bundle    , GlobalMenuHandler
 Menu, Tools, Add, Convert UltraEdit taglist, GlobalMenuHandler
+ReadUserTools()
 
 Menu, View, Add, Toggle Wide/Narrow View   , GlobalMenuHandler
 Menu, View, Add, Toggle On Top`tCtrl+T,  GlobalMenuHandler
+Menu, View, Add, Save column widths,  GlobalMenuHandler
+Menu, View, Add, Reset column widths,  GlobalMenuHandler
 
 Menu, Help, Add, &Help, GlobalMenuHandler
 Menu, Help, Icon,&Help, icons\help.ico
@@ -2954,12 +3063,20 @@ Menu, Help, Icon,&About, icons\help.ico
 Menu, Help, Add, &Quick Start Guide, GlobalMenuHandler
 Menu, Help, Icon,&Quick Start Guide, icons\help.ico
 
-Menu, MenuBar2, Add, &Plugins, :Plugins
+Menu, MenuBar2, Add, &Plugins, :Plugins ; make it available in Edit gui
 Menu, MenuBar2, Add, &Tools, :Tools ; make it available in Edit gui
 Menu, MenuBar , Add, &Tools, :Tools ; make it available in Search gui
+Menu, MenuBar2, Add, &Editor, :EditorMenuButton ; make it available in Edit gui
 Menu, MenuBar , Add, &View,  :View ; make it available in Search gui
 Menu, MenuBar2, Add, &Help, :Help , Right ; make it available in Edit gui (Right works as of v1.1.22.07+)
 Menu, MenuBar , Add, &Help, :Help , Right ; make it available in Search gui
+
+If (FileExist(A_ScriptDir "\ScriptTemplates\") = "D")
+	{
+	 Loop, Files, % A_ScriptDir "\ScriptTemplates\*.ahk"
+		Menu, ScriptTemplates, Add, %A_LoopFileName%, ScriptTemplatesMenuHandler
+	}
+
 Return
 
 ; OnExit
@@ -2980,8 +3097,8 @@ StringTrimRight, LastBundle, LastBundle, 1
 if !cl_ReadOnly
 	{
 
-	 ; this same code is also in ReadIni.ahk 
-	 ; just make sure these specific settings have a value so reloading/restarting works better 
+	 ; this same code is also in ReadIni.ahk
+	 ; just make sure these specific settings have a value so reloading/restarting works better
 	 ; (when updating AHK via the official installer script it seems some settings are lost)
 	 IniListFinalCheck:="Lock,Case,ShorthandPaused,ShortcutPaused,ScriptPaused"
 	 Loop, parse, IniListFinalCheck, CSV

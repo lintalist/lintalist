@@ -87,8 +87,8 @@ INISetup:={ AlwaysLoadBundles:     {default:"",find:"bundles\"}
 			, BigIcons:            {default:"1"}
 			, AutoHotkeyVariables: {default:""}
 			, EditorSyntaxHL:      {default:"0"}
-			, SnippetEditor:       {default:""} } ; becomes too long 
-			
+			, SnippetEditor:       {default:""} } ; becomes too long
+
 			IniSetup["PlaySound"]:={default:""}
 			IniSetup["EditorHotkeySyntax"]:={default:"0"}
 			IniSetup["Administrator"]:={default:"0"}
@@ -115,6 +115,9 @@ INISetup:={ AlwaysLoadBundles:     {default:"",find:"bundles\"}
 			IniSetup["StartSearchHotkeyTimeOut"]:={default:"0"}
 			IniSetup["StartSearchHotkeyToggleView"]:={default:"1"}
 			IniSetup["ShorthandPart2"]:={default:""}
+			IniSetup["SavedColumnsWidth"]:={default:""}
+			IniSetup["AlternateRowColor"]:={default:"e8f4f8"}
+			IniSetup["AlternateSelectionColor"]:={default:""}
 
 	 ShortcutSearchGuiShow:=["1: ","2: ","3: ","4: ","5: ","6: ","7: ","8: ","9: ","0: ", "   "]
 
@@ -138,6 +141,8 @@ INISetup:={ AlwaysLoadBundles:     {default:"",find:"bundles\"}
 				%k%:=v.max
 		}
 
+		AlternateSelectionColor:=StrSplit(AlternateSelectionColor,",")
+
 		; finalise certain settings
 		SplitPath, Icon1, , , , Icon1 ; trim ext
 		SplitPath, Icon2, , , , Icon2 ; trim ext
@@ -151,7 +156,7 @@ INISetup:={ AlwaysLoadBundles:     {default:"",find:"bundles\"}
 			Theme:=""
 		else
 			Theme:=StrSplit(Theme,".").1
-				
+
 		StringSplit, ColumnWidthPart, ColumnWidth, -
 
 		if (ColumnSort <> "NoSort")
@@ -190,30 +195,30 @@ INISetup:={ AlwaysLoadBundles:     {default:"",find:"bundles\"}
 			ShowGrid = Grid
 
 	 If RegExMatch(QueryDelimiter,"^\s*\\s")
-	 	QueryDelimiter:=" "
+		QueryDelimiter:=" "
 	 else
-	 	QueryDelimiter:=SubStr(Trim(QueryDelimiter),1,1) ; only use first char if a string was entered
+		QueryDelimiter:=SubStr(Trim(QueryDelimiter),1,1) ; only use first char if a string was entered
 
 	 If RegExMatch(ColumnSearchDelimiter,"^\s*\\s")
-	 	ColumnSearchDelimiter:=" "
+		ColumnSearchDelimiter:=" "
 	 else
-	 	ColumnSearchDelimiter:=SubStr(Trim(ColumnSearchDelimiter),1,1) ; only use first char if a string was entered
+		ColumnSearchDelimiter:=SubStr(Trim(ColumnSearchDelimiter),1,1) ; only use first char if a string was entered
 
 	 ParseEscapedArray:=StrSplit(ParseEscaped,",")
-	 
+
 	 If !FileExist(A_ScriptDir "\" QueryScript) and (QueryAction = 1)
 		FileAppend, `; See QueryAction`, QueryHotkey`, and QueryScript in settings.ini`nMsgBox `%0`% params: `%1`% `%2`% `%3`% `%4`% `%5`% `%6`% `%7`% `%8`% `%9`%`n, %A_ScriptDir%\%QueryScript%
 	 Hotkey, IfWinActive, Lintalist snippet editor
-	 If (Trim(EditorAutoCloseBrackets) <> "") 
-	 	Loop, parse, EditorAutoCloseBrackets, `;
-	 		Hotstring(":*:" StrSplit(A_LoopField,",").1, Func("AutoCloseBrackets").Bind(StrSplit(A_LoopField,",").2))
+	 If (Trim(EditorAutoCloseBrackets) <> "")
+		Loop, parse, EditorAutoCloseBrackets, `;
+			Hotstring(":*:" StrSplit(A_LoopField,",").1, Func("AutoCloseBrackets").Bind(StrSplit(A_LoopField,",").2))
 	 Hotkey, IfWinActive
 
 	 ReadCountersIni()
 	 ReadPlaySoundIni()
 
-	 ; this same code is also in lintalist.ahk - SaveSettings: 
-	 ; just make sure these specific settings have a value so reloading/restarting works better 
+	 ; this same code is also in lintalist.ahk - SaveSettings:
+	 ; just make sure these specific settings have a value so reloading/restarting works better
 	 ; (when updating AHK via the official installer script it seems some settings are lost)
 	 IniListFinalCheck:="Lock,Case,ShorthandPaused,ShortcutPaused,ScriptPaused"
 	 Loop, parse, IniListFinalCheck, CSV
@@ -221,7 +226,7 @@ INISetup:={ AlwaysLoadBundles:     {default:"",find:"bundles\"}
 			%A_LoopField%:=0
 
 	 If (ColumnSort <> "NoSort")
-	 	ShortCutSearchGui:=0
+		ShortCutSearchGui:=0
 
 	 ; See GuiCheckXYPos.ahk
 	 ; for Choice and Editor position so we can always SET a value #121
@@ -280,6 +285,65 @@ ReadPlaySoundIni()
 	 IniRead, playsound_3_close, %ini%, 3, close, %A_Space%
 	}
 
+ReadUserTools()
+	{
+	 Global UserToolObj
+	 If FileExist(A_ScriptDir "\usertools.ini")
+		{
+		 UserToolObj:=[]
+		 Menu, Tools, Add
+		 IniRead, UserToolsSection, usertools.ini, settings
+		 Loop, parse, UserToolsSection, `n, `r
+			{
+			 UserToolObj[A_Index]:=StrSplit(A_LoopField,"=",,2)
+			 Menu, Tools, Add, % UserToolObj[A_Index,1], UserToolsMenuHandler
+			}
+		}
+	}
+
+ReadEditorsIni()
+	{
+	 Global EditorMenu
+	 Menu, EditorMenuButton, Add
+	 Menu, EditorMenuButton, DeleteAll
+	 Menu, EditorMenuButton, Add, Default, EditorMenuHandler
+	 Menu, EditorMenuButton, Check, Default
+	 Menu, EditorMenuButton, Add
+
+	 If FileExist(A_ScriptDir "\editors.ini")
+		{
+
+		 EditorMenu:=[]
+		 EditorMenu:=["Default",SnippetEditor]
+
+		 IniRead, OutputVarSection, %A_ScriptDir%\editors.ini, settings
+
+		 If (OutputVarSection = "") or (OutputVarSection = "ERROR")
+			{
+			 Menu, EditorMenuButton, Add, Reset (enable) Edit Buttons, EditorMenuHandler
+			 Return
+			}
+
+		 Loop, parse, OutputVarSection, `n, `r
+			{
+			 tempeditors:=StrSplit(A_LoopField,"=")
+			 EditorMenu[tempeditors.1]:=tempeditors.2
+			 Menu, EditorMenuButton, Add, % tempeditors.1, EditorMenuHandler
+			}
+
+		 Try
+			Menu, EditorMenuButton, UnCheck, Default
+
+		 If (SetEditor = "")
+			SetEditor:="Default"
+		 Menu, EditorMenuButton, Check, %SetEditor%
+		 Menu, EditorMenuButton, Add
+		}
+	 else
+		IniDelete, %A_ScriptDir%\session.ini, editor, SetEditor
+	 Menu, EditorMenuButton, Add, Reset (enable) Edit Buttons, EditorMenuHandler
+	}
+
 CreateDefaultIni()
 	{
 	 Global IniFile
@@ -288,15 +352,15 @@ CreateDefaultIni()
 `; Lintalist uses a modified version of Func_IniSettingsEditor, http://www.autohotkey.com/forum/viewtopic.php?p=69534#69534
 `;     ;functions remarks
 `;     ;[SomeSection]
-`;     ;somesection This can describe the section. 
-`;     Somekey=SomeValue 
-`;     ;somekey Now the descriptive comment can explain this item. 
+`;     ;somesection This can describe the section.
+`;     Somekey=SomeValue
+`;     ;somekey Now the descriptive comment can explain this item.
 `;     ;somekey More then one line can be used. As many as you like.
-`;     ;somekey [Type: key type] [format/list] 
-`;     ;somekey [Default: default key value] 
-`;     ;somekey [Hidden:] 
-`;     ;somekey [Options: AHK options that apply to the control] 
-`;     ;somekey [CheckboxName: Name of the checkbox control] 
+`;     ;somekey [Type: key type] [format/list]
+`;     ;somekey [Default: default key value]
+`;     ;somekey [Hidden:]
+`;     ;somekey [Options: AHK options that apply to the control]
+`;     ;somekey [CheckboxName: Name of the checkbox control]
 [Settings]
 
 )
@@ -312,7 +376,7 @@ CreateDefaultUserIncludes(file)
 		Return
 	 FileAppend,
 (join`r`n
-`/* 
+`/*
 Purpose       : Main #Include script for user %file%
 Version       : 1.0
 

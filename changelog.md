@@ -1,3 +1,25 @@
+
+### v1.9.23
+
+* New: Choice / FileList plugin: Image preview window (toggle w <kbd>F3</kbd>) (formats bmp,gif,ico,jpg,jpeg,png -- ) if the FileList has returned full paths (P option). If an option in Choice seems to be a valid path (a-z:\) it automatically opens the preview window. https://github.com/lintalist/lintalist/issues/239  
+* New: Settings AlternateRowColor and AlternateSelectionColor (activated by default), see configuration. Also available in Themes (see Themes.md) https://github.com/lintalist/lintalist/issues/279  
+* New: Search Gui, view menu: Save column widths manually + reset https://github.com/lintalist/lintalist/discussions/252 https://github.com/lintalist/lintalist/discussions/273 https://github.com/lintalist/lintalist/issues/279  
+* New: Press Ins-key to insert searched text into Input and Choice plugin edit controls https://github.com/lintalist/lintalist/discussions/280  
+* New: Editor: load edited snippet manually from external editor https://github.com/lintalist/lintalist/issues/268  
+* New: Allow TitleMatch to use ahk_exe https://github.com/lintalist/lintalist/issues/286  
+* New: Show a "ScriptTemplates" menu in the Editor on right click https://github.com/lintalist/lintalist/discussions/256 https://lintalist.github.io/#ScriptTemplates  
+* New: Choice plugin "Enable Choice to use typed in value" PR TFWol https://github.com/lintalist/lintalist/pull/258  
+* New: Adding bundle name + properties to ColumnSearch using 6< https://github.com/lintalist/lintalist/issues/272  
+* New: Expert option: Define additional tools and editors accessible via the Tools and Editor menu (see Editing snippets and Additional Tools in the Docs)  
+* Fix: Additional check for StartSearchHotkeyTimeOut https://github.com/lintalist/lintalist/discussions/261  
+* Fix: Bundle (properties) Editor Gui +Owner1 PR TFWol https://github.com/lintalist/lintalist/pull/282  
+* Fix: Editor Gui +Owner1 PR TFWol https://github.com/lintalist/lintalist/pull/267  
+* Fix: Use [[clipboard]] in scripts (directly or via llpart1/2) https://github.com/lintalist/lintalist/discussions/259  
+* Fix: actually add ColumnWidthShorthand.ini to repository - reference https://github.com/lintalist/lintalist/pull/173#issuecomment-715927123  
+* Fix: Check for updates via About, allow for "spaces in path" https://github.com/lintalist/lintalist/issues/262  
+* Minor changes to docs ty @TFWol, "check for updates" and links in "about"
+* AutoHotkey v1.1.37.02 now equired
+
 ### v1.9.22
 
 * Fix: StartSearchHotkeyTimeOut should now work (better) with both StartSearchHotkey and StartOmniSearchHotkey, incl. modifier keys https://github.com/lintalist/lintalist/issues/247#issuecomment-1627195701
