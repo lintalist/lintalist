@@ -12,7 +12,7 @@ History:
 
 
 GetSnippetDateTime:
-	Loop ; get Date & Time [[DateTime=dddd, MMMM d, yyyy|1|Days|m-th]]
+	Loop ; get Date & Time [[DateTime=dddd, MMMM d, yyyy|1|Days|LCID|mon-thu]]
 	{
 		If (InStr(Clip, "[[DateTime=") = 0) or (A_Index > 100)
 			Break
@@ -23,7 +23,7 @@ GetSnippetDateTime:
 			EnvAdd, DT, % StrSplit(PluginOptions,"|").2, % StrSplit(PluginOptions,"|").3
 			DTLocale := StrSplit(PluginOptions,"|").4
 
-			; Extract day range (e.g. m-th, m-f, etc.) from PluginOptions
+			; Extract day range (e.g. mon-thu (2-5), mon-fri (2-6), etc.) from PluginOptions
 			DayRange := StrSplit(PluginOptions, "|").5
 
 			; Check the range specified by the user
@@ -32,8 +32,12 @@ GetSnippetDateTime:
 
 			If (DayRange != "")
 			{
-				; Define day mapping for ranges
-				DayMapping := {"su": 1, "m": 2, "tu": 3, "w": 4, "th": 5, "f": 6, "sa": 7}
+				
+				; Define day mapping for ranges; allow for 1-7 and sun-sat
+				If RegExMatch(DayRange,"im)[1-7]-")
+					DayMapping := [1, 2, 3, 4, 5, 6, 7]
+				Else
+					DayMapping := {"sun": 1, "mon": 2, "tue": 3, "wed": 4, "thu": 5, "fri": 6, "sat": 7}
 
 				; Parse the range (e.g., "m-th" -> start=m, end=th)
 				DayStart := SubStr(DayRange, 1, InStr(DayRange, "-") - 1)
@@ -54,6 +58,13 @@ GetSnippetDateTime:
 					; If day is after the range, move to the start of the next week (adjust by 7 days)
 					EnvAdd, DT, % 7 - (DayOfWeek - StartDayNum), Days
 				}
+			DayRange := ""
+			DayOfWeek := ""
+			DayMapping := ""
+			DayStart := ""
+			DayEnd := ""
+			StartDayNum := ""
+			EndDayNum := ""
 			}
 
 			FormatTime, DT, %DT% %DTLocale%, % StrSplit(PluginOptions,"|").1
