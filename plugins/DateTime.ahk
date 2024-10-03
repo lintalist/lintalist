@@ -32,17 +32,21 @@ GetSnippetDateTime:
 
 			If (DayRange != "")
 			{
-				
 				; Define day mapping for ranges; allow for 1-7 and sun-sat
-				If RegExMatch(DayRange,"im)[1-7]-")
-					DayMapping := [1, 2, 3, 4, 5, 6, 7]
-				Else
-					DayMapping := {"sun": 1, "mon": 2, "tue": 3, "wed": 4, "thu": 5, "fri": 6, "sat": 7}
+				DayMapping := {"sun": 1, "mon": 2, "tue": 3, "wed": 4, "thu": 5, "fri": 6, "sat": 7
+				, 1: "sun", 2: "mon", 3: "tue", 4: "wed", 5: "thu", 6: "fri", 7: "sat"}
 
 				; Parse the range (e.g., "m-th" -> start=m, end=th)
 				DayStart := SubStr(DayRange, 1, InStr(DayRange, "-") - 1)
 				DayEnd := SubStr(DayRange, InStr(DayRange, "-") + 1)
 
+				; Transform the number to "day" to allow for 7-1 to be used for sat-sun for example
+				If DayStart in 1,2,3,4,5,6,7
+					DayStart:=DayMapping[DayStart]
+
+				If DayEnd in 1,2,3,4,5,6,7
+					DayEnd:=DayMapping[DayEnd]
+				
 				; Get the day numbers from the abbreviations
 				StartDayNum := DayMapping[DayStart]
 				EndDayNum := DayMapping[DayEnd]
