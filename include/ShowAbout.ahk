@@ -19,7 +19,7 @@ Gui, 55:Add, Text, x10 yp+30,
 (
 Searchable interactive texts to copy && paste text, run scripts, using easily exchangeable bundles.
 
-Copyright (c) 2009-2024 Lintalist.
+Copyright (c) 2009-2025 Lintalist.
 
 This program is free software; you can redistribute it and/or modify it under the
 terms of the GNU General Public License as published by the Free Software Foundation;

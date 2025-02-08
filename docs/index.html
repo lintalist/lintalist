@@ -99,7 +99,7 @@
 </div>
 
 <div class='column'>
-<p><b>Download Lintalist <em>1.9.23</em></b>
+<p><b>Download Lintalist <em>1.9.25</em></b>
 <p>
 <a href='https://github.com/lintalist/lintalist/releases'><img src='img/lintalist65x65.gif' alt='Download Lintalist' width='65' align='left' border='0' style='margin-right: 5px;' /></a>
 Download (incl. source):<br />
@@ -147,7 +147,7 @@ Some might compare it to the "tag list" or "clip libraries" you might find in ma
 
 For example: If you are editing a HTML file, Lintalist could use both a HTML and CSS bundle, but if you are editing a CSS file only the CSS Bundle is loaded. So, in your HTML file the shortcut <strong>ctrl+b</strong> can insert <strong>&lt;strong&gt;&lt;/strong&gt;</strong> at the caret position (or wrap the tag around the selected text) and while editing your CSS file the shortcut <strong>ctrl+b</strong> can insert <strong>font-style: bold;</strong> at the caret position. If a shortcut is found in multiple active bundles a pop-up-menu will appear so you can choose which snippet & bundle you prefer.
 
-<b>Note:</b> although Lintalist can expand abbreviations it is not intended to replicate or replace the native AutoHotkey Hotstrings features, see <a href='https://autohotkey.com/docs/Hotstrings.htm'>autohotkey.com/docs/Hotstrings.htm</a> for an introduction and description of all the options.
+<b>Note:</b> although Lintalist can expand abbreviations it is not intended to replicate or replace the native AutoHotkey Hotstrings features, see <a href='https://www.autohotkey.com/docs/v1/Hotstrings.htm'>autohotkey.com/docs/v1/Hotstrings.htm</a> for an introduction and description of all the options.
 
 <span class='tip'>If you find this inconvenient, edit one of the snippets and change the shortcut or shorthand.</span>
 This program is written in AutoHotkey, a free, open-source (scripting) utility for Windows. Learn more at <a href='https://autohotkey.com/'>autohotkey.com</a>.
@@ -251,7 +251,7 @@ You can search for text in your bundles using four different methods:
   
 <tr><td><b>RgE<span style='text-decoration:underline;'>x</span></b></td><td><kbd>Alt</kbd>+<kbd>x</kbd> is Regular Expression search (Perl-compatible, PCRE) so you can search for patterns
   Example: se\w*g will find '<b style='color:#c00;'>searching</b>' '<b style='color:#c00;'>sewing</b>' etc.
-  See <a href='https://autohotkey.com/docs/commands/RegExMatch.htm'>autohotkey.com/docs/commands/RegExMatch.htm</a> for more information
+  See <a href='https://www.autohotkey.com/docs/v1/commands/RegExMatch.htm'>autohotkey.com/docs/v1/commands/RegExMatch.htm</a> for more information
   about using Regular expression for searching [see notes about RgEx search below
   for some background info as not ALL Regular Expressions may produce the expected
   results]</td></tr>
@@ -282,7 +282,7 @@ A new line is replaced by <b>\n</b> and a tab by <b>\t</b> and it will search <b
 
 <span style='color:#c00;'>&lt;techtalk&gt;</span> If the <b>Case check-box</b> is not checked your searches will be case-insensitive. When using the RegEx search method the "i)" option for the regular expression will automatically be inserted before each snippet is searched. This may lead to unexpected results if you pass on other options for your RegEx search. 
 
-Example: The case-insensitive RegEx 'se\w*g' it is actually using the following regular expression 'i)se\w*g' while searching. This is done for convenience (otherwise you would have to type i) every time you wanted to do a case-insensitive search (RegEx is by default case sensitive). If you want to pass on extra options it is best to turn Case sensitive ON and add the options you need as described here <a href='https://autohotkey.com/docs/commands/RegExMatch.htm#Options'>autohotkey.com/docs/commands/RegExMatch.htm#Options</a>. This behaviour may change in future version of Lintalist. <span style='color:#c00;'>&lt;/techtalk&gt;</span>
+Example: The case-insensitive RegEx 'se\w*g' it is actually using the following regular expression 'i)se\w*g' while searching. This is done for convenience (otherwise you would have to type i) every time you wanted to do a case-insensitive search (RegEx is by default case sensitive). If you want to pass on extra options it is best to turn Case sensitive ON and add the options you need as described here <a href='https://www.autohotkey.com/docs/v1/commands/RegExMatch.htm#Options'>autohotkey.com/docs/v1/commands/RegExMatch.htm#Options</a>. This behaviour may change in future version of Lintalist. <span style='color:#c00;'>&lt;/techtalk&gt;</span>
 
 <b id='searchlv'><a href='#searchlv' class='headline'>Search letter variations [v1.7+]</a></b>
 
@@ -668,7 +668,7 @@ Although the preferred format for many applications that support bundles, taglis
 Due to its YAML like structure* it is not as cumbersome as XML to edit in a regular everyday text editor. You can edit bundles using Lintalist as it has a <a href='#Editing'>built-in editor</a> which can <a href='#F4'>edit</a>, <a href='#F5'>copy</a>, <a href='#F6'>move</a>, <a href='#F7'>add</a>, or <a href='#F8'>remove</a> snippets from bundles or <a href='#F10'>create new bundles</a> from scratch. There are also some <a href='#BundleConvertors'>bundle converters</a> available to import data from other applications.
 
 <em>* Inspired by Textpow http://textpow.rubyforge.org/svn/mm/manual.mm 
-A Lintalist bundle has some resemblance to YAML. [ For those interested in YAML and AutoHotkey, there is a parser available for AHK, see <a href='http://www.autohotkey.com/forum/viewtopic.php?t=60670'>www.autohotkey.com/forum/viewtopic.php?t=60670</a>; <a href='http://www.autohotkey.com/forum/topic70559.html'>www.autohotkey.com/forum/topic70559.html</a> ]</em>
+A Lintalist bundle has some resemblance to YAML. [ For those interested in YAML and AutoHotkey, there is a parser available for AHK, see <a href='https://www.autohotkey.com/forum/viewtopic.php?t=60670'>www.autohotkey.com/forum/viewtopic.php?t=60670</a> (and others) ]</em>
 
 The bundles (text-)files are stored in the <b>bundles\</b> directory. Once you start editing bundles, a backup will be made and copied to <b>bundles\backup\</b>.
 
@@ -880,12 +880,12 @@ Neat trick: using a local variable or User input
 
 <tr id='calc-plugin'><td><a href='#calc-plugin' class='headline'><code>[[Calc=]]</code></a> *2</td><td>Evaluation of the math expressions - see <a href='#Calc'>documentation below</a>.</td></tr>
 
-<tr id='calendar-plugin'><td><a href='#calendar-plugin' class='headline'><code>[[Calendar=Format|LCID|to]]</code></a></td><td>Displays a calendar window to allow you to select a date in a specific format (see DateTime below).
+<tr id='calendar-plugin'><td><a href='#calendar-plugin' class='headline'><code>[[Calendar=Format|LCID|to]]</code></a></td><td>Displays a calendar window to allow you to select a date in a specific format (see <a href='#datetime-plugin'>DateTime</a> below).
 Basic example <code>[[Calendar=dd-MMM-yyyy]]</code> --> Select a date and it will be inserted like so: 25-Jan-2011
 
 [v1.8+] You can now specify an LCID. If you do not define one, the current user's locale is used to format the Date string. To use the system's locale instead, specify LSys. To use a specific locale, specify the letter L followed by a hexadecimal or decimal locale identifier (LCID). You can find a list of Locale IDs assigned by Microsoft here <a href='https://msdn.microsoft.com/goglobal/bb964664.aspx'>msdn.microsoft.com/goglobal/bb964664.aspx</a>
 
-If you use a date range (e.g. start/end date) the word " to " is automatically inserted between the two dates, if you want something else such as another language or character " - " simply specify this as the third parameter:
+If you use a date range (e.g. start/end date) the word " to " is automatically inserted between the two dates, if you want something else such as another language or character (" - ") simply specify this as the third parameter:
 <code>[[Calendar=dd-MMM-yyyy|| - ]]</code>
 
 </td></tr>
@@ -930,8 +930,7 @@ You can manage these counters (add, edit, delete) via the tray menu option: Mana
 <code>[[Counter=CounterName|2|0]]</code> would restart the counter at 0 and +2. This can be useful in a SplitRepeat for example so you can create a numbered list. (see the <a href='https://github.com/lintalist/lintalist-bundles/blob/master/markdown.txt'>MarkDown bundle, Ordered list snippet</a>)
 </td></tr>
 
-<tr id='datetime-plugin'><td><a href='#datetime-plugin' class='headline'><code>[[DateTime=Format|Value|TimeUnits|LCID]]</code></a></td><td>Insert current Date and/or Time using the FormatTime options,
-<a href='https://autohotkey.com/docs/commands/FormatTime.htm'>autohotkey.com/docs/commands/FormatTime.htm</a>
+<tr id='datetime-plugin'><td><a href='#datetime-plugin' class='headline'><code>[[DateTime=Format|Value|TimeUnits|LCID|RollOver]]</code></a></td><td>Insert current Date and/or Time using the FormatTime options, <a href='https://www.autohotkey.com/docs/v1/commands/FormatTime.htm'>autohotkey.com/docs/v1/commands/FormatTime.htm</a>
 (Date & Time formats, may be dependent on your user locale).
 Basic example <code>[[DateTime=dd-MMM-yyyy]]</code> --> 25-Jan-2011 (Todays date)
 
@@ -939,12 +938,19 @@ You can also perform some calculations, example:
 <code>[[DateTime=dd-MMM-yyyy|5|Days]]</code> --> 30-Jan-2011, 5 days from today.
 TimeUnits can be either Seconds, Minutes, Hours, or Days.
 
-[v1.8+] You can now specify an LCID, see Calendar above. Example: <code>[[DateTime=dd MMMM yyyy|||L1036]]</code> --> show month in French.
+Specify an <b>LCID</b>, see Calendar above. Example: <code>[[DateTime=dd MMMM yyyy|||L1036]]</code> --> show month in French.
 The LCID can be decimal or hexadecimal e.g. L1036 and L0x040C are the same: French.
+
+<b>RollOver</b>: Allows a date/time to roll over. Format: Three letter abbreviation in <em>English</em> (sun, mon, tue, wed, thu, fri, sat) <em>OR</em> 1-digit day(s) of the week (1-7). 1 is Sunday in all locales.
+
+Example: <code>Business hours: [[DateTime=dddd, MMMM d, yyyy|1|Days||mon-fri]] 8:00 AM - 10:00 AM</code> (or 2-6 instead of mon-fri when using digits).
+If today would be Friday, the result would show Monday as next available day and date
+
+<span class='discussion'></span><a href='https://github.com/lintalist/lintalist/pull/295'>Discussion @ GH - #295</a>
 </td></tr>
 
 <tr id='file-plugin'><td><a href='#file-plugin' class='headline'><code>[[File=Filename|select|clean]]</code></a></td><td>Will insert text from specified file into the text, 
-either full path or relative to Lintalist directory.
+either full path or relative to the Lintalist directory.
 Basic example <code>[[File=c:\file.txt]]</code> inserts content from that file into the text.
 
 [v1.6+] The file plugin has two options <code><i>|Select</i></code> and <code><i>|Clean</i></code>.
@@ -1121,7 +1127,7 @@ Examples:
 
 <code>[[Selected=T||MyTitleCase.ini]]</code> &rarr; use the EN Section of MyTitleCase.ini 
 
-Note: If you prepare your own ini files be sure to use UTF-16 encoded files to ensure proper processing of unicode / extended Ascii characters. See the AutoHotkey <a href='https://www.autohotkey.com/docs/commands/IniRead.htm#Remarks'>IniRead</a> documentation.
+Note: If you prepare your own ini files be sure to use UTF-16 encoded files to ensure proper processing of unicode / extended Ascii characters. See the AutoHotkey <a href='https://www.autohotkey.com/docs/v1/commands/IniRead.htm#Remarks'>IniRead</a> documentation.
 
 </td></tr>
 <tr><td>Trim 	</td><td align=middle>R</td><td width=100%>Trim spaces/tabs from the beginning and end of the selected text or clipboard.</td></tr>
@@ -1139,10 +1145,10 @@ line3		&lt;li&gt;line3&lt;/li&gt;</td></tr>
 
 The evaluations of the math expressions in the Calc plugin are done by the Monster/Eval function by Laszlo.
 It is capable of basic and advanced math operations including standard AutoHotkey and predefined functions.
-A number of predefined constants are also available. <span class='small'>Source: <a href='http://www.autohotkey.com/forum/viewtopic.php?t=17058'>forum thread</a></span>
+A number of predefined constants are also available. <span class='small'>Source: <a href='https://www.autohotkey.com/forum/viewtopic.php?t=17058'>forum thread</a></span>
 
 &#8226; Arithmetic operators: +, -, *, /, \ (or % = mod), ** (or @ = power)
-&#8226; AHK Functions:        <a href="https://autohotkey.com/docs/Functions.htm#Abs">Abs</a>, <a href="https://autohotkey.com/docs/Functions.htm#Ciel">Ceil</a>, <a href="https://autohotkey.com/docs/Functions.htm#Exp">Exp</a>, <a href="https://autohotkey.com/docs/Functions.htm#Floor">Floor</a>, <a href="https://autohotkey.com/docs/Functions.htm#Log">Log</a>, <a href="https://autohotkey.com/docs/Functions.htm#Ln">Ln</a>, <a href="https://autohotkey.com/docs/Functions.htm#Round">Round</a>, <a href="https://autohotkey.com/docs/Functions.htm#Sqrt">Sqrt</a>, <a href="https://autohotkey.com/docs/Functions.htm#Sin">Sin</a>, <a href="https://autohotkey.com/docs/Functions.htm#Cos">Cos</a>, <a href="https://autohotkey.com/docs/Functions.htm#Tan">Tan</a>, <a href="https://autohotkey.com/docs/Functions.htm#ASin">ASin</a>, <a href="https://autohotkey.com/docs/Functions.htm#ACos">ACos</a>, <a href="https://autohotkey.com/docs/Functions.htm#ATan">ATan</a>
+&#8226; AHK Functions:        <a href="https://www.autohotkey.com/docs/v1/Functions.htm#Abs">Abs</a>, <a href="https://www.autohotkey.com/docs/v1/Functions.htm#Ciel">Ceil</a>, <a href="https://www.autohotkey.com/docs/v1/Functions.htm#Exp">Exp</a>, <a href="https://www.autohotkey.com/docs/v1/Functions.htm#Floor">Floor</a>, <a href="https://www.autohotkey.com/docs/v1/Functions.htm#Log">Log</a>, <a href="https://www.autohotkey.com/docs/v1/Functions.htm#Ln">Ln</a>, <a href="https://www.autohotkey.com/docs/v1/Functions.htm#Round">Round</a>, <a href="https://www.autohotkey.com/docs/v1/Functions.htm#Sqrt">Sqrt</a>, <a href="https://www.autohotkey.com/docs/v1/Functions.htm#Sin">Sin</a>, <a href="https://www.autohotkey.com/docs/v1/Functions.htm#Cos">Cos</a>, <a href="https://www.autohotkey.com/docs/v1/Functions.htm#Tan">Tan</a>, <a href="https://www.autohotkey.com/docs/v1/Functions.htm#ASin">ASin</a>, <a href="https://www.autohotkey.com/docs/v1/Functions.htm#ACos">ACos</a>, <a href="https://www.autohotkey.com/docs/v1/Functions.htm#ATan">ATan</a>
 &#8226; Predefined functions: SGN, Fib, Fac (=sign, Fibonacci numbers, Factorials)
 &#8226; Predefined constants: e, pi, inch, foot, mile, ounce, pint, gallon, oz, lb.
 
@@ -1179,7 +1185,7 @@ That brings the total to: <code>[[Calc=[[Input=Number bought]]*[[var=itemprice]]
 
 </blockquote>
 
-Note about trigonometry functions: Sin(), Cos(), Tan() etc use <b>radians</b>. To convert a radians value to <b>degrees</b>, multiply it by 180/pi (approximately 57.29578). To convert a degrees value to radians, multiply it by pi/180 (approximately 0.01745329252). The value of pi (approximately 3.141592653589793) is 4 times the arctangent of 1. <span class='small'>Source: <a href='https://autohotkey.com/docs/Functions.htm#Sin'>AHK Docs</a></span>	
+Note about trigonometry functions: Sin(), Cos(), Tan() etc use <b>radians</b>. To convert a radians value to <b>degrees</b>, multiply it by 180/pi (approximately 57.29578). To convert a degrees value to radians, multiply it by pi/180 (approximately 0.01745329252). The value of pi (approximately 3.141592653589793) is 4 times the arctangent of 1. <span class='small'>Source: <a href='https://www.autohotkey.com/docs/v1/Functions.htm#Sin'>AHK Docs</a></span>	
 In <b>calc</b> you can use this as follows:
 
 	sin(30/180*pi)
@@ -1471,7 +1477,7 @@ See <a href='#Configuration'>Configuration</a> for information about SendMethod,
   Method: 1, 2, 3 or 4. 
   1 = SendInput, 2 = SendEvent, 3 = SendPlay, 4 = ControlSend
   For more background info see the AutoHotkey Send documentation
-  <a href='https://autohotkey.com/docs/commands/Send.htm'>autohotkey.com/docs/commands/Send.htm</a>
+  <a href='https://www.autohotkey.com/docs/v1/commands/Send.htm'>autohotkey.com/docs/v1/commands/Send.htm</a>
 
 - ClipSet(Task,ClipNum=1,SendMethod=1,Value="") 
   Used by Lintalist to set/restore clipboard.
@@ -1503,7 +1509,7 @@ llpart1=
 If Part1 or Part2 has the Caret plugin <code>^|</code>, the variables <em>LLBackLeft1, LLBackLeft2, LLBackUp1</em> and <em>LLBackUp2</em> are
 also stored. You can use these to position the caret by sending UP and LEFT keys (do UP first, LEFT second)
 
-Note that % signs in snippets do not need to be escaped as the <code>(join`n %</code> takes care of that automatically (see the <a href='https://autohotkey.com/docs/Scripts.htm#Join'>Join documentation</a> at AutoHotkey)
+Note that % signs in snippets do not need to be escaped as the <code>(join`n %</code> takes care of that automatically (see the <a href='https://www.autohotkey.com/docs/v1/Scripts.htm#Join'>Join documentation</a> at AutoHotkey)
 
 <blockquote class='boxed'>
 <span class='llcomment'>; send or paste llpart1, for llpart2 use LLBackUp2 and LLBackLeft2</span>
@@ -1536,7 +1542,7 @@ Note that % signs in snippets do not need to be escaped as the <code>(join`n %</
 
 This is for the more experienced AutoHotkey users.
 
-As of v1.9.4+ Lintalist supports <a href='https://autohotkey.com/docs/Functions.htm#BuiltIn'>built-in AutoHotkey functions</a> (Asc, SubStr, Floor, Mod, etc) or user defined functions. 
+As of v1.9.4+ Lintalist supports <a href='https://www.autohotkey.com/docs/v1/Functions.htm#BuiltIn'>built-in AutoHotkey functions</a> (Asc, SubStr, Floor, Mod, etc) or user defined functions. 
 
 <b>Calling a function</b>
 
@@ -1583,16 +1589,16 @@ If you want to change which AutoHotkey built-in variables are supported simply e
 
 Use <code>[[EnvGet(EnvVarName)]]</code> to read Environment variables.
 
-<a href='https://autohotkey.com/docs/Variables.htm#Special_Characters'>Special Characters</a>:
+<a href='https://www.autohotkey.com/docs/v1/Variables.htm#Special_Characters'>Special Characters</a>:
 	A_Space, A_Tab
 
-<a href='https://autohotkey.com/docs/Variables.htm#prop'>Script Properties</a>:
+<a href='https://www.autohotkey.com/docs/v1/Variables.htm#prop'>Script Properties</a>:
 	A_WorkingDir, A_ScriptDir, A_ScriptName, A_ScriptFullPath, A_ScriptHwnd, A_AhkVersion, A_AhkPath, A_IsUnicode, A_IsCompiled
 
-<a href='https://autohotkey.com/docs/Variables.htm#date'>Date and Time</a>:
+<a href='https://www.autohotkey.com/docs/v1/Variables.htm#date'>Date and Time</a>:
 	A_YYYY, A_MM, A_DD, A_MMMM, A_MMM, A_DDDD, A_DDD, A_WDay, A_YDay, A_YWeek, A_Hour, A_Min, A_Sec, A_MSec, A_Now, A_NowUTC, A_TickCount
 
-<a href='https://autohotkey.com/docs/Variables.htm#os'>Operating System and User Info</a>:
+<a href='https://www.autohotkey.com/docs/v1/Variables.htm#os'>Operating System and User Info</a>:
 	A_Temp, A_OSType, A_OSVersion, A_Is64bitOS, A_PtrSize, A_Language, A_ComputerName, A_UserName, A_WinDir, A_ProgramFiles, A_AppData, A_AppDataCommon, A_Desktop, A_DesktopCommon, A_StartMenu, A_StartMenuCommon, A_Programs, A_ProgramsCommon, A_Startup, A_StartupCommon, A_MyDocuments, A_IsAdmin, A_ScreenWidth, A_ScreenHeight, A_ScreenDPI, A_IPAddress1, A_IPAddress2, A_IPAddress3, A_IPAddress4
 
 
@@ -2009,7 +2015,7 @@ It seems it is possible to run Lintalist on Linux, more information here <a href
 <img src='img/lintalist-title-footer.gif' alt='lintalist' align='left' style='margin-top:6px;padding-right:5px;' /><b>Disclaimer:</b> Use at your own risk. If you find a new bundle take a look at the script sections of each snippet. As Lintalist can run any AutoHotkey script it can also run faulty or insecure code. Be sensible, if you simply want to try a bundle selecting 'Pause scripts' via the tray menu might be a useful idea.
 </span> 
 
-<span style='float:right;'>&copy; Copyright 2009-2024 Lintalist. See license.txt</span>
+<span style='float:right;'>&copy; Copyright 2009-2025 Lintalist. See license.txt</span>
 </pre>
 
 <a href="https://github.com/lintalist"><img style="position: absolute; top: 0; right: 0; border: 0;" src="img/forkme_right_red_aa0000.png" alt="Fork me on GitHub"></a>

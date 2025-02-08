@@ -4,12 +4,12 @@ Purpose       : Make a selection from a list [part of code also placed in lintal
 Version       : 2.2
 
 History:
-- 2.2 Image Preview w filelist - https://github.com/lintalist/lintalist/issues/239 (only works with fullpath, P) 
+- 2.2 Image Preview window with filelist - https://github.com/lintalist/lintalist/issues/239 (only works with fullpath option, P).
 - 2.1 Check if PluginOptionsResults is empty, if so, set the font to bold and update the listbox -- https://github.com/lintalist/lintalist/pull/258/files
       Addition: ChoiceInput checkbox so it can be user choice?
       and adding -SysMenu https://github.com/lintalist/lintalist/discussions/260
 - 2.0 Automatically remove empty entries in Listbox (||* -> |) - to include an empty entry make it the first option/entry
-- 1.9 Adding x/y position for listbox results to prevent possibly position.
+- 1.9 Adding x/y position for listbox results to prevent possibly incorrect position of listbox.
 - 1.8 Fix for Cancel/Esc not storing position properly, and try to prevent incorrect Listbox heights using Gui10ListboxCheckPosition()
 - 1.7 Added option to "filter as you type" by using ! in first item (similar to question using ?) - uses SetEditCueBanner()
       Incorporate CancelPlugin (avoids SoundPlay and return nicely)

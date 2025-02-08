@@ -1,6 +1,6 @@
 ﻿; LintaList Include
 ; Purpose: Bundle & Snippet Editor
-; Version: 1.10
+; Version: 1.11
 ;
 ; Hotkeys used in Search GUI to start Bundle & Snippet Editor
 ; F4  = Edit snippet
@@ -10,6 +10,7 @@
 ; F8  = Delete snippet
 ;
 ; History:
+; v1.11 - Statusbar with line;col, total lines, size
 ; v1.10 - Expert option: select different editor via menu (read from separate ini, see docs)
 ; v1.9 - Manually load edited text from editor https://github.com/lintalist/lintalist/issues/268; https://github.com/lintalist/lintalist/issues/288
 ; v1.8 - Fix +Owner1 (PR TFWol); Templates (right click)
@@ -305,7 +306,7 @@ ActionText:=StrReplace(RegExReplace(EditMode,"([A-Z])"," $1"),"Append","New")
 Gui, 71:Destroy
 If Theme["MainBackgroundColor"]
 	Gui, 71: Color, % Theme["MainBackgroundColor"]
-Gui, 71:+Owner1 +Resize +MinSize740x520
+Gui, 71:+Owner1 +Resize +MinSize740x540
 Gui, 71:Default
 Gui, 71:Menu, MenuBar2
 If Theme["EditorGuiTextColor"]
@@ -353,9 +354,7 @@ Gui, 71:Font,s%fontsize%,%font%
 If EditorSyntaxHL
 	RC1 := new RichCode(RichCodeSettings.Clone(), "x20 y120 w700 h120 vText1")
 else
-{
 	Gui, 71:Add, Edit    , x20    y120  h120 w700 vText1  HwndEditText1, %Text1%
-	}
 
 Gui, 71:Font,
 
@@ -397,6 +396,9 @@ Gui, 71:font, s10
 Gui, 71:Add, Button, x20    y480 h30 w210 g71Save     vActionButton1, &Save
 Gui, 71:Add, Button, xp+245 yp   h30 w210 g71GuiClose vActionButton2, &Cancel
 Gui, 71:Add, Button, xp+245 yp   h30 w210 g71Help     vActionButton3, Help
+Gui, 71:Add, StatusBar,,
+SB_SetParts(100,100,100,100)
+SB_SetText("  Active Editing", 1) ; part
 
 If EditorSyntaxHL
 	{
@@ -421,11 +423,11 @@ GuiCheckXYPos()
 DetectHiddenWindows, On
 Try
 	{
-	 Gui, 71:Show, Hide w740 h520 x%EditorX% y%EditorY%, Lintalist snippet editor
+	 Gui, 71:Show, Hide w740 h540 x%EditorX% y%EditorY%, Lintalist snippet editor
 	 WinMove, Lintalist snippet editor, , %EditorX%, %EditorY%, %EditorWidth%, %EditorHeight%
 	}
 Catch
-	Gui, 71:Show, Hide w740 h520, Lintalist snippet editor
+	Gui, 71:Show, Hide w740 h540, Lintalist snippet editor
 DetectHiddenWindows, Off
 
 Gui, 71:Show
@@ -437,7 +439,7 @@ else
 	;ControlFocus, Text1, Lintalist snippet editor
 	GuiControl, Focus, Text1
 
-
+SetTimer, UpdateEditSB, 100
 
 Return
 
@@ -948,6 +950,7 @@ Return
 
 71GuiEscape:
 71GuiClose:
+SetTimer, UpdateEditSB, off
 Gosub, 71GuiSavePos
 Gui, 1:-Disabled
 Gui, 71:Destroy
@@ -1049,4 +1052,27 @@ EnableEditButtons:
 GuiControl, Enable, %HButtonEdit1%
 GuiControl, Enable, %HButtonEdit2%
 GuiControl, Enable, %HButtonEdit3%
+Return
+
+UpdateEditSB:
+IfWinNotActive, Lintalist snippet editor
+	Return
+
+ControlGetFocus, ControlID,Lintalist snippet editor 
+ControlGetText, GetText, %ControlID%, Lintalist snippet editor
+ControlGet, CurrentLine, CurrentLine,,%ControlID%, Lintalist snippet editor
+ControlGet, CurrentCol , CurrentCol ,,%ControlID%, Lintalist snippet editor
+ControlGet, LineCount  , LineCount  ,,%ControlID%, Lintalist snippet editor
+Size:=StrLen(GetText)
+if (CurrentLine = oldCurrentLine) and (CurrentCol = oldCurrentCol) and (LineCount = oldLineCount)
+	return
+
+Gui, 71:Default
+
+SB_SetText("Ln " Currentline ", Col " CurrentCol, 2) ; line nr/col nr
+SB_SetText(LineCount " line(s)", 3)                  ; lines
+SB_SetText(Size " byte(s)", 4)                       ; bytes
+oldCurrentLine:=CurrentLine
+oldCurrentCol:=CurrentCol
+oldLineCount:=LineCount
 Return

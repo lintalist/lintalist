@@ -1,3 +1,15 @@
+### v1.9.25
+
+* Fix: Entries from list disappeared after pasting https://github.com/lintalist/lintalist/issues/296
+
+### v1.9.24
+
+* Plugin: Update DateTime.ahk for Date Rolling #295 PR by KyleIsDork https://github.com/lintalist/lintalist/pull/295  
+* Plugin: Input AlwaysOnTop for Input https://github.com/lintalist/lintalist/issues/294  
+* New: Always select first row in Listview for legibility, works well with SelectionColors  
+* New: First down in Search results jump to second row (was first row), the first row is automatically selected already  
+* New: Shorten text displayed in Listview + Preview for more responsive Gui for (very) large snippets https://github.com/lintalist/lintalist/issues/291  
+* New: Editor, status bar with line & column number, total lines, and size of edited part of a snippet. Not very fast nor 100% accurate...
 
 ### v1.9.23
 

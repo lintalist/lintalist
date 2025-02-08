@@ -4,11 +4,11 @@ Name            : Lintalist
 Author          : Lintalist
 Purpose         : Searchable interactive lists to copy & paste text, run scripts,
                   using easily exchangeable bundles
-Version         : 1.9.23
+Version         : 1.9.25
 Code            : https://github.com/lintalist/
 Website         : http://lintalist.github.io/
 AutoHotkey Forum: https://autohotkey.com/boards/viewtopic.php?f=6&t=3378
-License         : Copyright (c) 2009-2024 Lintalist
+License         : Copyright (c) 2009-2025 Lintalist
 
 This program is free software; you can redistribute it and/or modify it under the
 terms of the GNU General Public License as published by the Free Software Foundation;
@@ -42,7 +42,7 @@ PluginMultiCaret:=0 ; TODOMC
 
 ; Title + Version are included in Title and used in #IfWinActive hotkeys and WinActivate
 Title=Lintalist
-Version=1.9.23
+Version=1.9.25
 
 ; Gosub, ReadPluginSettings
 
@@ -541,6 +541,8 @@ If Theme["SearchBoxBackgroundColor"]
 	CtlColors.Attach(EDID1, Theme["SearchBoxBackgroundColor"], Theme["SearchBoxTextColor"])
 SetEditCueBanner(EDID1, "Type to search (Ctrl+f)")
 
+LV_Modify(1,"Select")
+FirstDown:=1
 Return
 
 ; Incremental Search, here is where the magic starts, based on 320mph version by Fures, if you know of an even FASTER way let me know ;-)
@@ -555,7 +557,7 @@ If QueryDelimiter
 	 Gosub, LLQuery
 	 CurrText:=Query[1]
 	}
-
+FirstDown:=1
 If (CurrText = LastText)
 	{
 	 Critical, off ; experimental-v1.7
@@ -571,6 +573,7 @@ If (CurrLen = 0) or (CurrLen =< MinLen)
 	 Gosub, SetStatusBar
 	 Critical, off ; experimental-v1.7
 	 ShowPreview(PreviewSection)
+	 LV_Modify(1,"Select")
 	 Return
 	}
 Gui, 1:Default
@@ -699,6 +702,9 @@ If (DisplayBundle > 1)
 
 If (ColumnSort <> "NoSort")
 	SortResults(ColumnSortOption1,ColumnSortOption2,SortDirection)
+
+LV_Modify(1,"Select")
+
 Return
 
 Search(mode=1)
@@ -900,7 +906,7 @@ If Statistics and SelItem
 
 If ((Paste2 <> 1) and (SortByUsage = 1)) ; if it already is the first don't bother moving it to the top...
 	{
-	 BackupSnippet:=Snippet[Paste1].Delete(Paste2)
+	 BackupSnippet:=Snippet[Paste1].RemoveAt(Paste2)
 	 Snippet[Paste1].InsertAt(1,BackupSnippet)
 	 BackupSnippet:=""
 	 Snippet[Paste1,"Save"]:="1"
@@ -1228,7 +1234,7 @@ UpdateLVColWidth()
 		 c2w += 25
 		}
 	 Else
-		 LV_ModifyCol(4,ColumnWidthShorthand+Col4Correction)
+		LV_ModifyCol(4,ColumnWidthShorthand+Col4Correction)
 
 	 If (Col2 = 0)           ; paste2 column is empty so no need to show
 		{
@@ -1293,7 +1299,7 @@ ShowPreview(Section="1")
 			Section = 2
 		}
 
-	 GuiControl,1: , Edit2, % Snippet[Paste1,Paste2,Section] ; set preview Edit control %
+	 GuiControl,1: , Edit2, % SubStr(Snippet[Paste1,Paste2,Section],1,1024) ; set preview Edit control - 16/07/2024 limit text size for more responsive gui #291 %
 
 	 Return
 	}
@@ -1886,6 +1892,7 @@ Return
 
 ~NumpadUp::
 ~Up::
+FirstDown:=0
 ControlGetFocus, OutputVar, %AppWindow%
 ControlSend, Edit1, ^{end}, %AppWindow% ; v1.4 to keep caret at end of typed text in searchbox
 If CheckListViewResults()
@@ -1923,6 +1930,12 @@ If CheckListViewResults()
 GuiControl, -Redraw, SelItem
 ControlSend, Edit1, ^{end}, %AppWindow% ; v1.4 to keep caret at end of typed text in searchbox
 PreviousPos:=LV_GetNext()
+If (PreviousPos = 1) and (FirstDown = 1)
+	{
+
+	 ControlSend, SysListview321, {Down}, %AppWindow%
+	 FirstDown:=0
+	}
 ControlGetFocus, OutputVar, %AppWindow%
 	{
 	 If (OutputVar = "Edit1") and !IsNVDARunning

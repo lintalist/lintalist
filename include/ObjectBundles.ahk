@@ -442,5 +442,6 @@ FixPreview(in)
 	 StringReplace, in, in, `r, ,all
 	 StringReplace, in, in, `n, \n,all
 	 StringReplace, in, in, %A_Tab%, \t,all
+	 in:=SubStr(in,1,150) ; 16/07/2024 limit length for more responsive gui #291
 	 return in
 	}

@@ -1,7 +1,7 @@
 ﻿; LintaList Include
 ; Purpose: Bundle Properties Editor
-; Version: 1.5
-; Date:    20150328
+; Version: 1.6
+; Date:    20240713
 ;
 ; Hotkeys used in Search GUI to start Bundle Editor
 ; F10 = Bundle properties
@@ -46,8 +46,8 @@ Gui, 81:Add, Text, xp    y235 , Author of Bundle (not mandatory)
 
 Gui, 81:Add, Text, x270  y272     , TitleMatch:
 Gui, 81:Add, Edit, xp+80 y270 w300 h20 vTitleMatch, %TitleMatch%
-Gui, 81:Add, Text, xp    y295 , Comma separated list of partial window title matches.`n(not mandatory)`n`nDo not use Wildcards.`nExample: .txt,.doc is OK, *.txt,*.doc is not.`n`nSee documentation for more information.
-;Gui, 81:Add, Text, x270  y380 , 
+Gui, 81:Add, Text, xp    y295 , Comma separated list of partial window title matches.`n(not mandatory)`n`nDo not use Wildcards.`nExample: .txt,.doc is OK, *.txt,*.doc is not.`n`nSee documentation for more information`n(also about ahk_exe).
+;Gui, 81:Add, Text, x270  y380 ,
 MenuName_HitListClean:="||"
 Loop, parse, MenuName_HitList, |
 	{
@@ -76,8 +76,8 @@ MsgBox, 52, Delete?, % "Do you really want to delete:`n" MenuName_%SelectedListb
 IfMsgBox, No
 	Return
 Gui, 81:Destroy
-; erase everything before FileDelete	
-Snippet[SelectedListboxBundle,"Save"] := 0	
+; erase everything before FileDelete
+Snippet[SelectedListboxBundle,"Save"] := 0
 MenuName_%SelectedListboxBundle%:=""
 Description_%SelectedListboxBundle%:=""
 Author_%SelectedListboxBundle%:=""
@@ -122,7 +122,7 @@ If (SelectedListboxBundle = 0)
 GuiControl, , Name        , %Name%
 GuiControl, , Description , %Description%
 GuiControl, , Author      , %Author%
-GuiControl, , TitleMatch  , %TitleMatch% 
+GuiControl, , TitleMatch  , %TitleMatch%
 
 Return
 
@@ -140,8 +140,8 @@ If (SelectedListboxBundle = "")
 		 MsgBox, Please enter Name
 		 ControlFocus, Edit1, A
 		 Return
-	 	}
-	 InputBox, NewBundleFileName, Save as, File name of new bundle, , 400, 150
+		}
+	 InputBox, NewBundleFileName, Save as, File name of new bundle, , 400, 150, , , , , %Name% ; adding name as suggestion (v1.6)
 	 If (NewBundleFileName = "")
 		{
 		 MsgBox, Please enter filename

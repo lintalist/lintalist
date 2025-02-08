@@ -1,4 +1,4 @@
-﻿Lintalist: Searchable interactive lists to copy & paste text, run scripts, using easily exchangeable bundles - http://lintalist.github.io/
+﻿Lintalist: Searchable interactive lists to copy & paste text, run scripts, using easily exchangeable bundles - https://lintalist.github.io/
 (snippet manager, text expander)
 
 # Introduction
@@ -38,19 +38,19 @@ __Lintalist search window__
 # More information
 
 More about Lintalist in "docs\index.html" after you downloaded it, right click on the tray icon (Help) or
-visit <http://lintalist.github.io/>
+visit <https://lintalist.github.io/>
 
 # Videos
 
-* Introduction: <http://youtu.be/XfjZPAhHB8c>
-* HTML/Markdown: <http://youtu.be/Q6SFkttjUQk>
-* Formatted text: <http://youtu.be/J1StUarGHmI>
-* Plugins: <http://youtu.be/Rtd_ChyRVkM>
+* Introduction: <https://youtu.be/XfjZPAhHB8c>
+* HTML/Markdown: <https://youtu.be/Q6SFkttjUQk>
+* Formatted text: <https://youtu.be/J1StUarGHmI>
+* Plugins: <https://youtu.be/Rtd_ChyRVkM>
 
 # AutoHotkey
 
 Lintalist is written in AutoHotkey, a free and open-source utility for Windows. You can 
-learn more about AutoHotkey at <http://autohotkey.com/>. The source code for AutoHotkey 
+learn more about AutoHotkey at <https://autohotkey.com/>. The source code for AutoHotkey 
 is available at <https://github.com/Lexikos/AutoHotkey_L>
 
 **Note**: lintalist.exe is simply a renamed autohotkey.exe included for convenience.
@@ -61,12 +61,12 @@ lintalist.exe and just start lintalist.ahk directly.
 ### Elsewhere
 
 * [AutoHotkey.com](https://autohotkey.com/boards/viewtopic.php?f=6&t=3378)
-* [Portablefreeware.com](http://www.portablefreeware.com/index.php?id=2686)
-* [DonationCoder.com](http://www.donationcoder.com/forum/index.php?topic=41475)
-* [Alternativeto.net](http://alternativeto.net/software/lintalist/)
+* [Portablefreeware.com](https://www.portablefreeware.com/index.php?id=2686)
+* [DonationCoder.com](https://www.donationcoder.com/forum/index.php?topic=41475)
+* [Alternativeto.net](https://alternativeto.net/software/lintalist/)
 
 ### Credits
 
 Lintalist uses various libraries, icons and more prepared by others - see [credits.txt](https://github.com/lintalist/lintalist/blob/master/docs/credits.txt) for a complete list (if something is missing do let me know)
 
-Copyright 2009-2024 Lintalist. See license.txt
+Copyright 2009-2025 Lintalist. See license.txt
