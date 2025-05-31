@@ -1,3 +1,10 @@
+### v1.9.26
+
+* New: Ctrl+Shift+Alt+Enter Join Part1 and Part2 into one item to paste or copy to clipboard (see BothParts* settings) https://github.com/lintalist/lintalist/discussions/309  
+* New: Plugin [[Part1]] [[Part2]] can now be used to insert part1 or part2 into the other part of the snippet - #309  
+* AlwaysUpdateBundles: Also save bundles when deleting a snippet https://github.com/lintalist/lintalist/issues/307#issuecomment-2918655004  
+* Fix: Plugin Random number range (1|10) https://github.com/lintalist/lintalist/issues/302  
+
 ### v1.9.25
 
 * Fix: Entries from list disappeared after pasting https://github.com/lintalist/lintalist/issues/296

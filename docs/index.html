@@ -20,7 +20,7 @@
 <br /><br />
 <span style='font-size:.8em;'><b>Lintalist</b> is <b>open source</b> and developed in <a href='https://autohotkey.com/'>AutoHotkey</a>, an easy to learn scripting language for Windows.
 <b>[Windows 7/8/10/11]</b> <span style='color:#666;'>(untested under WinXP(sp3)/Vista)</span><br /></span>
-<span class='date' style='float:right;display:inline;margin-top:0px;'>doc rev. 20240713</span></p>
+<span class='date' style='float:right;display:inline;margin-top:0px;'>doc rev. 20250531</span></p>
 </div>
 
 <div class='column'>
@@ -99,7 +99,7 @@
 </div>
 
 <div class='column'>
-<p><b>Download Lintalist <em>1.9.25</em></b>
+<p><b>Download Lintalist <em>1.9.26</em></b>
 <p>
 <a href='https://github.com/lintalist/lintalist/releases'><img src='img/lintalist65x65.gif' alt='Download Lintalist' width='65' align='left' border='0' style='margin-right: 5px;' /></a>
 Download (incl. source):<br />
@@ -399,6 +399,7 @@ As of v1.9.10+ there is a setting to also use this key to Hide the search window
 <tr><td><b><kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>Enter</kbd></b></td><td>Paste Found Text (Part 2) and DO NOT run script </td></tr>
 <tr><td><b><kbd>Alt</kbd>+<kbd>Enter</kbd></b></td><td>Copy Text (Part 1) to clipboard *2 </td></tr>
 <tr><td><b><kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>Enter</kbd></b></td><td>Copy Text (Part 2) to clipboard </td></tr>
+<tr><td><b><kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>Enter</kbd></b></td><td>Join Part1 and Part2 as one text to Paste or Copy to Clipboard (see <span class='setting'>BothParts*</span> settings) and DO NOT run script</td></tr>
 <tr><td><b><kbd> F2 </kbd></b></td><td>Omnisearch (toggle) <a href="#Omni">search in all bundles</a></td></tr>
 <tr><td><b><kbd> F4 </kbd></b></td><td>Edit Snippet                                    </td></tr>
 <tr><td><b><kbd> F5 </kbd></b></td><td>Copy Snippet and Edit (current bundle)          </td></tr>
@@ -704,7 +705,7 @@ Example of a Bundle with one Snippet: <span class='llcomment'>(Light blue texts 
 <table border='0' cellpadding='0' cellspacing='0' id='borderless'>
 <tr valign='top'><td width='15%'><span class='llbundle'>BundleFormat:</span></td> <td width='40%'><span class='flex'>1</span></td><td><span class='llcomment'>; This value may change in future in case of a change in format, can not be changed in Bundle Editor</span></td></tr>
 <tr valign='top'><td width='15%'><span class='llbundle'>Name:</span></td>         <td width='40%'><span class='flex'>CSS</span></td><td><span class='llcomment'>; Name used in Lintalist for Menu and Status-bar, can be changed in Bundle Editor</span></td></tr>
-<tr valign='top'><td width='15%'><span class='llbundle'>Description:</span></td>  <td width='40%'><span class='flex'>Bundle for Lintalist</span></td><td><span class='llcomment'> ; Can be used extra information, can be changed in Bundle Editor</span></td></tr>
+<tr valign='top'><td width='15%'><span class='llbundle'>Description:</span></td>  <td width='40%'><span class='flex'>Bundle for Lintalist</span></td><td><span class='llcomment'>; Can be used extra information, can be changed in Bundle Editor</span></td></tr>
 <tr valign='top'><td width='15%'><span class='llbundle'>Author:</span></td>       <td width='40%'><span class='flex'>Author</span></td><td><span class='llcomment'>; Not actually used in Lintalist, can be changed in Bundle Editor</span></td></tr>
 <tr valign='top'><td width='15%'><span class='llbundle'>TitleMatch:</span></td>   <td width='40%'><span class='flex'>.css</span></td><td><span class='llcomment'>; Comma separated list of partial window title matches</span></td></tr>
 <tr valign='top'><td width='15%'><span class='llbundle'>Patterns:</span></td><td></td>     <td><span class='llcomment'>; Snippets start below, each new snippet starts with "- LLPart1"</span></td></tr>
@@ -1043,6 +1044,15 @@ Basic example <code>[[Snippet=shorthandcode]]</code></td></tr>
 
 Enter your name <code>[[String=[[Input=Name?]]|Upper]]</code>
 will transform the entered name to upper case text.</td></tr>
+
+<tr id='parts-plugin'><td><a href='#parts-plugin' class='headline'><code>[[Part1]]</code>, <code>[[Part2]]</code></td><td>Insert part1 or part2 of the snippet into the other part.
+
+Choose your option <code>[[choice=[[part2]]]]</code>
+Will insert part2 of the snippet as options for the Choice plugin. <span class='discussion'></span><a href='https://github.com/lintalist/lintalist/discussions/309'>Discussion @ GH - #309</a>
+
+Note <code>[[part1]]</code> is removed from part1, and <code>[[part2]]</code> from part2 to avoid recursive loops.
+</td></tr>
+
 
 <tr id='query-plugin'><td><a href='#query-plugin' class='headline'><code>[[Query]]</code>, <code>[[Query1]]</code>, <code>[[Query2]]</code></a></td><td>Insert the text you searched for in your Snippet. The query plugin is processed <b>before</b> all other plugins.
 

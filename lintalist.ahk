@@ -4,7 +4,7 @@ Name            : Lintalist
 Author          : Lintalist
 Purpose         : Searchable interactive lists to copy & paste text, run scripts,
                   using easily exchangeable bundles
-Version         : 1.9.25
+Version         : 1.9.26
 Code            : https://github.com/lintalist/
 Website         : http://lintalist.github.io/
 AutoHotkey Forum: https://autohotkey.com/boards/viewtopic.php?f=6&t=3378
@@ -42,7 +42,7 @@ PluginMultiCaret:=0 ; TODOMC
 
 ; Title + Version are included in Title and used in #IfWinActive hotkeys and WinActivate
 Title=Lintalist
-Version=1.9.25
+Version=1.9.26
 
 ; Gosub, ReadPluginSettings
 
@@ -850,6 +850,18 @@ StringSplit, paste, paste, _      ; split to bundle / index number
 Text1  :=Snippet[Paste1,Paste2,1] ; part 1 (enter, or shortcut, or shorthand)
 Text2  :=Snippet[Paste1,Paste2,2] ; part 2 (shift-enter)
 Script :=Snippet[Paste1,Paste2,5] ; script (if there is a script, run script instead)
+If (SnippetPasteMethod = 3)       ; if we joined both parts, script will be ignored
+	Script:=""
+
+If InStr(Text1,"[[part") or InStr(Text2,"[[part")
+	{
+	 Text1:=StrReplace(Text1,"[[part2]]",Text2)
+	 Text1:=StrReplace(Text1,"[[part1]]")
+	 Text1:=StrReplace(Text1,"[[part2]]")
+	 Text2:=StrReplace(Text2,"[[part1]]",Text1)
+	 Text2:=StrReplace(Text2,"[[part2]]")
+	}
+
 If (QueryDelimiter and ViaShorthand) or (QueryDelimiter and ViaShortCut)
 	{
 	 Text1:=RegExReplace(Text1,"iU)\[\[query[12]{0,1}=([^[]*)\]\]","[[input=$1]]")
@@ -863,7 +875,6 @@ If (QueryDelimiter and ViaShorthand) or (QueryDelimiter and ViaShortCut)
 	 StringReplace, Text2, Text2, [[Query]] , [[Input=Enter Query string (full)]], All
 	 StringReplace, Text2, Text2, [[Query1]], [[Input=Enter Query string part 1]], All
 	 StringReplace, Text2, Text2, [[Query2]], [[Input=Enter Query string part 2]], All
-
 	}
 
 ; process Query plugin before all others
@@ -976,6 +987,20 @@ If (Script = "") or (ScriptPaused = 1) ; script is empty so we need to paste Tex
 		}
 	 Else
 		{
+
+		 If (SnippetPasteMethod = 3) ; see BothParts* settings
+			{
+			 If BothPartsOrder
+				clip:=Text2 BothPartsJoinBy Text1
+			 else
+				clip:=Text1 BothPartsJoinBy Text2 ; default
+			 If BothPartsPaste
+				SnippetPasteMethod:=2 ; copy to clipboard
+			 else
+				SnippetPasteMethod:=0 ; paste directly
+			 Script:=""
+			}
+
 		 Gosub, ProcessText
 		 ParseEscaped()
 		 Gosub, CheckLineFeed
@@ -1761,12 +1786,6 @@ If !ListviewResults()
 	Return
 InEditMode = 1
 Gosub, GetPastefromSelItem
-;Gui, 1:Submit, NoHide
-;ControlFocus, SysListView321, %AppWindow%
-;SelItem := LV_GetNext()
-;If (SelItem = 0)
-;	SelItem = 1
-;LV_GetText(Paste, SelItem, 5) ; get bundle_index from 5th column
 StringSplit, paste, paste, _
 f1:=Filename_%paste1%
 Gui, 99:+Owner1
@@ -1781,7 +1800,7 @@ IfMsgBox, Yes
 	{
 	 Gui, 1:Default
 	 Snippet[Paste1].Remove(Paste2) ; remove snippet
-	 List_%Paste1%_Deleted++        ; Keep track of No deleted snippets so we can update the statusbar correctly
+	 List_%Paste1%_Deleted++        ; Keep track of number deleted snippets so we can update the statusbar correctly
 	 LoadBundle(Load)
 	 UpdateLVColWidth()
 	 ControlFocus, Edit1, %AppWindow%
@@ -1799,6 +1818,10 @@ Sleep 10
 InEditMode = 0
 ControlFocus, Edit1, %AppWindow%
 f1:=""
+
+If (AlwaysUpdateBundles = 1) ; # https://github.com/lintalist/lintalist/issues/307#issuecomment-2918655004
+	SaveUpdatedBundles(Paste1)
+
 Return
 
 F10::
@@ -1869,6 +1892,15 @@ SnippetPasteMethod:=2
 PastText1=0
 Gosub, Paste
 Return
+
+; copy both part1 and part2 to the clipboard seperated by a space (see BothParts* settings)
+^!+Enter::
+SnippetPasteMethod:=3
+PastText1:=0
+Gosub, Paste
+Return
+
+
 
 ; we add this for screenreader users (NVDA), that way they can TAB to the results listview
 ; and use the UP and DOWN keys to 'listen' to the results. If the listview already has focus

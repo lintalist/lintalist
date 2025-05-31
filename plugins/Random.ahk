@@ -1,9 +1,10 @@
 ﻿/* 
 Plugin        : Random [Standard Lintalist]
 Purpose       : Make a random selection from a list
-Version       : 1.1
+Version       : 1.2
 
 History:
+- 1.2 fix range of numbers 1|10
 - 1.1 fix to count correct number of RandomItems (+ 1)
 - 1.0 first version - Lintalist v1.8
 */
@@ -13,17 +14,13 @@ GetSnippetRandom:
 		{
 		 If (InStr(Clip, "[[Random=") = 0) or (A_Index > 100)
 			Break
+
 		 ; check for numbers
 		 RandomItems:=CountString(PluginOptions,"|") + 1
-		 If (RandomItems = 1)
-		 	{
-		 	 RandomStart:=StrSplit(PluginOptions,"|").1
-		 	 RandomEnd:=StrSplit(PluginOptions,"|").2
-			 if RandomCheckNumber(RandomStart,RandomEnd)
-			 	{
-				 Random, PluginOptions, %RandomStart%, %RandomEnd%
-			 	}
-		 	}
+		 RandomStart:=StrSplit(PluginOptions,"|").1
+		 RandomEnd:=StrSplit(PluginOptions,"|").2
+		 if RandomCheckNumber(RandomStart,RandomEnd)
+			 Random, PluginOptions, %RandomStart%, %RandomEnd%
 		 Else ; a list
 		 	{
 			 Random, RandomNumber, 1, %RandomItems%

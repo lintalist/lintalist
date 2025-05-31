@@ -118,6 +118,9 @@ INISetup:={ AlwaysLoadBundles:     {default:"",find:"bundles\"}
 			IniSetup["SavedColumnsWidth"]:={default:""}
 			IniSetup["AlternateRowColor"]:={default:"e8f4f8"}
 			IniSetup["AlternateSelectionColor"]:={default:""}
+			IniSetup["BothPartsOrder"]:={default:"0"}
+			IniSetup["BothPartsJoinBy"]:={default:"Space"}
+			IniSetup["BothPartsPaste"]:={default:"0"}
 
 	 ShortcutSearchGuiShow:=["1: ","2: ","3: ","4: ","5: ","6: ","7: ","8: ","9: ","0: ", "   "]
 
@@ -140,6 +143,15 @@ INISetup:={ AlwaysLoadBundles:     {default:"",find:"bundles\"}
 			if (%k% > v.max)
 				%k%:=v.max
 		}
+
+		switch BothPartsJoinBy
+		{
+		case "Tab"      : BothPartsJoinBy:="	"
+		case "Space"    : BothPartsJoinBy:=" "
+		case "New Line" : BothPartsJoinBy:="`n"
+		case "Empty"    : BothPartsJoinBy:=""
+		}
+		
 
 		AlternateSelectionColor:=StrSplit(AlternateSelectionColor,",")
 
