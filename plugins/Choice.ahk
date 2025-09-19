@@ -158,6 +158,10 @@ else
 }
 
 GuiControl, 10:, ListBox1, |%PluginOptionsResults%
+; After filtering, automatically select the first item (if available). This makes it easier to quickly choose the second or subsequent options.
+ControlGet, lbCount, List, Count, ListBox1,  Select and press enter
+if (lbCount >= 1)
+	GuiControl, 10:Choose, Item, 1
 PluginsFilterText:=""
 PluginOptionsResults:=""
 Gui, 10:Submit,NoHide
