@@ -1,9 +1,10 @@
 ﻿/*
 Plugin        : Choice [Standard Lintalist]
 Purpose       : Make a selection from a list [part of code also placed in lintalist.ahk and used to allow users to select a bundle]
-Version       : 2.3
+Version       : 2.4
 
 History:
+- 2.4 Fix: always had filter option - https://github.com/lintalist/lintalist/issues/314
 - 2.3 Auto-select first item after filtering - https://github.com/lintalist/lintalist/pull/313
 - 2.2 Image Preview window with filelist - https://github.com/lintalist/lintalist/issues/239 (only works with fullpath option, P).
 - 2.1 Check if PluginOptionsResults is empty, if so, set the font to bold and update the listbox -- https://github.com/lintalist/lintalist/pull/258/files
@@ -85,8 +86,8 @@ MakeChoice:
 		 DetectHiddenWindows, On
 		 If !ChoiceFilter
 			{
-			 GuiControl, Disable, Edit1
-			 GuiControl, Hide, Edit1
+			 GuiControl, 10: Disable, Edit1
+			 GuiControl, 10: Hide, Edit1
 			 Gui, 10:Add, Text, x5 y10 w400, %ChoiceQuestion%
 			}
 		 Gui, 10:Font,
