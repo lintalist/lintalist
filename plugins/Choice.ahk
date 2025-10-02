@@ -1,9 +1,10 @@
 ﻿/*
 Plugin        : Choice [Standard Lintalist]
 Purpose       : Make a selection from a list [part of code also placed in lintalist.ahk and used to allow users to select a bundle]
-Version       : 2.2
+Version       : 2.3
 
 History:
+- 2.3 Auto-select first item after filtering - https://github.com/lintalist/lintalist/pull/313
 - 2.2 Image Preview window with filelist - https://github.com/lintalist/lintalist/issues/239 (only works with fullpath option, P).
 - 2.1 Check if PluginOptionsResults is empty, if so, set the font to bold and update the listbox -- https://github.com/lintalist/lintalist/pull/258/files
       Addition: ChoiceInput checkbox so it can be user choice?
