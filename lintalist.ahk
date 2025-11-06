@@ -2201,6 +2201,9 @@ If (item = "") ; if we didn't focus on results list while "typing to filter" in 
 	 If InStr(item,"`n") ; we may get all the results of the "typing to filter" so assume we want first result
 		item:=Trim(StrSplit(item,"`n").1,"`n`r")
 	}
+; Remove numeric prefix like "1) " when SelectByDigit numbering is shown
+if (SelectByDigit)
+	item := RegExReplace(item, "^\s*\d{1,2}\)\s*")
 Gosub, 10GuiSavePos
 Gui, 10:Destroy
 Gui, PreviewChoice:Destroy

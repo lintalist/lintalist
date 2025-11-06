@@ -1,9 +1,15 @@
 ﻿/*
 Plugin        : Choice [Standard Lintalist]
 Purpose       : Make a selection from a list [part of code also placed in lintalist.ahk and used to allow users to select a bundle]
-Version       : 2.4
+Version       : 2.5
+Notes         : When "Auto Center" is enabled, the window will always be centered on screen,
+                ignoring any manually adjusted window position/size or saved configuration values.
+                To preserve custom window position and size, uncheck "Auto Center".
 
 History:
+- 2.5 Feature: Select by digit (1..0) to choose the first 10 items;
+      shows numeric prefixes 1) .. 10) when enabled; 
+	  adds optional UI checkbox and hotkeys (Alt+S toggles Select by digit; disabled by default). 
 - 2.4 Fix: always had filter option - https://github.com/lintalist/lintalist/issues/314
 - 2.3 Auto-select first item after filtering - https://github.com/lintalist/lintalist/pull/313
 - 2.2 Image Preview window with filelist - https://github.com/lintalist/lintalist/issues/239 (only works with fullpath option, P).
@@ -63,12 +69,16 @@ MakeChoice:
 		 Gui, 10:Default
 		 Gui, 10:font, s%FontSize%
 		 Gui, 10:Add, Edit,     x5 y5 w400 vChoiceFilterText gChoiceFilterText hwndHED1,
-		 Gui, 10:Add, ListBox,  xp yp+30 w400 R10 vItem gChoiceMouseOK, %PluginOptions%
+		 ShownOptions := PluginOptions
+		 if (SelectByDigit)
+		 ShownOptions := AddDigitPrefixes(PluginOptions)
+		 Gui, 10:Add, ListBox,  xp yp+30 w400 R10 vItem gChoiceMouseOK, %ShownOptions%
 		 Gui, 10:Add, button,   w70       vChoiceCancel gCancelChoice, &Cancel
 		 Gui, 10:Add, button,   xp+75 w80 vChoiceRandom gChoiceRandom, &Random
-		 Gui, 10:Add, Checkbox, xp+90  yp-5 w106 vChoiceAutoCenter gChoiceAutoCenter, &Auto Center
-		 Gui, 10:Add, Checkbox, xp+110 yp   w130 vChoiceInput gChoiceInput, &Use as [[Input]]
+		 Gui, 10:Add, Checkbox, xp+90  yp   w106 h30 vChoiceAutoCenter gChoiceAutoCenter, &Auto Center
+		 Gui, 10:Add, Checkbox, xp yp+24   w150 h30 vChoiceInput gChoiceInput, &Use as [[Input]]
 		 ;Gui, 10:Add, button  , xp+130 yp   w130 vPreview gTogglePreview, 👁 View
+		 Gui, 10:Add, Checkbox, xp yp+24 w160 h30 vSelectByDigit gSelectByDigit, &Select by digit
 		 Gui, 10:Add, button,   xp yp default vChoiceOK gChoiceOK hidden, OK
 
 		 Gui, PreviewChoice:Destroy
@@ -78,11 +88,13 @@ MakeChoice:
 		 Gui, PreviewChoice:Add, ActiveX, w450 h405 x5 y5 vdoc, HTMLFile
 		 If RegExMatch(PluginOptions,"i)[a-z]:\\") ; there seems to be a file path in the options
 			Gosub, PreviewChoiceShow
-			
+
 		 If ChoiceAutoCenter
 			GuiControl,10:,ChoiceAutoCenter, 1
 		 If ChoiceInput
 			GuiControl,10:,ChoiceInput, 1
+			 If SelectByDigit
+			 GuiControl,10:,SelectByDigit, 1
 		 DetectHiddenWindows, On
 		 If !ChoiceFilter
 			{
@@ -131,6 +143,7 @@ AutoXYWH("y"   , "ChoiceCancel")
 AutoXYWH("y"   , "ChoiceRandom")
 AutoXYWH("y"   , "ChoiceAutoCenter")
 AutoXYWH("y"   , "ChoiceInput")
+AutoXYWH("y"   , "SelectByDigit")
 Return
 
 ChoiceFilterText:
@@ -159,7 +172,15 @@ else
 	GuiControl, Font, Item
 }
 
-GuiControl, 10:, ListBox1, |%PluginOptionsResults%
+if (SelectByDigit)
+{
+	ShownResults := AddDigitPrefixes(PluginOptionsResults)
+	GuiControl, 10:, ListBox1, |%ShownResults%
+}
+else
+{
+	GuiControl, 10:, ListBox1, |%PluginOptionsResults%
+}
 ; After filtering, automatically select the first item (if available). This makes it easier to quickly choose the second or subsequent options.
 ControlGet, lbCount, List, Count, ListBox1,  Select and press enter
 if (lbCount >= 1)
@@ -178,12 +199,15 @@ Return
 
 UpdatePreview:
 Gui, PreviewChoice:Default
-SplitPath, item, , , OutExtension
+itemPreview := item
+if (SelectByDigit)
+	itemPreview := RegExReplace(itemPreview, "^\s*(?:10|[1-9])\)\s*")
+SplitPath, itemPreview, , , OutExtension
 if OutExtension in bmp,gif,ico,jpg,jpeg,png
-	htmdoc:=StrReplace(htmltemplate,"--content--","<img src=file:///" StrReplace(StrReplace(item," ","%20"),"\","/") "  >")
+	htmdoc:=StrReplace(htmltemplate,"--content--","<img src=file:///" StrReplace(StrReplace(itemPreview," ","%20"),"\","/") "  >")
 else if OutExtension in txt,md,htm,html,shtm,shtml,css,ahk,cmd
 	{
-	 FileRead, htmltextdata, %item%
+	 FileRead, htmltextdata, %itemPreview%
 	 htmdoc:=StrReplace(htmltemplate,"--content--","<pre><code>" htmltextdata "</code></pre>")
 	}
 else
@@ -249,6 +273,7 @@ Return
 ChoiceWindowPosition:
 IniRead, ChoiceAutoCenter, %A_ScriptDir%\session.ini, choice, ChoiceAutoCenter, 1
 IniRead, ChoiceInput     , %A_ScriptDir%\session.ini, choice, ChoiceInput, 1
+IniRead, SelectByDigit   , %A_ScriptDir%\session.ini, choice, SelectByDigit, 0
 IniRead, ChoiceX         , %A_ScriptDir%\session.ini, choice, ChoiceX, 300
 IniRead, ChoiceY         , %A_ScriptDir%\session.ini, choice, ChoiceY, 300
 IniRead, ChoiceWidth     , %A_ScriptDir%\session.ini, choice, ChoiceWidth, 410
@@ -279,6 +304,15 @@ ControlSend, Edit1, {End}, Select and press enter
 Gosub, ChoiceFilterText
 Return
 
+SelectByDigit:
+SelectByDigit:=!SelectByDigit
+SelectByDigitWrite:
+IniWrite, %SelectByDigit%, %A_ScriptDir%\session.ini, choice, SelectByDigit
+ControlFocus, Edit1, Select and press enter
+ControlSend, Edit1, {End}, Select and press enter
+Gosub, ChoiceFilterText
+Return
+
 ; just me @ https://autohotkey.com/board/topic/76540-function-seteditcuebanner-ahk-l/
 SetEditCueBanner(HWND, Cue) {  ; requires AHL_L
    Static EM_SETCUEBANNER := (0x1500 + 1)
@@ -304,6 +338,28 @@ Gui10ListboxCheckPosition(gui10title)
 		ControlMove, Listbox1, Gui10ListboxX, Gui10ListboxX, Gui10ListboxWidth, 110, %gui10title%
 	}
 
+; Prefix 1) .. 10) on first up to 10 items in a | delimited list
+AddDigitPrefixes(listStr)
+	{
+		result := ""
+		idx := 0
+		Loop, Parse, listStr, |
+		{
+			if (A_LoopField = "")
+				continue
+			idx++
+			item := A_LoopField
+			if (idx <= 10)
+			{
+				prefix := (idx = 10) ? "10) " : idx ") "
+				result .= prefix item "|"
+			}
+			else
+				result .= item "|"
+		}
+		return RegExReplace(result, "\|$", "")
+	}
+
 #IfWinActive, Select and press enter ahk_class AutoHotkeyGUI
 F3::
 TogglePreview:
@@ -316,6 +372,75 @@ else
 	Gosub, PreviewChoiceShow
 Return
 #IfWinActive
+
+#If (WinActive("Select and press enter ahk_class AutoHotkeyGUI") && SelectByDigit)
+1::
+SelectByDigitN:=1
+Gosub, SelectByDigitChoose
+Return
+2::
+SelectByDigitN:=2
+Gosub, SelectByDigitChoose
+Return
+3::
+SelectByDigitN:=3
+Gosub, SelectByDigitChoose
+Return
+4::
+SelectByDigitN:=4
+Gosub, SelectByDigitChoose
+Return
+5::
+SelectByDigitN:=5
+Gosub, SelectByDigitChoose
+Return
+6::
+SelectByDigitN:=6
+Gosub, SelectByDigitChoose
+Return
+7::
+SelectByDigitN:=7
+Gosub, SelectByDigitChoose
+Return
+8::
+SelectByDigitN:=8
+Gosub, SelectByDigitChoose
+Return
+9::
+SelectByDigitN:=9
+Gosub, SelectByDigitChoose
+Return
+0::
+SelectByDigitN:=10
+Gosub, SelectByDigitChoose
+Return
+#If
+
+; SelectByDigit helper
+SelectByDigitChoose:
+Gui, 10:Default
+
+; Get the currently displayed list items
+ControlGet, currentList, List,, ListBox1, Select and press enter
+if (currentList = "")
+    return
+
+; Convert the list to an array
+items := StrSplit(currentList, "`n")
+
+; Ensure the chosen index is within bounds
+if (SelectByDigitN <= items.Length())
+{
+    ; Choose the corresponding item
+    GuiControl, 10:Choose, Item, %SelectByDigitN%
+
+    ; Force GUI refresh
+    Gui, 10:Submit, NoHide
+
+    ; Update preview
+    Gosub, UpdatePreview
+}
+Return
 
 #IfWinActive, preview ahk_class AutoHotkeyGUI
 Esc::
