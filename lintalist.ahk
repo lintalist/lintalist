@@ -2203,7 +2203,16 @@ If (item = "") ; if we didn't focus on results list while "typing to filter" in 
 	}
 ; Remove numeric prefix like "1: " when SelectByDigit numbering is shown
 if (SelectByDigit)
-	item := RegExReplace(item, "^\d:\s")
+	{
+		SendMessage, 0x188, 0, 0, ListBox1, Select and press enter  ; LB_GETCURSEL
+		selIndex := ErrorLevel + 1
+		if (SelectByDigit && selIndex <= 10)
+			{
+			 expected := (selIndex = 10) ? "0: " : selIndex ": "
+			 if (SubStr(item, 1, StrLen(expected)) = expected)
+				item := SubStr(item, StrLen(expected) + 1)
+			}
+	}
 Gosub, 10GuiSavePos
 Gui, 10:Destroy
 Gui, PreviewChoice:Destroy
