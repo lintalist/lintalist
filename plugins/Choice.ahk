@@ -8,8 +8,9 @@ Notes         : When "Auto Center" is enabled, the window will always be centere
 
 History:
 - 2.5 Feature: Select by digit (1..0) to choose the first 10 items;
-      shows numeric prefixes 1) .. 10) when enabled; 
+      shows numeric prefixes 1: .. 0: when enabled;
 	  adds optional UI checkbox and hotkeys (Alt+S toggles Select by digit; disabled by default). 
+	  Also enable Alt+digit (Alt+1..0) to select items 1..10 by default in the Choice window; hotkeys only, no change to display or result processing.
 - 2.4 Fix: always had filter option - https://github.com/lintalist/lintalist/issues/314
 - 2.3 Auto-select first item after filtering - https://github.com/lintalist/lintalist/pull/313
 - 2.2 Image Preview window with filelist - https://github.com/lintalist/lintalist/issues/239 (only works with fullpath option, P).
