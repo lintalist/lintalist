@@ -75,10 +75,10 @@ MakeChoice:
 		 Gui, 10:Add, ListBox,  xp yp+30 w400 R10 vItem gChoiceMouseOK, %ShownOptions%
 		 Gui, 10:Add, button,   w70       vChoiceCancel gCancelChoice, &Cancel
 		 Gui, 10:Add, button,   xp+75 w80 vChoiceRandom gChoiceRandom, &Random
-		 Gui, 10:Add, Checkbox, xp+90  yp   w106 h30 vChoiceAutoCenter gChoiceAutoCenter, &Auto Center
-		 Gui, 10:Add, Checkbox, xp yp+24   w150 h30 vChoiceInput gChoiceInput, &Use as [[Input]]
+		 Gui, 10:Add, Checkbox, xp+90  yp   w106 h28 vChoiceAutoCenter gChoiceAutoCenter, &Auto Center
+		 Gui, 10:Add, Checkbox, xp yp+24   w150 h28 vChoiceInput gChoiceInput, &Use as [[Input]]
 		 ;Gui, 10:Add, button  , xp+130 yp   w130 vPreview gTogglePreview, 👁 View
-		 Gui, 10:Add, Checkbox, xp yp+24 w160 h30 vSelectByDigit gSelectByDigit, &Select by digit
+		 Gui, 10:Add, Checkbox, xp yp+24 w160 h28 vSelectByDigit gSelectByDigit, &Select by digit
 		 Gui, 10:Add, button,   xp yp default vChoiceOK gChoiceOK hidden, OK
 
 		 Gui, PreviewChoice:Destroy
@@ -338,7 +338,7 @@ Gui10ListboxCheckPosition(gui10title)
 		ControlMove, Listbox1, Gui10ListboxX, Gui10ListboxX, Gui10ListboxWidth, 110, %gui10title%
 	}
 
-; Prefix 1) .. 10) on first up to 10 items in a | delimited list
+; Prefix 1) .. 0) on first up to 10 items in a | delimited list
 AddDigitPrefixes(listStr)
 	{
 		result := ""
@@ -351,7 +351,7 @@ AddDigitPrefixes(listStr)
 			item := A_LoopField
 			if (idx <= 10)
 			{
-				prefix := (idx = 10) ? "10) " : idx ") "
+				prefix := (idx = 10) ? "0: " : idx ": "
 				result .= prefix item "|"
 			}
 			else
@@ -375,43 +375,18 @@ Return
 
 #If (WinActive("Select and press enter ahk_class AutoHotkeyGUI") && SelectByDigit)
 1::
-SelectByDigitN:=1
-Gosub, SelectByDigitChoose
-Return
 2::
-SelectByDigitN:=2
-Gosub, SelectByDigitChoose
-Return
 3::
-SelectByDigitN:=3
-Gosub, SelectByDigitChoose
-Return
 4::
-SelectByDigitN:=4
-Gosub, SelectByDigitChoose
-Return
 5::
-SelectByDigitN:=5
-Gosub, SelectByDigitChoose
-Return
 6::
-SelectByDigitN:=6
-Gosub, SelectByDigitChoose
-Return
 7::
-SelectByDigitN:=7
-Gosub, SelectByDigitChoose
-Return
 8::
-SelectByDigitN:=8
-Gosub, SelectByDigitChoose
-Return
 9::
-SelectByDigitN:=9
-Gosub, SelectByDigitChoose
-Return
 0::
-SelectByDigitN:=10
+SelectByDigitN:=SubStr(A_ThisHotkey,0)
+If (SelectByDigitN = 0)
+	SelectByDigitN:=10
 Gosub, SelectByDigitChoose
 Return
 #If
