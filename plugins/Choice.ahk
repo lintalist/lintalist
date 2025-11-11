@@ -373,6 +373,24 @@ else
 Return
 #IfWinActive
 
+#IfWinActive, Select and press enter ahk_class AutoHotkeyGUI
+!1::
+!2::
+!3::
+!4::
+!5::
+!6::
+!7::
+!8::
+!9::
+!0::
+SelectByDigitN:=SubStr(A_ThisHotkey,0)
+If (SelectByDigitN = 0)
+	SelectByDigitN:=10
+Gosub, SelectByDigitChoose
+Return
+#IfWinActive
+
 #If (WinActive("Select and press enter ahk_class AutoHotkeyGUI") && SelectByDigit)
 1::
 2::
