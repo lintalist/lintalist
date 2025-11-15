@@ -1,6 +1,6 @@
 ﻿/*
 Name          : Standard functions, can also be shared by bundle scripts by including LLInit() in your bundle script
-Version       : 1.2
+Version       : 1.3
 Functions     :
 	- LLInit()
 	- GetActiveWindowStats()
@@ -8,6 +8,9 @@ Functions     :
 	- ClipSet() mod of virclip by Learning one http://www.autohotkey.com/forum/topic56926.html
 
 History:
+1.3 - Adding additional WinMenuSelectItem option to copy/paste as workaround for Notepad++ (initially)
+      which doesn't seem to receive ^c ^v correctly in some versions. May work with other programs too.
+      See note in docs\AltPaste.md - https://github.com/lintalist/lintalist/issues/330
 1.2 - ShortcutCopy, ShortcutPaste, ShortcutCut available in Scripts as well.
     - optional includes nvda.ahk and AfterPaste.ahk (see docs, used for nvda for now)
     - moved Sleep, % PasteDelay to after pasting (replacing sleep, 50)
@@ -93,44 +96,55 @@ SendKey(Method = 1, Keys = "")
 
 	 if AltPaste[ActiveWindowProcessName].HasKey("PasteDelay")
 		UsePasteDelay:=AltPaste[ActiveWindowProcessName].PasteDelay
-
 	}
-
+	
 ;	 If ((Save = 1) or (Save = ""))
 ;		ClipSet("s",1) ; safe current content and clear clipboard
 ;		ClearClipboard()
 
-	 If (Method = 1)
-		{ 
-		 WinActivate ahk_id %ActiveWindowID%
-		 SendInput %keys%
+	If !InStr(Keys,"|") ; no WinMenuSelectItem defined
+		{
+		 If (Method = 1)
+			{ 
+			 WinActivate ahk_id %ActiveWindowID%
+			 SendInput %keys%
+			}
+		 Else If (Method = 2)
+			{ 
+			 WinActivate ahk_id %ActiveWindowID%
+			 SendEvent %keys%
+			}
+		 Else If (Method = 3)
+			{ 
+			 WinActivate ahk_id %ActiveWindowID%
+			 SendPlay %keys%
+			}
+		 Else If (Method = 4)
+			{ 
+			 WinActivate ahk_id %ActiveWindowID%
+			 ControlSend, %ActiveControl%, %keys%, ahk_id %ActiveWindowID%
+			}
 		}
-	 Else If (Method = 2)
-		{ 
+	else ; WinMenuSelectItem defined, works for Standard Windows menu and menu has to be visible
+		{
 		 WinActivate ahk_id %ActiveWindowID%
-		 SendEvent %keys%
-		}
-	 Else If (Method = 3)
-		{ 
-		 WinActivate ahk_id %ActiveWindowID%
-		 SendPlay %keys%
-		}
-	 Else If (Method = 4)
-		{ 
-		 WinActivate ahk_id %ActiveWindowID%
-		 ControlSend, %ActiveControl%, %keys%, ahk_id %ActiveWindowID%
+		 WinWaitActive ahk_id %ActiveWindowID%
+		 MenuID:=StrSplit(keys,"|")
+		 MainMenu:=MenuID[1]
+		 SubMenu :=MenuID[2]
+		 WinMenuSelectItem, A, , %MainMenu% , %SubMenu%
 		}
 
 ;	 Sleep 50 ; some time to get data to clipboard
 	 Sleep, % UsePasteDelay ; was at the start of the function, moved it here
 
-     ; Because one of the includes below will always fail code is only loaded once:
+	 ; Because one of the includes below will always fail code is only loaded once:
 	 #include *i %A_ScriptDir%\include\AfterPaste.ahk     ; from lintalist search
 	 #include *i %A_ScriptDir%\..\include\AfterPaste.ahk  ; from a script
 
 ;	 If (Restore = 1)
 ;		 Clipboard:=ClipSet("g",2) ; restore
-	
+
 	 Return
 	}
 

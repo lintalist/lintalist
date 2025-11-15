@@ -31,6 +31,28 @@ Restart Lintalist after modifying `AltPaste.ini`
 
 [1] More information https://en.wikipedia.org/wiki/Cut,_copy,_and_paste#Common_keyboard_shortcuts
 
+## Note about Notepad++
+
+Lintalist may not work correctly in some versions of notepad++.exe - it may not paste your snippet or not copy text when using the `[[selected]` plugin.
+A workaround that _might_ work - the menu bar HAS to visible - will use the AutoHotkey command https://www.autohotkey.com/docs/v1/lib/WinMenuSelectItem.htm
+
+Add the following to `AltPaste.ini`
+
+```ini
+[notepad++.exe]
+Cut=2&|4&
+Copy=2&|5&
+Paste=2&|6&
+```
+
+Save and restart Lintalist.
+
+This may also work for other programs where the application uses a standard Windows menu bar.
+See the AutoHotkey command documentation on how to access the correct main- and submenu. 
+This can either be `text` or `digit&` separated by a `|` character - `Edit|Copy` or `2&|5&` would be valid examples.
+
+Discussion https://github.com/lintalist/lintalist/issues/330
+
 ## Included (console) applications (see ReadAltPasteIni.ahk and AltPaste.ini)
 
 * cmd.exe [2]
