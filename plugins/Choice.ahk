@@ -8,9 +8,8 @@ Notes         : When "Auto Center" is enabled, the window will always be centere
 
 History:
 - 2.5 Feature: Select by digit (1..0) to choose the first 10 items;
-      shows numeric prefixes 1: .. 0: when enabled;
-	  adds optional UI checkbox and hotkeys (Alt+S toggles Select by digit; disabled by default). 
-	  Also enable Alt+digit (Alt+1..0) to select items 1..10 by default in the Choice window; hotkeys only, no change to display or result processing.
+      adds optional UI checkbox and hotkeys (Alt+S toggles Select by digit; disabled by default).
+      Note: SelectByDigitTyping "hidden" setting in settings.ini to be able to use just digit to select shortcut vs alt+digit.
 - 2.4 Fix: always had filter option - https://github.com/lintalist/lintalist/issues/314
 - 2.3 Auto-select first item after filtering - https://github.com/lintalist/lintalist/pull/313
 - 2.2 Image Preview window with filelist - https://github.com/lintalist/lintalist/issues/239 (only works with fullpath option, P).
@@ -63,7 +62,7 @@ MakeChoice:
 			}
 		 PluginOptions:=RegExReplace(PluginOptions,"\|\|*","|",,,2)
 		 MultipleHotkey=0
-		 if (ChoiceQuestion = "")
+		 If (ChoiceQuestion = "")
 			ChoiceQuestion:="Select and press enter"
 		 Gui, 10:Destroy
 		 Gui, 10:+Owner +AlwaysOnTop +Resize +MinSize -SysMenu
@@ -71,15 +70,14 @@ MakeChoice:
 		 Gui, 10:font, s%FontSize%
 		 Gui, 10:Add, Edit,     x5 y5 w400 vChoiceFilterText gChoiceFilterText hwndHED1,
 		 ShownOptions := PluginOptions
-		 if (SelectByDigit)
-		 ShownOptions := AddDigitPrefixes(PluginOptions)
+		 If (SelectByDigit)
+			ShownOptions := AddDigitPrefixes(PluginOptions)
 		 Gui, 10:Add, ListBox,  xp yp+30 w400 R10 vItem gChoiceMouseOK, %ShownOptions%
-		 Gui, 10:Add, button,   w70       vChoiceCancel gCancelChoice, &Cancel
+		 Gui, 10:Add, Checkbox, w106 h28 vChoiceAutoCenter gChoiceAutoCenter, &Auto Center
+		 Gui, 10:Add, Checkbox, xp+120 yp w140 h28 vChoiceInput gChoiceInput, &Use as [[Input]]
+		 Gui, 10:Add, Checkbox, xp+150 yp w150 h28 vSelectByDigit gSelectByDigit, &Select by digit
+		 Gui, 10:Add, button,   x5 w70       vChoiceCancel gCancelChoice, &Cancel
 		 Gui, 10:Add, button,   xp+75 w80 vChoiceRandom gChoiceRandom, &Random
-		 Gui, 10:Add, Checkbox, xp+90  yp   w106 h28 vChoiceAutoCenter gChoiceAutoCenter, &Auto Center
-		 Gui, 10:Add, Checkbox, xp yp+24   w150 h28 vChoiceInput gChoiceInput, &Use as [[Input]]
-		 ;Gui, 10:Add, button  , xp+130 yp   w130 vPreview gTogglePreview, 👁 View
-		 Gui, 10:Add, Checkbox, xp yp+24 w160 h28 vSelectByDigit gSelectByDigit, &Select by digit
 		 Gui, 10:Add, button,   xp yp default vChoiceOK gChoiceOK hidden, OK
 
 		 Gui, PreviewChoice:Destroy
@@ -275,6 +273,7 @@ ChoiceWindowPosition:
 IniRead, ChoiceAutoCenter, %A_ScriptDir%\session.ini, choice, ChoiceAutoCenter, 1
 IniRead, ChoiceInput     , %A_ScriptDir%\session.ini, choice, ChoiceInput, 1
 IniRead, SelectByDigit   , %A_ScriptDir%\session.ini, choice, SelectByDigit, 0
+IniRead, SelectByDigitTyping, %A_ScriptDir%\session.ini, choice, SelectByDigitTyping, 0
 IniRead, ChoiceX         , %A_ScriptDir%\session.ini, choice, ChoiceX, 300
 IniRead, ChoiceY         , %A_ScriptDir%\session.ini, choice, ChoiceY, 300
 IniRead, ChoiceWidth     , %A_ScriptDir%\session.ini, choice, ChoiceWidth, 410
@@ -346,19 +345,16 @@ AddDigitPrefixes(listStr)
 		idx := 0
 		Loop, Parse, listStr, |
 		{
+			prefix:=Chr(8230) Chr(8230) Chr(8230) ; 5760 shows a faint dash
 			if (A_LoopField = "")
 				continue
 			idx++
 			item := A_LoopField
 			if (idx <= 10)
-			{
 				prefix := (idx = 10) ? "0: " : idx ": "
-				result .= prefix item "|"
-			}
-			else
-				result .= item "|"
+			result .= prefix item "|"
 		}
-		return RegExReplace(result, "\|$", "")
+		return RTrim(result, "|")
 	}
 
 #IfWinActive, Select and press enter ahk_class AutoHotkeyGUI
@@ -392,7 +388,7 @@ Gosub, SelectByDigitChoose
 Return
 #IfWinActive
 
-#If (WinActive("Select and press enter ahk_class AutoHotkeyGUI") && SelectByDigit)
+#If (WinActive("Select and press enter ahk_class AutoHotkeyGUI") && SelectByDigit && SelectByDigitTyping)
 1::
 2::
 3::
