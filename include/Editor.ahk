@@ -956,6 +956,7 @@ Gui, 1:-Disabled
 Gui, 71:Destroy
 WinActivate, %AppWindow%
 InEditMode = 0
+EditMode:=""
 ControlFocus, Edit1, %AppWindow%
 If OnTopStateSaved
 	Gosub, GuiOnTopCheck

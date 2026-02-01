@@ -200,7 +200,7 @@ UpdatePreview:
 Gui, PreviewChoice:Default
 itemPreview := item
 if (SelectByDigit)
-	itemPreview := RegExReplace(itemPreview, "^\s*(?:10|[1-9])\)\s*")
+	itemPreview := SubStr(itemPreview,4)
 SplitPath, itemPreview, , , OutExtension
 if OutExtension in bmp,gif,ico,jpg,jpeg,png
 	htmdoc:=StrReplace(htmltemplate,"--content--","<img src=file:///" StrReplace(StrReplace(itemPreview," ","%20"),"\","/") "  >")
