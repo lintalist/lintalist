@@ -75,7 +75,7 @@ StayOnMonXY(GW, GH, Mouse = 0, MouseAlternative = 1, Center = 0)
 		 MouseGetPos, X, Y
 		 X-=100
 		 Y-=50
-		 ToolTip % X ":" Y
+		 ;ToolTip % X ":" Y
 	 }
 
 	 If ( Y + GH + 60 > A_ScreenHeight ) ; fix Y pos later, not as important, will need monitor bottom vars.
