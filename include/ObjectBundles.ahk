@@ -368,7 +368,7 @@ ParseBundle(Patterns, Counter)
 	 Patterns:=RegExReplace(Patterns,"im)\s*- LLPart1:\s*LLPart2:\s*LLKey:\s*LLShorthand:\s*LLScript:\s*", "") ; remove empty snippets from bundle
 	 Patterns:=RegExReplace(Patterns,"im)\s*- LLPart1:\s*", Chr(5)) ; prepare split per pattern/snippet
 	 StringTrimLeft, Patterns, Patterns, 1                          ; trim first Chr(5) to prevent empty array element
-	 Patterns:=RegExReplace(Patterns,"im)\s*LLPart2:\s*|\s*LLKey:\s*|\s*LLShorthand:\s*|\s*LLScript:\s*", Chr(7)) ; prepare split for each pattern in to an array elements
+	 Patterns:=RegExReplace(Patterns,"im)\r?\n?[ \t]*LLPart2: |\r?\n?[ \t]*LLKey:\s*|\s*LLShorthand:\s*|\s*LLScript:\s*", Chr(7)) ; prepare split for each pattern in to an array elements
 	 StringSplit, list, Patterns, % Chr(5) ; split pattern 
 	 ;MsgBox % Snippet[Counter,1]
 	 ShortHandHitList_%Counter% := Chr(5)
