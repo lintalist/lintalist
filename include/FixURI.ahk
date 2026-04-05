@@ -21,6 +21,7 @@ image/rtf (here text is simply the path, returns "fixed" path)
 	- "path\tofile.jpg"
 
 History:
+- 1.4: skip img src=data:image for base64 encoded images
 - 1.3: added A HREF for HTML to check/correct local file uri (file://) as well not just for IMG SRC
 - 1.2: now used by the File plugin as well.
 
@@ -55,6 +56,8 @@ FixURI(text,source,sourcedir="") {
 		 While Pos:=RegExMatch(text,"i)<img[^>]+src=['""](\K[^'""]+)",A,Pos+StrLen(A1))
 			{
 			 A0:=A1
+			 if RegExMatch(A1,"i)^data:image") ; base encoded, leave unchanged
+				continue
 			 if RegExMatch(A1,"i)^https*\:") ; internet URI, leave unchanged
 				continue
 			 StringReplace, A1, A1, /, \, All

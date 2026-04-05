@@ -15,8 +15,8 @@ body {
 	font-size: 12px;
 	line-height: 140%;
 	text-align:center;
-	 }
-	
+	}
+
 #container {
 	width:85%;
 	height: 800px;
@@ -31,25 +31,22 @@ body {
 	margin: 0px auto;
 	}
 
-
 code {
 	padding: 2px;
 	margin: 2px;
 	background-color: #F2FEFF;
 	display: inline;
 	border-radius: 2px;
-	-moz-border-radius: 2px;
-	-webkit-border-radius: 2px;
 	border: 1px solid #00D2D2;
-	}		
-	
+	}
+
 pre {
-	 white-space: pre-wrap;       /* css-3 */
-	 white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
-	 white-space: -pre-wrap;      /* Opera 4-6 */
-	 white-space: -o-pre-wrap;    /* Opera 7 */
-	 word-wrap: break-word;       /* Internet Explorer 5.5+ */
- 	}	
+	 white-space: pre-wrap;			 /* css-3 */
+	 white-space: -moz-pre-wrap;	/* Mozilla, since 1999 */
+	 white-space: -pre-wrap;			/* Opera 4-6 */
+	 white-space: -o-pre-wrap;		/* Opera 7 */
+	 word-wrap: break-word;			 /* Internet Explorer 5.5+ */
+ 	}
 
 div#question {
 	background: #f2f3f0 url(help.png) 2px 5px no-repeat;
@@ -57,10 +54,8 @@ div#question {
 	padding-left: 20px;
 	border: 1px solid #d8dbcd;
 	border-radius: 5px;
-	-moz-border-radius: 5px;
-	-webkit-border-radius: 5px;
-	}	
-	
+	}
+
 .tip {
 	background: #f2f3f0 url(img/tip.png) 4px 8px no-repeat;
 	display: block;
@@ -69,17 +64,15 @@ div#question {
 	padding-top: 8px;
 	padding-bottom: 8px;
 	border-radius: 5px;
-	-moz-border-radius: 5px;
-	-webkit-border-radius: 5px;
 	text-shadow: white 1px 1px 0px;
-	}	
-	
+	}
+
 h2,h3,h4,h5,h6 {
 	margin:0;
 	padding:0;
 	display: inline;
 	}
-	
+
 span.Example {
 	margin:0;
 	padding:0;
@@ -93,29 +86,31 @@ b em, h2 em, h3 em {
 	color: #c00;
 	}
 
-.llbundle {	color: #008;
-			font-weight: bold;
-		  }
+.llbundle {
+	color: #008;
+	font-weight: bold;
+	}
 
-.flex {	color: #c00;			
+.flex {
+	color: #c00;
 	}
 
 .llcomment {
 	color: #00A0FF;
 	font-size: 11px;
-		}	
-	
+	}
+
 .smalltext {
 	color: #666;
 	font-size: 11px;
-}	
+}
 
 .date {
- color:#aaa;
- font-size:9px;
- font-family:arial;
- margin-top:2px;
-}
+	color:#aaa;
+	font-size:9px;
+	font-family:arial;
+	margin-top:2px;
+	}
 
 .column {
 	width: 31%;
@@ -125,7 +120,7 @@ b em, h2 em, h3 em {
 
 .column b {
 	}
-	
+
 .column p {
 	padding-top:0;
 	margin-top:0;
@@ -135,15 +130,15 @@ b em, h2 em, h3 em {
 	font-size:11px;
 	color:#800;
 	}
-	
+
 .brk {
 	clear:both;
-	}	
-	
-table 	 { border-collapse: collapse; border: 1px solid #C0C0C0; width:100%;}
-th    	 { background-color: #eee; }
-th,td    { border: 1px solid #C0C0C0; padding: 5px;font-size: 0.95em;}
-tr    	 { vertical-align:top; }
+	}
+
+table	{ border-collapse: collapse; border: 1px solid #C0C0C0; width:100%;}
+th		{ background-color: #eee; }
+th,td	{ border: 1px solid #C0C0C0; padding: 5px;font-size: 0.95em;}
+tr		{ vertical-align:top; }
 
 table#borderless th,table#borderless td {border-color:#fff;}
 
@@ -157,18 +152,21 @@ li {
 	list-style:square;
 	color: #c0c0c0;
 	}
-	
 
 kbd {
 	padding: 1px;
 	margin: 1px;
-	background-color: #ce0;
+	background: linear-gradient(135deg, #fff, #ce0);
 	display: inline;
-	border-radius: 2px;
-	-moz-border-radius: 2px;
-	-webkit-border-radius: 2px;
+	border-radius: 3px;
 	border: 1px solid #c0c0c0;
+	box-shadow: 2px 2px #eee;
+	padding: 0 5px;
 	}
+
+kbd:hover {
+	box-shadow: 2px 0px #eee;
+}
 
 blockquote {
 	padding-left: 20px;
@@ -189,15 +187,15 @@ em.sel {
 	}
 
 .discussion::before {
-	content: "\01F5EA  ";
+	content: "\01F5EA	";
 	color:#1e90ff;
 	font-size:1.25em;
-  }
+	}
 
 .setting::before {
-	content: "\002699  ";
+	content: "\002699	";
 	color:#1e90ff;
-  }
+	}
 
 .setting {
 	color: #000;
@@ -207,19 +205,19 @@ em.sel {
 	border-radius: 4px;
 	border: 1px dashed #666;
 	font-weight:bold;
-  display: inline-block;
-  }
+	display: inline-block;
+	}
 
 a {color: #06C; }
 a:visited {color: #000; }
 a:hover {color: #c00; }
 
-a.script { 
+a.script {
 	background: #fff url(img/scripticon.gif) 0 0 no-repeat;
 	padding-left: 20px;
 	}
 
-a.text { 
+a.text {
 	background: #fff url(img/texticon.gif) 0 0 no-repeat;
 	padding-left: 20px;
 	}
@@ -230,6 +228,11 @@ a.headline, a.headline:link {
 	}
 
 a.headline:hover::after {
-  content: " \0000B6";
-  color: #888;
-  }
+	content: " \0000B6";
+	color: #888;
+	}
+
+.warning {
+	border: 1px dashed red;
+	padding: 0.5em;
+	}

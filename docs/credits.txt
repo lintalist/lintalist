@@ -75,3 +75,6 @@ License: The Unlicense
 Class RichCode by G33kDude
 https://github.com/G33kDude/RichCode.ahk
 (see include/RichCode)
+
+HotkeyNormalize() by Lexikos
+https://github.com/Lexikos/xHotkey.ahk

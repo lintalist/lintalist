@@ -9,7 +9,7 @@ Notes         : When "Auto Center" is enabled, the window will always be centere
 History:
 - 2.5 Feature: Select by digit (1..0) to choose the first 10 items;
       adds optional UI checkbox and hotkeys (Alt+S toggles Select by digit; disabled by default).
-      Note: SelectByDigitTyping "hidden" setting in settings.ini to be able to use just digit to select shortcut vs alt+digit.
+      Note: SelectByDigitTyping "hidden" setting in session.ini to be able to use just digit to select shortcut vs alt+digit.
 - 2.4 Fix: always had filter option - https://github.com/lintalist/lintalist/issues/314
 - 2.3 Auto-select first item after filtering - https://github.com/lintalist/lintalist/pull/313
 - 2.2 Image Preview window with filelist - https://github.com/lintalist/lintalist/issues/239 (only works with fullpath option, P).
@@ -311,6 +311,7 @@ IniWrite, %SelectByDigit%, %A_ScriptDir%\session.ini, choice, SelectByDigit
 ControlFocus, Edit1, Select and press enter
 ControlSend, Edit1, {End}, Select and press enter
 Gosub, ChoiceFilterText
+SoundBeep
 Return
 
 ; just me @ https://autohotkey.com/board/topic/76540-function-seteditcuebanner-ahk-l/
@@ -370,7 +371,7 @@ else
 Return
 #IfWinActive
 
-#IfWinActive, Select and press enter ahk_class AutoHotkeyGUI
+#If (WinActive("Select and press enter ahk_class AutoHotkeyGUI") && SelectByDigit)
 !1::
 !2::
 !3::

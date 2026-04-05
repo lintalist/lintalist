@@ -4,11 +4,11 @@ Name            : Lintalist
 Author          : Lintalist
 Purpose         : Searchable interactive lists to copy & paste text, run scripts,
                   using easily exchangeable bundles
-Version         : 1.9.26
+Version         : 1.9.27
 Code            : https://github.com/lintalist/
 Website         : http://lintalist.github.io/
 AutoHotkey Forum: https://autohotkey.com/boards/viewtopic.php?f=6&t=3378
-License         : Copyright (c) 2009-2025 Lintalist
+License         : Copyright (c) 2009-2026 Lintalist
 
 This program is free software; you can redistribute it and/or modify it under the
 terms of the GNU General Public License as published by the Free Software Foundation;
@@ -42,7 +42,7 @@ PluginMultiCaret:=0 ; TODOMC
 
 ; Title + Version are included in Title and used in #IfWinActive hotkeys and WinActivate
 Title=Lintalist
-Version=1.9.26
+Version=1.9.27
 
 ; Gosub, ReadPluginSettings
 
@@ -437,7 +437,7 @@ else if Theme["ListViewBackgroundColor"]
 Gui, 1:Add, edit, hwndEDID2  x0 yp+%LVHeight%+2 -VScroll w%LVWidth% h%PreviewHeight%, preview
 
 If Theme["PreviewBackgroundColor"]
-	 CtlColors.Attach(EDID2, Theme["PreviewBackgroundColor"], Theme["PreviewTextColor"])
+	CtlColors.Attach(EDID2, Theme["PreviewBackgroundColor"], Theme["PreviewTextColor"])
 
 Gui, 1:Font, s8, Arial
 If Theme["StatusBarBackgroundColor"]
@@ -850,6 +850,7 @@ StringSplit, paste, paste, _      ; split to bundle / index number
 Text1  :=Snippet[Paste1,Paste2,1] ; part 1 (enter, or shortcut, or shorthand)
 Text2  :=Snippet[Paste1,Paste2,2] ; part 2 (shift-enter)
 Script :=Snippet[Paste1,Paste2,5] ; script (if there is a script, run script instead)
+LLShortHand:=Snippet[Paste1,Paste2,4]
 If (SnippetPasteMethod = 3)       ; if we joined both parts, script will be ignored
 	Script:=""
 
@@ -1041,83 +1042,87 @@ If (Script = "") or (ScriptPaused = 1) ; script is empty so we need to paste Tex
 	 If AltPaste[ActiveWindowProcessName].HasKey("PasteMethod")
 		SnippetPasteMethod:=AltPaste[ActiveWindowProcessName].PasteMethod
 
-	 If (SnippetPasteMethod = 0) or (SnippetPasteMethod = "") ; there was no PasteMethod plugin in the snippet
+	 If !Script or (ScriptPaused = 1) ; we apparently used Snippet|3 via shorthand to set a set even it it was empty from the chosen snippet
 		{
+		 If (SnippetPasteMethod = 0) or (SnippetPasteMethod = "") ; there was no PasteMethod plugin in the snippet
+			{
 
-		 If (PasteMethod = 0) or (SnippetPasteMethod = 0) ; paste it and clear formatted clipboard
-			{
-			 SendKey(SendMethod, ShortcutPaste)
-			 PlaySound(PlaySound,"paste")
-			 Clipboard:=ClipSet("s",2,SendMethod,Clip) ; Must be 2 to restore clipboard #217
-			 WinClip.Clear()
-			}
-		 else If (PasteMethod = 1) ; paste it, keep formatted clipboard
-			{
-			 SendKey(SendMethod, ShortcutPaste)
-			 PlaySound(PlaySound,"paste")
-			}
-		}
-	 else ; PasteMethod was set in the snippet or in AltPaste.ini
-		If (SnippetPasteMethod = 1) ; 1 Paste snippet and keep it as the current clipboard content (so you can manually paste it again)
-			{
-			 SendKey(SendMethod, ShortcutPaste)
-			 PlaySound(PlaySound,"paste")
-			}
-		; else PasteMethod was set in the snippet, so it must be: 2 Don't paste snippet content but copy it to the clipboard so you can manually paste it.
-
-	 If (((BackLeft > 0) or (BackUp > 0)) and (PasteMethod <> 2)) ; place caret at position defined in snippet text via ^|
-		{
-		 If (BackUp > 0)
-			{
-			 SendInput, {Up %BackUp%}{End}
-			}
-		 SendInput, {Left %BackLeft%}
-		 If PluginMultiCaret
-			{
-			 Loop, % PluginMultiCaret
+			 If (PasteMethod = 0) or (SnippetPasteMethod = 0) ; paste it and clear formatted clipboard
 				{
-				 SendInput, % MultiCaret[ActiveWindowProcessName].key  ; TODOMC
-				 Sleep 10
+				 SendKey(SendMethod, ShortcutPaste)
+				 PlaySound(PlaySound,"paste")
+				 Clipboard:=ClipSet("s",2,SendMethod,Clip) ; Must be 2 to restore clipboard #217
+				 WinClip.Clear()
 				}
-			 SendInput, % MultiCaret[ActiveWindowProcessName].clr     ; TODOMC
-			 Sleep 10
-			 PluginMultiCaret=0
+			 else If (PasteMethod = 1) ; paste it, keep formatted clipboard
+				{
+				 SendKey(SendMethod, ShortcutPaste)
+				 PlaySound(PlaySound,"paste")
+				}
 			}
-		}
-	 Backleft=0
-	 If (ViaText = 1) ; we came from shorttext
-		{
-		 ViaText=0
-		 SkipJumpstart=1
-		}
-	 Text1=
-	 Text2=
-	 Clip=
+		 else ; PasteMethod was set in the snippet or in AltPaste.ini
+			If (SnippetPasteMethod = 1) ; 1 Paste snippet and keep it as the current clipboard content (so you can manually paste it again)
+				{
+				 SendKey(SendMethod, ShortcutPaste)
+				 PlaySound(PlaySound,"paste")
+				}
+			; else PasteMethod was set in the snippet, so it must be: 2 Don't paste snippet content but copy it to the clipboard so you can manually paste it.
 
-	 If (SnippetPasteMethod = 0) or (SnippetPasteMethod = "") ; there was no PasteMethod plugin in the snippet
-		{
-		 If (PasteMethod = 0) ; it was pasted, restore original clipboard
+		 If (((BackLeft > 0) or (BackUp > 0)) and (PasteMethod <> 2)) ; place caret at position defined in snippet text via ^|
 			{
-			 If TryClipboard()
-				Clipboard:=ClipSet("g",1,SendMethod)
-			 ClipSet("ea",1,SendMethod)
+			 If (BackUp > 0)
+				{
+				 SendInput, {Up %BackUp%}{End}
+				}
+			 SendInput, {Left %BackLeft%}
+			 If PluginMultiCaret
+				{
+				 Loop, % PluginMultiCaret
+					{
+					 SendInput, % MultiCaret[ActiveWindowProcessName].key  ; TODOMC
+					 Sleep 10
+					}
+				 SendInput, % MultiCaret[ActiveWindowProcessName].clr     ; TODOMC
+				 Sleep 10
+				 PluginMultiCaret=0
+				}
 			}
-		 else If (PasteMethod = 1) ; it was pasted, clear the original stored clipboard (free memory)
+		 Backleft=0
+		 If (ViaText = 1) ; we came from shorttext
 			{
-			 ClipSet("ea",1,SendMethod)
+			 ViaText=0
+			 SkipJumpstart=1
 			}
-		 else If (PasteMethod = 2) ; it wasn't pasted, clear the original stored clipboard (free memory)
-			{
-			 ClipSet("ea",1,SendMethod)
-			}
-		}
-	 else ; PasteMethod was set in the snippet with setting 1 or 2 so don't restore previous clipboard contents but just erase the stored content to save memory
-			{
-			 ClipSet("ea",1,SendMethod)
-			}
+		 Text1=
+		 Text2=
+		 Clip=
 
-	}
-Else If (Script <> "") and (ScriptPaused = 0) ; we run script by saving it to tmp file and running it
+		 If (SnippetPasteMethod = 0) or (SnippetPasteMethod = "") ; there was no PasteMethod plugin in the snippet
+			{
+			 If (PasteMethod = 0) ; it was pasted, restore original clipboard
+				{
+				 If TryClipboard()
+					Clipboard:=ClipSet("g",1,SendMethod)
+				 ClipSet("ea",1,SendMethod)
+				}
+			 else If (PasteMethod = 1) ; it was pasted, clear the original stored clipboard (free memory)
+				{
+				 ClipSet("ea",1,SendMethod)
+				}
+			 else If (PasteMethod = 2) ; it wasn't pasted, clear the original stored clipboard (free memory)
+				{
+				 ClipSet("ea",1,SendMethod)
+				}
+			}
+		 else ; PasteMethod was set in the snippet with setting 1 or 2 so don't restore previous clipboard contents but just erase the stored content to save memory
+				{
+				 ClipSet("ea",1,SendMethod)
+				}
+
+		}
+}
+
+If (Script <> "") and (ScriptPaused = 0) ; we run script by saving it to tmp file and running it
 	{
 
 	 Loop {
@@ -1144,7 +1149,7 @@ Else If (Script <> "") and (ScriptPaused = 0) ; we run script by saving it to tm
 				}
 			 Clip:=CheckCursorPos(Clip)
 			 ; we use (join`n % here to avoid the need to escape the % characters which may be included in the clip variable - https://github.com/lintalist/lintalist/issues/92
-			 StringReplace,Script,Script,[[llpart%A_Index%]],llpart%A_Index%=`n(join``n `%`n%clip%`n)`n`nLLBackLeft%A_Index%:=%BackLeft%`nLLBackUp%A_Index%:=%BackUp%`n`n,All
+			 StringReplace,Script,Script,[[llpart%A_Index%]],`nllpart%A_Index%=`n(join``n `%`n%clip%`n)`n`nLLBackLeft%A_Index%:=%BackLeft%`nLLBackUp%A_Index%:=%BackUp%`n`n,All
 			 BackLeft:=0
 			 BackUp:=0
 			}
@@ -1153,7 +1158,7 @@ Else If (Script <> "") and (ScriptPaused = 0) ; we run script by saving it to tm
 	 FileDelete, %TmpDir%\tmpScript.ahk
 	 StringReplace, Script, Script, LLInit(), %LLInit%, All
 
-	 StringReplace, Script, Script, [[LLShortHand]], LLShortHand:="%Typed%"`n, All
+	 StringReplace, Script, Script, [[LLShortHand]], `nLLShortHand:="%LLShortHand%"`n, All
 
 	 FileAppend, % Script, %TmpDir%\tmpScript.ahk, UTF-8 ; %
 	 ;FileCopy, %TmpDir%\tmpScript.ahk, saved.ahk , 1 ; debug
@@ -1336,9 +1341,10 @@ Query["full"]:=LTrim(CurrText,OmniChar)
 Return
 
 ColumnSearchText:
-ColumnID:=Trim(SubStr(CurrText,1,2),"@<")
+ColumnID:=Trim(SubStr(CurrText,1,2),ColumnSearchDelimiter OmniChar)
 ColumnSearchText:=LTrim(StrSplit(CurrText, ColumnSearchDelimiter,, 2).2,OmniChar)
 Return
+
 ; This function is used to reset the search mode buttons when you switch search mode
 TB_ResetButtons(in)
 	{
@@ -2850,6 +2856,7 @@ CheckTyped(TypedChar,EndKey)
 			 If EndKey not in %TriggerKeys%
 				{
 				 Typed=
+				 ShorthandPastePart2:=0
 				 Return
 				}
 			}
@@ -2865,10 +2872,10 @@ CheckTyped(TypedChar,EndKey)
 			 If (Typed = "")
 				Return
 			 If (SubStr(Typed,0) = ShorthandPart2)
-			 	{
-			 	 StringTrimRight, Typed, Typed, 1
-			 	 ShorthandPastePart2:=1
-			 	}
+				{
+				 StringTrimRight, Typed, Typed, 1
+				 ShorthandPastePart2:=1
+				}
 			 HitKeyHistory:=CheckHitList("Shorthand", Typed, Load)
 
 			 If EndKey in %TriggerKeysDead%
@@ -2895,6 +2902,7 @@ CheckTyped(TypedChar,EndKey)
 				}
 			}
 		 typed=
+		 ShorthandPastePart2:=0
 		}
 	 Else
 		typed .= TypedChar
@@ -2961,7 +2969,7 @@ Menu, Edit, Icon,&Open Lintalist folder,  icons\folder-horizontal-open.ico
 Menu, Edit, Add, &View Statistics,        GlobalMenuHandler
 Menu, Edit, Icon,&View Statistics,        icons\chart_pie.ico
 If !Statistics
-	 Menu, Edit, Disable, &View Statistics
+	Menu, Edit, Disable, &View Statistics
 
 Menu, MenuBar, Add, &Edit, :Edit
 
@@ -3018,7 +3026,7 @@ Menu, Plugins, Add, Insert [[Selected]] , :SelectedMenu
 Menu, Plugins, Add
 
 Menu, LocalCounter, Add, Counter=, PluginMenuHandler
-	 Loop, parse, LocalCounter_0, CSV
+	Loop, parse, LocalCounter_0, CSV
 		{
 		 If (A_LoopField <> "")
 			Menu, LocalCounter, Add, Counter=%A_LoopField%, PluginMenuHandler
@@ -3238,6 +3246,7 @@ Return
 #Include %A_ScriptDir%\include\Class_CtlColors.ahk ; by just me
 #Include %A_ScriptDir%\include\AutoXYWH.ahk        ; by toralf & tmplinshi
 #Include %A_ScriptDir%\include\Class_Toolbar.ahk   ; by pulover
+#Include %A_ScriptDir%\include\HotkeyNormalize.ahk ; by Lexikos
 ; /Includes
 
 SaveSettingsCounters:

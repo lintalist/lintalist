@@ -10,6 +10,7 @@
 ; F8  = Delete snippet
 ;
 ; History:
+; v1.12 - Adding HotkeyNormalize() https://github.com/lintalist/lintalist/issues/219
 ; v1.11 - Statusbar with line;col, total lines, size
 ; v1.10 - Expert option: select different editor via menu (read from separate ini, see docs)
 ; v1.9 - Manually load edited text from editor https://github.com/lintalist/lintalist/issues/268; https://github.com/lintalist/lintalist/issues/288
@@ -501,6 +502,12 @@ If !EditorHotkeySyntax
 		HKey = #%HKey% ; add Win modifier key
 	 StringLower, HKey, HKey
 	}
+
+; As users can mixup ^+! as they please, we need to make it consistent:
+; https://github.com/lintalist/lintalist/issues/219
+If Hkey
+	HKey:=HotkeyNormalize(HKey)
+
 If (EditMode = "EditSnippet")
 	Check:=Paste1
 Else If (EditMode = "AppendSnippet") or (EditMode = "CopySnippet") or (EditMode = "MoveSnippet")
@@ -772,6 +779,11 @@ If (OldKey <> HKey)
 WinActivate, %AppWindow%
 WinWaitActive, %AppWindow%
 LoadBundle(Load)
+; potential fix to test re missing added snippets
+; If (AppendToBundle <> Load)
+; 	LoadBundle(AppendToBundle)
+; Else
+; 	LoadBundle(Load)
 UpdateLVColWidth()
 Gosub, SetStatusBar
 lasttext = fadsfSDFDFasdFdfsadfsadFDSFDf
@@ -956,7 +968,6 @@ Gui, 1:-Disabled
 Gui, 71:Destroy
 WinActivate, %AppWindow%
 InEditMode = 0
-EditMode:=""
 ControlFocus, Edit1, %AppWindow%
 If OnTopStateSaved
 	Gosub, GuiOnTopCheck

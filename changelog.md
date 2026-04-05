@@ -1,3 +1,17 @@
+### v1.9.27
+
+* HTML/MD update FixUri() to also allow base64 encoded images https://github.com/lintalist/lintalist/issues/333
+* New: Snippet plugin allow user to select part1 (default), part2, script or shorthand https://github.com/lintalist/lintalist/issues/304
+* New: Choice plugin - auto-select first item after filtering PR #313 by zhenrenbumeng https://github.com/lintalist/lintalist/pull/313
+* New: Choice plugin - allow Alt+1..0 to select option from the first 10 results PR #332 by zhenrenbumeng https://github.com/lintalist/lintalist/pull/332
+* Change LLShorthand: Use shorthand from snippet vs typed 'shorthand' https://github.com/lintalist/lintalist/issues/317 and v1.9.19
+* Fix: Editor: Adding HotkeyNormalize() for manually entered Hotkeys https://github.com/lintalist/lintalist/issues/219
+* Fix: Choice plugin - always had filter option even if no ! was added https://github.com/lintalist/lintalist/issues/314
+* Fix: Always reset ShorthandPastePart2 to 0 after snippet expansion or paste to prevent erroneous triggering of part2 logic in subsequent searches or snippets.
+* Fix: Trim ColumnID by using ColumnSearchDelimiter and OmniChar and not the default "@<"
+* Fix: ensure llpart1/2 always start on new line to catch potential issues when used in commented lines https://github.com/lintalist/lintalist/issues/334
+* Docs: removed version info notes such as "As of v1.X..."
+
 ### v1.9.26
 
 * New: Ctrl+Shift+Alt+Enter Join Part1 and Part2 into one item to paste or copy to clipboard (see BothParts* settings) https://github.com/lintalist/lintalist/discussions/309  
