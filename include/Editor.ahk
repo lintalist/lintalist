@@ -794,6 +794,7 @@ Gosub, GetText
 ControlFocus, Edit1, %AppWindow%
 ShowPreview(PreviewSection)
 InEditMode = 0
+EditMode =
 If OnTopStateSaved
 	Gosub, GuiOnTopCheck
 Return
@@ -968,6 +969,7 @@ Gui, 1:-Disabled
 Gui, 71:Destroy
 WinActivate, %AppWindow%
 InEditMode = 0
+EditMode =
 ControlFocus, Edit1, %AppWindow%
 If OnTopStateSaved
 	Gosub, GuiOnTopCheck
