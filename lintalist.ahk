@@ -2208,9 +2208,11 @@ If (item = "") ; if we didn't focus on results list while "typing to filter" in 
 	 If InStr(item,"`n") ; we may get all the results of the "typing to filter" so assume we want first result
 		item:=Trim(StrSplit(item,"`n").1,"`n`r")
 	}
-; Remove numeric prefix like "1: " when SelectByDigit numbering is shown in the Choice plugin.
-If (SelectByDigit) and WinActive("Select and press enter ahk_class AutoHotkeyGUI")
+; Remove numeric prefix like "1: " when SelectByDigit numbering is shown, as we also pad non-digit snippets always remove the first three characters.
+If (SelectByDigit) and (EditMode = "") ; when in edit mode (AppendSnippet,MoveSnippet,CopySnippet) we should strip the selected item of course as it would fail to obtain the correct file name of the bundle
 	{
+		SendMessage, 0x188, 0, 0, ListBox1, Select and press enter  ; LB_GETCURSEL
+		selIndex := ErrorLevel + 1
 		item := SubStr(item, 4)
 	}
 Gosub, 10GuiSavePos
